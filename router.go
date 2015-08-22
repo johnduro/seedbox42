@@ -38,15 +38,16 @@ func registerUser(w http.ResponseWriter, r *http.Request) {
 	json.Unmarshal(body, &user)
 	//encryptage du mot de passe
 	pwd, _ := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
-	user.Password = string(pwd)
-	//on remet en json
+	//on supprime le mot de passe en clair de notre structure
+	user.Password = ""
+	//on remet en json pour pouvoir l'integrer dans Data qui ira en base
 	body, _ = json.Marshal(user)
 	//on remplit la structure qui va etre ingerer dans la BDD
 	d := Data{
 		Date:     time.Now(),
 		Json:     string(body),
 		Username: user.Username,
-		Password: user.Password,
+		Password: string(pwd),
 		Group:    user.Group,
 	}
 	//on met en base le nouvel utilisateur
@@ -71,15 +72,16 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 	json.Unmarshal(body, &user)
 	//encryptage du mot de passe
 	pwd, _ := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
-	user.Password = string(pwd)
-	//on remet en json
+	//on supprime le mot de passe en clair de notre structure
+	user.Password = ""
+	//on remet en json pour pouvoir l'integrer dans Data qui ira en base
 	body, _ = json.Marshal(user)
 	//on remplit la structure qui va etre ingerer dans la BDD
 	d := Data{
 		Date:     time.Now(),
 		Json:     string(body),
 		Username: user.Username,
-		Password: user.Password,
+		Password: string(pwd),
 		Group:    user.Group,
 	}
 	//on met a jour les infos de l'utilisateur
