@@ -98,14 +98,14 @@ func deleteUser(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	//creation du router
-	r := mux.NewRouter().PathPrefix("/api/").Subrouter()
+	r := mux.NewRouter()
 	//gestion des chemins et leur methodes
 	r.HandleFunc("/user", registerUser).Methods("POST")
 	r.HandleFunc("/user", connectUser).Methods("GET")
 	r.HandleFunc("/user/{id:[0-9]*}", updateUser).Methods("PUT")
 	r.HandleFunc("/user/{id:[0-9]*}", deleteUser).Methods("DELETE")
-	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./public/")))
-	http.Handle("/api/", r)
+	r.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("./public/"))))
+	http.Handle("/", r)
 	//creation du server sur le port 8080
 	http.ListenAndServe(":8080", r)
 }
