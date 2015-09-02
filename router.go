@@ -104,6 +104,7 @@ func main() {
 	r.HandleFunc("/user", connectUser).Methods("GET")
 	r.HandleFunc("/user/{id:[0-9]*}", updateUser).Methods("PUT")
 	r.HandleFunc("/user/{id:[0-9]*}", deleteUser).Methods("DELETE")
+	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./public/")))
 	http.Handle("/api/", r)
 	//creation du server sur le port 8080
 	http.ListenAndServe(":8080", r)
