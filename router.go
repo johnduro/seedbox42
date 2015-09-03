@@ -1,3 +1,5 @@
+
+
 package main
 
 import (
@@ -28,6 +30,10 @@ type User struct {
 }
 
 var user User
+
+var port string = ":2424"
+var angularApp string = "/home/johnduro/documents/seedbox42/public/"
+//ou port := 2424
 
 //creation compte utilisateur
 func registerUser(w http.ResponseWriter, r *http.Request) {
@@ -104,8 +110,10 @@ func main() {
 	r.HandleFunc("/user", connectUser).Methods("GET")
 	r.HandleFunc("/user/{id:[0-9]*}", updateUser).Methods("PUT")
 	r.HandleFunc("/user/{id:[0-9]*}", deleteUser).Methods("DELETE")
-	r.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("./public/"))))
+	// r.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("./public/"))))
+	r.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir(angularApp))))
 	http.Handle("/", r)
 	//creation du server sur le port 8080
-	http.ListenAndServe(":8080", r)
+	// http.ListenAndServe(":8080", r)
+	http.ListenAndServe(port, r)
 }
