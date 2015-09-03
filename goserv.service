@@ -1,0 +1,28 @@
+
+# ** tuto **
+# mettre ce fichier dans /usr/lib/systemd/system/ en le renommant et en modifiant differentes valeurs :
+# notez que dans tous les exemples mon service s'appelle 'goserv', il faudra donc le renommer par quelque chose de plus perso et changer cela dans les exemples
+# modifier le WorkingDirectory ainsi que le fichier router.go en argument de l'exe
+# faire un symlink vers /etc/systemd/system avec la commande suivante : "sudo systemctl enable goserv.service"
+# pour lancer le service faire : "sudo service goserv start"
+# pour le status du service faire : "sudo service goserv status"
+# pour stopper le service faire : "sudo service goserv stop"
+# recharger la config apres une modif : "sudo systemctl daemon-reload"
+
+[Unit]
+Description=ServeurGo
+
+[Service]
+#modifier l'user et le groupe avec le votre
+User=johnduro
+Group=johnduro
+
+#modifier avec le dossier ou se trouve votre dossier
+WorkingDirectory=/home/johnduro/documents/seedbox42/
+
+Restart=on-failure
+#modifier avec l'endroit ou se trouve votre fichier router.go
+ExecStart=/usr/local/go/bin/go run /home/johnduro/documents/seedbox42/router.go
+
+[Install]
+WantedBy=multi-user.target
