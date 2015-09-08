@@ -31,8 +31,8 @@ type User struct {
 
 var user User
 
-var port string = ":2424"
-var angularApp string = "/home/johnduro/documents/seedbox42/public/"
+var port string = ":8080"
+var angularApp string = ""
 //ou port := 2424
 
 //creation compte utilisateur
