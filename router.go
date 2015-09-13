@@ -5,6 +5,8 @@ package main
 import (
 	"github.com/gorilla/mux"
 	"golang.org/x/crypto/bcrypt"
+	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 
 	"encoding/json"
 	"io"
@@ -32,12 +34,11 @@ type User struct {
 var user User
 
 var port string = ":8080"
-var angularApp string = ""
+var angularApp string = "/home/aladdin/seedbox42/public/"
 //ou port := 2424
 
 //creation compte utilisateur
 func registerUser(w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "Inscritpion...")
 	//recuperation du contenu de la requete en json
 	body, _ := ioutil.ReadAll(r.Body)
 	//conversion du json en structure User
@@ -56,15 +57,37 @@ func registerUser(w http.ResponseWriter, r *http.Request) {
 		Password: string(pwd),
 		Group:    user.Group,
 	}
-	//on met en base le nouvel utilisateur
-	//TO BE DONE
+
+	//connexion a la BDD
+	session, _ := mgo.Dial("localhost")
+	defer session.Close()
+	//on definit avec quelle db et table on veut interagir 
+	c := session.DB("seedbox").C("user")
+	//on y met la structure cree auparavant
+	c.Insert(&d)
 	io.WriteString(w, d.Json)
 }
 
 //connexion utilisateur
 func connectUser(w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "Connexion...")
-	//TO BE DONE
+	//recuperation du contenu de la requete en json
+	body, _ := ioutil.ReadAll(r.Body)
+	//conversion du json en structure User
+	json.Unmarshal(body, &user)
+	
+	//connexion a la BDD
+	session, _ := mgo.Dial("localhost")
+	defer session.Close()
+	//on definit avec quelle db et table on veut interagir 
+	c := session.DB("seedbox").C("user")
+	result := Data{}
+	if err := c.Find(bson.M{"username":user.Username}).One(&result); err != nil {
+		io.WriteString(w, "Identifiant inconnu")
+	} else {
+		if err = bcrypt.CompareHashAndPassword([]byte(result.Password), []byte(user.Password)); err == nil {
+			io.WriteString(w, result.Json)
+		}
+	}
 }
 
 //mise a jour des infos d'un utilisateur
@@ -106,8 +129,8 @@ func main() {
 	//creation du router
 	r := mux.NewRouter()
 	//gestion des chemins et leur methodes
-	r.HandleFunc("/user", registerUser).Methods("POST")
-	r.HandleFunc("/user", connectUser).Methods("GET")
+	r.HandleFunc("/signin", registerUser).Methods("POST")
+	r.HandleFunc("/login", connectUser).Methods("POST")
 	r.HandleFunc("/user/{id:[0-9]*}", updateUser).Methods("PUT")
 	r.HandleFunc("/user/{id:[0-9]*}", deleteUser).Methods("DELETE")
 	// r.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("./public/"))))
