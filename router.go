@@ -81,11 +81,15 @@ func connectUser(w http.ResponseWriter, r *http.Request) {
 	//on definit avec quelle db et table on veut interagir 
 	c := session.DB("seedbox").C("user")
 	result := Data{}
+	//On cherche dans la db un unique resultat pour l'username donne 
 	if err := c.Find(bson.M{"username":user.Username}).One(&result); err != nil {
 		io.WriteString(w, "Identifiant inconnu")
 	} else {
+		//On verifie si le mdp est correct en comparant avec le mdp encrypte recupere en base
 		if err = bcrypt.CompareHashAndPassword([]byte(result.Password), []byte(user.Password)); err == nil {
 			io.WriteString(w, result.Json)
+		} else {
+			io.WriteString(w, "Incorrect Password")
 		}
 	}
 }
