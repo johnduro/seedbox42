@@ -1,0 +1,16 @@
+
+
+express -e <nom de l'app>
+
+cd <nom de l'app>
+
+npm install
+
+npm install mongoose jsonwebtoken --save
+
+
+pour lancer l'app en prod:
+	npm start
+
+pour lancer l'app en mode debug:
+	nodemon
