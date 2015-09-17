@@ -12,6 +12,7 @@ var mongoose = require('mongoose');
 var jwt = require('jsonwebtoken');
 var config = require('./config');
 var authMW = require('./utils/authMiddleware');
+var WebTorrent = require('webtorrent');
 // ************************************
 
 // ====================================
@@ -21,6 +22,7 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 var auth = require('./routes/authenticate');
 var debugSetup = require('./routes/ds');
+var torrent = require('./routes/torrent');
 // ************************************
 
 
@@ -43,6 +45,7 @@ app.set('connexionDB', connexionDB);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
+app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
 
 // uncomment after placing your favicon in /public
@@ -60,6 +63,7 @@ app.set('secret', config.secret);
 app.use('/authenticate', auth);
 app.use(authMW);
 app.use('/users', users);
+app.use('/torrent', torrent);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
