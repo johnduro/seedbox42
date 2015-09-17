@@ -1,11 +1,11 @@
-var app = angular.module('App', ['ngRoute']);
+var app = angular.module('seedApp', ['ngRoute']);
 
 app.run(function ($rootScope) {
 
 });
 
 app.factory("User", function ($http) {
-    var API_URI = '/authentification';
+    var API_URI = '/authenticate';
 
     return {
 
