@@ -14,7 +14,8 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/', function(req, res, next) {
-	if (req.user.role == 0) {
+	if (req.user.role == 0 || req.user.login == req.body.login) {
+
 		User.create(req.body, function(err, post) {
 			if (err) return next(err);
 			res.json({ success: true, message: 'user successfully created'});
