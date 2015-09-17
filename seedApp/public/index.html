@@ -1,26 +1,26 @@
-<html ng-app="App">
+<html>
   
   <head>
    	<title>Seedbox</title>
     	<link rel='stylesheet' href='/css/style.css' />
   </head>
   
-  <body>
+  <body ng-app="seedApp" ng-controller="mainCtrl">
     	<h1>Seebox</h1>
 	
 	<p>Authentification</p>
-	<form action="http://37.187.111.179:3000/authenticate" method="post">
-	  <p><input type="text" name="login" value="" placeholder="Username"></p>
-	  <p><input type="password" name="password" value="" placeholder="Password"></p>
-	  <p><input type="submit" value="Submit"></p>
+	<form>
+	  <p><input type="text" ng-model="user.login" value="" placeholder="Username"></p>
+	  <p><input type="password" ng-model="user.password" value="" placeholder="Password"></p>
+	  <p><input type="submit" value="Submit" ng-click="auth(user)"></p>
 	</form>
 
 	<br>
 
-	<p>Download torrent</p>
-	<form action="http://37.187.111.179:3000/torrent" method="post">
-	  <p><input type="text" name="magnet" value="" placeholder="Torrent's link/magnet"></p>
-	  <p><input type="submit" value="Download"></p>
+	<p>Upload torrent</p>
+	<form>
+	  <p><input type="text" ng-model="torrent.magnet" value="" placeholder="Torrent's link/magnet"></p>
+	  <p><input type="submit" value="Download" ng-click="upload(torrent)"></p>
 	</form>
   </body>
 
