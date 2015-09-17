@@ -1,8 +1,38 @@
 var express = require('express');
 var router = express.Router();
 
+var multer = require('multer');
 //var mongoose = require('mongoose'); // UTILE ?
 var User = require("../models/User.js");
+// var validateAvatar = require('../utils/validateAvatar');
+
+
+var storage = multer.diskStorage({
+	destination: function (req, file, cb) {
+		cb(null, './files/avatars');
+	},
+	filename: function (req, file, cb) {
+		var filename = file.originalname.replace(/\W+/g, '-').toLowerCase();
+		cb(null, Date.now() + '_' + filename);
+	}
+});
+// var avatarUpldHandler = multer({
+// 	dest: './files/avatars',
+// 	filename: function(field, filename, cb) {
+// 		filename = filename.replace(/\W+/g, '-').toLowerCase();
+// 		cb(null, filename + '_' + Date.now());
+// 		// return filename + '_' + Date.now();
+// 	},
+// 	limits: {
+// 		files: 1,
+// 		fileSize: 1 * 1000 * 1000 //1 MB
+// 	}});
+var avatarUpldHandler = multer({
+	storage: storage,
+	limits: {
+		files: 1,
+		fileSize: 1 * 1000 * 1000 //1 MB
+	}});
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -13,9 +43,10 @@ router.get('/', function(req, res, next) {
 	});
 });
 
-router.post('/', function(req, res, next) {
+// router.post('/', avatarUpldHandler.single('avatar'), validateAvatar, function(req, res, next) {
+router.post('/', avatarUpldHandler.single('avatar'), function(req, res, next) {
 	if (req.user.role == 0 || req.user.login == req.body.login) {
-
+		req.body.avatar = req.file.path;
 		User.create(req.body, function(err, post) {
 			if (err) return next(err);
 			res.json({ success: true, message: 'user successfully created'});

@@ -10,9 +10,10 @@ var bodyParser = require('body-parser');
 // ====================================
 var mongoose = require('mongoose');
 var jwt = require('jsonwebtoken');
+var webTorrent = require('webtorrent');
+var multer = require('multer');
 var config = require('./config');
 var authMW = require('./utils/authMiddleware');
-var WebTorrent = require('webtorrent');
 // ************************************
 
 // ====================================
@@ -22,7 +23,7 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 var auth = require('./routes/authenticate');
 var debugSetup = require('./routes/ds');
-var torrent = require('./routes/torrent');
+// var torrent = require('./routes/torrent');
 // ************************************
 
 
@@ -40,6 +41,25 @@ var connexionDB = mongoose.connect(config.database, function(err) {
 	}
 });
 app.set('connexionDB', connexionDB);
+// ************************************
+
+
+// ====================================
+// UPLOADS
+// ====================================
+// var avatarUpldHandler = multer({
+// 	dest: './files/avatars',
+// 	rename: function(field, filename) {
+// 		filename = filename.replace(/\W+/g, '-').toLowerCase();
+// 		return filename + '_' + Date.now();
+// 	},
+// 	limits: {
+// 		files: 1,
+// 		fileSize: 1024
+// 	}});
+// app.set('avatarUpldHandler', avatarUpldHandler);
+// var torrentUpldHandler = multer({ dest: './files/torrents' }).single('torrent');
+// app.set('torrentUpldHandler', torrentUpldHandler);
 // ************************************
 
 
@@ -61,9 +81,10 @@ app.use('/', routes);
 app.use('/debug', debugSetup);
 app.set('secret', config.secret);
 app.use('/authenticate', auth);
+// all route below need identification token
 app.use(authMW);
 app.use('/users', users);
-app.use('/torrent', torrent);
+// app.use('/torrent', torrent);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
