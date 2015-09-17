@@ -1,0 +1,36 @@
+<html ng-app="App">
+  
+  <head>
+   	<title>Seedbox</title>
+    	<link rel='stylesheet' href='/css/style.css' />
+  </head>
+  
+  <body>
+    	<h1>Seebox</h1>
+	
+	<p>Authentification</p>
+	<form action="http://37.187.111.179:3000/authenticate" method="post">
+	  <p><input type="text" name="login" value="" placeholder="Username"></p>
+	  <p><input type="password" name="password" value="" placeholder="Password"></p>
+	  <p><input type="submit" value="Submit"></p>
+	</form>
+
+	<br>
+
+	<p>Download torrent</p>
+	<form action="http://37.187.111.179:3000/torrent" method="post">
+	  <p><input type="text" name="magnet" value="" placeholder="Torrent's link/magnet"></p>
+	  <p><input type="submit" value="Download"></p>
+	</form>
+  </body>
+
+  	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+  	<script src="js/angularjs/angular.min.js"></script>
+  	<script src="js/angularjs/angular-route.min.js"></script>
+
+	<script src="app/init/app.js"></script>
+  	<script src="app/init/routes.js"></script>
+ 	<script src="app/init/mainCtrl.js"></script>
+
+</html>
