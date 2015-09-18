@@ -23,7 +23,7 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 var auth = require('./routes/authenticate');
 var debugSetup = require('./routes/ds');
-// var torrent = require('./routes/torrent');
+var torrent = require('./routes/torrent');
 // ************************************
 
 
@@ -41,6 +41,14 @@ var connexionDB = mongoose.connect(config.database, function(err) {
 	}
 });
 app.set('connexionDB', connexionDB);
+// ************************************
+
+
+// ====================================
+// TORRENTS
+// ====================================
+// var torrentClient = new webTorrent();
+// app.set('torrentClient', torrentClient);
 // ************************************
 
 
@@ -84,7 +92,7 @@ app.use('/authenticate', auth);
 // all route below need identification token
 app.use(authMW);
 app.use('/users', users);
-// app.use('/torrent', torrent);
+app.use('/torrent', torrent);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

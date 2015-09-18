@@ -7,7 +7,10 @@ var User = require("../models/User.js");
 // var validateAvatar = require('../utils/validateAvatar');
 
 
-var storage = multer.diskStorage({
+// ====================================
+// UPLOADS
+// ====================================
+var avatarStorage = multer.diskStorage({
 	destination: function (req, file, cb) {
 		cb(null, './files/avatars');
 	},
@@ -16,23 +19,13 @@ var storage = multer.diskStorage({
 		cb(null, Date.now() + '_' + filename);
 	}
 });
-// var avatarUpldHandler = multer({
-// 	dest: './files/avatars',
-// 	filename: function(field, filename, cb) {
-// 		filename = filename.replace(/\W+/g, '-').toLowerCase();
-// 		cb(null, filename + '_' + Date.now());
-// 		// return filename + '_' + Date.now();
-// 	},
-// 	limits: {
-// 		files: 1,
-// 		fileSize: 1 * 1000 * 1000 //1 MB
-// 	}});
 var avatarUpldHandler = multer({
-	storage: storage,
+	storage: avatarStorage,
 	limits: {
 		files: 1,
 		fileSize: 1 * 1000 * 1000 //1 MB
 	}});
+// ************************************
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
