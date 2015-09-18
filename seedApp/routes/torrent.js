@@ -1,7 +1,7 @@
 var express = require('express');
-var webTorrent = require('webtorrent');
 var multer = require('multer');
 var router = express.Router();
+var io = require('socket.io');
 
 // ====================================
 // TORRENT UPLOADS
@@ -23,19 +23,27 @@ var torrentUpldHandler = multer({
 	}});
 // ************************************
 
+var tmp = "";
 
 router.post('/', function(req, res, next) {
-	var client = new WebTorrent();
-	var magnet = req.body.magnet;
-	client.add(magnet, function(torrent) {
-		client.destroy()
+	req.app.torrentClient.add(req.body.magnet, function(torrent) {
+		if (tmp != torrent.received) {
+			tmp = torrent.received;
+			io.emit('{size: ' + torrent.length + ', down: ' + torrent.received + '}', { for: 'everyone' });
+		};
 	});
 });
 
 router.post('/add-torrents', torrentUpldHandler.array('torrent', 10), function(req, res, next) {
 	// array de torrent dans req.files
-	console.log(req.files);
-	res.json({success: false});
+	req.files.forEach(function(file) {
+		req.app.torrentClient.add(file, function(torrent) {
+			if (tmp != torrent.received) {
+				tmp = torrent.received;
+				io.emit('{size: ' + torrent.length + ', down: ' + torrent.received + '}', { for: 'everyone' });
+			};
+		});
+	});
 });
 
 module.exports = router;
