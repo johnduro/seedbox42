@@ -1,0 +1,16 @@
+<h1>Seebox</h1>
+
+<p>Authentification</p>
+<form>
+<p><input type="text" ng-model="user.login" value="" placeholder="Username"></p>
+<p><input type="password" ng-model="user.password" value="" placeholder="Password"></p>
+<p><input type="submit" value="Submit" ng-click="auth(user)"></p>
+</form>
+
+<a ui-sref="seedbox.dashboard">Dashboard</a>
+
+<p>Upload torrent</p>
+<form>
+<p><input type="text" ng-model="torrent.magnet" value="" placeholder="Torrent's link/magnet"></p>
+<p><input type="submit" value="Download" ng-click="upload(torrent)"></p>
+</form>

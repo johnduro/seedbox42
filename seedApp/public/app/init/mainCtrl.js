@@ -1,4 +1,4 @@
-app.controller('mainCtrl', function ($scope, $rootScope, User, Torrent) {
+app.controller('mainCtrl', function ($scope, $rootScope, User, Torrent, $location) {
 	$scope.auth = function(user) {
 		console.log(user);
 		User.connect(user)
@@ -12,6 +12,8 @@ app.controller('mainCtrl', function ($scope, $rootScope, User, Torrent) {
 			console.log(resp);
 		});
 	};
+
+	$location.path('/app/index.html')
 
 	$scope.upload = function(torrent) {
 		console.log(torrent);

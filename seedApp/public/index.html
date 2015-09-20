@@ -1,36 +1,41 @@
 <html>
-  
-  <head>
-   	<title>Seedbox</title>
-    	<link rel='stylesheet' href='/css/style.css' />
-  </head>
-  
-  <body ng-app="seedApp" ng-controller="mainCtrl">
-    	<h1>Seebox</h1>
-	
-	<p>Authentification</p>
-	<form>
-	  <p><input type="text" ng-model="user.login" value="" placeholder="Username"></p>
-	  <p><input type="password" ng-model="user.password" value="" placeholder="Password"></p>
-	  <p><input type="submit" value="Submit" ng-click="auth(user)"></p>
-	</form>
 
-	<br>
+<head>
+    <title>Seedbox</title>
 
-	<p>Upload torrent</p>
-	<form>
-	  <p><input type="text" ng-model="torrent.magnet" value="" placeholder="Torrent's link/magnet"></p>
-	  <p><input type="submit" value="Download" ng-click="upload(torrent)"></p>
-	</form>
-  </body>
+    <!--Import perso css-->
+    <link rel='stylesheet' href='/css/style.css'/>
+    <!--Import materialize css-->
+    <!--<link rel='stylesheet' href='/css/materialize.min.css'/>-->
+    <!--Import Google Icon Font-->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import angular_material cdn -->
+    <!--<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.10.0/angular-material.min.css">-->
 
-  	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-  	<script src="js/angularjs/angular.min.js"></script>
-  	<script src="js/angularjs/angular-route.min.js"></script>
+</head>
 
-	<script src="app/init/app.js"></script>
-  	<script src="app/init/routes.js"></script>
- 	<script src="app/init/mainCtrl.js"></script>
+<!-- BODY CONTENT -->
+<body ng-app="seedApp" ng-controller="mainCtrl">
+    <div ui-view></div>
+</body>
+
+<!--Import jquery-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+<!--Import Library angular-->
+<script src="js/angularjs/angular.min.js"></script>
+<script src="js/angularjs/angular-route.min.js"></script>
+<script src="js/angularjs/angular-ui/angular-ui-router.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-animate.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-aria.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angular_material/0.10.0/angular-material.min.js"></script>
+
+<!--Import Js materialize-->
+<script src="js/materialize.min.js"></script>
+
+<!--Import Application angularjs -->
+<script src="app/init/app.js"></script>
+<script src="app/init/routes.js"></script>
+<script src="app/init/mainCtrl.js"></script>
 
 </html>
