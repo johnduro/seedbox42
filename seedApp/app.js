@@ -14,6 +14,7 @@ var webTorrent = require('webtorrent');
 var multer = require('multer');
 var config = require('./config');
 var authMW = require('./utils/authMiddleware');
+var io = require('socket.io');
 // ************************************
 
 // ====================================
@@ -47,9 +48,9 @@ app.set('connexionDB', connexionDB);
 // ====================================
 // TORRENTS
 // ====================================
-// var torrentClient = new webTorrent();
-// app.set('torrentClient', torrentClient);
-// ************************************
+var torrentClient = new webTorrent();
+app.set('torrentClient', torrentClient);
+//************************************
 
 
 // ====================================

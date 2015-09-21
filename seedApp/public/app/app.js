@@ -22,8 +22,12 @@ app.factory("Torrent", function ($http) {
     return {
 
         send : function(torrent) {
-            return $http.post(API_URI, torrent);
-        }
+		return $http.post(API_URI, torrent);
+        },
+	
+	fetch : function(torrent) {
+		return $http.get(API_URI+'?token='+torrent.token);
+	}
     };
 
 });
