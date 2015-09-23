@@ -28,7 +28,3 @@ node_modules
 
 # Debug log from npm
 npm-debug.log
-
-# avatars and torrent
-files/avatars/*
-files/torrents/*
