@@ -1,40 +1,33 @@
 <html>
-  <head>
-   	<title>Seedbox</title>
-    	<link rel='stylesheet' href='/css/style.css' />
-  </head>
 
-  <body ng-app="seedApp" ng-controller="mainCtrl">
-    	<h1>Seebox</h1>
+<head>
+    <title>Seedbox</title>
 
-	<p>Authentification</p>
-	<form>
-	  <p><input type="text" ng-model="user.login" value="" placeholder="Username"></p>
-	  <p><input type="password" ng-model="user.password" value="" placeholder="Password"></p>
-	  <p><input type="submit" value="Submit" ng-click="auth(user)"></p>
-	</form>
+    <link rel='stylesheet' href='/css/style.css' />
+</head>
 
-	<br>
-
-	<a ui-sref="dashboard">Dashborad</a>
-
-	<p>Upload torrent</p>
-	<form>
-	  <p><input type="text" ng-model="torrent.magnet" value="" placeholder="Torrent's link/magnet"></p>
-	  <p><input type="submit" value="Download" ng-click="upload(torrent)"></p>
-	  <p><input type="submit" value="Get info" ng-click="info(torrent)"></p>
-	</form>
-
-	<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
-	<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
-
-  	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-  	<script src="js/angularjs/angular.min.js"></script>
-  	<script src="js/angularjs/angular-route.min.js"></script>
-
-	<script src="app/app.js"></script>
-  	<script src="app/routes.js"></script>
- 	<script src="app/mainCtrl.js"></script>
+<body ng-app="seedApp" ng-controller="mainCtrl">
+    <div ui-view></div>
 </body>
+
+<!-- LOAD LIBRARY -->
+<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+<!-- LOAD LIBRARY ANGULARJS-->
+<script src="js/angularjs/angular.min.js"></script>
+<script src="js/angularjs/angular-route.min.js"></script>
+<script src="js/angularjs/angular-ui/angular-ui-router.min.js"></script>
+
+
+<!-- LOAD INIT APP ANGULARJS -->
+<script src="app/init/app.js"></script>
+<script src="app/init/routes.js"></script>
+<script src="app/init/mainCtrl.js"></script>
+
+<!-- LOAD SERVICES -->
+ <script src="app/services/other.js"></script>
+
 </html>
