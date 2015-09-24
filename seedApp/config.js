@@ -2,5 +2,6 @@
 
 module.exports = {
 	secret: 'ilovesecret',
-	database: 'mongodb://localhost/seedapp'
+	database: 'mongodb://localhost/seedapp',
+	transmissionFolder: '/home/downloader'
 }
