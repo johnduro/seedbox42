@@ -6,7 +6,7 @@
     <link rel='stylesheet' href='/css/style.css' />
 </head>
 
-<body ng-app="seedApp" ng-controller="mainCtrl">
+<body ng-app="seedApp">
     <div ui-view></div>
 </body>
 
@@ -25,7 +25,11 @@
 <!-- LOAD INIT APP ANGULARJS -->
 <script src="app/init/app.js"></script>
 <script src="app/init/routes.js"></script>
-<script src="app/init/mainCtrl.js"></script>
+
+<!-- LOAD CONTROLLERS ANGULARJS -->
+<script src="app/controllers/connexionCtrl.js"></script>
+<script src="app/controllers/seedboxCtrl.js"></script>
+<script src="app/controllers/dashboardCtrl.js"></script>
 
 <!-- LOAD SERVICES -->
  <script src="app/services/other.js"></script>

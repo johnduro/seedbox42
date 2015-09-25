@@ -1,4 +1,8 @@
 
+/// -------------------------- LE CONTROLLEUR NEST PLUS UTILISER ------------------------------
+
+
+
 app.controller('mainCtrl', function ($scope, $rootScope, User, Torrent) {
 
 	/*var socket = io();
