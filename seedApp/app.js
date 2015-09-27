@@ -10,7 +10,6 @@ var bodyParser = require('body-parser');
 // ====================================
 var mongoose = require('mongoose');
 var jwt = require('jsonwebtoken');
-var webTorrent = require('webtorrent');
 var multer = require('multer');
 var config = require('./config');
 var authMW = require('./utils/authMiddleware');
@@ -48,8 +47,6 @@ app.set('connexionDB', connexionDB);
 // ====================================
 // TORRENTS
 // ====================================
-var torrentClient = new webTorrent();
-app.set('torrentClient', torrentClient);
 //************************************
 
 
