@@ -610,7 +610,7 @@ var t = new Transmission ();
 
 t.getInfos();
 
-cb = function (err, res) {
+var cb = function (err, res) {
 	if (err)
 	{
 		console.log('ERROR : ', err);
@@ -619,8 +619,39 @@ cb = function (err, res) {
 	{
 		console.log('SUCCESS !!!');
 		console.log(res);
+		console.log('**************************************');
 	}
 };
 
-t.sessionStats(cb);
-t.freeSpace("/home/downloader/", cb);
+
+// *************************************************************
+// ** 		- torrentActionRequest (method, ids, callback)
+// ** 		- torrentSet (args, ids, callback)
+// ** 		- torrentGet (fields, ids, callback)
+// ** 		- torrentAdd (args, callback)
+// ** 		- torrentRemove (ids, deleteLocalData, callback)
+// ** 		- torrentSetLocation (ids, location, move, callback)
+// ** 		- torrentRenamePath (ids, path, name, callback)
+// ok 		- sessionSet (args, callback)
+// ok 		- sessionGet (callback)
+// ok 		- sessionStats (callback)
+// ?? 		- blocklistUpdate (callback)
+// ok 		- portTest (callback)
+// ** 		- sessionClose (callback)
+// ** 		- queueMovementRequest (method, ids, callback)
+// ok 		- freeSpace (path, callback)
+// *************************************************************
+
+
+// console.log("SESSION STAT :");
+// t.sessionStats(cb);						//ok
+// console.log("FREE SPACE :");
+// t.freeSpace("/home/downloader/", cb);	//ok
+// console.log("PORT TEST :");
+// t.portTest(cb);							//ok
+// console.log("BLOCK LIST :");
+// t.blocklistUpdate(cb); 					//retourne un 404 et gotnewblocklist, mais cela vient peut etre de la blocklist enregistree
+// console.log("SESSION GET :");
+// t.sessionGet(cb);							//ok
+// console.log("SESSION SET :"); // 5 --> 10 || false --> true
+// t.sessionSet({"download-queue-size": 10, "seedRatioLimited": true}, cb);		//ok

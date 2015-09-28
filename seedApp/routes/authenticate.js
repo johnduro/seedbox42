@@ -29,6 +29,7 @@ router.post('/', function(req, res, next) {
 				});
 				res.json({
 					success: true,
+					data: user,
 					message: 'enjoy your token !',
 					token: token
 				});
