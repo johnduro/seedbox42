@@ -8,5 +8,10 @@ app.config(function ($stateProvider, $urlRouterProvider) {
         url: "/dashboard",
         templateUrl: "app/views/dashboard.html",
         controller: "dashboardCtrl"
+    })
+    .state('seedbox.users', {
+        url: "/users",
+        templateUrl: "app/views/users.html",
+        controller: "usersCtrl"
     });
 });
