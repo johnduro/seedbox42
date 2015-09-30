@@ -118,25 +118,26 @@
                         </div>
                     </div>
                     <ul class="menu accordion-menu">
-                        <li class="active"><a href="index.html" class="waves-effect waves-button"><span class="menu-icon glyphicon glyphicon-home"></span><p>Dashboard</p></a></li>
+                        <li ng-class="{active: isActive('/seedbox/dashboard')}">
+                            <a ui-sref="seedbox.dashboard" class="waves-effect waves-button">
+                                <span class="menu-icon glyphicon glyphicon-home"></span>
+                                <p>Dashboard</p>
+                            </a>
+                        </li>
+
+                        <li  ng-class="{active: isActive('/seedbox/users')}" >
+                            <a ui-sref="seedbox.users" class="waves-effect waves-button">
+                                <span class="menu-icon glyphicon glyphicon-home"></span>
+                                <p>Les comptes</p>
+                            </a>
+                        </li>
                     </ul>
                 </div><!-- Page Sidebar Inner -->
             </div><!-- Page Sidebar -->
             <div class="page-inner">
-                <div class="page-title">
-                    <h3>Dashboard</h3>
-                    <div class="page-breadcrumb">
-                        <ol class="breadcrumb">
-                            <li><a href="index.html">Home</a></li>
-                            <li class="active">Dashboard</li>
-                        </ol>
-                    </div>
-                </div>
 
                 <!-- VIEW CONTENT -->
-                <div id="main-wrapper">
-                    <div ui-view></div>
-                </div>
+                <div ui-view></div>
 
                 <!-- FOOTER -->
                 <div class="page-footer">

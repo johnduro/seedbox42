@@ -1,0 +1,34 @@
+<div class="page-title">
+    <h3>Les comptes</h3>
+</div>
+
+<div id="main-wrapper">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-white">
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table id="example" class="display table" style="width: 100%; cellspacing: 0;">
+                            <thead>
+                                <tr>
+                                    <th>Login</th>
+                                    <th>Mail</th>
+                                    <th>Password</th>
+                                    <th>Role</th>
+                                </tr>
+                            </thead>
+                            <tbody ng-repeat="user in users">
+                                <tr>
+                                    <td>{{user.login}}</td>
+                                    <td>{{user.mail}}</td>
+                                    <td>{{user.password}}</td>
+                                    <td>{{user.role}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

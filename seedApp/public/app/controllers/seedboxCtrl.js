@@ -1,4 +1,4 @@
-app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http) {
+app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http, $location) {
 
 	console.log("seedboxCtrl");
 
@@ -10,6 +10,10 @@ app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http) {
 	if (!$rootScope.token){
 		$state.go("connexion");
 	}
+
+	$scope.isActive = function (viewLocation) {
+        return viewLocation === $location.path();
+    };
 
 	$scope.logout = function(){
 		console.log("logout");

@@ -1,12 +1,12 @@
 $( document ).ready(function() {
-    
+
     // CounterUp Plugin
     $('.counter').counterUp({
         delay: 10,
         time: 1000
     });
-    
-    setTimeout(function() {
+
+    /*setTimeout(function() {
         toastr.options = {
             closeButton: true,
             progressBar: true,
@@ -16,7 +16,7 @@ $( document ).ready(function() {
         };
         toastr.success('Checkout settings menu on left!', 'Welcome to Modern!');
     }, 1800);
-    
+
     var flot2 = function () {
 
 		// We use an inline data source in the example, usually data would
@@ -24,7 +24,7 @@ $( document ).ready(function() {
 
 		var data = [],
 			totalPoints = 100;
-        
+
 		function getRandomData() {
 
 			if (data.length > 0)
@@ -92,9 +92,9 @@ $( document ).ready(function() {
 		}
 
 		update();
-        
+
     };
-    
+
     flot2();
     var flot1 = function () {
         var data = [[0, 65], [1, 59], [2, 80], [3, 81], [4, 56], [5, 55], [6, 40]];
@@ -152,7 +152,7 @@ $( document ).ready(function() {
                 shadowSize: 0
             }
         ];
-        
+
         var ticks = [[0, "1"], [1, "2"], [2, "3"], [3, "4"], [4, "5"], [5, "6"], [6, "7"], [7, "8"]];
 
         var plot1 = $.plot("#flotchart1", dataset, {
@@ -181,11 +181,11 @@ $( document ).ready(function() {
                 backgroundColor: '#FFF'
             }
         });
-        
+
     };
-    
+
     flot1();
-    
-    $(".live-tile").liveTile();
-    
+
+    $(".live-tile").liveTile();*/
+
 });
