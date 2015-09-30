@@ -5,6 +5,7 @@ var router = express.Router();
 var User = require('../models/User.js');
 
 router.post('/', function(req, res, next) {
+	console.log(req.body);
 	User.findOne({
 		login: req.body.login
 	}, function(err, user) {
