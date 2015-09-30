@@ -1,12 +1,17 @@
 
-app.controller('connexionCtrl', function ($scope, $rootScope, $state) {
+app.controller('connexionCtrl', function ($scope, $rootScope, $state, RequestHandler) {
 
 	console.log("connexionCtrl");
 
-	$scope.email = "test@hotmail.com";
-	$scope.password = "okok";
+	$scope.user = {};
+	$scope.user.email = "test@hotmail.com";
+	$scope.user.password = "okok";
 
 	$scope.connexion = function(){
-		$state.go("seedbox.dashboard");
+		RequestHandler.post("http://localhost:3000/authenticate/", $scope.user)
+			.then(function(result){
+				console.log(result);
+		})
+		//$state.go("seedbox.dashboard");
 	}
 });
