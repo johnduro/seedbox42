@@ -331,7 +331,7 @@ webseeds           | an array of strings:                 |
 -------------------+-------------------------+------------+
 */
 Transmission.prototype.torrentGet = function (fields, ids, callback) {
-	var args = {"fieds" : fields};
+	var args = {"fields" : fields};
 	if (ids)
 		args["ids"] = ids;
 	var query = this.makeStringJsonQuery(args, "torrent-get");
@@ -413,6 +413,7 @@ torrentRenamePath request arguments :
 "name"                           | string     the file or folder's new name
 ---------------------------------+-------------------------------------------------
 Response arguments: "path", "name", and "id", holding the torrent ID integer
+path is the current name of the file and name is the new name
 */
 Transmission.prototype.torrentRenamePath = function (ids, path, name, callback) {
 	//check ids (seulement une !!)
@@ -625,20 +626,20 @@ var cb = function (err, res) {
 
 
 // *************************************************************
-// ** 		- torrentActionRequest (method, ids, callback)
-// ** 		- torrentSet (args, ids, callback)
-// ** 		- torrentGet (fields, ids, callback)
-// ** 		- torrentAdd (args, callback)
-// ** 		- torrentRemove (ids, deleteLocalData, callback)
-// ** 		- torrentSetLocation (ids, location, move, callback)
-// ** 		- torrentRenamePath (ids, path, name, callback)
+// ok 		- torrentActionRequest (method, ids, callback)
+// ok 		- torrentSet (args, ids, callback)
+// ok 		- torrentGet (fields, ids, callback)
+// ok 		- torrentAdd (args, callback)
+// ok 		- torrentRemove (ids, deleteLocalData, callback)
+// ok 		- torrentSetLocation (ids, location, move, callback)
+// ok 		- torrentRenamePath (ids, path, name, callback)
 // ok 		- sessionSet (args, callback)
 // ok 		- sessionGet (callback)
 // ok 		- sessionStats (callback)
 // ?? 		- blocklistUpdate (callback)
 // ok 		- portTest (callback)
-// ** 		- sessionClose (callback)
-// ** 		- queueMovementRequest (method, ids, callback)
+// ok 		- sessionClose (callback)
+// ok 		- queueMovementRequest (method, ids, callback)
 // ok 		- freeSpace (path, callback)
 // *************************************************************
 
@@ -655,3 +656,26 @@ var cb = function (err, res) {
 // t.sessionGet(cb);							//ok
 // console.log("SESSION SET :"); // 5 --> 10 || false --> true
 // t.sessionSet({"download-queue-size": 10, "seedRatioLimited": true}, cb);		//ok
+// console.log("TORRENT ADD :");
+// t.torrentAdd({filename: "/home/johnduro/documents/seedbox42/seedApp/files/torrents/KnightsOfTheOldRepublic_dark_334_archive.torrent"}, cb);		//ok file
+// t.torrentAdd({filename: "https://archive.org/download/KnightsOfTheOldRepublic_dark_334/KnightsOfTheOldRepublic_dark_334_archive.torrent"}, cb);		//ok url
+// console.log("TORRENT GET :");
+// t.torrentGet(['uploadRatio', 'id', 'addedDate', 'isFinished', 'leftUntilDone', 'name', 'rateDownload', 'rateUpload', 'files', 'queuePosition', 'downloadDir'], {}, cb);		//ok
+// t.torrentGet(['uploadRatio', 'id', 'addedDate', 'isFinished', 'leftUntilDone', 'name', 'rateDownload', 'rateUpload', 'files'], 3, cb);		//ok
+// t.torrentGet(['uploadRatio', 'id', 'addedDate', 'isFinished', 'leftUntilDone', 'name', 'rateDownload', 'rateUpload', 'files'], [3, 5], cb);	//ok
+// console.log("TORRENT SET :");
+// t.torrentSet({'queuePosition': 0}, 5, cb);	//ok
+// console.log("TORRENT ACTION REQUEST :");
+// t.torrentActionRequest("torrent-stop", {}, cb);		//ok
+// t.torrentActionRequest("torrent-start", {}, cb);	//ok
+// console.log("TORRENT REMOVE :");
+// t.torrentRemove(5, true, cb);	//ok
+// t.torrentRemove({}, false, cb);	//ok
+// console.log("TORRENT SET LOCATION :");
+// t.torrentSetLocation({}, "/home/downloader/test/", true, cb); //ok
+// console.log("TORRENT RENAME PATH :");
+// t.torrentRenamePath(7, "playboybraile00nlsu", "playboysisilamilaf", cb);		//ok
+// console.log("QUEUE MOVEMENT REQUEST :");
+// t.queueMovementRequest("queue-move-top", 7, cb);
+// console.log("SESSION CLOSE");
+// t.sessionClose(cb);
