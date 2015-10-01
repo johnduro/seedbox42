@@ -4,6 +4,31 @@ var router = express.Router();
 var mongoose = require('mongoose');
 var User = require("../models/User.js");
 
+
+router.get('/users-reset', function (req, res, next) {
+	var usersBase =
+			[{ login: 'admin', password: 'admin', mail: 'yolo@duro.lif', role: 0},
+			 { login: 'lambda1', password: 'lambda1', mail: 'a@b.com' },
+			 { login: 'lambda2', password: 'lambda2', mail: 'a@g.com' },
+			 { login: 'lambda3', password: 'lambda3', mail: 't@b.com' }];
+	console.log('dropping users database');
+	req.app.get('connexionDB').connection.db.collection('users', function (err, collection) {
+		if (err)
+			res.json({ success: false, message: 'err1' });
+		collection.remove({}, function (err, removed) {
+			if (err)
+				res.json({ success: false, message: 'err2' });
+		});
+	});
+	console.log('setting fresh user base');
+	User.create(usersBase, function (err, post) {
+		if (err)
+			return next(err);
+		res.json({ success: true });
+	});
+	// req.app.get('connexionDB').connection.db.users.drop();
+});
+
 router.get('/admin-setup', function(req, res, next) {
 	var adm = new User({
 		login: 'admin',
