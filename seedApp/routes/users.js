@@ -39,10 +39,13 @@ router.get('/', function(req, res, next) {
 // router.post('/', avatarUpldHandler.single('avatar'), validateAvatar, function(req, res, next) {
 router.post('/', avatarUpldHandler.single('avatar'), function(req, res, next) {
 	if (req.user.role == 0 || req.user.login == req.body.login) {
-		req.body.avatar = req.file.path;
+		//req.body.avatar = req.file.path;
 		User.create(req.body, function(err, post) {
 			if (err) return next(err);
-			res.json({ success: true, message: 'user successfully created'});
+			User.find(function (err, users) {
+				if (err) return next(err);
+				res.json({ success: true, message: 'user successfully created', data: users});
+			});
 			// res.json(post);
 		});
 	} else {
@@ -72,7 +75,11 @@ router.delete('/:id', function(req, res, next) {
 	if (req.user.login == req.body.login || req.user.role == 0) {
 		User.findByIdAndRemove(req.params.id, req.body, function (err, post) {
 			if (err) return next(err);
-			res.json(post);
+			User.find(function (err, users) {
+				if (err) return next(err);
+				res.json({ success: true, message: 'user successfully deleted', data: users});
+			});
+			//res.json(post);
 		});
 	} else {
 		res.json({ success: false, message: "You don't have enought rights for this action"});

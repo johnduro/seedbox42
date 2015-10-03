@@ -8,7 +8,7 @@
             <div class="panel panel-white">
                 <div class="panel-body">
                     <div class="table-responsive">
-                       <a href="" ng-click="changeView('form')">Ajouter un compte</a>
+                        <a href="" ng-click="changeView('form')">Ajouter un compte</a>
                         <table id="example" class="display table" style="width: 100%; cellspacing: 0;">
                             <thead>
                                 <tr>
@@ -16,6 +16,7 @@
                                     <th>Mail</th>
                                     <th>Password</th>
                                     <th>Role</th>
+                                    <th>Supprimer</th>
                                 </tr>
                             </thead>
                             <tbody ng-repeat="user in users">
@@ -24,6 +25,7 @@
                                     <td>{{user.mail}}</td>
                                     <td>{{user.password}}</td>
                                     <td>{{user.role}}</td>
+                                    <td ng-click="deleteUser(user._id)"><i class="fa fa-times"></i></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -38,14 +40,14 @@
                         <a href="#" ng-click="changeView('list')">Voir la liste</a>
                     </div>
                     <div class="panel-body">
-                        <form>
+                        <form ng-submit="addUser()">
                             <div class="form-group">
                                 <label for="exampleInputLogin">Login</label>
                                 <input ng-model="newUser.login" type="text" class="form-control" id="exampleInputEmail1" placeholder="Entrer un login">
                             </div>
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Email address</label>
-                                <input ng-model="newUser.email" type="email" class="form-control" id="exampleInputEmail1" placeholder="Entrer une adresse mail">
+                                <input ng-model="newUser.mail" type="email" class="form-control" id="exampleInputEmail1" placeholder="Entrer une adresse mail">
                             </div>
                             <div class="form-group">
                                 <label for="exampleInputPassword1">Password</label>
@@ -53,7 +55,7 @@
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <div class="checker"><span><input type="checkbox"></span></div> Check me out
+                                    <input type="checkbox" ng-model="newUser.role" ng-true-value="1" ng-false-value="0"> Admin
                                 </label>
                             </div>
                             <button type="submit" class="btn btn-primary">Submit</button>
