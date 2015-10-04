@@ -1,0 +1,35 @@
+<div class="page-title">
+    <h3>Les torrents</h3>
+</div>
+
+<div id="main-wrapper">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-white">
+                <div class="panel-body">
+                    <form action="/file-upload" class="dropzone dz-clickable">
+                        <div class="dz-default dz-message">
+                            <span><img src="assets/images/upload.png" alt=""></span>
+                        </div>
+                    </form>
+                    <div class="table-responsive">
+                        <table class="display table" style="width: 100%; cellspacing: 0;">
+                            <tbody ng-repeat="torrent in torrents">
+                                <tr>
+                                    <td>
+                                        {{torrent.name}}
+                                        <div class="progress progress-md">
+                                            <div class="progress-bar progress-bar-striped progress-bar-success active" role="progressbar" aria-valuenow="{{torrent.pourcentage}}" aria-valuemin="0" aria-valuemax="100" style="width: {{torrent.pourcentage}}%">
+                                                {{torrent.pourcentage}} %
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
