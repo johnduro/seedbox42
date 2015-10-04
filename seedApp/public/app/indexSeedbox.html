@@ -103,6 +103,8 @@
                     </div>
                 </div>
             </div><!-- Navbar -->
+
+            <!-- Left Menu -->
             <div class="page-sidebar sidebar">
                 <div class="page-sidebar-inner slimscroll">
                     <div class="sidebar-header">
@@ -125,15 +127,23 @@
                             </a>
                         </li>
 
-                        <li  ng-class="{active: isActive('/seedbox/users')}" >
+                        <li  ng-class="{active: isActive('/seedbox/users')}">
                             <a ui-sref="seedbox.users" class="waves-effect waves-button">
-                                <span class="menu-icon glyphicon glyphicon-home"></span>
+                                <span class="menu-icon glyphicon fa fa-users"></span>
                                 <p>Les comptes</p>
+                            </a>
+                        </li>
+
+                        <li  ng-class="{active: isActive('/seedbox/torrents')}">
+                            <a ui-sref="seedbox.torrents" class="waves-effect waves-button">
+                                <span class="menu-icon glyphicon glyphicon-magnet"></span>
+                                <p>Les torrents</p>
                             </a>
                         </li>
                     </ul>
                 </div><!-- Page Sidebar Inner -->
             </div><!-- Page Sidebar -->
+
             <div class="page-inner">
 
                 <!-- VIEW CONTENT -->
