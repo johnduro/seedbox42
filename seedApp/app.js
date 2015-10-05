@@ -47,6 +47,9 @@ app.set('connexionDB', connexionDB);
 // ====================================
 // TORRENTS
 // ====================================
+var TransmissionNode = require('./utils/transmissionNode');
+var transmission = new TransmissionNode();
+app.set('transmission', transmission);
 //************************************
 
 

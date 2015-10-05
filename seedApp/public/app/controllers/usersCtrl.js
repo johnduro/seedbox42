@@ -8,7 +8,7 @@ app.controller('usersCtrl', function ($scope, $rootScope, RequestHandler) {
 		login: "test",
 		mail: "test@hotmail.fr",
 		password: "okok",
-		role: 0
+		role: 1
 	}
 
 	RequestHandler.get(api + "users")
