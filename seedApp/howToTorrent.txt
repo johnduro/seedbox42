@@ -1,0 +1,24 @@
+
+
+liste des routes pour les torrent :
+
+	POST : /torrent/add-url (teste/marche):
+		ajoute un torrent depuis une url
+		demande un champ 'url' dans le body avec l'url du torrent
+
+	POST : /torrent/add-torrents (teste/marche):
+		ajoute un torrent depuis un fichier
+		envoyer des fichiers sous le champ 'torrent' ('form-data' dans postman) MAX 10,
+		reponds avec un array de dictionnaire [ {torrent: <nom du torrent>, success: true}, {}, etc.. ]
+
+	DELETE : /torrent/:id (teste/marche):
+		supprime un torrent depuuis l'id
+		envoyer l'id du torrent dans :id et un champ removeLocalData avec 'true' ou 'false' suivant que l'on veuille ou non supprimer les fichiers du serveur
+
+	POST : /torrent/:direction/:id (teste/marche):
+		bouge un torrent dans la queue
+		envoyer la direction dans :direction (top, up, down, bottom) et le 'id dans :id
+		top = au sommet de la queue
+		up = une place au dessus
+		down = une place en dessous
+		bottom = tout en bas de la queue

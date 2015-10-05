@@ -25,14 +25,14 @@
 
 var http = require('http');
 
-var testOptions = {
-	// adress: '127.0.0.1',
-	port: 9091,
-	url: '/transmission/rpc'
-};
+// var testOptions = {
+// 	// adress: '127.0.0.1',
+// 	port: 9091,
+// 	url: '/transmission/rpc'
+// };
 
 
-function Transmission (options) {
+var Transmission = module.exports = function (options) {
 	options = options || {};
 	this.adress = options.adress || 'localhost';
 	this.port = options.port || 9091;
@@ -46,6 +46,7 @@ function Transmission (options) {
 		headers: {}
 	};
 }
+
 Transmission.prototype.makeStringJsonQuery = function (args, method) {
 	var query = {
 		"arguments": args,
@@ -92,7 +93,7 @@ Transmission.prototype.sendQuery = function (query, callback) {
 		res.on('end', onEnd);
 		res.on('data', onData);
 	});
-	req.on('error', function (e) {
+	req.on('error', function (e) { //MODIFIER ???
 		console.log('ERROR !!');
 		console.log(e);
 	});
@@ -357,7 +358,7 @@ torrentAdd request arguments :
 Either "filename" OR "metainfo" MUST be included. All other arguments are optional.
 */
 Transmission.prototype.torrentAdd = function (args, callback) {
-	if (args['filename'] === null && args['metainfo'] === null) //check a verifier
+	if (args['filename'] === null && args['metainfo'] === null) //check a verifier NE MARCHE PAS !!!
 		callback(new Error("Missing argument for torrentAdd, 'filename' or 'metainfo' is needed"));
 	var query = this.makeStringJsonQuery(args, "torrent-add");
 	this.sendQuery(query, callback);
@@ -600,29 +601,29 @@ Transmission.prototype.freeSpace = function (path, callback) {
 	this.sendQuery(query, callback);
 }
 
-Transmission.prototype.getInfos = function () {
-	console.log(this.adress + ' -- ' + this.port + ' -- ' + this.url);
-};
+// Transmission.prototype.getInfos = function () {
+// 	console.log(this.adress + ' -- ' + this.port + ' -- ' + this.url);
+// };
 
 /* ********************************************************************** */
 
-var t = new Transmission ();
+// var t = new Transmission ();
 
 
-t.getInfos();
+// t.getInfos();
 
-var cb = function (err, res) {
-	if (err)
-	{
-		console.log('ERROR : ', err);
-	}
-	else
-	{
-		console.log('SUCCESS !!!');
-		console.log(res);
-		console.log('**************************************');
-	}
-};
+// var cb = function (err, res) {
+// 	if (err)
+// 	{
+// 		console.log('ERROR : ', err);
+// 	}
+// 	else
+// 	{
+// 		console.log('SUCCESS !!!');
+// 		console.log(res);
+// 		console.log('**************************************');
+// 	}
+// };
 
 
 // *************************************************************
