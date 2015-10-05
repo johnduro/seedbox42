@@ -11,7 +11,7 @@ app.controller('usersCtrl', function ($scope, $rootScope, RequestHandler) {
 		role: 0
 	}
 
-	RequestHandler.get("http://localhost:3000/users")
+	RequestHandler.get(api + "users")
 		.then(function(result){
 			$scope.users = result.data;
 	});
@@ -21,7 +21,7 @@ app.controller('usersCtrl', function ($scope, $rootScope, RequestHandler) {
 	};
 
 	$scope.addUser = function(){
-		RequestHandler.post("http://localhost:3000/users", $scope.newUser)
+		RequestHandler.post(api + "users", $scope.newUser)
 			.then(function(result){
 				if (result.data.success){
 					$scope.users = result.data.data;
@@ -30,7 +30,7 @@ app.controller('usersCtrl', function ($scope, $rootScope, RequestHandler) {
 	};
 
 	$scope.deleteUser = function(id){
-		RequestHandler.delete("http://localhost:3000/users/"+id)
+		RequestHandler.delete(api + "users/"+id)
 			.then(function(result){
 				if (result.data.success){
 					$scope.users = result.data.data;
