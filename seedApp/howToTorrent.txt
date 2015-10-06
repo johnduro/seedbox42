@@ -1,6 +1,6 @@
 
 
-liste des routes pour les torrent :
+liste & explications des routes pour les torrent :
 
 	POST : /torrent/add-url (teste/marche):
 		ajoute un torrent depuis une url
@@ -14,11 +14,48 @@ liste des routes pour les torrent :
 	DELETE : /torrent/:id (teste/marche):
 		supprime un torrent depuuis l'id
 		envoyer l'id du torrent dans :id et un champ removeLocalData avec 'true' ou 'false' suivant que l'on veuille ou non supprimer les fichiers du serveur
+		faire un id optionnnel pour faire un delete all ?? seulement admin ??
 
-	POST : /torrent/:direction/:id (teste/marche):
+	POST : /torrent/move/:direction/:id? (teste/marche):
 		bouge un torrent dans la queue
-		envoyer la direction dans :direction (top, up, down, bottom) et le 'id dans :id
-		top = au sommet de la queue
-		up = une place au dessus
-		down = une place en dessous
-		bottom = tout en bas de la queue
+		envoyer la direction dans :direction (top, up, down, bottom)
+		envoyer l'id dans :id ou alors ne rien envoyer pour que l'action s'applique a tous les torrents
+		directions :
+			top = au sommet de la queue
+			up = une place au dessus
+			down = une place en dessous
+			bottom = tout en bas de la queue
+
+	POST : /torrent/action/:action/:id? (teste/marche):
+		demarre/demarre tout de suite/stop/verifie/demande de nouveau peer
+		envoyer la direction dans :direction (top, up, down, bottom)
+		envoyer l'id dans :id ou alors ne rien envoyer pour que l'action s'applique a tous les torrents
+		actions :
+			start = demarre un torrent
+			start-now = demarre tout de suite
+			stop = stop un torrent
+			verify = verifie les fichiers locaux (a verifier)
+			reannounce = demande aux trackers plus de peers
+
+	GET : /torrent/session-stats (teste/marche):
+		recupere les stats de la session comme download/upload speed,
+		voir la fonction sessionStats dans le fichier utils/transmissionNode.js pour plus de details
+		dans le retour, si success est a true les donnees se trouve sous le champ 'data'
+
+	GET : /torrent/session-get (teste/marche):
+		recupere les infos detaille de la session,
+		voir la partie 'SESSION ARGUMENTS' dans le fichier utils/transmissionNode.js pour plus de details
+		dans le retour, si success est a true les donnees se trouve sous le champ 'data'
+
+	POST : /torrent/blocklist-update (teste/pas sur que ca marche)
+		update la blocklist set avec un futur session set
+		si marche success a 'true' et dans data la taille de la blocklist
+
+	GET : /torrent/port-test (teste/marche):
+		check si le port des peer est ouvert
+		si le check marche success a true et un champ "port-is-open" contient un booleen
+
+	POST : /torrent/session-shutdown (teste/marche):
+		ferme transmission
+		ATTENTION IL FAUT ETRE CONNECTE AU SERVEUR POUR REDEMARRER LE SERVICE
+		uniquement l'admin

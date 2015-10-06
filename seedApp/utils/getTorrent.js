@@ -93,6 +93,16 @@ Transmission.prototype.torrentRemove = function (ids, deleteLocalData, callback)
 	this.sendQuery(query, callback);
 };
 
+Transmission.prototype.sessionStats = function (callback) {
+	var query = this.makeStringJsonQuery({}, "session-stats");
+	this.sendQuery(query, callback);
+};
+
+Transmission.prototype.sessionGet = function (callback) {
+	var query = this.makeStringJsonQuery({}, "session-get");
+	this.sendQuery(query, callback);
+};
+
 var t = new Transmission ();
 
 
@@ -109,5 +119,7 @@ var cb = function (err, res) {
 	}
 };
 
-t.torrentGet(['uploadRatio', 'id', 'addedDate', 'isFinished', 'leftUntilDone', 'name', 'rateDownload', 'rateUpload', 'files', 'queuePosition', 'downloadDir'], {}, cb);
+// t.torrentGet(['uploadRatio', 'id', 'addedDate', 'isFinished', 'leftUntilDone', 'name', 'rateDownload', 'rateUpload', 'files', 'queuePosition', 'downloadDir'], {}, cb);
 // t.torrentRemove(2, false, cb);
+// t.sessionStats(cb);
+t.sessionGet(cb);
