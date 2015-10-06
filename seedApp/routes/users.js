@@ -38,7 +38,7 @@ router.get('/', function(req, res, next) {
 
 // router.post('/', avatarUpldHandler.single('avatar'), validateAvatar, function(req, res, next) {
 router.post('/', avatarUpldHandler.single('avatar'), function(req, res, next) {
-	if (req.user.role == 0 || req.user.login == req.body.login) {
+	if (req.user.role === 0 || req.user.login === req.body.login) {
 		//req.body.avatar = req.file.path;
 		User.create(req.body, function(err, post) {
 			if (err) return next(err);

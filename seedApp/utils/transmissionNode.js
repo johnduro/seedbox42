@@ -1,6 +1,7 @@
 /*
 ** TRANSMISSION NODE
 ** Module used to connect a nodejs server to transmission's API
+** RPC version 15 release 2.80
 **
 ** Followings methods are implemented :
 ** 		- torrentActionRequest (method, ids, callback)
@@ -109,7 +110,7 @@ torrentActionRequest method possibility (response argument: none) :
 "torrent-start-now"  |
 "torrent-stop"       |
 "torrent-verify"     |
-"torrent-reannounce" |
+"torrent-reannounce" | // ("ask trackers for more peers")
 ---------------------+
 */
 Transmission.prototype.torrentActionRequest = function (method, ids, callback) {
