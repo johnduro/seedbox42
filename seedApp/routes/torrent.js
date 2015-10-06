@@ -150,4 +150,14 @@ router.post('/session-shutdown', function (req, res, next) {
 		res.json("You must be admin to close the session");
 });
 
+router.get('/get-all-torrents', function (req, res, next) {
+	var fields = ['uploadRatio', 'id', 'addedDate', 'isFinished', 'leftUntilDone', 'name', 'rateDownload', 'rateUpload', 'queuePosition', 'downloadDir', 'eta', 'peerConnected', 'percentDone', 'startDate', 'status', 'totalSize', 'torrentFile'];
+	req.app.get('transmission').torrentGet(fields, {}, function (err, resp) {
+		if (err)
+			res.json({success: false, message: "Could not get all torrents infos"});
+		else
+			res.json({success: true, message: "Torrent infos ok", data: resp});
+	});
+});
+
 module.exports = router;
