@@ -1,7 +1,16 @@
 
-app.controller('torrentsCtrl', function ($scope, $rootScope) {
+app.controller('torrentsCtrl', function ($scope, $rootScope, RequestHandler) {
 
 	console.log("torrentsCtrl");
+
+	$scope.newTorrentUrl = "";
+
+	$scope.sendTorrentUrl = function(){
+		RequestHandler.post(api + "torrent/add-url", {"url": $scope.newTorrentUrl})
+			.then(function(result){
+
+		});
+	}
 
 	$scope.torrents = [
 		{
