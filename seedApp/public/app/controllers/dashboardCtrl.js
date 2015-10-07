@@ -1,5 +1,5 @@
 
-app.controller('dashboardCtrl', function ($scope, $rootScope, socket) {
+app.controller('dashboardCtrl', function ($scope, $rootScope, socket, $location) {
 
 	console.log("dashboardCtrl");
 
