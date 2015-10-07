@@ -1,5 +1,5 @@
 app.factory('socket', ['$rootScope', function ($rootScope) {
-    var socket = io.connect("localhost:3000");
+    var socket = io.connect(api);
     console.log("socket created");
 
     return {
