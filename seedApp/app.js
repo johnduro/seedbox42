@@ -13,11 +13,10 @@ var jwt = require('jsonwebtoken');
 var multer = require('multer');
 var config = require('./config');
 var authMW = require('./utils/authMiddleware');
-var io = require('socket.io');
 // ************************************
 
 // ====================================
-// ROUTES
+// ROUTES REQUIRE
 // ====================================
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -45,31 +44,23 @@ app.set('connexionDB', connexionDB);
 
 
 // ====================================
+// SOCKETS
+// ====================================
+var connectedUsers = 0;
+var socketIO = require('socket.io');
+var io = socketIO();
+app.io = io;
+// console.log(io.parser);
+//************************************
+
+
+// ====================================
 // TORRENTS
 // ====================================
 var TransmissionNode = require('./utils/transmissionNode');
 var transmission = new TransmissionNode();
 app.set('transmission', transmission);
 //************************************
-
-
-// ====================================
-// UPLOADS
-// ====================================
-// var avatarUpldHandler = multer({
-// 	dest: './files/avatars',
-// 	rename: function(field, filename) {
-// 		filename = filename.replace(/\W+/g, '-').toLowerCase();
-// 		return filename + '_' + Date.now();
-// 	},
-// 	limits: {
-// 		files: 1,
-// 		fileSize: 1024
-// 	}});
-// app.set('avatarUpldHandler', avatarUpldHandler);
-// var torrentUpldHandler = multer({ dest: './files/torrents' }).single('torrent');
-// app.set('torrentUpldHandler', torrentUpldHandler);
-// ************************************
 
 
 // view engine setup
@@ -85,15 +76,31 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// routes
+// ====================================
+// ROUTES
+// ====================================
 app.use('/', routes);
 app.use('/debug', debugSetup);
 app.set('secret', config.secret);
 app.use('/authenticate', auth);
 // all route below need identification token
+
+io.on('connection', function (socket) {
+	connectedUsers++;
+	console.log('connection !');
+	console.log('NB USERS : ',connectedUsers);
+});
+
+io.on('disconnect', function (socket) {
+	connectedUsers--;
+	console.log('disconnect !');
+	console.log('NB USERS : ',connectedUsers);
+});
+
 app.use(authMW);
 app.use('/users', users);
 app.use('/torrent', torrent);
+// ************************************
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
