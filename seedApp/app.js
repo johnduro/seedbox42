@@ -87,6 +87,12 @@ app.use('/authenticate', auth);
 
 io.on('connection', function (socket) {
 	connectedUsers++;
+	socket.emit('connection', {
+	    connectedUsers: connectedUsers,
+	  });
+	socket.broadcast.emit('connection', {
+	    connectedUsers: connectedUsers,
+	  });
 	console.log('connection !');
 	console.log('NB USERS : ',connectedUsers);
 });
