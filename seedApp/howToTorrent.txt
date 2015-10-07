@@ -59,3 +59,7 @@ liste & explications des routes pour les torrent :
 		ferme transmission
 		ATTENTION IL FAUT ETRE CONNECTE AU SERVEUR POUR REDEMARRER LE SERVICE
 		uniquement l'admin
+
+	GET : /torrent/get-all-torrents (ok/debug):
+		recupere les infos de tous les torrents en cours sous data.torrents.[]
+		DEBUG A SUPPRIMER !
