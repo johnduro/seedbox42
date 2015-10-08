@@ -51,6 +51,30 @@ var socketIO = require('socket.io');
 var io = socketIO();
 app.io = io;
 // console.log(io.parser);
+io.on('connection', function (socket) {
+	connectedUsers++;
+	io.sockets.emit('connected-users', {connectedUsers: connectedUsers});
+	// socket.emit('connection', {
+	//     connectedUsers: connectedUsers
+	//   });
+	// socket.broadcast.emit('connection', {
+	//     connectedUsers: connectedUsers
+	//   });
+	console.log('connection !');
+	console.log('NB USERS : ',connectedUsers);
+	socket.on('disconnect', function (socket) {
+		console.log('disconnect ON !!');
+	});
+	socket.once('disconnect', function (socket) {
+		console.log('disconnect in sock!');
+	});
+});
+
+io.sockets.once('disconnect', function (socket) {
+	connectedUsers--;
+	console.log('disconnect in io!');
+	console.log('NB USERS : ',connectedUsers);
+});
 //************************************
 
 
@@ -84,25 +108,6 @@ app.use('/debug', debugSetup);
 app.set('secret', config.secret);
 app.use('/authenticate', auth);
 // all route below need identification token
-
-io.on('connection', function (socket) {
-	connectedUsers++;
-	socket.emit('connection', {
-	    connectedUsers: connectedUsers,
-	  });
-	socket.broadcast.emit('connection', {
-	    connectedUsers: connectedUsers,
-	  });
-	console.log('connection !');
-	console.log('NB USERS : ',connectedUsers);
-});
-
-io.on('disconnect', function (socket) {
-	connectedUsers--;
-	console.log('disconnect !');
-	console.log('NB USERS : ',connectedUsers);
-});
-
 app.use(authMW);
 app.use('/users', users);
 app.use('/torrent', torrent);
@@ -116,6 +121,11 @@ app.use(function(req, res, next) {
 });
 
 // error handlers
+
+// function printPpl () {
+// 	console.log("NBR --> ", io.engine.clientsCount);
+// };
+// setInterval(printPpl, 1000);
 
 // development error handler
 // will print stacktrace
