@@ -64,7 +64,7 @@ app.set('transmission', transmission);
 var socketIO = require('socket.io');
 var io = socketIO();
 app.io = io;
-// var sockets = require('./utils/sockets')(io, transmission);
+var sockets = require('./utils/sockets')(io, transmission);
 
 
 
