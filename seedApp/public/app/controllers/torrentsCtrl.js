@@ -12,26 +12,13 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, RequestHandler) {
 		});
 	}
 
-	$scope.torrents = [
-		{
-			name: "test1",
-			size: 100,
-			pourcentage: 10
-		},
-		{
-			name: "test2",
-			size: 1260,
-			pourcentage: 60
-		},
-		{
-			name: "test3",
-			size: 7500,
-			pourcentage: 28
-		},
-		{
-			name: "test4",
-			size: 10000,
-			pourcentage: 95
-		}
-	];
+	RequestHandler.get(api + "torrent/get-all-torrents")
+		.then(function(result){
+			$scope.torrents = result.data.data.torrents;
+			angular.forEach($scope.torrents, function(torrent, key) {
+				torrent.pourcentage = torrent.percentDone * 100;
+			});
+			$scope.torrents.forEach(values)
+			console.log(result.data.data.torrents);
+	});
 });
