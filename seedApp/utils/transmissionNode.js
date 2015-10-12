@@ -602,6 +602,13 @@ Transmission.prototype.freeSpace = function (path, callback) {
 	this.sendQuery(query, callback);
 }
 
+
+/*
+** Torrent status array :
+*/
+Transmission.prototype.statusArray = ['STOPPED', 'CHECK_WAIT', 'CHECK', 'DOWNLOAD_WAIT', 'DOWNLOAD', 'SEED_WAIT', 'SEED'];
+
+
 // Transmission.prototype.getInfos = function () {
 // 	console.log(this.adress + ' -- ' + this.port + ' -- ' + this.url);
 // };
