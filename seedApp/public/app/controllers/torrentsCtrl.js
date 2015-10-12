@@ -3,7 +3,7 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, RequestHandler) {
 
 	console.log("torrentsCtrl");
 
-	$scope.newTorrentUrl = "";
+	$scope.newTorrentUrl = "https://torcache.net/torrent/63296C6FB9A25EEBA55E1FCBA25DEF257F0B0EDD.torrent?title=[kat.cr]the.walking.dead.s06e01.proper.hdtv.x264.killers.ettv";
 
 	$scope.sendTorrentUrl = function(){
 		RequestHandler.post(api + "torrent/add-url", {"url": $scope.newTorrentUrl})

@@ -35,7 +35,7 @@ var http = require('http');
 
 var Transmission = module.exports = function (options) {
 	options = options || {};
-	this.adress = options.adress || 'localhost';
+	this.adress = options.adress || '37.187.111.179';
 	this.port = options.port || 9091;
 	this.url = options.url || '/transmission/rpc';
 	this.sessionId = '',
