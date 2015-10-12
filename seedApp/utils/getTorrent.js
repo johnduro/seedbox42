@@ -119,7 +119,16 @@ var cb = function (err, res) {
 	}
 };
 
-// t.torrentGet(['uploadRatio', 'id', 'addedDate', 'isFinished', 'leftUntilDone', 'name', 'rateDownload', 'rateUpload', 'files', 'queuePosition', 'downloadDir'], {}, cb);
+// t.torrentGet(["id", "error", "errorString", "eta", "isFinished", "isStalled", "leftUntilDone", "metadataPercentComplete", "peersConnected", "peersGettingFromUs", "peersSendingToUs", "percentDone", "queuePosition", "rateDownload", "rateUpload", "recheckProgress", "seedRatioMode", "seedRatioLimit", "sizeWhenDone", "status", "trackers", "downloadDir", "uploadedEver", "uploadRatio", "Webseedssendingtous"], "recently-active", cb);
+t.torrentGet(["id", "name", "eta", "isFinished", "isStalled", "leftUntilDone", "metadataPercentComplete", "percentDone", "rateDownload", "sizeWhenDone", "status"], "recently-active", cb);
+console.log("*************************************************************");
+t.torrentGet(["id", "name", "eta", "isFinished", "isStalled", "leftUntilDone", "metadataPercentComplete", "percentDone", "rateDownload", "sizeWhenDone", "status"], {}, cb);
+
+// t.torrentGet(["id", "error", "errorString", "eta", "isFinished", "isStalled", "leftUntilDone", "metadataPercentComplete", "peersConnected", "peersGettingFromUs", "peersSendingToUs", "percentDone", "queuePosition", "rateDownload", "rateUpload", "recheckProgress", "seedRatioMode", "seedRatioLimit", "sizeWhenDone", "status", "trackers", "downloadDir", "uploadedEver", "uploadRatio", "Webseedssendingtous"], {}, cb);
+
+
+
+// t.torrentGet(['uploadRatio', 'id', 'addedDate', 'isFinished', 'leftUntilDone', 'name', 'rateDownload', 'rateUpload', 'files', 'queuePosition', 'downloadDir', 'percentDone', 'status'], {}, cb);
 // t.torrentRemove(2, false, cb);
 // t.sessionStats(cb);
-t.sessionGet(cb);
+// t.sessionGet(cb);
