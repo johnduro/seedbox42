@@ -120,9 +120,11 @@ var cb = function (err, res) {
 };
 
 // t.torrentGet(["id", "error", "errorString", "eta", "isFinished", "isStalled", "leftUntilDone", "metadataPercentComplete", "peersConnected", "peersGettingFromUs", "peersSendingToUs", "percentDone", "queuePosition", "rateDownload", "rateUpload", "recheckProgress", "seedRatioMode", "seedRatioLimit", "sizeWhenDone", "status", "trackers", "downloadDir", "uploadedEver", "uploadRatio", "Webseedssendingtous"], "recently-active", cb);
-t.torrentGet(["id", "name", "eta", "isFinished", "isStalled", "leftUntilDone", "metadataPercentComplete", "percentDone", "rateDownload", "sizeWhenDone", "status"], "recently-active", cb);
-console.log("*************************************************************");
-t.torrentGet(["id", "name", "eta", "isFinished", "isStalled", "leftUntilDone", "metadataPercentComplete", "percentDone", "rateDownload", "sizeWhenDone", "status"], {}, cb);
+// t.torrentGet(["id", "name", "eta", "isFinished", "isStalled", "leftUntilDone", "metadataPercentComplete", "percentDone", "rateDownload", "sizeWhenDone", "status"], "recently-active", cb);
+// console.log("*************************************************************");
+// t.torrentGet(["id", "name", "eta", "isFinished", "isStalled", "leftUntilDone", "metadataPercentComplete", "percentDone", "rateDownload", "sizeWhenDone", "status"], {}, cb);
+
+t.torrentGet(['downloadDir', 'name', 'totalSize', 'torrentFile', 'creator'], {}, cb);
 
 // t.torrentGet(["id", "error", "errorString", "eta", "isFinished", "isStalled", "leftUntilDone", "metadataPercentComplete", "peersConnected", "peersGettingFromUs", "peersSendingToUs", "percentDone", "queuePosition", "rateDownload", "rateUpload", "recheckProgress", "seedRatioMode", "seedRatioLimit", "sizeWhenDone", "status", "trackers", "downloadDir", "uploadedEver", "uploadRatio", "Webseedssendingtous"], {}, cb);
 
