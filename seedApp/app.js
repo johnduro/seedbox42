@@ -44,46 +44,71 @@ app.set('connexionDB', connexionDB);
 
 
 // ====================================
-// SOCKETS
-// ====================================
-var connectedUsers = 0;
-var socketIO = require('socket.io');
-var io = socketIO();
-app.io = io;
-// console.log(io.parser);
-io.on('connection', function (socket) {
-	connectedUsers++;
-	io.sockets.emit('connected-users', {connectedUsers: connectedUsers});
-	// socket.emit('connection', {
-	//     connectedUsers: connectedUsers
-	//   });
-	// socket.broadcast.emit('connection', {
-	//     connectedUsers: connectedUsers
-	//   });
-	console.log('connection !');
-	console.log('NB USERS : ',connectedUsers);
-	socket.on('disconnect', function (socket) {
-		console.log('disconnect ON !!');
-	});
-	socket.once('disconnect', function (socket) {
-		console.log('disconnect in sock!');
-	});
-});
-
-io.sockets.once('disconnect', function (socket) {
-	connectedUsers--;
-	console.log('disconnect in io!');
-	console.log('NB USERS : ',connectedUsers);
-});
-//************************************
-
-
-// ====================================
 // TORRENTS
 // ====================================
 var TransmissionNode = require('./utils/transmissionNode');
 var transmission = new TransmissionNode();
 app.set('transmission', transmission);
+//************************************
+
+
+// var refreshTorrent = function () {
+// 	console.log('yolo je refresh les diez et j emmit');
+// };
+
+// ====================================
+// SOCKETS
+// ====================================
+// var connectedUsers = 0;
+// var torrentIntervalId;
+var socketIO = require('socket.io');
+var io = socketIO();
+app.io = io;
+var sockets = require('./utils/sockets')(io, transmission);
+
+
+
+
+
+
+
+
+
+
+
+// console.log(io.parser);
+// io.on('torrent-refresh', function (socket) {
+// 	if (io.engine.clientsCount === 1)
+// 		torrentIntervalId = setInterval(refreshTorrent, 1000);
+// });
+
+// io.on('connection', function (socket) {
+// 	// connectedUsers++;
+// 	console.log('new user connection');
+// 	console.log('number of users currently connected :', io.engine.clientsCount);
+// 	io.sockets.emit('connected-users', {connectedUsers: io.engine.clientsCount});
+// 	// socket.emit('connection', {
+// 	//     connectedUsers: connectedUsers
+// 	//   });
+// 	// socket.broadcast.emit('connection', {
+// 	//     connectedUsers: connectedUsers
+// 	//   });
+// 	// console.log('NB USERS : ',connectedUsers);
+// 	// socket.on('disconnect', function (socket) {
+// 	// 	console.log('disconnect ON !!');
+// 	// });
+// 	socket.once('disconnect', function (socket) {
+// 		console.log('users still online : ', io.engine.clientsCount);
+// 		if (io.engine.clientsCount === 0)
+// 			clearInterval(torrentIntervalId);
+// 	});
+// });
+
+// io.sockets.once('disconnect', function (socket) {
+// 	connectedUsers--;
+// 	console.log('disconnect in io!');
+// 	console.log('NB USERS : ',connectedUsers);
+// });
 //************************************
 
 
