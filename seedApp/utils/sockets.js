@@ -1,3 +1,5 @@
+var File = require('../models/File.js');
+
 // ****************************************
 // SOCKETS
 // ****************************************
@@ -22,8 +24,34 @@ module.exports = function (io, transmission) {
 	// console.log('yolo je refresh les diez et j emmit');
 };
 
+	var addFinishedTorrentToDB = function (id, name) {
+		transmission.torrentGet(["hashString", "downloadDir", "totalSize"], id, function (err, resp) {
+			if (err)
+				console.log(err);
+				// throw err;
+			else
+			{
+				if (resp['torrents'].length > 0)
+				{
+					var torrent = resp['torrents'][0];
+					File.findOneAndUpdate(
+						{ hashString: torrent['hashString'] },
+						{ name: name, path: torrent['downloadDir'] + '/' + name, size: torrent['totalSize'], hashString: torrent['hashString'], isFinished: true, createdAt: Date.now() },
+						{ new: true, upsert: true },
+						function (err, newFile) {
+							if (err)
+								console.log(err);
+							else
+								io.sockets.emit("new-file", {name: torrent["name"], data: newFile});
+						}
+					);
+				}
+			}
+		});
+	};
+
 	var finishRefreshTorrent = function () {
-		transmission.torrentGet(["id", "isFinished", "leftUntilDone", "status", "percentDone", "name"], "recently-active", function (err, res) {
+		transmission.torrentGet(["id", "status", "leftUntilDone", "percentDone", "name"], "recently-active", function (err, res) {
 			if (err)
 			{
 				clearInterval(finishRefreshTorrentIntervalId);
@@ -32,14 +60,18 @@ module.exports = function (io, transmission) {
 			else
 			{
 				res["torrents"].forEach(function (torrent) {
+					// console.log('finishedTorrent --> ', finishedTorrents);
 					if (finishedTorrents.indexOf(torrent['name']) < 0)
 					{
+						// console.log('torrent -> ', torrent);
 						if (torrent['leftUntilDone'] === 0 && torrent["percentDone"] === 1.0 && torrent["status"] > 4)
 						{
 							console.log("nouveau film ! : ", torrent["name"]);
 							finishedTorrents.push(torrent["name"]);
 							//ajout dans la database !
-							io.sockets.emit("new-torrent", {name: torrent["name"]});
+							addFinishedTorrentToDB(torrent['id'], torrent['name']);
+							//envoyer l'objet de la db direct ???
+							// io.sockets.emit("new-torrent", {name: torrent["name"]});
 						}
 					}
 				});

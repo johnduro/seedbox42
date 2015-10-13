@@ -9,8 +9,8 @@ serveur --> client :
 		retourne une erreur si le refresh du torrent n'a pas pu avoir lieu, {error: err}
 	- torrent-refresh-res
 		retourne le resultat du refresh des torrents, {result: {removed: [], torrents: [<liste des torrent>]}}
-	- new-torrent
-		retourne le nom du nouveau torrent qui vient d'arriver, {name: <nom du torrent>}
+	- new-file
+		retourne le nom du nouveau torrent qui vient d'arriver et les data de l'object mongo, {name: <nom du torrent>, data: <mongo>}
 	- connected-users
 		retourne le nombre d'users connectes, {connectedUsers: <nb users>}
 	- torrent-first-refresh

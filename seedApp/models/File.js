@@ -8,6 +8,8 @@ var FileSchema = new mongoose.Schema({
 	creator: { type: mongoose.Schema.ObjectId, ref: 'User' },
 	hashString: String,
 	isFinished: { type: Boolean, default: false },
+	downloads: { type: Number, default: 0 },
+	privacy : { type: Number, default: 1 },
 	// torrent: String, //utile ?
 	comments: [{
 		text: { type: String, default: '' },
@@ -22,7 +24,8 @@ var FileSchema = new mongoose.Schema({
 		user: { type: mongoose.Schema.ObjectId, ref: 'User' },
 		grade: Number
 	}],
-	createdAt : { type: Date, default: Date.now }
+	createdAt : Date
+	// createdAt : { type: Date, default: Date.now }
 });
 
 
