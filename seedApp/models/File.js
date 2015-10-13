@@ -3,11 +3,12 @@ var mongoose = require('mongoose');
 
 var FileSchema = new mongoose.Schema({
 	name: String,
-	path: String,
-	size: Number,
-	user: { type: mongoose.Schema.ObjectId, ref: 'User' },
+	path: { type: String, default: "" },
+	size: { type: Number, default: 0 },
+	creator: { type: mongoose.Schema.ObjectId, ref: 'User' },
+	hashString: String,
 	isFinished: { type: Boolean, default: false },
-	torrent: String, //utile ?
+	// torrent: String, //utile ?
 	comments: [{
 		text: { type: String, default: '' },
 		user: { type: mongoose.Schema.ObjectId, ref: 'User' },
@@ -17,7 +18,7 @@ var FileSchema = new mongoose.Schema({
 		user: { type: mongoose.Schema.ObjectId, ref: 'User' },
 		createdAt: { type: Date, default: Date.now }
 	}],
-	grade: [{
+	grades: [{
 		user: { type: mongoose.Schema.ObjectId, ref: 'User' },
 		grade: Number
 	}],

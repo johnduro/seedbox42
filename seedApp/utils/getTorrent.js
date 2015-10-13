@@ -124,11 +124,13 @@ var cb = function (err, res) {
 // console.log("*************************************************************");
 // t.torrentGet(["id", "name", "eta", "isFinished", "isStalled", "leftUntilDone", "metadataPercentComplete", "percentDone", "rateDownload", "sizeWhenDone", "status"], {}, cb);
 
-t.torrentGet(['downloadDir', 'name', 'totalSize', 'torrentFile', 'creator'], {}, cb);
+// t.torrentGet(['downloadDir', 'name', 'totalSize', 'torrentFile', 'creator'], {}, cb);
 
 // t.torrentGet(["id", "error", "errorString", "eta", "isFinished", "isStalled", "leftUntilDone", "metadataPercentComplete", "peersConnected", "peersGettingFromUs", "peersSendingToUs", "percentDone", "queuePosition", "rateDownload", "rateUpload", "recheckProgress", "seedRatioMode", "seedRatioLimit", "sizeWhenDone", "status", "trackers", "downloadDir", "uploadedEver", "uploadRatio", "Webseedssendingtous"], {}, cb);
 
-
+t.torrentGet(['id', 'hashString',  'name'], {}, cb);
+console.log('****************************************');
+t.torrentGet(['name'], 'bfcf6f5505a1c9e962bb5c3f0b6d66a841dda51e', cb);
 
 // t.torrentGet(['uploadRatio', 'id', 'addedDate', 'isFinished', 'leftUntilDone', 'name', 'rateDownload', 'rateUpload', 'files', 'queuePosition', 'downloadDir', 'percentDone', 'status'], {}, cb);
 // t.torrentRemove(2, false, cb);
