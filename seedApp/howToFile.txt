@@ -1,0 +1,9 @@
+
+liste & explication des routes pour les fichiers :
+
+	GET : /file/:id? (pas teste):
+		recupere un seul fichier si l'id est passe en parametre, sinon tous les fichier
+
+	DELETE : /file/:id (pas teste):
+		supprime le fichier dont l'id est passe en parametre
+		supprime le torrent si il existe encore et les fichiers sur le serveur (attention aux droits)

@@ -80,6 +80,7 @@ router.put('/:id', function(req, res, next) {
 router.delete('/:id', function(req, res, next) {
 	if (req.user.login == req.body.login || req.user.role == 0)
 	{
+		//req.body ??? sert a quoi ???
 		User.findByIdAndRemove(req.params.id, req.body, function (err, post) {
 			if (err)
 				return next(err);
