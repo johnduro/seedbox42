@@ -23,6 +23,7 @@ var users = require('./routes/users');
 var auth = require('./routes/authenticate');
 var debugSetup = require('./routes/ds');
 var torrent = require('./routes/torrent');
+var file = require('./routes/file');
 // ************************************
 
 
@@ -136,6 +137,7 @@ app.use('/authenticate', auth);
 app.use(authMW);
 app.use('/users', users);
 app.use('/torrent', torrent);
+app.use('/file', file);
 // ************************************
 
 // catch 404 and forward to error handler

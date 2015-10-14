@@ -24,8 +24,8 @@ var FileSchema = new mongoose.Schema({
 		user: { type: mongoose.Schema.ObjectId, ref: 'User' },
 		grade: Number
 	}],
-	createdAt : Date
-	// createdAt : { type: Date, default: Date.now }
+	createdAt : Date,
+	torrentAddedAt : { type: Date, default: Date.now }
 });
 
 
