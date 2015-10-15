@@ -80,8 +80,6 @@ module.exports = function (io, transmission) {
 	};
 
 
-
-
 	io.on('connection', function (socket) {
 		// connectedUsers++;
 		console.log('new user connection');
@@ -92,9 +90,9 @@ module.exports = function (io, transmission) {
 			finishRefreshTorrentIntervalId = setInterval(finishRefreshTorrent, second);
 
 		// io.on('torrent-refresh', function (socket) {
-		socket.on('torrentRefresh', function (socket) {
+		socket.on('torrentRefresh', function () {
 			torrentRefreshCounter++;
-			transmission.torrentGet(["id", "error", "errorString", "eta", "isFinished", "isStalled", "leftUntilDone", "metadataPercentComplete", "peersConnected", "peersGettingFromUs", "peersSendingToUs", "percentDone", "queuePosition", "rateDownload", "rateUpload", "recheckProgress", "seedRatioMode", "seedRatioLimit", "sizeWhenDone", "status", "trackers", "downloadDir", "uploadedEver", "uploadRatio", "Webseedssendingtous"], "recently-active", function (err, res) {
+			transmission.torrentGet(["id", "addedDate", "name", "totalSize",  "error", "errorString", "eta", "isFinished", "isStalled", "leftUntilDone", "metadataPercentComplete", "peersConnected", "peersGettingFromUs", "peersSendingToUs", "percentDone", "queuePosition", "rateDownload", "rateUpload", "recheckProgress", "seedRatioMode", "seedRatioLimit", "sizeWhenDone", "status", "trackers", "downloadDir", "uploadedEver", "uploadRatio", "Webseedssendingtous"], "recently-active", function (err, res) {
 				if (err)
 					socket.emit("torrentErrorRefresh", { error: err });
 				else
@@ -107,7 +105,7 @@ module.exports = function (io, transmission) {
 		});
 
 		// io.on('torrent-stop-refresh', function (socket) {
-		socket.on('torrentStopRefresh', function (socket) {
+		socket.on('torrentStopRefresh', function () {
 			torrentRefreshCounter--;
 			if (torrentRefreshCounter === 0)
 			{
@@ -116,7 +114,7 @@ module.exports = function (io, transmission) {
 			}
 		});
 
-		socket.once('disconnect', function (socket) {
+		socket.once('disconnect', function () {
 			console.log('users still online : ', io.engine.clientsCount);
 			if (io.engine.clientsCount > 0)
 				io.sockets.emit('connectedUsers', { connectedUsers: io.engine.clientsCount });
