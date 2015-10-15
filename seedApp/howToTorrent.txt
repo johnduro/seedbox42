@@ -11,6 +11,9 @@ liste & explications des routes pour les torrent :
 		envoyer des fichiers sous le champ 'torrent' ('form-data' dans postman) MAX 10,
 		reponds avec un array de dictionnaire [ {torrent: <nom du torrent>, success: true}, {}, etc.. ]
 
+	GET : /torrent/refresh/:id :
+		recupere les infos pour refresh le torrent d'id :id
+
 	DELETE : /torrent/:id (teste/marche):
 		supprime un torrent depuuis l'id
 		envoyer l'id du torrent dans :id et un champ removeLocalData avec 'true' ou 'false' suivant que l'on veuille ou non supprimer les fichiers du serveur
