@@ -1,9 +1,23 @@
 
-app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, RequestHandler) {
+app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, socket, RequestHandler) {
 
 	console.log("torrentsCtrl");
 
-	$scope.newTorrentUrl = "https://torcache.net/torrent/63296C6FB9A25EEBA55E1FCBA25DEF257F0B0EDD.torrent?title=[kat.cr]the.walking.dead.s06e01.proper.hdtv.x264.killers.ettv";
+	$scope.newTorrentUrl = "magnet:?xt=urn:btih:b115f4f2daf4baaf0fe4270653e69dc4f69eb3d2&dn=The.Flash.2014.S02E02.HDTV.x264-LOL%5Bettv%5D&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80&tr=udp%3A%2F%2Fopen.demonii.com%3A1337&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Fexodus.desync.com%3A6969";
+
+	socket.emit('torrentRefresh');
+
+	socket.on("torrentRefreshRes", function(data){
+		$scope.torrents = data.torrents;
+		angular.forEach($scope.torrents, function(torrent, key) {
+			torrent.pourcentage = torrent.percentDone * 100;
+		});
+		console.log(data);
+	});
+
+	socket.on("torrent-error-refresh", function(data){
+		console.log(data);
+	});
 
 	function getTorrents(){
 		RequestHandler.get(api + "torrent/get-all-torrents")
@@ -15,12 +29,12 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, RequestH
 				console.log(result.data.data.torrents);
 		});
 	};
-	getTorrents();
+	//getTorrents();
 
-	$interval(getTorrents, 10000);
+	//$interval(getTorrents, 30000);
 
-	$scope.torrentRemove = function(id){
-		RequestHandler.delete(api + "torrent/" + id)
+	$scope.torrentRemove = function(id, local){
+		RequestHandler.delete(api + "torrent/" + id, {"removeLocalData": local})
 			.then(function(result){
 				if (result.data.success){
 					getTorrents();
