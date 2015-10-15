@@ -77,10 +77,17 @@ app.factory('RequestHandler', ['$http', '$q', '$log', '$rootScope',
                 return promise.promise;
             },
             delete: function (url, data) {
-                $http.defaults.headers.common['Accept'] = 'application/json';
-                $http.defaults.headers.common['Content-Type'] = 'application/json';
+                //$http.defaults.headers.common['Accept'] = 'application/json';
+                //$http.defaults.headers.common['Content-Type'] = 'application/json';
                 var promise = $q.defer();
-                var http = $http.delete(url, data);
+                var config = {
+                    method: "DELETE",
+                    url: url,
+                    data: data,
+                    headers: {"Content-Type": "application/json;charset=utf-8"}
+                };
+                var http = $http(config);
+                //var http = $http.delete(url, data);
                 http.success(function (data, status, headers, config) {
                     promise.resolve({"data": data, "status": status});
                     $rootScope.$broadcast('dataloaded');
