@@ -8,15 +8,29 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, socket, 
 	socket.emit('torrentRefresh');
 
 	socket.on("torrentRefreshRes", function(data){
-		$scope.torrents = data.result.torrents;
-		angular.forEach($scope.torrents, function(torrent, key) {
-			torrent.pourcentage = torrent.percentDone * 100;
+		angular.forEach(data.result.torrents, function(newTorrent, keys) {
+			//console.log($scope.torrents);
+			if (newTorrent.id in $scope.torrents){
+				for (var key in newTorrent){
+					//console.log(key);
+					$scope.torrents[newTorrent.id][key] = newTorrent[key];
+				};
+			}
 		});
+		//$scope.torrents = data.result.torrents;
+		/*angular.forEach($scope.torrents, function(torrent, key) {
+			torrent.pourcentage = torrent.percentDone * 100;
+		});*/
 		console.log(data);
 	});
 
-	socket.on("torrent-error-refresh", function(data){
-		console.log(data);
+	socket.on("torrentFirstRefresh", function(data){
+		$scope.torrents = {};
+		for(var key in data.torrents.torrents){
+			$scope.torrents[data.torrents.torrents[key].id] = data.torrents.torrents[key];
+		}
+
+		console.log("torrentFirstRefresh", $scope.torrents);
 	});
 
 	function getTorrents(){
@@ -33,11 +47,16 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, socket, 
 
 	//$interval(getTorrents, 30000);
 
+	$scope.pourcentage = function(pr){
+		console.log(pr);
+		return (pr * 100);
+	}
+
 	$scope.torrentRemove = function(id, local){
 		RequestHandler.delete(api + "torrent/" + id, {"removeLocalData": local})
 			.then(function(result){
 				if (result.data.success){
-					getTorrents();
+					//getTorrents();
 				};
 		});
 	};
@@ -46,7 +65,7 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, socket, 
 		RequestHandler.post(api + "torrent/action/stop/" + id)
 			.then(function(result){
 				if (result.data.success){
-					getTorrents();
+					//getTorrents();
 				};
 		});
 	};
@@ -55,7 +74,7 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, socket, 
 		RequestHandler.post(api + "torrent/action/start/" + id)
 			.then(function(result){
 				if (result.data.success){
-					getTorrents();
+					//getTorrents();
 				};
 		});
 	};
@@ -64,7 +83,13 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, socket, 
 		RequestHandler.post(api + "torrent/add-url", {"url": $scope.newTorrentUrl})
 			.then(function(result){
 				if(result.data.success){
-					getTorrents();
+					$scope.torrents[result.data.id];
+					RequestHandler.get(api + "torrent/refresh/" + result.data.id)
+						.then(function(resultRefresh){
+							console.log(resultRefresh);
+							$scope.torrents[result.data.id] = resultRefresh.data.data.torrents[0];
+					});
+					console.log(result.data);
 				};
 		});
 	};
