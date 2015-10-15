@@ -8,7 +8,7 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, socket, 
 	socket.emit('torrentRefresh');
 
 	socket.on("torrentRefreshRes", function(data){
-		$scope.torrents = data.torrents;
+		$scope.torrents = data.result.torrents;
 		angular.forEach($scope.torrents, function(torrent, key) {
 			torrent.pourcentage = torrent.percentDone * 100;
 		});
