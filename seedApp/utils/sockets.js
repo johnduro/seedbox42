@@ -17,9 +17,9 @@ module.exports = function (io, transmission) {
 	var refreshTorrent = function () {
 		transmission.torrentGet(["id", "error", "errorString", "eta", "isFinished", "isStalled", "leftUntilDone", "metadataPercentComplete", "peersConnected", "peersGettingFromUs", "peersSendingToUs", "percentDone", "queuePosition", "rateDownload", "rateUpload", "recheckProgress", "seedRatioMode", "seedRatioLimit", "sizeWhenDone", "status", "trackers", "downloadDir", "uploadedEver", "uploadRatio", "Webseedssendingtous"], "recently-active", function (err, res) {
 		if (err)
-			io.sockets.emit('torrent-error-refresh', {error: err});
+			io.sockets.emit('torrentErrorRefresh', { error: err });
 		else
-			io.sockets.emit('torrent-refresh-res', {result: res});
+			io.sockets.emit('torrentRefreshRes', { result: res });
 	});
 	// console.log('yolo je refresh les diez et j emmit');
 };
@@ -37,12 +37,12 @@ module.exports = function (io, transmission) {
 					File.findOneAndUpdate(
 						{ hashString: torrent['hashString'] },
 						{ name: name, path: torrent['downloadDir'] + '/' + name, size: torrent['totalSize'], hashString: torrent['hashString'], isFinished: true, createdAt: Date.now() },
-						{ new: true, upsert: true },
+						{ new: true, upsert: true, setDefaultsOnInsert: true },
 						function (err, newFile) {
 							if (err)
 								console.log(err);
 							else
-								io.sockets.emit("new-file", {name: torrent["name"], data: newFile});
+								io.sockets.emit("newFile", { name: torrent["name"], data: newFile });
 						}
 					);
 				}
@@ -80,51 +80,46 @@ module.exports = function (io, transmission) {
 	};
 
 
-	io.on('torrent-refresh', function (socket) {
-		torrentRefreshCounter++;
-		transmission.torrentGet(["id", "error", "errorString", "eta", "isFinished", "isStalled", "leftUntilDone", "metadataPercentComplete", "peersConnected", "peersGettingFromUs", "peersSendingToUs", "percentDone", "queuePosition", "rateDownload", "rateUpload", "recheckProgress", "seedRatioMode", "seedRatioLimit", "sizeWhenDone", "status", "trackers", "downloadDir", "uploadedEver", "uploadRatio", "Webseedssendingtous"], "recently-active", function (err, res) {
-			if (err)
-				socket.emit("torrent-error-refresh", {error: err});
-			else
-				socket.emit("torrent-first-refresh", {torrents: res});
-		});
-		if (torrentRefreshCounter === 1)
-			torrentRefreshIntervalId = setInterval(refreshTorrent, second);
-		// if (io.engine.clientsCount === 1)
-		// 	torrentIntervalId = setInterval(refreshTorrent, 1000);
-	});
 
-	io.on('torrent-stop-refresh', function (socket) {
-		torrentRefreshCounter--;
-		if (torrentRefreshCounter === 0)
-		{
-			clearInterval(torrentRefreshIntervalId);
-			torrentRefreshIntervalId = null;
-		}
-	});
 
 	io.on('connection', function (socket) {
 		// connectedUsers++;
 		console.log('new user connection');
 		console.log('number of users currently connected :', io.engine.clientsCount);
-		io.sockets.emit('connected-users', {connectedUsers: io.engine.clientsCount});
+		io.sockets.emit('connectedUsers', { connectedUsers: io.engine.clientsCount });
+
 		if (io.engine.clientsCount === 1)
 			finishRefreshTorrentIntervalId = setInterval(finishRefreshTorrent, second);
-		// 	torrentIntervalId = setInterval(refreshTorrent, 1000);
-		// socket.emit('connection', {
-		//     connectedUsers: connectedUsers
-		//   });
-		// socket.broadcast.emit('connection', {
-		//     connectedUsers: connectedUsers
-		//   });
-		// console.log('NB USERS : ',connectedUsers);
-		// socket.on('disconnect', function (socket) {
-		// 	console.log('disconnect ON !!');
-		// });
+
+		// io.on('torrent-refresh', function (socket) {
+		socket.on('torrentRefresh', function (socket) {
+			torrentRefreshCounter++;
+			transmission.torrentGet(["id", "error", "errorString", "eta", "isFinished", "isStalled", "leftUntilDone", "metadataPercentComplete", "peersConnected", "peersGettingFromUs", "peersSendingToUs", "percentDone", "queuePosition", "rateDownload", "rateUpload", "recheckProgress", "seedRatioMode", "seedRatioLimit", "sizeWhenDone", "status", "trackers", "downloadDir", "uploadedEver", "uploadRatio", "Webseedssendingtous"], "recently-active", function (err, res) {
+				if (err)
+					socket.emit("torrentErrorRefresh", { error: err });
+				else
+					socket.emit("torrentFirstRefresh", { torrents: res });
+			});
+			if (torrentRefreshCounter === 1)
+				torrentRefreshIntervalId = setInterval(refreshTorrent, second);
+			// if (io.engine.clientsCount === 1)
+			// 	torrentIntervalId = setInterval(refreshTorrent, 1000);
+		});
+
+		// io.on('torrent-stop-refresh', function (socket) {
+		socket.on('torrentStopRefresh', function (socket) {
+			torrentRefreshCounter--;
+			if (torrentRefreshCounter === 0)
+			{
+				clearInterval(torrentRefreshIntervalId);
+				torrentRefreshIntervalId = null;
+			}
+		});
+
 		socket.once('disconnect', function (socket) {
 			console.log('users still online : ', io.engine.clientsCount);
 			if (io.engine.clientsCount > 0)
-				io.sockets.emit('connected-users', {connectedUsers: io.engine.clientsCount});
+				io.sockets.emit('connectedUsers', { connectedUsers: io.engine.clientsCount });
 			else if (io.engine.clientsCount === 0)
 			{
 				if (torrentRefreshIntervalId !== null)

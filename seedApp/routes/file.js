@@ -25,6 +25,9 @@ router.get('/:id?', function (req, res, next) {
 });
 
 //method put , attention au path !
+// router.put('/:id', function (req, res, next) {
+// });
+
 
 router.delete('/:id', function (req, res, next) {
 	File.findById(req.params.id, function (err, file) {

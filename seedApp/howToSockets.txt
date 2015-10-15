@@ -5,15 +5,15 @@ liste des events serveur --> client puis client --> serveur :
 
 
 serveur --> client :
-	- torrent-error-refresh
+	- torrentErrorRefresh
 		retourne une erreur si le refresh du torrent n'a pas pu avoir lieu, {error: err}
-	- torrent-refresh-res
+	- torrentRefreshRes
 		retourne le resultat du refresh des torrents, {result: {removed: [], torrents: [<liste des torrent>]}}
-	- new-file
+	- newFile
 		retourne le nom du nouveau torrent qui vient d'arriver et les data de l'object mongo, {name: <nom du torrent>, data: <mongo>}
-	- connected-users
+	- connectedUsers
 		retourne le nombre d'users connectes, {connectedUsers: <nb users>}
-	- torrent-first-refresh
+	- torrentFirstRefresh
 		retourne une liste des torrents quand le serveur recoit l'event 'torrent-refresh', envoye une seule fois car l'event 'torrent-refresh-res' retourne seulement les torrents qui ont eu une activite recente
 
 
@@ -22,7 +22,7 @@ serveur --> client :
 client --> serveur :
 	- connection
 		lance le rafraichissement des torrent finis et l'envois de l'event connected-users
-	- torrent-refresh
+	- torrentRefresh
 		lance le rafraichissement des torrents
-	- torrent-stop-refresh
+	- torrentStopRefresh
 		stop le rafraichissement des torrents
