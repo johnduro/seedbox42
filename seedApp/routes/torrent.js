@@ -58,7 +58,7 @@ router.post('/add-url', function (req, res, next) {
 			else if ('torrent-added' in resp)
 			{
 				createFile(resp['torrent-added'], req.user._id);
-				res.json({ success: true, message: 'torrent successfully added' });
+				res.json({ success: true, message: 'torrent successfully added', id: resp['torrent-added']['id'], name: resp['torrent-added']['name'] });
 			}
 			else
 				res.json({ success: false, message: 'unexpected error' });
@@ -94,6 +94,14 @@ router.post('/add-torrents', torrentUpldHandler.array('torrent', 10), function(r
 	});
 });
 
+router.get('/refresh/:id', function (req, res, next) {
+	req.app.get('transmission').torrentGet(["id", "addedDate", "name", "totalSize",  "error", "errorString", "eta", "isFinished", "isStalled", "leftUntilDone", "metadataPercentComplete", "peersConnected", "peersGettingFromUs", "peersSendingToUs", "percentDone", "queuePosition", "rateDownload", "rateUpload", "recheckProgress", "seedRatioMode", "seedRatioLimit", "sizeWhenDone", "status", "trackers", "downloadDir", "uploadedEver", "uploadRatio", "Webseedssendingtous"], parseInt(req.params.id, 10), function (err, res) {
+		if (err)
+			throw err;
+		else
+			res.json({ success: true, data: resp });
+	});
+});
 
 router.delete('/:id', function (req, res, next) {
 	var removeLocalData = (req.body.removeLocalData === "true");
@@ -182,7 +190,7 @@ router.post('/blocklist-update', function (req, res, next) {
 router.get('/port-test', function (req, res, next) {
 	req.app.get('transmission').portTest(function (err, resp) {
 		if (err)
-			res.json({ success: false, message: "Could not check port"} );
+			res.json({ success: false, message: "Could not check port" } );
 		else
 			res.json({ success: true, message: "Port checked", "port-is-open": resp["port-is-open"] });
 	});
