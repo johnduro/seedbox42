@@ -7,3 +7,7 @@ liste & explication des routes pour les fichiers :
 	DELETE : /file/:id (pas teste):
 		supprime le fichier dont l'id est passe en parametre
 		supprime le torrent si il existe encore et les fichiers sur le serveur (attention aux droits)
+
+	PUT : /file/:id (pas teste):
+		modifie le fichier d'id :id avec l'objet dans le body
+		ne peux pas modifier le path/size/hashString/createdAt/torrentAddedAt
