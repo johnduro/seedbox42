@@ -27,7 +27,12 @@ var file = require('./routes/file');
 // ************************************
 
 
+// ====================================
+// CONFIG
+// ====================================
 var app = express();
+app.set('secret', config.secret);
+// ************************************
 
 // ====================================
 // DATABASE CONNEXION
@@ -65,7 +70,7 @@ app.set('transmission', transmission);
 var socketIO = require('socket.io');
 var io = socketIO();
 app.io = io;
-var sockets = require('./utils/sockets')(io, transmission);
+var sockets = require('./utils/sockets')(io, transmission, app.get('secret'));
 
 
 
@@ -131,7 +136,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ====================================
 app.use('/', routes);
 app.use('/debug', debugSetup);
-app.set('secret', config.secret);
 app.use('/authenticate', auth);
 // all route below need identification token
 app.use(authMW);

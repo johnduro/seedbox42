@@ -1,4 +1,5 @@
 var File = require('../models/File.js');
+var jwt = require('jsonwebtoken');
 
 // ****************************************
 // SOCKETS
@@ -6,7 +7,7 @@ var File = require('../models/File.js');
 
 
 
-module.exports = function (io, transmission) {
+module.exports = function (io, transmission, secret) {
 
 	var second = 1000;
 	var torrentRefreshCounter = 0;
@@ -89,10 +90,35 @@ module.exports = function (io, transmission) {
 		});
 	};
 
+	// ====================================
+	// SOCKET AUTH
+	// ====================================
+	io.use(function (socket, next) {
+		console.log('SOCK --> ', socket.request._query['token']);
+		if ('_query' in socket.request && 'token' in socket.request._query)
+		{
+			var token = socket.request._query['token'];
+			jwt.verify(token, secret, function (err, decoded) {
+				if (err)
+					next (new Error('not authorized'));
+				else
+				{
+					socket.appUser = decoded;
+					next();
+				}
+			});
+		}
+		else
+			next (new Error('not authorized'));
+	});
 
+
+	// ====================================
+	// SOCKET CONNECTION
+	// ====================================
 	io.on('connection', function (socket) {
 		// connectedUsers++;
-		console.log('new user connection');
+		console.log('new user connection', socket.appUser);
 		console.log('number of users currently connected :', io.engine.clientsCount);
 		io.sockets.emit('connectedUsers', { connectedUsers: io.engine.clientsCount });
 
