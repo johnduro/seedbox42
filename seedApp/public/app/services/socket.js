@@ -1,9 +1,17 @@
 app.factory('socket', ['$rootScope', function ($rootScope) {
-    var socket = io.connect(api, {token:$rootScope.token});
-    if (socket.connect())
-        console.log("Socket connected");
-    else
-        console.log("Socket not connected");
+    // var socket = io.connect(api, {token:$rootScope.token});
+    var socket = io.connect(api, { query : "token=" + $rootScope.token });
+    // var socket = io.connect(api);
+	// var obj = socket.connect();
+	// console.log(socket.connected);
+    // if (socket.connected === true)
+    //     console.log("Socket connected");
+    // else
+    //     console.log("Socket not connected");
+
+	// socket.on('connect', function() {
+	// 	console.log('check 2', socket.connected);
+	// });
 
     return {
         on: function (eventName, callback) {
