@@ -79,6 +79,16 @@ module.exports = function (io, transmission) {
 		});
 	};
 
+	// ====================================
+	// CREATE FILE
+	// ====================================
+	var createFile = function (torrentAdded, userId) {
+		File.create({ name: torrentAdded['name'], creator: userId, hashString: torrentAdded['hashString']}, function (err, file) {
+			if (err)
+				throw err;
+		});
+	};
+
 
 	io.on('connection', function (socket) {
 		// connectedUsers++;
@@ -140,6 +150,25 @@ module.exports = function (io, transmission) {
 					socket.emit('delete:torrent', { success: false, message: "Could not remove torrent" });
 				else
 					io.sockets.emit('delete:torrent', { success: true, id: id, message: 'Torrent removed' });
+			});
+		});
+
+		socket.on('post:torrent:url',  function(data){
+			transmission.torrentAdd({filename: data.url}, function (err, resp) {
+				if (err)
+					socket.emit('post:torrent:url', { success: false, message: "torrent not added, wrong url" });
+				else
+				{
+					if ('torrent-duplicate' in resp)
+						socket.emit('post:torrent:url', { success: false, message: 'duplicate, torrent already present' });
+					else if ('torrent-added' in resp)
+					{
+						createFile(resp['torrent-added'], req.user._id);
+						io.sockets.emit('post:torrent:url', { success: true, message: 'torrent successfully added', id: resp['torrent-added']['id'], name: resp['torrent-added']['name'] });
+					}
+					else
+						socket.emit('post:torrent:url', { success: false, message: 'unexpected error' });
+				}
 			});
 		});
 
