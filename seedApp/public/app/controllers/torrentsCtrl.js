@@ -10,6 +10,17 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, socket, 
 	//------------------------------------------------  EVENTS SOCKETS -------------------------------------------------------
 	socket.emit('torrentRefresh');
 
+	socket.on('delete:torrent', function(data){
+		delete $scope.torrents[data.id];
+	});
+
+	socket.on('post:torrent:url', function(data){
+		RequestHandler.get(api + "torrent/refresh/" + data.id)
+			.then(function(resultRefresh){
+				$scope.torrents[data.id] = resultRefresh.data.data.torrents[0];
+		});
+	});
+
 	socket.on("torrentRefreshRes", function(data){
 		angular.forEach(data.result.torrents, function(newTorrent, keys) {
 			if (newTorrent.id in $scope.torrents){
@@ -40,15 +51,9 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, socket, 
 		});
 	};
 
-
 	//------------------------------------------------  FUNCTIONS SCOPE -------------------------------------------------------
 	$scope.torrentRemove = function(id, local){
-		RequestHandler.delete(api + "torrent/" + id, {"removeLocalData": local})
-			.then(function(result){
-				if (result.data.success){
-					delete $scope.torrents[id];
-				};
-		});
+		socket.emit('delete:torrent', {"id":id, "removeLocalData": local});
 	};
 
 	$scope.torrentStop = function(id){
@@ -60,7 +65,9 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, socket, 
 	};
 
 	$scope.sendTorrentUrl = function(){
-		RequestHandler.post(api + "torrent/add-url", {"url": $scope.newTorrentUrl})
+		socket.emit('post:torrent:url', {"url":$scope.newTorrentUrl});
+
+		/*RequestHandler.post(api + "torrent/add-url", {"url": $scope.newTorrentUrl})
 			.then(function(result){
 				if(result.data.success){
 					$scope.torrents[result.data.id];
@@ -69,6 +76,6 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, socket, 
 							$scope.torrents[result.data.id] = resultRefresh.data.data.torrents[0];
 					});
 				};
-		});
+		});*/
 	};
 });
