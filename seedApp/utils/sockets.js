@@ -114,6 +114,35 @@ module.exports = function (io, transmission) {
 			}
 		});
 
+		socket.on('delete:torrent', function (data) {
+			var removeLocalData = data.removeLocalData;
+			var id = parseInt(data.id, 10);
+			if (removeLocalData)
+			{
+				transmission.torrentGet(['hashString'], id, function (err, resp) {
+					if (err)
+						throw err;
+					else
+					{
+						if (resp['torrents'].length > 0)
+						{
+							File.findOneAndRemove({ hashString: resp['torrents'][0]['hashString'] }, function (err, file) {
+								if (err)
+									console.log(err);
+									// return next(err);
+							});
+						}
+					}
+				});
+			}
+			transmission.torrentRemove(id, removeLocalData, function (err, resp) {
+				if (err)
+					socket.emit('delete:torrent', { success: false, message: "Could not remove torrent" });
+				else
+					io.sockets.emit('delete:torrent', { success: true, id: id, message: 'Torrent removed' });
+			});
+		});
+
 		socket.once('disconnect', function () {
 			console.log('users still online : ', io.engine.clientsCount);
 			if (io.engine.clientsCount > 0)
