@@ -115,7 +115,7 @@ router.delete('/:id', function (req, res, next) {
 			{
 				if (resp['torrents'].length > 0)
 				{
-					File.findOneAndRemove({hashString: resp['torrents'][0]['hashString']}, function (err, file) {
+					File.findOneAndRemove({ hashString: resp['torrents'][0]['hashString'] }, function (err, file) {
 						if (err)
 							return next(err);
 					});

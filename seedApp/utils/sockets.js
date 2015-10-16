@@ -18,7 +18,7 @@ module.exports = function (io, transmission) {
 		transmission.torrentGet(["id", "error", "errorString", "eta", "isFinished", "isStalled", "leftUntilDone", "metadataPercentComplete", "peersConnected", "peersGettingFromUs", "peersSendingToUs", "percentDone", "queuePosition", "rateDownload", "rateUpload", "recheckProgress", "seedRatioMode", "seedRatioLimit", "sizeWhenDone", "status", "trackers", "downloadDir", "uploadedEver", "uploadRatio", "Webseedssendingtous"], "recently-active", function (err, res) {
 		if (err)
 			io.sockets.emit('torrentErrorRefresh', { error: err });
-		else if (res['torrents'].length > 0)
+		else if (res['removed'].length > 0 || res['torrents'].length > 0)
 			io.sockets.emit('torrentRefreshRes', { result: res });
 	});
 	// console.log('yolo je refresh les diez et j emmit');
