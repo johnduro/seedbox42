@@ -42,8 +42,8 @@
                                     <td>
                                         {{torrent.name}}
                                         <div class="progress progress-md">
-                                            <div class="progress-bar progress-bar-striped progress-bar-success active" role="progressbar" aria-valuenow="{{pourcentage(torrent.percentDone)}}" aria-valuemin="0" aria-valuemax="100" style="width: {{pourcentage(torrent.percentDone)}}%">
-                                                {{pourcentage(torrent.percentDone) | number:2}} %
+                                            <div class="progress-bar progress-bar-striped progress-bar-success active" role="progressbar" aria-valuenow="{{torrent.percentDone}}" aria-valuemin="0" aria-valuemax="100" style="width: {{torrent.percentDone}}%">
+                                                {{torrent.percentDone | number:2}} %
                                             </div>
                                         </div>
                                         <i class="fa fa-pause" ng-click="torrentStop(torrent.id)"></i>
