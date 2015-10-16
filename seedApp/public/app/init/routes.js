@@ -18,5 +18,10 @@ app.config(function ($stateProvider, $urlRouterProvider) {
         url: "/torrents",
         templateUrl: "app/views/torrents.html",
         controller: "torrentsCtrl"
+    })
+    .state('seedbox.files', {
+        url: "/files",
+        templateUrl: "app/views/files.html",
+        controller: "filesCtrl"
     });
 });
