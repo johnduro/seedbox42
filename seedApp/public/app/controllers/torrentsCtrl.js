@@ -56,26 +56,15 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, socket, 
 		socket.emit('delete:torrent', {"id":id, "removeLocalData": local});
 	};
 
+	$scope.sendTorrentUrl = function(){
+		socket.emit('post:torrent:url', {"url":$scope.newTorrentUrl, 'id':$rootScope.user.id});
+	};
+
 	$scope.torrentStop = function(id){
 		RequestHandler.post(api + "torrent/action/stop/" + id);
 	};
 
 	$scope.torrentStart = function(id){
 		RequestHandler.post(api + "torrent/action/start/" + id);
-	};
-
-	$scope.sendTorrentUrl = function(){
-		socket.emit('post:torrent:url', {"url":$scope.newTorrentUrl});
-
-		/*RequestHandler.post(api + "torrent/add-url", {"url": $scope.newTorrentUrl})
-			.then(function(result){
-				if(result.data.success){
-					$scope.torrents[result.data.id];
-					RequestHandler.get(api + "torrent/refresh/" + result.data.id)
-						.then(function(resultRefresh){
-							$scope.torrents[result.data.id] = resultRefresh.data.data.torrents[0];
-					});
-				};
-		});*/
 	};
 });

@@ -1,6 +1,9 @@
 app.factory('socket', ['$rootScope', function ($rootScope) {
-    var socket = io.connect(api);
-    console.log("socket created");
+    var socket = io.connect(api, {token:$rootScope.token});
+    if (socket.connect())
+        console.log("Socket connected");
+    else
+        console.log("Socket not connected");
 
     return {
         on: function (eventName, callback) {
