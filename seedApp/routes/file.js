@@ -8,11 +8,19 @@ var fs = require('fs');
 // FILES
 // *****************************************
 
+router.get('/all', function (req, res, next) {
+	var query = File.find({ isFinished: true }).select({'name': 1, 'size': 1, 'downloads': 1, 'createdAt': 1 });
+	query.exec(function (err, files) {
+		if (err)
+			return next(err);
+		res.json({ success: true, data: files });
+	});
+});
 
 router.get('/:id?', function (req, res, next) {
 	if (!(req.params.id))
 	{
-		File.find({}, function (err, files) {
+		File.find({ isFinished: true }, function (err, files) {
 			if (err)
 				return next(err);
 			res.json({ success: true, data: files });
@@ -20,7 +28,7 @@ router.get('/:id?', function (req, res, next) {
 	}
 	else
 	{
-		File.findById(req.params.id, function (err, file) {
+		File.findById({ _id: req.params.id, isFinished: true }, function (err, file) {
 			if (err)
 				return next(err);
 			res.json({ success: true, data: file });
