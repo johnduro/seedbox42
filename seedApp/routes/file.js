@@ -4,6 +4,10 @@ var router = express.Router();
 var File = require("../models/File.js");
 var fs = require('fs');
 
+// *****************************************
+// FILES
+// *****************************************
+
 
 router.get('/:id?', function (req, res, next) {
 	if (!(req.params.id))
@@ -45,11 +49,6 @@ router.put('/:id', function (req, res, next) {
 				return next(err);
 			res.json(file);
 		});
-		// File.findById(req.params.id, function (err, file) {
-		// 	if (err)
-		// 		return next(err);
-		// 	console.log(file);
-		// });
 	}
 	else
 		res.json({ success: false, message: "You don't have enought rights for this action" });
@@ -95,26 +94,38 @@ router.delete('/:id', function (req, res, next) {
 });
 
 
-
-var walk = function(dir, done) {
-	var results = [];
-	fs.readdir(dir, function(err, list) {
+var getDirectoryInfos = function (path, dirInfos, done) {
+	var result = [];
+	var size = 0;
+	fs.readdir(path, function (err, files) {
 		if (err)
 			return done(err);
 		var i = 0;
-		(function next() {
-			var file = list[i++];
+		(function next () {
+			var file = files[i++];
 			if (!file)
-				return done(null, results);
-			file = dir + '/' + file;
-			fs.stat(file, function(err, stat) {
-				if (stat && stat.isDirectory()) {
-					walk(file, function(err, res) {
-						results = results.concat(res);
+			{
+				dirInfos.fileList = result;
+				dirInfos.size = size;
+				return done(null, dirInfos);
+			}
+			var fileInfos = { name: file, path: path + '/' + file };
+			fs.stat(fileInfos.path, function (err, stat) {
+				if (stat && stat.isDirectory())
+				{
+					fileInfos.isDirectory = true;
+					getDirectoryInfos(fileInfos.path, fileInfos, function (err, res) {
+						result.push(res);
+						size += res.size;
 						next();
 					});
-				} else {
-					results.push(file);
+				}
+				else
+				{
+					fileInfos.isDirectory = false;
+					fileInfos.size = stat.size;
+					size += stat.size;
+					result.push(fileInfos);
 					next();
 				}
 			});
@@ -122,62 +133,28 @@ var walk = function(dir, done) {
 	});
 };
 
-var getDirectoryInfos = function (path, dirStat, done) {
-	var result = [];
-	fs.readdir(path, function (err, files) {
-		files.forEach(function (file) {
-			var filePath = path + '/' + file;
-			fs.stat(filePath, function (err, stat) {
-				if (stat && stat.isDirectory())
-					getDirectoryInfos(filePath, {});
-			});
-		});
-	});
-};
-
 router.get('/show/:id', function (req, res, next) {
 	File.findById(req.params.id, function (err, file) {
 		if (err)
 			return next(err);
-		var fileStat = { name: file.name, path: file.path };
+		var fileStat = { name: file.name, path: file.path, size: file.size };
 		fs.stat(file.path, function (err, stat) {
 			if (stat.isDirectory())
 			{
 				fileStat.isDirectory = true;
 				getDirectoryInfos(file.path, fileStat, function (err, data) {
+				// getDirectoryInfos('/home/johnduro/documents/seedbox42', fileStat, function (err, data) {
 					if (err)
-						res.json({ success: false, error: err});
+						res.json({ success: false, error: err });
 					else
 						res.json({ success: true, data: data });
 				});
 			}
 			else
 			{
-				// res.json({ name: file.name, path: file.path, size: file.size, isDirectory: false });
 				fileStat.isDirectory = false;
-				fileStat.size = file.size;
 				res.json(fileStat);
 			}
-		});
-
-
-
-
-		console.log('SIZE : ', file.size);
-		fs.stat(file.path, function (err, stat) {
-			console.log('---- stat ----');
-			if (err)
-				console.log('ERROR STAT', err);
-			if (stat.isDirectory())
-				console.log('yep directory !!!!!');
-			console.log(stat);
-			console.log('*****************************************');
-		});
-		fs.readdir(file.path, function (err, files) {
-			if (err)
-				console.log('ERROR RDIR', err);
-			else
-				console.log(files);
 		});
 	});
 });
