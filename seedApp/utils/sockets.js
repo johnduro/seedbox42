@@ -163,7 +163,7 @@ module.exports = function (io, transmission) {
 						socket.emit('post:torrent:url', { success: false, message: 'duplicate, torrent already present' });
 					else if ('torrent-added' in resp)
 					{
-						createFile(resp['torrent-added'], req.user._id);
+						createFile(resp['torrent-added'], data.id);
 						io.sockets.emit('post:torrent:url', { success: true, message: 'torrent successfully added', id: resp['torrent-added']['id'], name: resp['torrent-added']['name'] });
 					}
 					else
