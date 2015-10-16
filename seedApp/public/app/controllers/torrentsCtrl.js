@@ -15,10 +15,12 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, socket, 
 	});
 
 	socket.on('post:torrent:url', function(data){
-		RequestHandler.get(api + "torrent/refresh/" + data.id)
-			.then(function(resultRefresh){
-				$scope.torrents[data.id] = resultRefresh.data.data.torrents[0];
-		});
+		if (data.success){
+			RequestHandler.get(api + "torrent/refresh/" + data.id)
+				.then(function(resultRefresh){
+					$scope.torrents[data.id] = resultRefresh.data.data.torrents[0];
+			});
+		}		
 	});
 
 	socket.on("torrentRefreshRes", function(data){
@@ -57,7 +59,7 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, socket, 
 	};
 
 	$scope.sendTorrentUrl = function(){
-		socket.emit('post:torrent:url', {"url":$scope.newTorrentUrl, 'id':$rootScope.user.id});
+		socket.emit('post:torrent:url', {"url":$scope.newTorrentUrl});
 	};
 
 	$scope.torrentStop = function(id){
