@@ -8,7 +8,7 @@ app.controller('connexionCtrl', function ($scope, $rootScope, $state, RequestHan
 	$scope.user.password = "passwd1";
 
 	$scope.connexion = function(){
-		RequestHandler.post(api + "authenticate", $scope.user)
+		RequestHandler.post(api + "/authenticate", $scope.user)
 			.then(function(result){
 				if (result.data.success){
 					$rootScope.user = result.data.data;

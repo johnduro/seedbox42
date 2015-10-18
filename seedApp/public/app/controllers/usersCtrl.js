@@ -20,7 +20,7 @@ app.controller('usersCtrl', function ($scope, $rootScope, RequestHandler) {
 	};
 
 	$scope.addUser = function(){
-		RequestHandler.post(api + "users", $scope.newUser)
+		RequestHandler.post(api + "/users", $scope.newUser)
 			.then(function(result){
 				if (result.data.success){
 					$scope.users = result.data.data;

@@ -11,4 +11,6 @@ app.run(function ($rootScope, $location) {
         api = "http://37.187.111.179:3000/";
     }
 
+    api = "/"
+
 });
