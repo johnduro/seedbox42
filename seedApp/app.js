@@ -24,7 +24,6 @@ var TransmissionNode = require('./utils/transmissionNode');
 // ====================================
 // ROUTES REQUIRE
 // ====================================
-var routes = require('./routes/index');
 var users = require('./routes/users');
 var auth = require('./routes/authenticate');
 var debugSetup = require('./routes/ds');
@@ -37,6 +36,7 @@ var file = require('./routes/file');
 // ====================================
 var app = express();
 app.set('secret', config.secret);
+app.set('config', config);
 // ************************************
 
 // ====================================
@@ -86,15 +86,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ====================================
 
 // ----- STANDARDS -----
-app.use('/', routes);
 app.use('/debug', debugSetup);
 app.use('/authenticate', auth);
 
 // ----- CONNECTED -----
-app.use(authMW);
-app.use('/users', users);
-app.use('/torrent', torrent);
-app.use('/file', file);
+app.use('/users', authMW, users);
+app.use('/torrent', authMW, torrent);
+app.use('/file', authMW, file);
 // ************************************
 
 // catch 404 and forward to error handler
