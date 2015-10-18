@@ -26,18 +26,11 @@
 
 var http = require('http');
 
-// var testOptions = {
-// 	// adress: '127.0.0.1',
-// 	port: 9091,
-// 	url: '/transmission/rpc'
-// };
-
-
-var Transmission = module.exports = function (options) {
-	options = options || {};
-	this.adress = options.adress || 'localhost';
-	this.port = options.port || 9091;
-	this.url = options.url || '/transmission/rpc';
+var Transmission = module.exports = function (config) {
+	config = config || {};
+	this.adress = config.adress || 'localhost';
+	this.port = config.port || 9091;
+	this.url = config.url || '/transmission/rpc';
 	this.sessionId = '',
 	this.postOptions = {
 		host: this.adress,
