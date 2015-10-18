@@ -1,9 +1,14 @@
+// ====================================
+// MODULES NPM
+// ====================================
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var socketIO = require('socket.io');
+// ************************************
 
 // ====================================
 // EXTRAS
@@ -13,6 +18,7 @@ var jwt = require('jsonwebtoken');
 var multer = require('multer');
 var config = require('./config');
 var authMW = require('./utils/authMiddleware');
+var TransmissionNode = require('./utils/transmissionNode');
 // ************************************
 
 // ====================================
@@ -25,7 +31,6 @@ var debugSetup = require('./routes/ds');
 var torrent = require('./routes/torrent');
 var file = require('./routes/file');
 // ************************************
-
 
 // ====================================
 // CONFIG
@@ -48,75 +53,20 @@ var connexionDB = mongoose.connect(config.database, function(err) {
 app.set('connexionDB', connexionDB);
 // ************************************
 
-
 // ====================================
 // TORRENTS
 // ====================================
-var TransmissionNode = require('./utils/transmissionNode');
 var transmission = new TransmissionNode();
 app.set('transmission', transmission);
 //************************************
 
-
-// var refreshTorrent = function () {
-// 	console.log('yolo je refresh les diez et j emmit');
-// };
-
 // ====================================
 // SOCKETS
 // ====================================
-// var connectedUsers = 0;
-// var torrentIntervalId;
-var socketIO = require('socket.io');
 var io = socketIO();
 app.io = io;
 var sockets = require('./utils/sockets')(io, transmission, app.get('secret'));
-
-
-
-
-
-
-
-
-
-
-
-// console.log(io.parser);
-// io.on('torrent-refresh', function (socket) {
-// 	if (io.engine.clientsCount === 1)
-// 		torrentIntervalId = setInterval(refreshTorrent, 1000);
-// });
-
-// io.on('connection', function (socket) {
-// 	// connectedUsers++;
-// 	console.log('new user connection');
-// 	console.log('number of users currently connected :', io.engine.clientsCount);
-// 	io.sockets.emit('connected-users', {connectedUsers: io.engine.clientsCount});
-// 	// socket.emit('connection', {
-// 	//     connectedUsers: connectedUsers
-// 	//   });
-// 	// socket.broadcast.emit('connection', {
-// 	//     connectedUsers: connectedUsers
-// 	//   });
-// 	// console.log('NB USERS : ',connectedUsers);
-// 	// socket.on('disconnect', function (socket) {
-// 	// 	console.log('disconnect ON !!');
-// 	// });
-// 	socket.once('disconnect', function (socket) {
-// 		console.log('users still online : ', io.engine.clientsCount);
-// 		if (io.engine.clientsCount === 0)
-// 			clearInterval(torrentIntervalId);
-// 	});
-// });
-
-// io.sockets.once('disconnect', function (socket) {
-// 	connectedUsers--;
-// 	console.log('disconnect in io!');
-// 	console.log('NB USERS : ',connectedUsers);
-// });
 //************************************
-
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -134,10 +84,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ====================================
 // ROUTES
 // ====================================
+
+// ----- STANDARDS -----
 app.use('/', routes);
 app.use('/debug', debugSetup);
 app.use('/authenticate', auth);
-// all route below need identification token
+
+// ----- CONNECTED -----
 app.use(authMW);
 app.use('/users', users);
 app.use('/torrent', torrent);
@@ -179,6 +132,5 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
-
 
 module.exports = app;
