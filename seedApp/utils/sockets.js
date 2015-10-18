@@ -72,7 +72,7 @@ module.exports = function (io, transmission, secret) {
 							//ajout dans la database !
 							addFinishedTorrentToDB(torrent['id'], torrent['name']);
 							//envoyer l'objet de la db direct ???
-							// io.sockets.emit("new-torrent", {name: torrent["name"]});
+							io.sockets.emit("new-torrent", {name: torrent["name"]});
 						}
 					}
 				});
