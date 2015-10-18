@@ -3,7 +3,7 @@
 
 
 
-app.controller('mainCtrl', function ($scope, $rootScope, User, Torrent) {
+app.controller('mainCtrl', function ($scope, $rootScope, User, Torrent, socket) {
 
 	/*var socket = io();
 
@@ -47,4 +47,18 @@ app.controller('mainCtrl', function ($scope, $rootScope, User, Torrent) {
 			console.log(resp);
 		});
 	};
+
+	socket.on("new-torrent", function(data){
+		setTimeout(function() {
+	        toastr.options = {
+	            closeButton: true,
+	            progressBar: true,
+	            showMethod: 'fadeIn',
+	            hideMethod: 'fadeOut',
+	            timeOut: 5000
+	        };
+	        toastr.success('Checkout settings menu on left!', 'Welcome to Modern!');
+	    }, 1800);
+	});
+
 });

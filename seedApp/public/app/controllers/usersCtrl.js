@@ -1,4 +1,3 @@
-
 app.controller('usersCtrl', function ($scope, $rootScope, RequestHandler) {
 
 	console.log("usersCtrl");
