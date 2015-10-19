@@ -4,8 +4,8 @@ app.controller('connexionCtrl', function ($scope, $rootScope, $state, RequestHan
 	console.log("connexionCtrl");
 
 	$scope.user = {};
-	$scope.user.login = "lambda1";
-	$scope.user.password = "lambda1";
+	$scope.user.login = "admin";
+	$scope.user.password = "admin";
 
 	$scope.connexion = function(){
 		RequestHandler.post(api + "authenticate", $scope.user)
