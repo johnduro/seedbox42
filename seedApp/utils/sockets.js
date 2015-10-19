@@ -34,8 +34,8 @@ module.exports = function (io, transmission, secret) {
 	 * Envois un event a tout les utilisateurs avec les nouvelles donnees des torrents actifs
 	 */
 	var addFinishedTorrentToDB = function (id, name) {
-		transmission.torrentGet(["hashString", "downloadDir", "totalSize"], id, function (err, resp) {
-			console.log("ajout in DB")
+		transmission.torrentGet(["hashString", "downloadDir", "totalSize", "isFinished"], id, function (err, resp) {
+			console.log("ajout in DB");
 			if (err)
 				console.log(err);
 				// throw err;
@@ -46,7 +46,7 @@ module.exports = function (io, transmission, secret) {
 				{
 					var torrent = resp['torrents'][0];
 					File.findOneAndUpdate(
-						{ hashString: torrent['hashString'] },
+						{ hashString: torrent['hashString'], isFinished: false },
 						{ name: name, path: torrent['downloadDir'] + '/' + name, size: torrent['totalSize'], hashString: torrent['hashString'], isFinished: true, createdAt: Date.now() },
 						{ new: true, upsert: true, setDefaultsOnInsert: true },
 						function (err, newFile) {
@@ -182,9 +182,12 @@ module.exports = function (io, transmission, secret) {
 							File.findOneAndRemove({ hashString: resp['torrents'][0]['hashString'] }, function (err, file) {
 								console.log(resp['torrents']);
 								if (err)
-									console.log("Socket - On - delete:torrent: ",err);
-								else if (finishedTorrents.indexOf(resp['torrents'][0]['name']) > 0){
-									delete finishedTorrents[resp['torrents'][0]['name']];
+									console.log("Socket - On - delete:torrent: ", err);
+								else if (finishedTorrents.indexOf(resp['torrents'][0]['name']) > 0)
+								{
+									// delete finishedTorrents[resp['torrents'][0]['name']];
+									var index = finishedTorrents.indexOf(resp['torrents'][0]['name']);
+									finishedTorrents.splice(index, 1);
 									console.log("delete to finishedTorrents");
 								}
 							});
