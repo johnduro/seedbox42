@@ -1,3 +1,8 @@
 <div ng-repeat="item in tree">
-    <i class="fa fa-file fa-4" ng-if="item"></i> {{item.name}}
+    <div ng-switch="item.type">
+        <div ng-switch-when="folder" ><i class="fa fa-folder fa-4"></i> {{item.name}} </div>
+        <div ng-switch-when="audio" ><i class="fa fa-file-audio-o fa-4"></i> {{item.name}} </div>
+        <div ng-switch-when="video" ><i class="fa fa-file-video-o fa-4"></i> {{item.name}} </div>
+        <div ng-switch-default ><i class="fa fa-question-circle fa-4"></i> {{item.name}} </div>
+    </div>
 </div>
