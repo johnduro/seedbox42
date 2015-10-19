@@ -104,11 +104,6 @@ app.use(function(req, res, next) {
 
 // error handlers
 
-// function printPpl () {
-// 	console.log("NBR --> ", io.engine.clientsCount);
-// };
-// setInterval(printPpl, 1000);
-
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {

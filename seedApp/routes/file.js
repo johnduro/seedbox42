@@ -28,12 +28,37 @@ router.get('/:id?', function (req, res, next) {
 	}
 	else
 	{
-		File.findById({ _id: req.params.id, isFinished: true }, function (err, file) {
+		File.find({ _id: req.params.id, isFinished: true }, function (err, file) {
 			if (err)
 				return next(err);
 			res.json({ success: true, data: file });
 		});
 	}
+});
+
+router.post('/add-comment/:id', function (req, res, next) {
+	File.findById(req.params.id, function (err, file) {
+		if (err)
+			return next(err);
+		file.addComment(req.user, req.body.text, function (err) {
+			if (err)
+				return next(err);
+			res.json({ success: true, message: 'comment successfully added' });
+		});
+	});
+});
+
+router.delete('/remove-comment/:id', function (req, res, next) {
+	File.findById(req.params.id, function (err, file) {
+		if (err)
+			return next(err);
+		file.removeComment(req.body.commentId, function (err) {
+			if (err)
+				return next(err);
+			res.json({ success: true, message: 'comment successfully removed' });
+		});
+	});
+
 });
 
 // method put , attention au path !
