@@ -1,6 +1,19 @@
 
 var mongoose = require('mongoose');
 
+var indexOfByKey = function (arr, key, value) {
+	var arrayLength = arr.length;
+	for (var i = 0; i < arrayLength; i++) {
+		if (arr[i][key] === value)
+			return i;
+	}
+	return -1;
+};
+
+// ====================================
+// FILE SCHEMA
+// ====================================
+
 var FileSchema = new mongoose.Schema({
 	name: String,
 	path: { type: String, default: "" },
@@ -28,5 +41,25 @@ var FileSchema = new mongoose.Schema({
 	torrentAddedAt : { type: Date, default: Date.now }
 });
 
+
+// ====================================
+// METHODS
+// ====================================
+
+FileSchema.methods = {
+	addComment: function (user, comment, cb) {
+		this.comments.push({ text: comment, user: user._id });
+		this.save(cb);
+	},
+
+	removeComment: function (commentId, cb) {
+		var index = indexOfByKey(this.comments, '_id', commentId);
+		if (index > -1)
+			this.comments.splice(index, 1);
+		else
+			return cb('not found');
+		this.save(cb);
+	}
+};
 
 module.exports = mongoose.model('File', FileSchema);
