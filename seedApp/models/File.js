@@ -21,6 +21,7 @@ var FileSchema = new mongoose.Schema({
 	creator: { type: mongoose.Schema.ObjectId, ref: 'User' },
 	hashString: String,
 	isFinished: { type: Boolean, default: false },
+	fileType: { type: String, default: '' },
 	downloads: { type: Number, default: 0 },
 	privacy : { type: Number, default: 1 },
 	// torrent: String, //utile ?
@@ -58,6 +59,15 @@ FileSchema.methods = {
 			this.comments.splice(index, 1);
 		else
 			return cb('not found');
+		this.save(cb);
+	},
+
+	addGrade: function (user, grade, cb) {
+		var index = indexOfByKey(this.grades, 'user', user._id);
+		if (index === -1)
+			this.grades.push({ user: user._id, grade: grade });
+		else
+			return cb('already graded');
 		this.save(cb);
 	}
 };
