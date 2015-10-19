@@ -4,7 +4,7 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, socket, 
 	console.log("torrentsCtrl");
 
 	//------------------------------------------------  VARIABLES -------------------------------------------------------
-	$scope.newTorrentUrl = "magnet:?xt=urn:btih:b115f4f2daf4baaf0fe4270653e69dc4f69eb3d2&dn=The.Flash.2014.S02E02.HDTV.x264-LOL%5Bettv%5D&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80&tr=udp%3A%2F%2Fopen.demonii.com%3A1337&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Fexodus.desync.com%3A6969";
+	$scope.newTorrentUrl = "magnet:?xt=urn:btih:2b12ce09236526a728c6974c0d89d52860e82daa&dn=Major+Lazer+x+DJ+Snake+feat.+M%26Oslash%3B+-+Lean+On.mp3&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80&tr=udp%3A%2F%2Fopen.demonii.com%3A1337&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Fexodus.desync.com%3A6969";
 	$scope.torrents = {};
 
 	//------------------------------------------------  EVENTS SOCKETS -------------------------------------------------------
@@ -20,7 +20,7 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, socket, 
 				.then(function(resultRefresh){
 					$scope.torrents[data.id] = resultRefresh.data.data.torrents[0];
 			});
-		}		
+		}
 	});
 
 	socket.on("torrentRefreshRes", function(data){
