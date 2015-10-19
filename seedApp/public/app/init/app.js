@@ -14,7 +14,9 @@ app.run(function ($rootScope, $location, $http) {
     api = "/";
 
     $rootScope.token = localStorage.getItem("token");
+    console.log($rootScope.token);
     $rootScope.user = JSON.parse(localStorage.getItem("user"));
     $http.defaults.headers.common['X-Access-Token'] = $rootScope.token;
+
 
 });

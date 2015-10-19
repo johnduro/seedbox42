@@ -1,4 +1,4 @@
-app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http, $location, socket) {
+app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http, $location, socket, $timeout) {
 
 	console.log("seedboxCtrl");
 
@@ -17,6 +17,7 @@ app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http, $loca
 	}
 
 	socket.on("newFile", function(data){
+		console.log(data);
 		setTimeout(function() {
 			toastr.options = {
 				closeButton: true,
@@ -25,9 +26,14 @@ app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http, $loca
 				hideMethod: 'fadeOut',
 				timeOut: 5000
 			};
-			toastr.success(data.name, 'Fin de telechargement');
+			toastr.success(data.data.name, 'Fin de telechargement');
 		}, 1800);
 	});
 
+	socket.on('connectedUsers', function(data){
+		$timeout(function() {
+			$rootScope.connectedUsers = data.connectedUsers;
+		}, 500);
+	});
 
 });
