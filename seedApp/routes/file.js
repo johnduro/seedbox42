@@ -9,7 +9,8 @@ var fs = require('fs');
 // *****************************************
 
 router.get('/all', function (req, res, next) {
-	var query = File.find({ isFinished: true }).select({ 'name': 1, 'size': 1, 'downloads': 1, 'createdAt': 1, 'fileType': 1 });
+	// var query = File.find({ isFinished: true }).select({ 'name': 1, 'size': 1, 'downloads': 1, 'createdAt': 1, 'fileType': 1 });
+	var query = File.find({ isFinished: true });
 	query.exec(function (err, files) {
 		if (err)
 			return next(err);
@@ -17,23 +18,12 @@ router.get('/all', function (req, res, next) {
 	});
 });
 
-router.get('/:id?', function (req, res, next) {
-	if (!(req.params.id))
-	{
-		File.find({ isFinished: true }, function (err, files) {
-			if (err)
-				return next(err);
-			res.json({ success: true, data: files });
-		});
-	}
-	else
-	{
-		File.find({ _id: req.params.id, isFinished: true }, function (err, file) {
-			if (err)
-				return next(err);
-			res.json({ success: true, data: file });
-		});
-	}
+router.get('/:id', function (req, res, next) {
+	File.find({ _id: req.params.id, isFinished: true }, function (err, file) {
+		if (err)
+			return next(err);
+		res.json({ success: true, data: file });
+	});
 });
 
 router.post('/add-comment/:id', function (req, res, next) {
@@ -58,7 +48,6 @@ router.delete('/remove-comment/:id', function (req, res, next) {
 			res.json({ success: true, message: 'comment successfully removed' });
 		});
 	});
-
 });
 
 // method put , attention au path !

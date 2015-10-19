@@ -58,7 +58,7 @@ FileSchema.methods = {
 		if (index > -1)
 			this.comments.splice(index, 1);
 		else
-			return cb('not found');
+			return cb('comment not found');
 		this.save(cb);
 	},
 
@@ -68,6 +68,42 @@ FileSchema.methods = {
 			this.grades.push({ user: user._id, grade: grade });
 		else
 			return cb('already graded');
+		this.save(cb);
+	},
+
+	modGrade: function (user, newGrade, cb) {
+		var index = indexOfByKey(this.grades, 'user', user._id);
+		if (index > -1)
+			this.grades[index].grade = newGrade;
+		else
+			return cb('this user have not graded this file yet');
+		this.save(cb);
+	},
+
+	removeGrade: function (user, cb) {
+		var index = indexOfByKey(this.grades, 'user', user._id);
+		if (index > -1)
+			this.grades.splice(index, 1);
+		else
+			return cb('grade not found');
+		this.save(cb);
+	},
+
+	addLock: function (user, cb) {
+		var index = indexOfByKey(this.locked, 'user', user._id);
+		if (index === -1)
+			this.locked.push({ user: user._id });
+		else
+			return cb('already locked by this user');
+		this.save(cb);
+	},
+
+	removeLock: function (user, cb) {
+		var index = indexOfByKey(this.locked, 'user', user._id);
+		if (index > -1 )
+			this.locked.splice(index, 1);
+		else
+			return cb('this file is not locked by this user');
 		this.save(cb);
 	}
 };
