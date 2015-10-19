@@ -3,6 +3,7 @@ var router = express.Router();
 // var io = require('socket.io');
 var File = require("../models/File.js");
 var fs = require('fs');
+var mime = require('mime');
 
 // *****************************************
 // FILES
@@ -136,6 +137,7 @@ var getDirectoryInfos = function (path, dirInfos, done) {
 				if (stat && stat.isDirectory())
 				{
 					fileInfos.isDirectory = true;
+					fileInfos.fileType = "folder";
 					getDirectoryInfos(fileInfos.path, fileInfos, function (err, res) {
 						result.push(res);
 						size += res.size;
@@ -145,6 +147,7 @@ var getDirectoryInfos = function (path, dirInfos, done) {
 				else
 				{
 					fileInfos.isDirectory = false;
+					fileInfos.fileType = mime.lookup(fileInfos.path);
 					fileInfos.size = stat.size;
 					size += stat.size;
 					result.push(fileInfos);
