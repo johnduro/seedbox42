@@ -5,17 +5,14 @@ app.controller('connexionCtrl', function ($scope, $rootScope, $state, RequestHan
 
 	$scope.user = {};
 	$scope.user.login = "lambda1";
-	$scope.user.password = "passwd1";
+	$scope.user.password = "lambda1";
 
 	$scope.connexion = function(){
-		RequestHandler.post(api + "/authenticate", $scope.user)
+		RequestHandler.post(api + "authenticate", $scope.user)
 			.then(function(result){
 				if (result.data.success){
-					$rootScope.user = result.data.data;
-					$rootScope.token = result.data.token;
-
-					localStorage.setItem("user", JSON.stringify($rootScope.user));
-					localStorage.setItem("token", JSON.stringify($rootScope.token));
+					localStorage.setItem("user", JSON.stringify(result.data.data));
+					localStorage.setItem("token", result.data.token);
 					$state.go("seedbox.dashboard");
 				}
 		})

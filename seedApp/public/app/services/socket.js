@@ -1,6 +1,6 @@
 app.factory('socket', ['$rootScope', function ($rootScope) {
     // var socket = io.connect(api, {token:$rootScope.token});
-    var socket = io.connect(api, { query : "token=" + $rootScope.token });
+    var socket = io.connect(api, { query : "token=" + localStorage.getItem("token") });
     // var socket = io.connect(api);
 	// var obj = socket.connect();
 	// console.log(socket.connected);

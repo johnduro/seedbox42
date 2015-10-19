@@ -1,10 +1,6 @@
-app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http, $location) {
+app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http, $location, socket) {
 
 	console.log("seedboxCtrl");
-
-	$rootScope.user = JSON.parse(localStorage.getItem("user"));
-	$rootScope.token = JSON.parse(localStorage.getItem("token"));
-	$http.defaults.headers.common['X-Access-Token'] = $rootScope.token;
 
 	//Check si un utilisateur est connecte
 	if (!$rootScope.token){
@@ -19,5 +15,19 @@ app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http, $loca
 		console.log("logout");
 		localStorage.clear();
 	}
+
+	socket.on("newFile", function(data){
+		setTimeout(function() {
+			toastr.options = {
+				closeButton: true,
+				progressBar: true,
+				showMethod: 'fadeIn',
+				hideMethod: 'fadeOut',
+				timeOut: 5000
+			};
+			toastr.success(data.name, 'Fin de telechargement');
+		}, 1800);
+	});
+
 
 });
