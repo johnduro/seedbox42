@@ -9,7 +9,7 @@ var fs = require('fs');
 // *****************************************
 
 router.get('/all', function (req, res, next) {
-	var query = File.find({ isFinished: true }).select({'name': 1, 'size': 1, 'downloads': 1, 'createdAt': 1 });
+	var query = File.find({ isFinished: true }).select({ 'name': 1, 'size': 1, 'downloads': 1, 'createdAt': 1, 'fileType': 1 });
 	query.exec(function (err, files) {
 		if (err)
 			return next(err);
@@ -171,24 +171,26 @@ router.get('/show/:id', function (req, res, next) {
 		if (err)
 			return next(err);
 		var fileStat = { name: file.name, path: file.path, size: file.size };
-		fs.stat(file.path, function (err, stat) {
-			if (stat.isDirectory())
-			{
-				fileStat.isDirectory = true;
-				getDirectoryInfos(file.path, fileStat, function (err, data) {
-				// getDirectoryInfos('/home/johnduro/documents/seedbox42', fileStat, function (err, data) {
-					if (err)
-						res.json({ success: false, error: err });
-					else
-						res.json({ success: true, data: data });
-				});
-			}
-			else
-			{
-				fileStat.isDirectory = false;
-				res.json(fileStat);
-			}
-		});
+		// fs.stat(file.path, function (err, stat) {
+		// 	if (stat.isDirectory())
+		// 	{
+		if (file.fileType === 'folder')
+		{
+			fileStat.isDirectory = true;
+			getDirectoryInfos(file.path, fileStat, function (err, data) {
+			// getDirectoryInfos('/home/johnduro/documents/seedbox42', fileStat, function (err, data) {
+				if (err)
+					res.json({ success: false, error: err });
+				else
+					res.json({ success: true, data: data });
+			});
+		}
+		else
+		{
+			fileStat.isDirectory = false;
+			res.json(fileStat);
+		}
+		// });
 	});
 });
 

@@ -1,5 +1,7 @@
 var File = require('../models/File.js');
 var jwt = require('jsonwebtoken');
+var fs = require('fs');
+var mime = require('mime');
 
 // ****************************************
 // SOCKETS
@@ -17,7 +19,7 @@ module.exports = function (io, transmission, secret) {
 
 	/**
 	 * Socket - Emit - torrentRefreshRes
-	 * Permet d'envyer un event a tout les utilisateurs avec les nouvelles donnees des torrents actifs
+	 * Permet d'envoyer un event a tous les utilisateurs avec les nouvelles donnees des torrents actifs
 	 */
 	var refreshTorrent = function () {
 		transmission.torrentGet(["id", "error", "errorString", "eta", "isFinished", "isStalled", "leftUntilDone", "metadataPercentComplete", "peersConnected", "peersGettingFromUs", "peersSendingToUs", "percentDone", "queuePosition", "rateDownload", "rateUpload", "recheckProgress", "seedRatioMode", "seedRatioLimit", "sizeWhenDone", "status", "trackers", "downloadDir", "uploadedEver", "uploadRatio", "Webseedssendingtous"], "recently-active", function (err, res) {
@@ -45,17 +47,25 @@ module.exports = function (io, transmission, secret) {
 				if (resp['torrents'].length > 0)
 				{
 					var torrent = resp['torrents'][0];
-					File.findOneAndUpdate(
-						{ hashString: torrent['hashString'], isFinished: false },
-						{ name: name, path: torrent['downloadDir'] + '/' + name, size: torrent['totalSize'], hashString: torrent['hashString'], isFinished: true, createdAt: Date.now() },
-						{ new: true, upsert: true, setDefaultsOnInsert: true },
-						function (err, newFile) {
-							if (err)
-								console.log(err);
-							else
-								io.sockets.emit("newFile", { name: torrent["name"], data: newFile });
-						}
-					);
+					var path = torrent['downloadDir'] + '/' + name;
+					fs.stat(path, function (err, stat) {
+						var type = '';
+						if (stat.isDirectory())
+							type = 'folder';
+						else
+							type = mime.lookup(path);
+						File.findOneAndUpdate(
+							{ hashString: torrent['hashString'], isFinished: false },
+							{ name: name, path: path, size: torrent['totalSize'], hashString: torrent['hashString'], isFinished: true, fileType: type, createdAt: Date.now() },
+							{ new: true, upsert: true, setDefaultsOnInsert: true },
+							function (err, newFile) {
+								if (err)
+									console.log(err);
+								else
+									io.sockets.emit("newFile", { name: torrent["name"], data: newFile });
+							}
+						);
+					});
 				}
 			}
 		});
