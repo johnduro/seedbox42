@@ -123,7 +123,7 @@ app.controller('filesCtrl', function ($scope, $rootScope, RequestHandler, socket
 			send.path = "/";
 		}
 		console.log(send);
-		RequestHandler.get(api + "file/download/" + id, send)
+		RequestHandler.post(api + "file/download/" + id, send)
 			.then(function(result){
 				console.log(result);
 			});
