@@ -282,10 +282,10 @@ router.get('/download/:id/:path/:name', function (req, res, next) {
 		if (err)
 			return next(err);
 		// var filePath = file.path + req.body.path;
-		var filePath = file.path + (req.params.path).replace("+-2F-+", "/");;
-		console.log("body > ", req.body);
-		console.log("1 > ", filePath);
-		console.log("2 > ", typeof filePath);
+		var filePath = file.path + (req.params.path).replace("+-2F-+", "/");
+		// console.log("body > ", req.body);
+		// console.log("1 > ", filePath);
+		// console.log("2 > ", typeof filePath);
 		// return next();
 		// var fileName = req.body.fileName;
 		var fileName = req.params.name;
