@@ -1,10 +1,12 @@
-app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http, $location, socket, $timeout) {
+app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http, $location, socket, $timeout, $cookies) {
 
 	console.log("seedboxCtrl");
 
 	//Check si un utilisateur est connecte
 	if (!$rootScope.token){
 		$state.go("connexion");
+	}else{
+		$cookies.put("token", $rootScope.token);
 	}
 
 	$scope.isActive = function (viewLocation) {

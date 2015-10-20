@@ -1,4 +1,4 @@
-var app = angular.module('seedApp', ['ngRoute', 'ui.router', 'ngCookies']);
+var app = angular.module('seedApp', ['ngRoute', 'ui.router', 'ngCookies', 'ngVideo']);
 
 // ---------------------- variable global -------------------------------
 var api = "";

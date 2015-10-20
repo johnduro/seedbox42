@@ -17,6 +17,12 @@
 html, body {
   font-family: 'Roboto', 'Helvetica', sans-serif;
 }
+[ng-click],
+[data-ng-click],
+[ng-dblclick],
+[x-ng-click] {
+    cursor: pointer;
+}
 .demo-avatar {
   width: 48px;
   height: 48px;
