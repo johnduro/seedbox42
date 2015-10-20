@@ -105,6 +105,12 @@ FileSchema.methods = {
 		else
 			return cb('this file is not locked by this user');
 		this.save(cb);
+	},
+
+	isLocked: function () {
+		if (this.locked.length > 0)
+			return true;
+		return false;
 	}
 };
 
