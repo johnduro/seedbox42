@@ -6,6 +6,7 @@ var authMiddleware = function (req, res, next) {
 
 	if (token)
 	{
+		console.log("token:  ", token);
 		jwt.verify(token, req.app.get('secret'), function (err, decoded) {
 			if (err)
 				return res.json({ success: false, message: 'Failed to authenticate token.' });

@@ -4,6 +4,7 @@ var router = express.Router();
 var File = require("../models/File.js");
 var fs = require('fs');
 var mime = require('mime');
+var mongoose = require('mongoose');
 
 // *****************************************
 // FILES
@@ -24,6 +25,55 @@ router.get('/:id', function (req, res, next) {
 		if (err)
 			return next(err);
 		res.json({ success: true, data: file });
+	});
+});
+
+
+router.post('/add-grade/:id', function (req, res, next) {
+	File.findById(req.params.id, function (err, file) {
+		if (err)
+			return next(err);
+		file.addGrade(req.user, req.body.grade, function (err) {
+			if (err)
+				return next(err);
+			res.json({ success: true, message: 'grade added' });
+		});
+	});
+});
+
+router.delete('/remove-grade/:id', function (req, res, next) {
+	File.findById(req.params.id, function (err, file) {
+		if (err)
+			return next(err);
+		file.removeGrade(req.user, function (err) {
+			if (err)
+				return next(err);
+			res.json({ success: true, message: 'grade successfully removed' });
+		});
+	});
+});
+
+router.post('/add-lock/:id', function (req, res, next) {
+	File.findById(req.params.id, function (err, file) {
+		if (err)
+			return next(err);
+		file.addLock(req.user, function (err) {
+			if (err)
+				return next(err);
+			res.json({ success: true, message: 'file successfuly locked' });
+		});
+	});
+});
+
+router.delete('/remove-lock/:id', function (req, res, next) {
+	File.findById(req.params.id, function (err, file) {
+		if (err)
+			return next(err);
+		file.removeLock(req.user, function (err) {
+			if (err)
+				return next(err);
+			res.json({ success: true, message: 'file successfully unlocked' });
+		});
 	});
 });
 
@@ -48,6 +98,49 @@ router.delete('/remove-comment/:id', function (req, res, next) {
 				return next(err);
 			res.json({ success: true, message: 'comment successfully removed' });
 		});
+	});
+});
+
+
+// db.files.aggregate([ {"$match": {"comments.user":  ObjectId("561286ad881dd9a9727b2313")} }, {"$unwind": "$comments"}, {"$match": {"comments.user":  ObjectId("561286ad881dd9a9727b2313")}}, {"$group": {"_id": "$_id", "comments": {"$push": "$comments"}}} ])
+
+router.get('/user-comment/:id', function (req, res, next) {
+	var id = mongoose.mongo.ObjectID(req.params.id);
+	File.aggregate(
+		[
+			{ "$match": { "comments.user": id } },
+		 	{ "$unwind": "$comments" },
+			{ "$match": { "comments.user": id } },
+			// { "$project": { "fileName": "$name" } },
+			{ "$group": { "_id": "$_id", "comments": { "$push": "$comments" } } }
+			// { "$group": { "_id": "$_id", "name": "$name", "comments": { "$push": "$comments" } } }
+		],
+		function (err, resp) {
+			if (err)
+			{
+				console.log("EROR ",err);
+				next(err);
+			}
+			res.json({ success: true, data: resp});
+	});
+});
+
+router.get('/user-locked/:id' ,function (req, res, next) {
+	var id = mongoose.mongo.ObjectID(req.params.id);
+	File.aggregate(
+		[
+			{ "$match": { "locked.user": id } },
+		 	{ "$unwind": "$locked" },
+			{ "$match": { "locked.user": id } },
+			{ "$group": { "_id": "$_id" } }
+		],
+		function (err, resp) {
+			if (err)
+			{
+				console.log("EROR ",err);
+				next(err);
+			}
+			res.json({ success: true, data: resp});
 	});
 });
 
@@ -162,15 +255,12 @@ router.get('/show/:id', function (req, res, next) {
 	File.findById(req.params.id, function (err, file) {
 		if (err)
 			return next(err);
-		var fileStat = { name: file.name, path: file.path, size: file.size };
-		// fs.stat(file.path, function (err, stat) {
-		// 	if (stat.isDirectory())
-		// 	{
+		var fileInfos = { name: file.name, path: file.path, size: file.size };
 		if (file.fileType === 'folder')
 		{
-			fileStat.isDirectory = true;
-			getDirectoryInfos(file.path, fileStat, function (err, data) {
-			// getDirectoryInfos('/home/johnduro/documents/seedbox42', fileStat, function (err, data) {
+			fileInfos.isDirectory = true;
+			fileInfos.fileType = "folder";
+			getDirectoryInfos(file.path, fileInfos, function (err, data) {
 				if (err)
 					res.json({ success: false, error: err });
 				else
@@ -179,10 +269,10 @@ router.get('/show/:id', function (req, res, next) {
 		}
 		else
 		{
-			fileStat.isDirectory = false;
-			res.json(fileStat);
+			fileInfos.isDirectory = false;
+			fileInfos.fileType = mime.lookup(fileInfos.path);
+			res.json(fileInfos);
 		}
-		// });
 	});
 });
 
