@@ -2,8 +2,7 @@ var jwt = require('jsonwebtoken');
 
 
 var authMiddleware = function (req, res, next) {
-	var token = req.body.token || req.query.token || req.headers['x-access-token'];
-
+	var token = req.body.token || req.query.token || req.headers['x-access-token'] || req.cookies.token;
 	if (token)
 	{
 		console.log("token:  ", token);
