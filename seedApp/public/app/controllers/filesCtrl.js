@@ -1,6 +1,9 @@
-app.controller('filesCtrl', function ($scope, $rootScope, RequestHandler, socket, $timeout) {
+app.controller('filesCtrl', function ($scope, $rootScope, RequestHandler, socket, $timeout, $http, $cookies) {
 
 	console.log("filesCtrl");
+	console.log($cookies);
+	$cookies.token = $rootScope.token;
+	//$cookies.put("token", $rootScope.token);
 
 	$scope.treeBase = '';
 	$scope.treeSelected = '';
@@ -123,9 +126,25 @@ app.controller('filesCtrl', function ($scope, $rootScope, RequestHandler, socket
 			send.path = "/";
 		}
 		console.log(send);
-		RequestHandler.post(api + "file/download/" + id, send)
+		send.path = send.path.replace("/", "+-2F-+");
+		console.log(send);
+
+		window.location.href = api + "file/download/"+id+"/"+send.path+"/"+send.name;
+		/*$http({
+	      url: api + "file/download/"+id,
+	      method: "POST",
+	      data: send,
+	      responseType: 'blob'
+	  }).success(function (data, status, headers, config) {
+	      var blob = new Blob([data], { type: 'audio/mpeg' });
+	      var fileName = headers('content-disposition');
+	      saveAs(blob, fileName);
+	  }).error(function (data, status, headers, config) {
+	    console.log('Unable to download the file')
+	});*/
+		/*RequestHandler.get(api + "file/download/"+id+"/"+send.path+"/"+send.name)
 			.then(function(result){
 				console.log(result);
-			});
+			});*/
 	}
 });
