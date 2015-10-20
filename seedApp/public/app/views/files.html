@@ -17,8 +17,10 @@
 <table ng-if="!treeSelected" class="display table" style="width: 100%; cellspacing: 0;">
     <thead>
         <tr>
-            <th class="col-md-4">Typee</th>
-            <th class="col-md-12">Name</th>
+            <th class="">Type</th>
+            <th class="col-md-14">Name</th>
+            <th class="col-md-1">Size</th>
+            <th class=""></th>
         </tr>
     </thead>
     <tbody ng-repeat="item in elementsActual">
@@ -32,6 +34,8 @@
                 </div>
             </td>
             <td ng-dblclick="openFolder(item._id)">{{item.name}}</td>
+            <td>{{item.sizeConvert}}</td>
+            <td> <i class="fa fa-download"></i> </td>
         </tr>
     </tbody>
 </table>
@@ -39,8 +43,10 @@
 <table ng-if="treeSelected" class="display table" style="width: 100%; cellspacing: 0;">
     <thead>
         <tr>
-            <th class="col-md-4">Type</th>
-            <th class="col-md-12">Name</th>
+            <th class="">Type</th>
+            <th class="col-md-14">Name</th>
+            <th class="col-md-1">Size</th>
+            <th class=""></th>
         </tr>
     </thead>
     <tbody ng-repeat="item in elementsActual.fileList">
@@ -54,6 +60,8 @@
                 </div>
             </td>
             <td ng-dblclick="openFolder(item)">{{item.name}}</td>
+            <td>{{item.sizeConvert}}</td>
+            <td> <i class="fa fa-download"></i> </td>
         </tr>
     </tbody>
 </table>
