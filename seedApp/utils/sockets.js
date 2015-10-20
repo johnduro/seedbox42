@@ -49,15 +49,16 @@ module.exports = function (io, transmission, secret) {
 					var torrent = resp['torrents'][0];
 					var path = torrent['downloadDir'] + '/' + name;
 					fs.stat(path, function (err, stat) {
-						var type = '';
+						var fileType = '';
 						if (stat.isDirectory())
-							type = 'folder';
+							fileType = 'folder';
 						else
-							type = mime.lookup(path);
+							fileType = mime.lookup(path);
 						File.findOneAndUpdate(
 							{ hashString: torrent['hashString'], isFinished: false },
-							{ name: name, path: path, size: torrent['totalSize'], hashString: torrent['hashString'], isFinished: true, fileType: type, createdAt: Date.now() },
-							{ new: true, upsert: true, setDefaultsOnInsert: true },
+							{ name: name, path: path, size: torrent['totalSize'], hashString: torrent['hashString'], isFinished: true, fileType: fileType, createdAt: Date.now() },
+							// { new: true, upsert: true, setDefaultsOnInsert: true },
+							{ new: true },
 							function (err, newFile) {
 								if (err)
 									console.log(err);
@@ -84,7 +85,7 @@ module.exports = function (io, transmission, secret) {
 			else
 			{
 				res["torrents"].forEach(function (torrent) {
-					console.log('finishedTorrent --> ', finishedTorrents);
+					// console.log('finishedTorrent --> ', finishedTorrents);
 					if (finishedTorrents.indexOf(torrent['name']) < 0)
 					{
 						if (torrent['leftUntilDone'] === 0 && torrent["percentDone"] === 1.0 && torrent["status"] > 4)
@@ -178,28 +179,34 @@ module.exports = function (io, transmission, secret) {
 		 * Retroune un event 'post:torrent:url' true ou false
 		 */
 		socket.on('delete:torrent', function (data) {
+
+
+
+
+
+
 			var removeLocalData = data.removeLocalData;
 			var id = parseInt(data.id, 10);
 			if (removeLocalData)
 			{
 				transmission.torrentGet(['hashString', 'name'], id, function (err, resp) {
 					if (err)
-						throw err;
+						console.log('ERROR', err);
 					else
 					{
 						if (resp['torrents'].length > 0)
 						{
 							File.findOneAndRemove({ hashString: resp['torrents'][0]['hashString'] }, function (err, file) {
-								console.log(resp['torrents']);
+								// console.log(resp['torrents']);
 								if (err)
 									console.log("Socket - On - delete:torrent: ", err);
-								else if (finishedTorrents.indexOf(resp['torrents'][0]['name']) > 0)
-								{
-									// delete finishedTorrents[resp['torrents'][0]['name']];
-									var index = finishedTorrents.indexOf(resp['torrents'][0]['name']);
-									finishedTorrents.splice(index, 1);
-									console.log("delete to finishedTorrents");
-								}
+								// else if (finishedTorrents.indexOf(resp['torrents'][0]['name']) > 0)
+								// {
+								// 	// delete finishedTorrents[resp['torrents'][0]['name']];
+								// 	var index = finishedTorrents.indexOf(resp['torrents'][0]['name']);
+								// 	finishedTorrents.splice(index, 1);
+								// 	console.log("delete to finishedTorrents");
+								// }
 							});
 						}
 					}
