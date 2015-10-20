@@ -271,7 +271,7 @@ router.get('/show/:id', function (req, res, next) {
 		{
 			fileInfos.isDirectory = false;
 			fileInfos.fileType = mime.lookup(fileInfos.path);
-			res.json(fileInfos);
+			res.json({ success: true, data: fileInfos });
 		}
 	});
 });
