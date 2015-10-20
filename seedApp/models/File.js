@@ -19,7 +19,7 @@ var FileSchema = new mongoose.Schema({
 	path: { type: String, default: "" },
 	size: { type: Number, default: 0 },
 	creator: { type: mongoose.Schema.ObjectId, ref: 'User' },
-	hashString: String,
+	hashString: { type: String, unique: true },
 	isFinished: { type: Boolean, default: false },
 	fileType: { type: String, default: '' },
 	downloads: { type: Number, default: 0 },
