@@ -39,7 +39,7 @@ module.exports = function (io, transmission, secret) {
 		transmission.torrentGet(["hashString", "downloadDir", "totalSize", "isFinished"], id, function (err, resp) {
 			console.log("ajout in DB");
 			if (err)
-				console.log(err);
+				console.log("add finish torrent error: ", err);
 				// throw err;
 			else
 			{
@@ -61,9 +61,13 @@ module.exports = function (io, transmission, secret) {
 							{ new: true },
 							function (err, newFile) {
 								if (err)
-									console.log(err);
+									console.log("add finish torrent error: ", err);
 								else
-									io.sockets.emit("newFile", { name: torrent["name"], data: newFile });
+								{
+									// console.log("update res > ", newFile);
+									if (newFile != null)
+										io.sockets.emit("newFile", { name: torrent["name"], data: newFile });
+								}
 							}
 						);
 					});
@@ -179,44 +183,35 @@ module.exports = function (io, transmission, secret) {
 		 * Retroune un event 'post:torrent:url' true ou false
 		 */
 		socket.on('delete:torrent', function (data) {
-
-
-
-
-
-
 			var removeLocalData = data.removeLocalData;
 			var id = parseInt(data.id, 10);
-			if (removeLocalData)
-			{
-				transmission.torrentGet(['hashString', 'name'], id, function (err, resp) {
-					if (err)
-						console.log('ERROR', err);
-					else
-					{
-						if (resp['torrents'].length > 0)
-						{
-							File.findOneAndRemove({ hashString: resp['torrents'][0]['hashString'] }, function (err, file) {
-								// console.log(resp['torrents']);
-								if (err)
-									console.log("Socket - On - delete:torrent: ", err);
-								// else if (finishedTorrents.indexOf(resp['torrents'][0]['name']) > 0)
-								// {
-								// 	// delete finishedTorrents[resp['torrents'][0]['name']];
-								// 	var index = finishedTorrents.indexOf(resp['torrents'][0]['name']);
-								// 	finishedTorrents.splice(index, 1);
-								// 	console.log("delete to finishedTorrents");
-								// }
-							});
-						}
-					}
-				});
-			}
-			transmission.torrentRemove(id, removeLocalData, function (err, resp) {
+			transmission.torrentGet(['hashString', 'name'], id, function (err, respGet) {
 				if (err)
-					socket.emit('delete:torrent', { success: false, message: "Could not remove torrent" });
+					console.log('Socket - On - delete:torrent: ', err);
 				else
-					io.sockets.emit('delete:torrent', { success: true, id: id, message: 'Torrent removed' });
+				{
+					transmission.torrentRemove(id, removeLocalData, function (err, respRemove) {
+						if (err)
+							socket.emit('delete:torrent', { success: false, message: "Could not remove torrent" });
+						else
+						{
+							io.sockets.emit('delete:torrent', { success: true, id: id, message: 'Torrent removed' });
+							if (respGet['torrents'].length > 0)
+							{
+								if (removeLocalData)
+								{
+									File.findOneAndRemove({ hashString: respGet['torrents'][0]['hashString'] }, function (err, file) {
+										if (err)
+											console.log('Socket - On - delete:torrent: ', err);
+									});
+								}
+								var index = finishedTorrents.indexOf(respGet['torrents'][0]['name']);
+								if (index > 0)
+									finishedTorrents.splice(index, 1);
+							}
+						}
+					});
+				}
 			});
 		});
 
