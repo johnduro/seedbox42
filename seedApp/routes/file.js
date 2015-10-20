@@ -276,4 +276,18 @@ router.get('/show/:id', function (req, res, next) {
 	});
 });
 
+router.get('/download/:id', function (req, res, next) {
+	File.findById(req.params.id, function (err, file) {
+		if (err)
+			return next(err);
+		var filePath = file.path + req.body.path;
+		var fileName = req.body.fileName;
+		var mimeType = mime.lookup(filePath);
+		res.setHeader('Content-disposition', 'attachment; filename=' + fileName);
+		res.setHeader('Content-type', mimeType);
+		var fileStream = fs.createReadStream(file);
+		fileStream.pipe(res);
+	});
+});
+
 module.exports = router;
