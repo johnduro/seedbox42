@@ -276,16 +276,20 @@ router.get('/show/:id', function (req, res, next) {
 	});
 });
 
-router.get('/download/:id', function (req, res, next) {
+router.post('/download/:id', function (req, res, next) {
 	File.findById(req.params.id, function (err, file) {
 		if (err)
 			return next(err);
 		var filePath = file.path + req.body.path;
+		console.log("body > ", req.body);
+		console.log("1 > ", filePath);
+		console.log("2 > ", typeof filePath);
+		// return next();
 		var fileName = req.body.fileName;
 		var mimeType = mime.lookup(filePath);
 		res.setHeader('Content-disposition', 'attachment; filename=' + fileName);
 		res.setHeader('Content-type', mimeType);
-		var fileStream = fs.createReadStream(file);
+		var fileStream = fs.createReadStream(filePath);
 		fileStream.pipe(res);
 	});
 });
