@@ -1,15 +1,28 @@
 app.controller('filesCtrl', function ($scope, $rootScope, RequestHandler, socket, $timeout, $http, $cookies) {
 
 	console.log("filesCtrl");
-	console.log($cookies);
-	$cookies.token = $rootScope.token;
-	//$cookies.put("token", $rootScope.token);
 
 	$scope.treeBase = '';
 	$scope.treeSelected = '';
 	$scope.elementsActual = '';
 	var pathActualArray = [];
 	$scope.pathActual = " / ";
+	$scope.pathStreaming = "";
+	$scope.typeStreaming = "";
+
+	socket.on("newFile", function(data){
+		RequestHandler.get(api + "file/all")
+			.then(function(result){
+				$scope.treeBase = $scope.elementsActual = result.data.data;
+				addType($scope.elementsActual);
+		});
+	});
+
+	RequestHandler.get(api + "file/all")
+		.then(function(result){
+			$scope.treeBase = $scope.elementsActual = result.data.data;
+			addType($scope.elementsActual);
+	});
 
 	function FileConvertSize(aSize){
 		aSize = Math.abs(parseInt(aSize, 10));
@@ -36,6 +49,26 @@ app.controller('filesCtrl', function ($scope, $rootScope, RequestHandler, socket
 		}
 	}
 
+	function generatePathDownload(id, name){
+		var save = false;
+		var newPath = "";
+		for(var key in pathActualArray){
+			if (save){
+				newPath = newPath + "/" + pathActualArray[key]
+				break;
+			}
+			if (pathActualArray[key] == $scope.treeSelected.name)
+				save = true;
+		}
+		if (save){
+			newPath += "/" + name;
+		}else{
+			newPath = "/";
+		}
+		newPath = newPath.replace("/", "+-2F-+");
+		return(api + "file/download/"+id+"/"+newPath+"/"+name);
+	};
+
 	$scope.backPathActual = function(){
 		res = $scope.pathActual.trim().split(" / ");
 		res.splice(res.length - 1, 1);
@@ -43,12 +76,6 @@ app.controller('filesCtrl', function ($scope, $rootScope, RequestHandler, socket
 			$scope.pathActual = $scope.pathActual + res[key];
 		}
 	};
-
-	RequestHandler.get(api + "file/all")
-		.then(function(result){
-			$scope.treeBase = $scope.elementsActual = result.data.data;
-			addType($scope.elementsActual);
-	});
 
 	$scope.openFolder = function(value){
 
@@ -67,11 +94,15 @@ app.controller('filesCtrl', function ($scope, $rootScope, RequestHandler, socket
 						generatePath(pathActualArray);
 					}
 				});
-		}else if (value){
+		}else if (value.isDirectory){
 			$scope.elementsActual = value;
 			addType($scope.elementsActual.fileList);
 			pathActualArray.push($scope.elementsActual.name);
 			generatePath(pathActualArray);
+		}else if (value.type == "video"){
+			//video.addSource(value.type, generatePathDownload($scope.treeSelected.id, value.name));
+			//$scope.typeStreaming = value.fileType;
+			$scope.pathStreaming = generatePathDownload($scope.treeSelected.id, value.name);
 		}
 	};
 
@@ -125,26 +156,10 @@ app.controller('filesCtrl', function ($scope, $rootScope, RequestHandler, socket
 		}else{
 			send.path = "/";
 		}
-		console.log(send);
-		send.path = send.path.replace("/", "+-2F-+");
-		console.log(send);
 
+		path = generatePathDownload(id, name);
+
+		send.path = send.path.replace("/", "+-2F-+");
 		window.location.href = api + "file/download/"+id+"/"+send.path+"/"+send.name;
-		/*$http({
-	      url: api + "file/download/"+id,
-	      method: "POST",
-	      data: send,
-	      responseType: 'blob'
-	  }).success(function (data, status, headers, config) {
-	      var blob = new Blob([data], { type: 'audio/mpeg' });
-	      var fileName = headers('content-disposition');
-	      saveAs(blob, fileName);
-	  }).error(function (data, status, headers, config) {
-	    console.log('Unable to download the file')
-	});*/
-		/*RequestHandler.get(api + "file/download/"+id+"/"+send.path+"/"+send.name)
-			.then(function(result){
-				console.log(result);
-			});*/
 	}
 });
