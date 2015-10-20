@@ -35,7 +35,7 @@
             </td>
             <td ng-dblclick="openFolder(item._id)">{{item.name}}</td>
             <td>{{item.sizeConvert}}</td>
-            <td> <i class="fa fa-download"></i> </td>
+            <td> <i ng-click="download(item._id, item.name)" class="fa fa-download"></i> </td>
         </tr>
     </tbody>
 </table>
@@ -61,7 +61,7 @@
             </td>
             <td ng-dblclick="openFolder(item)">{{item.name}}</td>
             <td>{{item.sizeConvert}}</td>
-            <td> <i class="fa fa-download"></i> </td>
+            <td> <i ng-click="download(treeSelected.id, item.name)" class="fa fa-download" ></i> </td>
         </tr>
     </tbody>
 </table>
