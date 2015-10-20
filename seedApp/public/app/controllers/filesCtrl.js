@@ -49,14 +49,20 @@ app.controller('filesCtrl', function ($scope, $rootScope, RequestHandler, socket
 
 	$scope.openFolder = function(value){
 
+		console.log(value);
+
 		if ($scope.treeSelected == ''){
 			RequestHandler.get(api + "file/show/" + value)
 				.then(function(result){
-					$scope.treeSelected = result.data.data;
-					$scope.elementsActual = result.data.data;
-					addType($scope.elementsActual.fileList);
-					pathActualArray.push(result.data.data.name);
-					generatePath(pathActualArray);
+					if (result.data.data.isDirectory){
+						console.log(result);
+						$scope.treeSelected = result.data.data;
+						$scope.treeSelected.id = value;
+						$scope.elementsActual = result.data.data;
+						addType($scope.elementsActual.fileList);
+						pathActualArray.push(result.data.data.name);
+						generatePath(pathActualArray);
+					}
 				});
 		}else if (value){
 			$scope.elementsActual = value;
@@ -77,6 +83,7 @@ app.controller('filesCtrl', function ($scope, $rootScope, RequestHandler, socket
 		if ($scope.treeSelected == $scope.elementsActual){
 			$scope.treeSelected = '';
 			$scope.elementsActual = $scope.treeBase;
+			pathActualArray = [];
 			$scope.pathActual = "/";
 			return;
 		}
@@ -94,4 +101,31 @@ app.controller('filesCtrl', function ($scope, $rootScope, RequestHandler, socket
 			}
 		}
 	};
+
+	$scope.download = function (id, name){
+		var send = {
+			'path': "",
+			'name': name
+		};
+
+		var save = false;
+		for(var key in pathActualArray){
+			if (save){
+				send.path = send.path + "/" + pathActualArray[key]
+				break;
+			}
+			if (pathActualArray[key] == $scope.treeSelected.name)
+				save = true;
+		}
+		if (save){
+			send.path += "/" + name;
+		}else{
+			send.path = "/";
+		}
+		console.log(send);
+		RequestHandler.get(api + "file/download/" + id, send)
+			.then(function(result){
+				console.log(result);
+			});
+	}
 });
