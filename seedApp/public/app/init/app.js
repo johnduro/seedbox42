@@ -1,4 +1,4 @@
-var app = angular.module('seedApp', ['ngRoute', 'ui.router']);
+var app = angular.module('seedApp', ['ngRoute', 'ui.router', 'ngCookies']);
 
 // ---------------------- variable global -------------------------------
 var api = "";
@@ -17,6 +17,5 @@ app.run(function ($rootScope, $location, $http) {
     console.log("TOKEN >> ", $rootScope.token);
     $rootScope.user = JSON.parse(localStorage.getItem("user"));
     $http.defaults.headers.common['X-Access-Token'] = $rootScope.token;
-
 
 });
