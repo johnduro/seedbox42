@@ -5,18 +5,30 @@ var File = require("../models/File.js");
 var fs = require('fs');
 var mime = require('mime');
 var mongoose = require('mongoose');
+var fileInfos = require('../utils/filesInfos');
 
 // *****************************************
 // FILES
 // *****************************************
 
 router.get('/all', function (req, res, next) {
-	// var query = File.find({ isFinished: true }).select({ 'name': 1, 'size': 1, 'downloads': 1, 'createdAt': 1, 'fileType': 1 });
+	var data = [];
 	var query = File.find({ isFinished: true });
+	query.select('-path -creator -hashString -isFinished -privacy -torrentAddedAt');
 	query.exec(function (err, files) {
 		if (err)
 			return next(err);
-		res.json({ success: true, data: files });
+		files.forEach(function (file) {
+			var infos = file.toObject();
+			infos.commentsNbr = file.countComments();
+			infos.isLocked = file.getIsLocked();
+			infos.averageGrade = file.getAverageGrade();
+			delete infos.comments;
+			delete infos.locked;
+			delete infos.grades;
+			data.push(infos);
+		});
+		res.json({ success: true, data: data });
 	});
 });
 
@@ -209,85 +221,30 @@ router.delete('/:id', function (req, res, next) {
 	});
 });
 
-
-var getDirectoryInfos = function (path, dirInfos, done) {
-	var result = [];
-	var size = 0;
-	fs.readdir(path, function (err, files) {
-		if (err)
-			return done(err);
-		var i = 0;
-		(function next () {
-			var file = files[i++];
-			if (!file)
-			{
-				dirInfos.fileList = result;
-				dirInfos.size = size;
-				return done(null, dirInfos);
-			}
-			var fileInfos = { name: file, path: path + '/' + file };
-			fs.stat(fileInfos.path, function (err, stat) {
-				if (stat && stat.isDirectory())
-				{
-					fileInfos.isDirectory = true;
-					fileInfos.fileType = "folder";
-					getDirectoryInfos(fileInfos.path, fileInfos, function (err, res) {
-						result.push(res);
-						size += res.size;
-						next();
-					});
-				}
-				else
-				{
-					fileInfos.isDirectory = false;
-					fileInfos.fileType = mime.lookup(fileInfos.path);
-					fileInfos.size = stat.size;
-					size += stat.size;
-					result.push(fileInfos);
-					next();
-				}
-			});
-		})();
-	});
-};
-
 router.get('/show/:id', function (req, res, next) {
-	File.findById(req.params.id, function (err, file) {
+	var query = File.findById(req.params.id);
+	query.select('-hashString -isFinished -privacy -torrentAddedAt');
+	query.exec(function (err, file) {
 		if (err)
 			return next(err);
-		var fileInfos = { name: file.name, path: file.path, size: file.size };
-		if (file.fileType === 'folder')
-		{
-			fileInfos.isDirectory = true;
-			fileInfos.fileType = "folder";
-			getDirectoryInfos(file.path, fileInfos, function (err, data) {
-				if (err)
-					res.json({ success: false, error: err });
-				else
-					res.json({ success: true, data: data });
-			});
-		}
-		else
-		{
-			fileInfos.isDirectory = false;
-			fileInfos.fileType = mime.lookup(fileInfos.path);
-			res.json({ success: true, data: fileInfos });
-		}
+		fileInfos.getFileInfosRecurs(file.path, file.name, function (err, data) {
+			var rawFile = file.toObject();
+			delete rawFile.path;
+			if (err)
+				res.json({ success: false, error: err, file: rawFile });
+			else
+				res.json({ success: true, data: data, file: rawFile });
+		});
 	});
 });
 
-// router.post('/download/:id', function (req, res, next) {
 router.get('/download/:id/:path/:name', function (req, res, next) {
-	File.findById(req.params.id, function (err, file) {
+	var query = File.findById(req.params.id);
+	query.select('path');
+	query.exec(function (err, file) {
 		if (err)
 			return next(err);
-		// var filePath = file.path + req.body.path;
 		var filePath = file.path + (req.params.path).replace("+-2F-+", "/");
-		// console.log("body > ", req.body);
-		// console.log("1 > ", filePath);
-		// console.log("2 > ", typeof filePath);
-		// return next();
-		// var fileName = req.body.fileName;
 		var fileName = req.params.name;
 		var mimeType = mime.lookup(filePath);
 		res.setHeader('Content-disposition', 'attachment; filename=' + fileName);
