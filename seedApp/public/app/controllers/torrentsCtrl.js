@@ -1,5 +1,5 @@
 
-app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, socket, RequestHandler, Upload) {
+app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout, socket, RequestHandler, Upload) {
 
 	console.log("torrentsCtrl");
 
@@ -14,11 +14,12 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, socket, 
 		delete $scope.torrents[data.id];
 	});
 
-	socket.on('post:torrent:url', function(data){
+	socket.on('post:torrent', function(data){
 		if (data.success){
 			RequestHandler.get(api + "torrent/refresh/" + data.id)
 				.then(function(resultRefresh){
 					$scope.torrents[data.id] = resultRefresh.data.data.torrents[0];
+					$rootScope.msgInfo("Un nouveau torrent a ete ajoute", data.name);
 			});
 		}
 	});
@@ -95,13 +96,14 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, socket, 
                     }
                 }).progress(function (evt) {
                     var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-                    $scope.log = 'progress: ' + progressPercentage + '% ' +
-                                evt.config.data.file.name + '\n' + $scope.log;
+                    $scope.log = 'progress: ' + progressPercentage + '% ' + evt.config.data.file.name + '\n' + $scope.log;
                 }).success(function (data, status, headers, config) {
-                    $timeout(function() {
-                        $scope.log = 'file: ' + config.data.file.name + ', Response: ' + JSON.stringify(data) + '\n' + $scope.log;
-                    });
-                });
+					if (!data[0].success){
+						$rootScope.msgInfo("Error !", "L'ajout du nouveau torrent a echoue...");
+					}
+                }).error(function (data, status, headers, config) {
+					$rootScope.msgInfo("Error !", "L'ajout du nouveau torrent a echoue...");
+				});
               }
             }
         }

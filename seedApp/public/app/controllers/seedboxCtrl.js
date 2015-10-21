@@ -18,6 +18,19 @@ app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http, $loca
 		localStorage.clear();
 	}
 
+	$rootScope.msgInfo = function(title, msg){
+		setTimeout(function() {
+			toastr.options = {
+				closeButton: true,
+				progressBar: true,
+				showMethod: 'fadeIn',
+				hideMethod: 'fadeOut',
+				timeOut: 10000
+			};
+			toastr.success(msg, title);
+		}, 1800);
+	};
+
 	socket.on("newFile", function(data){
 		console.log(data);
 		setTimeout(function() {

@@ -228,14 +228,14 @@ module.exports = function (io, transmission, secret) {
 				else
 				{
 					if ('torrent-duplicate' in resp)
-						socket.emit('post:torrent:url', { success: false, message: 'duplicate, torrent already present' });
+						socket.emit('post:torrent', { success: false, message: 'duplicate, torrent already present' });
 					else if ('torrent-added' in resp)
 					{
 						createFile(resp['torrent-added'], data.id);
-						io.sockets.emit('post:torrent:url', { success: true, message: 'torrent successfully added', id: resp['torrent-added']['id'], name: resp['torrent-added']['name'] });
+						io.sockets.emit('post:torrent', { success: true, message: 'torrent successfully added', id: resp['torrent-added']['id'], name: resp['torrent-added']['name'] });
 					}
 					else
-						socket.emit('post:torrent:url', { success: false, message: 'unexpected error' });
+						socket.emit('post:torrent', { success: false, message: 'unexpected error' });
 				}
 			});
 		});

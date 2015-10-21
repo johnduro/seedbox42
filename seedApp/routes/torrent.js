@@ -84,6 +84,7 @@ router.post('/add-torrents', torrentUpldHandler.array('torrent', 10), function(r
 				{
 					createFile(resp['torrent-added'], req.user._id);
 					resAll.push({ success: true, message: 'torrent successfully added', torrent: file.filename });
+					req.app.io.sockets.emit('post:torrent', { success: true, message: 'torrent successfully added', id: resp['torrent-added']['id'], name: file.filename });
 				}
 				else
 					resAll.push({ success: false, message: 'unexpected error', torrent: file.filename });
