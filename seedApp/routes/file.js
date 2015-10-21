@@ -6,10 +6,11 @@ var fs = require('fs');
 var mime = require('mime');
 var mongoose = require('mongoose');
 var fileInfos = require('../utils/filesInfos');
+var zipstream = require('../utils/zipstream/zipstream');
 
-// *****************************************
+// ========================================
 // FILES
-// *****************************************
+// ========================================
 
 router.get('/all', function (req, res, next) {
 	var data = [];
@@ -238,6 +239,32 @@ router.get('/show/:id', function (req, res, next) {
 	});
 });
 
+
+var getFilesStreams = function (fileDetail, pathInDir, done) {
+	var fileStream = [];
+	if (fileDetail.isDirectory)
+	{
+		var i = 0;
+		(function next () {
+			var file = fileDetail.fileList[i++];
+			if (!file)
+				return done(null, fileStream);
+			var filePathInDir = pathInDir + '/' + file.name;
+			getFilesStreams(file, filePathInDir, function (err, data) {
+				if (err)
+					return done(err);
+				fileStream = fileStream.concat(data);
+				next();
+			});
+		})();
+	}
+	else
+	{
+		fileStream.push({ stream: fs.createReadStream(fileDetail.path), name: pathInDir });
+		return done(null, fileStream);
+	}
+};
+
 router.get('/download/:id/:path/:name', function (req, res, next) {
 	var query = File.findById(req.params.id);
 	query.select('path');
@@ -246,11 +273,46 @@ router.get('/download/:id/:path/:name', function (req, res, next) {
 			return next(err);
 		var filePath = file.path + (req.params.path).replace("+-2F-+", "/");
 		var fileName = req.params.name;
-		var mimeType = mime.lookup(filePath);
-		res.setHeader('Content-disposition', 'attachment; filename=' + fileName);
-		res.setHeader('Content-type', mimeType);
-		var fileStream = fs.createReadStream(filePath);
-		fileStream.pipe(res);
+		// console.log('filePath > ', filePath);
+		fileInfos.isDirectory(filePath, function (err, isDirectory) {
+			if (isDirectory)
+			{
+				// console.log('here');
+				res.setHeader('Content-disposition', 'attachment; filename=' + fileName + '.zip');
+				res.setHeader('Content-type', 'application/zip');
+				if (filePath.slice(-1) === '/')
+					filePath = filePath.slice(0, -1);
+				fileInfos.getFileInfosRecurs(filePath, fileName, function (err, data) {
+					// console.log('there data > ', data);
+					if (err)
+						return next(err);
+					getFilesStreams(data, '', function (err, streams) {
+						// console.log('wut?', streams);
+						var zip = new zipstream();
+						zip.pipe(res);
+						var i = 0;
+						streams.forEach(function (s) {
+							zip.addFile(s.stream, { name : s.name }, function () {
+								// console.log('FILE ADDED > ', s.name);
+							});
+						});
+						zip.finalize(function (size) {
+							// console.log('SIZE DOSSIER > ', size);
+						});
+					});
+				});
+			}
+			else
+			{
+				var mimeType = mime.lookup(filePath);
+				res.setHeader('Content-disposition', 'attachment; filename=' + fileName);
+				res.setHeader('Content-type', mimeType);
+				var fileStream = fs.createReadStream(filePath);
+				fileStream.pipe(res);
+			}
+		});
+
+
 	});
 });
 
