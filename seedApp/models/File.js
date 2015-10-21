@@ -1,14 +1,15 @@
 
 var mongoose = require('mongoose');
+var ft = require('../utils/ft');
 
-var indexOfByKey = function (arr, key, value) {
-	var arrayLength = arr.length;
-	for (var i = 0; i < arrayLength; i++) {
-		if (arr[i][key] === value)
-			return i;
-	}
-	return -1;
-};
+// var indexOfByKey = function (arr, key, value) {
+// 	var arrayLength = arr.length;
+// 	for (var i = 0; i < arrayLength; i++) {
+// 		if (arr[i][key] === value)
+// 			return i;
+// 	}
+// 	return -1;
+// };
 
 // ====================================
 // FILE SCHEMA
@@ -53,8 +54,18 @@ FileSchema.methods = {
 		this.save(cb);
 	},
 
+	modComment: function (commentId, comment, cb) {
+		var index = ft.indexOfByKey(this.comments, '_id', commentId);
+		if (index > -1)
+			this.comments[index].text = comment;
+		else
+			return cb('comment not found');
+		this.save(cb);
+	},
+
 	removeComment: function (commentId, cb) {
-		var index = indexOfByKey(this.comments, '_id', commentId);
+		// var index = indexOfByKey(this.comments, '_id', commentId);
+		var index = ft.indexOfByKey(this.comments, '_id', commentId);
 		if (index > -1)
 			this.comments.splice(index, 1);
 		else
@@ -62,8 +73,12 @@ FileSchema.methods = {
 		this.save(cb);
 	},
 
+	countComments: function () {
+		return this.comments.length;
+	},
+
 	addGrade: function (user, grade, cb) {
-		var index = indexOfByKey(this.grades, 'user', user._id);
+		var index = ft.indexOfByKey(this.grades, 'user', user._id);
 		if (index === -1)
 			this.grades.push({ user: user._id, grade: grade });
 		else
@@ -72,7 +87,7 @@ FileSchema.methods = {
 	},
 
 	modGrade: function (user, newGrade, cb) {
-		var index = indexOfByKey(this.grades, 'user', user._id);
+		var index = ft.indexOfByKey(this.grades, 'user', user._id);
 		if (index > -1)
 			this.grades[index].grade = newGrade;
 		else
@@ -81,7 +96,7 @@ FileSchema.methods = {
 	},
 
 	removeGrade: function (user, cb) {
-		var index = indexOfByKey(this.grades, 'user', user._id);
+		var index = ft.indexOfByKey(this.grades, 'user', user._id);
 		if (index > -1)
 			this.grades.splice(index, 1);
 		else
@@ -89,8 +104,18 @@ FileSchema.methods = {
 		this.save(cb);
 	},
 
+	getAverageGrade: function () {
+		var total = 0;
+		if (this.grades.length === 0)
+			return (0);
+		this.grades.forEach(function (grade) {
+			total += grade.grade;
+		});
+		return (total / this.grades.length);
+	},
+
 	addLock: function (user, cb) {
-		var index = indexOfByKey(this.locked, 'user', user._id);
+		var index = ft.indexOfByKey(this.locked, 'user', user._id);
 		if (index === -1)
 			this.locked.push({ user: user._id });
 		else
@@ -99,7 +124,7 @@ FileSchema.methods = {
 	},
 
 	removeLock: function (user, cb) {
-		var index = indexOfByKey(this.locked, 'user', user._id);
+		var index = ft.indexOfByKey(this.locked, 'user', user._id);
 		if (index > -1 )
 			this.locked.splice(index, 1);
 		else
@@ -107,10 +132,15 @@ FileSchema.methods = {
 		this.save(cb);
 	},
 
-	isLocked: function () {
+	getIsLocked: function () {
 		if (this.locked.length > 0)
 			return true;
 		return false;
+	},
+
+	incDownloads: function () {
+		this.downloads += 1;
+		this.save();
 	}
 };
 

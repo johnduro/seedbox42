@@ -12,12 +12,27 @@ var fileInfos = require('../utils/filesInfos');
 // *****************************************
 
 router.get('/all', function (req, res, next) {
-	// var query = File.find({ isFinished: true }).select({ 'name': 1, 'size': 1, 'downloads': 1, 'createdAt': 1, 'fileType': 1 });
+	var data = [];
 	var query = File.find({ isFinished: true });
+	query.select('-path -creator -hashString -isFinished -privacy -torrentAddedAt');
 	query.exec(function (err, files) {
 		if (err)
 			return next(err);
-		res.json({ success: true, data: files });
+		files.forEach(function (file) {
+			var infos = {
+				_id: file._id,
+				name: file.name,
+				size: file.size,
+				fileType: file.fileType,
+				downloads: file.downloads,
+				commentsNbr: file.countComments(),
+				isLocked: file.getIsLocked(),
+				averageGrade: file.getAverageGrade(),
+				createdAt: file.createdAt
+			};
+			data.push(infos);
+		});
+		res.json({ success: true, data: data });
 	});
 });
 
@@ -211,30 +226,29 @@ router.delete('/:id', function (req, res, next) {
 });
 
 router.get('/show/:id', function (req, res, next) {
-	File.findById(req.params.id, function (err, file) {
+	var query = File.findById(req.params.id);
+	query.select('-hashString -isFinished -privacy -torrentAddedAt');
+	query.exec(function (err, file) {
 		if (err)
 			return next(err);
 		fileInfos.getFileInfosRecurs(file.path, file.name, function (err, data) {
+			var rawFile = file.toObject();
+			delete rawFile.path;
 			if (err)
-				res.json({ success: false, error: err, file: file });
+				res.json({ success: false, error: err, file: rawFile });
 			else
-				res.json({ success: true, data: data, file: file });
+				res.json({ success: true, data: data, file: rawFile });
 		});
 	});
 });
 
-// router.post('/download/:id', function (req, res, next) {
 router.get('/download/:id/:path/:name', function (req, res, next) {
-	File.findById(req.params.id, function (err, file) {
+	var query = File.findById(req.params.id);
+	query.select('path');
+	query.exec(function (err, file) {
 		if (err)
 			return next(err);
-		// var filePath = file.path + req.body.path;
 		var filePath = file.path + (req.params.path).replace("+-2F-+", "/");
-		// console.log("body > ", req.body);
-		// console.log("1 > ", filePath);
-		// console.log("2 > ", typeof filePath);
-		// return next();
-		// var fileName = req.body.fileName;
 		var fileName = req.params.name;
 		var mimeType = mime.lookup(filePath);
 		res.setHeader('Content-disposition', 'attachment; filename=' + fileName);
