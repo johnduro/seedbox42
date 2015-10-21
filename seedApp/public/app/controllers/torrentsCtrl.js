@@ -40,6 +40,7 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 			$scope.torrents[data.torrents.torrents[key].id] = data.torrents.torrents[key];
 			$scope.torrents[data.torrents.torrents[key].id].percentDone = $scope.torrents[data.torrents.torrents[key].id].percentDone * 100;
 		}
+		console.log($scope.torrents);
 	});
 
 	//------------------------------------------------  FUNCTIONS PRIVATE -------------------------------------------------------
@@ -70,6 +71,17 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 	$scope.torrentStart = function(id){
 		RequestHandler.post(api + "torrent/action/start/" + id);
 	};
+
+	$scope.FileConvertSize = function(aSize){
+		if (aSize == 0)
+			return 0;
+		aSize = Math.abs(parseInt(aSize, 10));
+		var def = [[1, 'octets'], [1024, 'ko'], [1024*1024, 'Mo'], [1024*1024*1024, 'Go'], [1024*1024*1024*1024, 'To']];
+		for(var i=0; i<def.length; i++){
+			if(aSize<def[i][0])
+				return (aSize/def[i-1][0]).toFixed(2)+' '+def[i-1][1];
+		}
+	}
 
 	//------------------------------------------------  DRAG & DROP-------------------------------------------------------
 
