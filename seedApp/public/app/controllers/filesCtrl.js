@@ -21,6 +21,7 @@ app.controller('filesCtrl', function ($scope, $rootScope, RequestHandler, socket
 	RequestHandler.get(api + "file/all")
 		.then(function(result){
 			$scope.treeBase = $scope.elementsActual = result.data.data;
+			console.log($scope.treeBase);
 			addType($scope.elementsActual);
 	});
 
@@ -161,5 +162,9 @@ app.controller('filesCtrl', function ($scope, $rootScope, RequestHandler, socket
 
 		send.path = send.path.replace("/", "+-2F-+");
 		window.location.href = api + "file/download/"+id+"/"+send.path+"/"+send.name;
-	}
+	};
+
+	$scope.showInfo = function(item){
+		console.log("ijiji");
+	};
 });
