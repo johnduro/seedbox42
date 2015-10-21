@@ -19,17 +19,13 @@ router.get('/all', function (req, res, next) {
 		if (err)
 			return next(err);
 		files.forEach(function (file) {
-			var infos = {
-				_id: file._id,
-				name: file.name,
-				size: file.size,
-				fileType: file.fileType,
-				downloads: file.downloads,
-				commentsNbr: file.countComments(),
-				isLocked: file.getIsLocked(),
-				averageGrade: file.getAverageGrade(),
-				createdAt: file.createdAt
-			};
+			var infos = file.toObject();
+			infos.commentsNbr = file.countComments();
+			infos.isLocked = file.getIsLocked();
+			infos.averageGrade = file.getAverageGrade();
+			delete infos.comments;
+			delete infos.locked;
+			delete infos.grades;
 			data.push(infos);
 		});
 		res.json({ success: true, data: data });
