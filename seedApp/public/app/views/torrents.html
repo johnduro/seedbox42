@@ -45,7 +45,12 @@
                                 <tr>
                                     <td>
                                         <div> {{torrent.name}} </div>
-                                        <div> <i class="fa fa-arrow-down"></i> {{FileConvertSize(torrent.rateDownload)}} - <i class="fa fa-arrow-up"></i> {{FileConvertSize(torrent.rateUpload)}}</div>
+                                        <div>
+                                            <i class="fa fa-arrow-down"></i> {{FileConvertSize(torrent.rateDownload)}}/s -
+                                            <i class="fa fa-arrow-up"></i> {{FileConvertSize(torrent.rateUpload)}}/s -
+                                            <i class="fa fa-upload"></i> {{FileConvertSize(torrent.uploadedEver)}}
+                                        </div>
+
                                         <div class="progress progress-md">
                                             <div class="progress-bar progress-bar-striped progress-bar-success active" role="progressbar" aria-valuenow="{{torrent.percentDone}}" aria-valuemin="0" aria-valuemax="100" style="width: {{torrent.percentDone}}%">
                                                 {{torrent.percentDone | number:2}} %
