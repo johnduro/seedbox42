@@ -5,6 +5,7 @@ var File = require("../models/File.js");
 var fs = require('fs');
 var mime = require('mime');
 var mongoose = require('mongoose');
+var fileInfos = require('../utils/filesInfos');
 
 // *****************************************
 // FILES
@@ -209,70 +210,16 @@ router.delete('/:id', function (req, res, next) {
 	});
 });
 
-
-var getDirectoryInfos = function (path, dirInfos, done) {
-	var result = [];
-	var size = 0;
-	fs.readdir(path, function (err, files) {
-		if (err)
-			return done(err);
-		var i = 0;
-		(function next () {
-			var file = files[i++];
-			if (!file)
-			{
-				dirInfos.fileList = result;
-				dirInfos.size = size;
-				return done(null, dirInfos);
-			}
-			var fileInfos = { name: file, path: path + '/' + file };
-			fs.stat(fileInfos.path, function (err, stat) {
-				if (stat && stat.isDirectory())
-				{
-					fileInfos.isDirectory = true;
-					fileInfos.fileType = "folder";
-					getDirectoryInfos(fileInfos.path, fileInfos, function (err, res) {
-						result.push(res);
-						size += res.size;
-						next();
-					});
-				}
-				else
-				{
-					fileInfos.isDirectory = false;
-					fileInfos.fileType = mime.lookup(fileInfos.path);
-					fileInfos.size = stat.size;
-					size += stat.size;
-					result.push(fileInfos);
-					next();
-				}
-			});
-		})();
-	});
-};
-
 router.get('/show/:id', function (req, res, next) {
 	File.findById(req.params.id, function (err, file) {
 		if (err)
 			return next(err);
-		var fileInfos = { name: file.name, path: file.path, size: file.size };
-		if (file.fileType === 'folder')
-		{
-			fileInfos.isDirectory = true;
-			fileInfos.fileType = "folder";
-			getDirectoryInfos(file.path, fileInfos, function (err, data) {
-				if (err)
-					res.json({ success: false, error: err });
-				else
-					res.json({ success: true, data: data });
-			});
-		}
-		else
-		{
-			fileInfos.isDirectory = false;
-			fileInfos.fileType = mime.lookup(fileInfos.path);
-			res.json({ success: true, data: fileInfos });
-		}
+		fileInfos.getFileInfosRecurs(file.path, file.name, function (err, data) {
+			if (err)
+				res.json({ success: false, error: err, file: file });
+			else
+				res.json({ success: true, data: data, file: file });
+		});
 	});
 });
 
