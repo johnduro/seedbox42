@@ -1,4 +1,5 @@
 var express = require('express');
+var atob = require('atob');
 var router = express.Router();
 // var io = require('socket.io');
 var File = require("../models/File.js");
@@ -271,8 +272,10 @@ router.get('/download/:id/:path/:name', function (req, res, next) {
 	query.exec(function (err, file) {
 		if (err)
 			return next(err);
-		var filePath = file.path + (req.params.path).replace("+-2F-+", "/");
-		var fileName = req.params.name;
+		var pathDecode = atob(req.params.path);
+		var nameDecode = atob(req.params.name);
+		var filePath = file.path + pathDecode;
+		var fileName = nameDecode;
 		// console.log('filePath > ', filePath);
 		fileInfos.isDirectory(filePath, function (err, isDirectory) {
 			if (isDirectory)

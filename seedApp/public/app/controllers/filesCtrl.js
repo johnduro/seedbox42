@@ -1,4 +1,4 @@
-app.controller('filesCtrl', function ($scope, $rootScope, RequestHandler, socket, $timeout, $http, $cookies) {
+app.controller('filesCtrl', function ($scope, $rootScope, RequestHandler, socket, $timeout, $http, $cookies, Lightbox) {
 
 	console.log("filesCtrl");
 
@@ -9,6 +9,7 @@ app.controller('filesCtrl', function ($scope, $rootScope, RequestHandler, socket
 	$scope.pathActual = " / ";
 	$scope.pathStreaming = "";
 	$scope.typeStreaming = "";
+	Lightbox.templateUrl = 'app/views/partials/imagesTemplate.html';
 
 	socket.on("newFile", function(data){
 		RequestHandler.get(api + "file/all")
@@ -66,8 +67,10 @@ app.controller('filesCtrl', function ($scope, $rootScope, RequestHandler, socket
 		}else{
 			newPath = "/";
 		}
-		newPath = newPath.replace("/", "+-2F-+");
-		return(api + "file/download/"+id+"/"+newPath+"/"+name);
+
+		pathEncode = btoa(newPath);
+		nameEncode = btoa(name);
+		return(api + "file/download/" + id + "/" + pathEncode + "/" + nameEncode);
 	};
 
 	$scope.backPathActual = function(){
@@ -103,7 +106,10 @@ app.controller('filesCtrl', function ($scope, $rootScope, RequestHandler, socket
 		}else if (value.type == "video"){
 			//video.addSource(value.type, generatePathDownload($scope.treeSelected.id, value.name));
 			//$scope.typeStreaming = value.fileType;
+			//Lightbox.openModal([{url:generatePathDownload($scope.treeSelected.id, value.name)}], 0);
 			$scope.pathStreaming = generatePathDownload($scope.treeSelected.id, value.name);
+		}else if (value.type == "image"){
+			Lightbox.openModal([{url:generatePathDownload($scope.treeSelected.id, value.name)}], 0);
 		}
 	};
 
@@ -138,30 +144,8 @@ app.controller('filesCtrl', function ($scope, $rootScope, RequestHandler, socket
 	};
 
 	$scope.download = function (id, name){
-		var send = {
-			'path': "",
-			'name': name
-		};
-
-		var save = false;
-		for(var key in pathActualArray){
-			if (save){
-				send.path = send.path + "/" + pathActualArray[key]
-				break;
-			}
-			if (pathActualArray[key] == $scope.treeSelected.name)
-				save = true;
-		}
-		if (save){
-			send.path += "/" + name;
-		}else{
-			send.path = "/";
-		}
-
 		path = generatePathDownload(id, name);
-
-		send.path = send.path.replace("/", "+-2F-+");
-		window.location.href = api + "file/download/"+id+"/"+send.path+"/"+send.name;
+		window.location.href = path;
 	};
 
 	$scope.showInfo = function(item){
