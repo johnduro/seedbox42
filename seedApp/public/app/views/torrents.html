@@ -44,7 +44,8 @@
                             <tbody ng-repeat="torrent in torrents">
                                 <tr>
                                     <td>
-                                        {{torrent.name}}
+                                        <div> {{torrent.name}} </div>
+                                        <div> <i class="fa fa-arrow-down"></i> {{FileConvertSize(torrent.rateDownload)}} - <i class="fa fa-arrow-up"></i> {{FileConvertSize(torrent.rateUpload)}}</div>
                                         <div class="progress progress-md">
                                             <div class="progress-bar progress-bar-striped progress-bar-success active" role="progressbar" aria-valuenow="{{torrent.percentDone}}" aria-valuemin="0" aria-valuemax="100" style="width: {{torrent.percentDone}}%">
                                                 {{torrent.percentDone | number:2}} %
