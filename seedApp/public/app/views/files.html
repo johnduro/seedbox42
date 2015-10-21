@@ -18,8 +18,8 @@
     <thead>
         <tr>
             <th class="">Type</th>
-            <th class="col-md-14">Name</th>
-            <th class="col-md-1">Size</th>
+            <th class="col-md-10">Name</th>
+            <th class="">Size</th>
             <th class=""></th>
         </tr>
     </thead>
@@ -33,7 +33,7 @@
                     <div ng-switch-default ><i class="fa fa-question-circle fa-4"></i> {{item.type}}</div>
                 </div>
             </td>
-            <td ng-dblclick="openFolder(item._id)">{{item.name}}</td>
+            <td ng-dblclick="openFolder(item._id)" ng-click="showInfo(item)">{{item.name}}</td>
             <td>{{item.sizeConvert}}</td>
             <td> <i ng-click="download(item._id, item.name)" class="fa fa-download"></i> </td>
         </tr>
@@ -65,5 +65,7 @@
         </tr>
     </tbody>
 </table>
+
+
 
 <video controls src="{{pathStreaming}}">Ici la description alternative</video>

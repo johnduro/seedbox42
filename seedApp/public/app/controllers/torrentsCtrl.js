@@ -1,5 +1,5 @@
 
-app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, socket, RequestHandler) {
+app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, socket, RequestHandler, Upload) {
 
 	console.log("torrentsCtrl");
 
@@ -69,4 +69,42 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, socket, 
 	$scope.torrentStart = function(id){
 		RequestHandler.post(api + "torrent/action/start/" + id);
 	};
+
+	//------------------------------------------------  DRAG & DROP-------------------------------------------------------
+
+	$scope.$watch('files', function () {
+        $scope.upload($scope.files);
+    });
+    $scope.$watch('file', function () {
+        if ($scope.file != null) {
+            $scope.files = [$scope.file];
+        }
+    });
+    $scope.log = '';
+
+    $scope.upload = function (files) {
+        if (files && files.length) {
+            for (var i = 0; i < files.length; i++) {
+              var file = files[i];
+              if (!file.$error) {
+                Upload.upload({
+                    url: '/torrent/add-torrents',
+                    data: {
+                      username: $scope.username,
+                      torrent: file
+                    }
+                }).progress(function (evt) {
+                    var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                    $scope.log = 'progress: ' + progressPercentage + '% ' +
+                                evt.config.data.file.name + '\n' + $scope.log;
+                }).success(function (data, status, headers, config) {
+                    $timeout(function() {
+                        $scope.log = 'file: ' + config.data.file.name + ', Response: ' + JSON.stringify(data) + '\n' + $scope.log;
+                    });
+                });
+              }
+            }
+        }
+    };
+
 });
