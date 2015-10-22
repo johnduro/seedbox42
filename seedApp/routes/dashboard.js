@@ -4,6 +4,7 @@ var router = express.Router();
 // var WallMessage = require('../models/Wall.js');
 var File = require('../models/File.js');
 var njds = require('nodejs-disks');
+var ft = require('../utils/ft');
 
 
 var getTotalDiskSpace = function (done) {
@@ -21,21 +22,6 @@ var getTotalDiskSpace = function (done) {
 				return done('Could not find any data');
 			});
 	});
-};
-
-var formatFileList = function (files) {
-	var result = [];
-	files.forEach(function (file) {
-		var infos = file.toObject();
-		infos.commentsNbr = file.countComments();
-		infos.isLocked = file.getIsLocked();
-		infos.averageGrade = file.getAverageGrade();
-		delete infos.comments;
-		delete infos.locked;
-		delete infos.grades;
-		result.push(infos);
-	});
-	return result;
 };
 
 router.get('/', function (req, res, next) {
@@ -56,7 +42,7 @@ router.get('/', function (req, res, next) {
 			errors.userFilesError.err = err;
 		}
 		else
-			userLastFiles = formatFileList(userFiles);
+			userLastFiles = ft.formatFileList(userFiles);
 		File.find({}).select(selectRule).sort(sortRule).limit(5).exec(function (err, files) {
 			if (err)
 			{
@@ -64,7 +50,7 @@ router.get('/', function (req, res, next) {
 				errors.filesError.err = err;
 			}
 			else
-				lastFiles = formatFileList(files);
+				lastFiles = ft.formatFileList(files);
 			getTotalDiskSpace(function (err, diskInfos) {
 				if (err)
 				{
@@ -73,7 +59,7 @@ router.get('/', function (req, res, next) {
 				}
 				else
 					diskSpace = diskInfos;
-					res.json({ userLastFiles: userLastFiles, lastFiles: lastFiles, diskSpace: diskSpace, errors: errors });
+				res.json({ userLastFiles: userLastFiles, lastFiles: lastFiles, diskSpace: diskSpace, errors: errors });
 					// req.app.get('transmission').freeSpace(req.app.get('config').transmissionFolder, function (err, data) {
 					// 	if (err)
 					// 	{
