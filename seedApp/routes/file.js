@@ -13,6 +13,14 @@ var ft = require('../utils/ft');
  * Files
  */
 
+ router.get("/comments/:id", function(req, res, next){
+	 File.findById(req.params.id, function (err, file) {
+ 		if (err)
+ 			return next(err);
+		res.json({ success: true, data: file.comments });
+ 	});
+ });
+
 router.get('/all', function (req, res, next) {
 	var query = File.find({ isFinished: true });
 	query.select('-path -creator -hashString -isFinished -privacy -torrentAddedAt');
