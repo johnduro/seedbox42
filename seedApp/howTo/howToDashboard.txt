@@ -9,9 +9,10 @@ route pour le dashboard:
 	userLastFiles: [<un array des derniers fichiers de l'user connecte>],
 	lastFiles: [<un array des derniers fichiers de tous les users>],
 	diskSpace: {
-		total: <nb>,
-		free: <nb>,
-		percent: <nb>
+		used: <string>
+		total: <string>,
+		freePer: <nb>,
+		usedPer: <nb>
 	},
 	errors: {
 		userFilesError: { happened: <a false si aucune erreur>, err: <le message d'erreur si il y en a une>},
