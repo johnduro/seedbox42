@@ -159,9 +159,19 @@ app.controller('filesCtrl', function ($scope, $rootScope, RequestHandler, socket
 	};
 
 	$scope.addComment = function(){
+		if ($scope.newComment == "")
+			return;
 		RequestHandler.post(api + "file/add-comment/" + $scope.itemSelected._id, {text: $scope.newComment})
 			.then(function(result){
-				console.log(result);
+				if (result.data.success){
+					RequestHandler.get(api + "file/comments/" + $scope.itemSelected._id, {text: $scope.newComment})
+						.then(function(result){
+							$scope.itemSelected.comments = result.data.data;
+						});
+					$scope.newComment = "";
+				}else{
+					console.log("Error add comment...");
+				}
 			});
 	};
 
