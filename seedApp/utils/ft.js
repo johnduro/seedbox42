@@ -8,5 +8,20 @@ module.exports = {
 				return i;
 		}
 		return -1;
+	},
+
+	formatFileList: function (files) {
+		var result = [];
+		files.forEach(function (file) {
+			var infos = file.toObject();
+			infos.commentsNbr = file.countComments();
+			infos.isLocked = file.getIsLocked();
+			infos.averageGrade = file.getAverageGrade();
+			delete infos.comments;
+			delete infos.locked;
+			delete infos.grades;
+			result.push(infos);
+		});
+		return result;
 	}
 };
