@@ -57,6 +57,8 @@ router.delete('/remove-grade/:id', function (req, res, next) {
 	});
 });
 
+// router.put('/mod-grade/:id');
+
 router.post('/add-lock/:id', function (req, res, next) {
 	File.findById(req.params.id, function (err, file) {
 		if (err)

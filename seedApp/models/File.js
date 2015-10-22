@@ -47,7 +47,7 @@ FileSchema.methods = {
 	},
 
 	modComment: function (commentId, comment, cb) {
-		var index = ft.indexOfByKey(this.comments, '_id', commentId);
+		var index = ft.indexOfByIdKey(this.comments, '_id', commentId);
 		if (index > -1)
 			this.comments[index].text = comment;
 		else
@@ -56,7 +56,7 @@ FileSchema.methods = {
 	},
 
 	removeComment: function (commentId, cb) {
-		var index = ft.indexOfByKey(this.comments, '_id', commentId);
+		var index = ft.indexOfByIdKey(this.comments, '_id', commentId);
 		if (index > -1)
 			this.comments.splice(index, 1);
 		else
@@ -69,7 +69,7 @@ FileSchema.methods = {
 	},
 
 	addGrade: function (user, grade, cb) {
-		var index = ft.indexOfByKey(this.grades, 'user', user._id);
+		var index = ft.indexOfByIdKey(this.grades, 'user', user._id);
 		if (index === -1)
 			this.grades.push({ user: user._id, grade: grade });
 		else
@@ -78,7 +78,7 @@ FileSchema.methods = {
 	},
 
 	modGrade: function (user, newGrade, cb) {
-		var index = ft.indexOfByKey(this.grades, 'user', user._id);
+		var index = ft.indexOfByIdKey(this.grades, 'user', user._id);
 		if (index > -1)
 			this.grades[index].grade = newGrade;
 		else
@@ -87,7 +87,7 @@ FileSchema.methods = {
 	},
 
 	removeGrade: function (user, cb) {
-		var index = ft.indexOfByKey(this.grades, 'user', user._id);
+		var index = ft.indexOfByIdKey(this.grades, 'user', user._id);
 		if (index > -1)
 			this.grades.splice(index, 1);
 		else
@@ -106,7 +106,7 @@ FileSchema.methods = {
 	},
 
 	addLock: function (user, cb) {
-		var index = ft.indexOfByKey(this.locked, 'user', user._id);
+		var index = ft.indexOfByIdKey(this.locked, 'user', user._id);
 		if (index === -1)
 			this.locked.push({ user: user._id });
 		else
@@ -115,7 +115,7 @@ FileSchema.methods = {
 	},
 
 	removeLock: function (user, cb) {
-		var index = ft.indexOfByKey(this.locked, 'user', user._id);
+		var index = ft.indexOfByIdKey(this.locked, 'user', user._id);
 		if (index > -1 )
 			this.locked.splice(index, 1);
 		else
@@ -125,6 +125,13 @@ FileSchema.methods = {
 
 	getIsLocked: function () {
 		if (this.locked.length > 0)
+			return true;
+		return false;
+	},
+
+	getIsLockedByUser: function (user) {
+		var index = ft.indexOfByIdKey(this.locked, 'user', user._id);
+		if (index > -1)
 			return true;
 		return false;
 	},
