@@ -1,35 +1,25 @@
 var express = require('express');
 var atob = require('atob');
 var router = express.Router();
-// var io = require('socket.io');
 var File = require("../models/File.js");
 var fs = require('fs');
 var mime = require('mime');
 var mongoose = require('mongoose');
 var fileInfos = require('../utils/filesInfos');
 var zipstream = require('../utils/zipstream/zipstream');
+var ft = require('../utils/ft');
 
-// ========================================
-// FILES
-// ========================================
+/**
+ * Files
+ */
 
 router.get('/all', function (req, res, next) {
-	var data = [];
 	var query = File.find({ isFinished: true });
 	query.select('-path -creator -hashString -isFinished -privacy -torrentAddedAt');
 	query.exec(function (err, files) {
 		if (err)
 			return next(err);
-		files.forEach(function (file) {
-			var infos = file.toObject();
-			infos.commentsNbr = file.countComments();
-			infos.isLocked = file.getIsLocked();
-			infos.averageGrade = file.getAverageGrade();
-			delete infos.comments;
-			delete infos.locked;
-			delete infos.grades;
-			data.push(infos);
-		});
+		var data = ft.formatFileList(files);
 		res.json({ success: true, data: data });
 	});
 });
