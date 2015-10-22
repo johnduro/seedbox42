@@ -1,11 +1,12 @@
 var File = require('../models/File.js');
+var WallMessage = require('../models/WallMessage.js');
 var jwt = require('jsonwebtoken');
 var fs = require('fs');
 var mime = require('mime');
 
-// ========================================
-// SOCKETS
-// ========================================
+/**
+ * Sockets
+ */
 
 
 
@@ -106,9 +107,9 @@ module.exports = function (io, transmission, secret) {
 		});
 	};
 
-	// ====================================
-	// CREATE FILE
-	// ====================================
+	/**
+	 * Create File
+	 */
 	var createFile = function (torrentAdded, userId) {
 		File.create({ name: torrentAdded['name'], creator: userId, hashString: torrentAdded['hashString']}, function (err, file) {
 			if (err)
@@ -116,9 +117,9 @@ module.exports = function (io, transmission, secret) {
 		});
 	};
 
-	// ====================================
-	// SOCKET AUTH
-	// ====================================
+	/**
+	 * Socket auth
+	 */
 	io.use(function (socket, next) {
 		console.log('SOCK --> ', socket.request._query['token']);
 		if ('_query' in socket.request && 'token' in socket.request._query)
@@ -139,9 +140,9 @@ module.exports = function (io, transmission, secret) {
 	});
 
 
-	// ====================================
-	// SOCKET CONNECTION
-	// ====================================
+	/**
+	 * Socket connection
+	 */
 	io.on('connection', function (socket) {
 		console.log('new user connection', socket.appUser);
 		console.log('number of users currently connected :', io.engine.clientsCount);
@@ -219,10 +220,10 @@ module.exports = function (io, transmission, secret) {
 		/**
 		 * Socket - On - Event
 		 * Permet d'ajouter un torrent via une url
-		 * Retrorne un event 'post:torrent:url' true ou false
+		 * Retourne un event 'post:torrent:url' true ou false
 		 */
-		socket.on('post:torrent:url',  function(data){
-			transmission.torrentAdd({filename: data.url}, function (err, resp) {
+		socket.on('post:torrent:url',  function (data) {
+			transmission.torrentAdd({ filename: data.url }, function (err, resp) {
 				if (err)
 					socket.emit('post:torrent:url', { success: false, message: "torrent not added, wrong url" });
 				else
@@ -237,6 +238,32 @@ module.exports = function (io, transmission, secret) {
 					else
 						socket.emit('post:torrent', { success: false, message: 'unexpected error' });
 				}
+			});
+		});
+
+		/**
+		 * Socket - On - Event
+		 * Add a message on the dashboard
+		 */
+		socket.on('chat:post:message', function (data) {
+			WallMessage.addMessage(data.id, data.message, function (err, message) {
+				if (err)
+					socket.emit('chat:post:message', { success: false, message: 'could not record message' });
+				else
+					io.sockets.emit('chat:post:message', { success: true, message: 'new message', newmessage: message });
+			});
+		});
+
+		/**
+		 * Socket - On - Event
+		 * Get all message from the dashboard
+		 */
+		socket.on('chat:get:message', function (data) {
+			WallMessage.find({}, function (err, messages) {
+				if (err)
+					socket.emit('chat:get:message', { success: false, message: 'could not get messages' });
+				else
+					socket.emit('chat:get:message', { success: true, message: messages });
 			});
 		});
 
