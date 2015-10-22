@@ -2,18 +2,10 @@
 var mongoose = require('mongoose');
 var ft = require('../utils/ft');
 
-// var indexOfByKey = function (arr, key, value) {
-// 	var arrayLength = arr.length;
-// 	for (var i = 0; i < arrayLength; i++) {
-// 		if (arr[i][key] === value)
-// 			return i;
-// 	}
-// 	return -1;
-// };
 
-// ====================================
-// FILE SCHEMA
-// ====================================
+/**
+ * File Schema
+ */
 
 var FileSchema = new mongoose.Schema({
 	name: String,
@@ -44,9 +36,9 @@ var FileSchema = new mongoose.Schema({
 });
 
 
-// ====================================
-// METHODS
-// ====================================
+/**
+ * Methods
+ */
 
 FileSchema.methods = {
 	addComment: function (user, comment, cb) {
@@ -64,7 +56,6 @@ FileSchema.methods = {
 	},
 
 	removeComment: function (commentId, cb) {
-		// var index = indexOfByKey(this.comments, '_id', commentId);
 		var index = ft.indexOfByKey(this.comments, '_id', commentId);
 		if (index > -1)
 			this.comments.splice(index, 1);
