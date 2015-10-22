@@ -29,6 +29,7 @@ var auth = require('./routes/authenticate');
 var debugSetup = require('./routes/ds');
 var torrent = require('./routes/torrent');
 var file = require('./routes/file');
+var dashboard = require('./routes/dashboard');
 // ************************************
 
 // ====================================
@@ -90,6 +91,7 @@ app.use('/debug', debugSetup);
 app.use('/authenticate', auth);
 
 // ----- CONNECTED -----
+app.use('/dashboard', authMW, dashboard);
 app.use('/users', authMW, users);
 app.use('/torrent', authMW, torrent);
 app.use('/file', authMW, file);
