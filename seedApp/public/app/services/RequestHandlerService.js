@@ -87,7 +87,7 @@ app.factory('RequestHandler', ['$http', '$q', '$log', '$rootScope',
                     headers: {"Content-Type": "application/json;charset=utf-8"}
                 };
                 var http = $http(config);
-                //var http = $http.delete(url, data);
+                //var http = $http.delete(url);
                 http.success(function (data, status, headers, config) {
                     promise.resolve({"data": data, "status": status});
                     $rootScope.$broadcast('dataloaded');

@@ -9,7 +9,9 @@ app.controller('filesCtrl', function ($scope, $rootScope, RequestHandler, socket
 	$scope.pathActual = " / ";
 	$scope.pathStreaming = "";
 	$scope.typeStreaming = "";
+	$scope.itemSelected = false;
 	Lightbox.templateUrl = 'app/views/partials/imagesTemplate.html';
+	$scope.newComment = "";
 
 	socket.on("newFile", function(data){
 		RequestHandler.get(api + "file/all")
@@ -149,6 +151,35 @@ app.controller('filesCtrl', function ($scope, $rootScope, RequestHandler, socket
 	};
 
 	$scope.showInfo = function(item){
-		console.log("ijiji");
+		RequestHandler.get(api + "file/" + item._id)
+			.then(function(result){
+				console.log(result.data.data[0]);
+				$scope.itemSelected = result.data.data[0];
+			});
 	};
+
+	$scope.addComment = function(){
+		RequestHandler.post(api + "file/add-comment/" + $scope.itemSelected._id, {text: $scope.newComment})
+			.then(function(result){
+				console.log(result);
+			});
+	};
+
+	$scope.lockFile = function(){
+		RequestHandler.post(api + "file/add-lock/" + $scope.itemSelected._id)
+			.then(function(result){
+				console.log(result);
+			});
+	};
+
+	$scope.unlockFile = function(){
+		RequestHandler.delete(api + "file/remove-lock/" + $scope.itemSelected._id, {})
+			.then(function(result){
+				console.log(result);
+			});
+	};
+
+	rateFunction = function(rating) {
+      console.log('Rating selected: ' + rating);
+  };
 });
