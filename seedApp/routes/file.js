@@ -27,7 +27,7 @@ router.get('/all', function (req, res, next) {
 	query.exec(function (err, files) {
 		if (err)
 			return next(err);
-		var data = ft.formatFileList(files);
+		var data = ft.formatFileList(files, req.user);
 		res.json({ success: true, data: data });
 	});
 });

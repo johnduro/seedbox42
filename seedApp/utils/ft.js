@@ -10,13 +10,13 @@ module.exports = {
 		return -1;
 	},
 
-	formatFileList: function (files) {
+	formatFileList: function (files, user) {
 		var result = [];
 		files.forEach(function (file) {
 			var infos = file.toObject();
 			infos.commentsNbr = file.countComments();
 			infos.isLocked = file.getIsLocked();
-			infos.isLockedByUser = file.getIsLockedByUser();
+			infos.isLockedByUser = file.getIsLockedByUser(user);
 			infos.averageGrade = file.getAverageGrade();
 			delete infos.comments;
 			delete infos.locked;

@@ -42,7 +42,7 @@ router.get('/', function (req, res, next) {
 			errors.userFilesError.err = err;
 		}
 		else
-			userLastFiles = ft.formatFileList(userFiles);
+			userLastFiles = ft.formatFileList(userFiles, req.user);
 		File.find({}).select(selectRule).sort(sortRule).limit(5).exec(function (err, files) {
 			if (err)
 			{
@@ -50,7 +50,7 @@ router.get('/', function (req, res, next) {
 				errors.filesError.err = err;
 			}
 			else
-				lastFiles = ft.formatFileList(files);
+				lastFiles = ft.formatFileList(files, req.user);
 			getTotalDiskSpace(function (err, diskInfos) {
 				if (err)
 				{
