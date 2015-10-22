@@ -1,10 +1,10 @@
 
 
 module.exports = {
-	indexOfByKey: function (arr, key, value) {
+	indexOfByIdKey: function (arr, key, value) {
 		var arrayLength = arr.length;
 		for (var i = 0; i < arrayLength; i++) {
-			if (arr[i][key] === value)
+			if (arr[i][key].toString() === value)
 				return i;
 		}
 		return -1;
@@ -16,6 +16,7 @@ module.exports = {
 			var infos = file.toObject();
 			infos.commentsNbr = file.countComments();
 			infos.isLocked = file.getIsLocked();
+			infos.isLockedByUser = file.getIsLockedByUser();
 			infos.averageGrade = file.getAverageGrade();
 			delete infos.comments;
 			delete infos.locked;
