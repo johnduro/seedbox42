@@ -1,5 +1,5 @@
 var File = require('../models/File.js');
-var WallMessage = require('../models/WallMessage.js');
+var WallMessage = require('../models/Wall.js');
 var jwt = require('jsonwebtoken');
 var fs = require('fs');
 var mime = require('mime');
