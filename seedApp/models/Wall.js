@@ -1,5 +1,6 @@
 
 var mongoose = require('mongoose');
+var ft = require('../utils/ft');
 
 /**
  * WallMessage Schema
@@ -29,10 +30,15 @@ WallMessageSchema.statics = {
 						if (err)
 							return cb(err);
 							// throw err;
-					});;
+					});
 				}
 			});
-			return cb(null, file);
+			ft.formatMessageList([file], function (err, formatFile) {
+				if (err)
+					return cb(err);
+				return cb(null, formatFile[0]);
+			});
+			// return cb(null, file);
 		});
 	}
 };
