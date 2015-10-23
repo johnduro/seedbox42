@@ -217,3 +217,31 @@ ul.rating {
 .rating .filled {
   color: #21568b;
 }
+
+/** MINI CHAT */
+.content-messages {
+    height: 300px;
+    background-color: #ddd;
+    border-radius: 5px;
+    border-style: solid;
+    padding: 5px;
+    overflow-y: auto;
+}
+.content-messages .name {
+    font-size: larger;
+    font-family: sans-serif;
+    color: black;
+}
+
+.form-message {
+    margin-top: 10px;
+}
+
+.form-message p {
+    display: inline-block;
+}
+
+.form-message textarea {
+    width: 100%;
+    display: inline-block;
+}
