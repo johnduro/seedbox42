@@ -34,14 +34,14 @@ router.get('/:id', function (req, res, next) {
 		// if (file.length > 0)
 		// {
 		var retFile = file.toObject();
-		console.log('CREATOR > ', file.creator);
+		// console.log('CREATOR > ', file.creator);
 		var queryUser = User.findOne({'_id': file.creator });
 		queryUser.select("-password -mail");
 		queryUser.exec(function (err, user) {
 			if (err)
 				return next(err);
 			retFile.creator = user.toObject();
-			console.log(retFile);
+			// console.log(retFile);
 			res.json({ success: true, data: retFile });
 		});
 		// }
