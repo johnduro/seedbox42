@@ -2,6 +2,7 @@ var express = require('express');
 var atob = require('atob');
 var router = express.Router();
 var File = require("../models/File.js");
+var User = require("../models/User.js");
 var fs = require('fs');
 var mime = require('mime');
 var mongoose = require('mongoose');
@@ -12,14 +13,6 @@ var ft = require('../utils/ft');
 /**
  * Files
  */
-
- router.get("/comments/:id", function(req, res, next){
-	 File.findById(req.params.id, function (err, file) {
- 		if (err)
- 			return next(err);
-		res.json({ success: true, data: file.comments });
- 	});
- });
 
 router.get('/all', function (req, res, next) {
 	var query = File.find({ isFinished: true });
@@ -33,11 +26,32 @@ router.get('/all', function (req, res, next) {
 });
 
 router.get('/:id', function (req, res, next) {
-	File.find({ _id: req.params.id, isFinished: true }, function (err, file) {
+	var query = File.findOne({ _id: req.params.id, isFinished: true });
+	query.select('-isFinished -path -hashString -torrentAddedAt'); //rajouter d'autres !!!
+	query.exec(function (err, file) {
 		if (err)
 			return next(err);
-		res.json({ success: true, data: file });
+		// if (file.length > 0)
+		// {
+		var retFile = file.toObject();
+		console.log('CREATOR > ', file.creator);
+		var queryUser = User.findOne({'_id': file.creator });
+		queryUser.select("-password -mail");
+		queryUser.exec(function (err, user) {
+			if (err)
+				return next(err);
+			retFile.creator = user.toObject();
+			console.log(retFile);
+			res.json({ success: true, data: retFile });
+		});
+		// }
+		// res.json({ success: true, data: file });
 	});
+	// File.find({ _id: req.params.id, isFinished: true }, function (err, file) {
+	// 	if (err)
+	// 		return next(err);
+	// 	res.json({ success: true, data: file });
+	// });
 });
 
 
@@ -87,6 +101,19 @@ router.delete('/remove-lock/:id', function (req, res, next) {
 			if (err)
 				return next(err);
 			res.json({ success: true, message: 'file successfully unlocked' });
+		});
+	});
+});
+
+router.get("/comments/:id", function (req, res, next) {
+	File.findById(req.params.id, function (err, file) {
+		if (err)
+			return next(err);
+		ft.formatCommentList(file.comments, function (err, comments) {
+			if (err)
+				res.json({ success: false, message: err });
+			else
+				res.json({ success: true, data: comments });
 		});
 	});
 });
@@ -241,31 +268,6 @@ router.get('/show/:id', function (req, res, next) {
 });
 
 
-var getFilesStreams = function (fileDetail, pathInDir, done) {
-	var fileStream = [];
-	if (fileDetail.isDirectory)
-	{
-		var i = 0;
-		(function next () {
-			var file = fileDetail.fileList[i++];
-			if (!file)
-				return done(null, fileStream);
-			var filePathInDir = pathInDir + '/' + file.name;
-			getFilesStreams(file, filePathInDir, function (err, data) {
-				if (err)
-					return done(err);
-				fileStream = fileStream.concat(data);
-				next();
-			});
-		})();
-	}
-	else
-	{
-		fileStream.push({ stream: fs.createReadStream(fileDetail.path), name: pathInDir });
-		return done(null, fileStream);
-	}
-};
-
 router.get('/download/:id/:path/:name', function (req, res, next) {
 	var query = File.findById(req.params.id);
 	query.select('path');
@@ -275,32 +277,29 @@ router.get('/download/:id/:path/:name', function (req, res, next) {
 		var pathDecode = atob(req.params.path);
 		var nameDecode = atob(req.params.name);
 		var filePath = file.path + pathDecode;
+		if (filePath.slice(-1) === '/')
+			filePath = filePath.slice(0, -1);
 		var fileName = nameDecode;
-		// console.log('filePath > ', filePath);
-		fileInfos.isDirectory(filePath, function (err, isDirectory) {
+		fileInfos.isDirectory(filePath, function (err, isDirectory, fileSize) {
+			if (err)
+				return next(err);
 			if (isDirectory)
 			{
-				// console.log('here');
 				res.setHeader('Content-disposition', 'attachment; filename=' + fileName + '.zip');
 				res.setHeader('Content-type', 'application/zip');
-				if (filePath.slice(-1) === '/')
-					filePath = filePath.slice(0, -1);
 				fileInfos.getFileInfosRecurs(filePath, fileName, function (err, data) {
-					// console.log('there data > ', data);
 					if (err)
 						return next(err);
-					getFilesStreams(data, '', function (err, streams) {
-						// console.log('wut?', streams);
+					res.setHeader('Content-Length', data.size);
+					fileInfos.getFilesStreams(data, '', function (err, streams) {
 						var zip = new zipstream();
 						zip.pipe(res);
 						var i = 0;
 						streams.forEach(function (s) {
 							zip.addFile(s.stream, { name : s.name }, function () {
-								// console.log('FILE ADDED > ', s.name);
 							});
 						});
 						zip.finalize(function (size) {
-							// console.log('SIZE DOSSIER > ', size);
 						});
 					});
 				});
@@ -310,12 +309,12 @@ router.get('/download/:id/:path/:name', function (req, res, next) {
 				var mimeType = mime.lookup(filePath);
 				res.setHeader('Content-disposition', 'attachment; filename=' + fileName);
 				res.setHeader('Content-type', mimeType);
+				res.setHeader('Content-Length', fileSize);
 				var fileStream = fs.createReadStream(filePath);
 				fileStream.pipe(res);
 			}
 		});
-
-
+		file.incDownloads();
 	});
 });
 

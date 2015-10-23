@@ -1,4 +1,5 @@
 
+var User = require('../models/User.js');
 
 module.exports = {
 	indexOfByIdKey: function (arr, key, value) {
@@ -24,5 +25,23 @@ module.exports = {
 			result.push(infos);
 		});
 		return result;
+	},
+
+	formatCommentList: function (comments, done) {
+		var formattedComments = [];
+		var i = 0;
+		(function loop () {
+			var comment = comments[i++];
+			if (!comment)
+				return done(null, formattedComments);;
+			User.findById(comment.user, function (err, user) {
+				if (err)
+					return done(err);
+				var temp = comment.toObject();
+				temp.user = user.login;
+				formattedComments.push(temp);
+				loop();
+			});
+		})();
 	}
 };

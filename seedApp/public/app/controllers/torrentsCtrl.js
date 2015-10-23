@@ -61,7 +61,7 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 	};
 
 	$scope.sendTorrentUrl = function(){
-		socket.emit('post:torrent:url', {"url":$scope.newTorrentUrl});
+		socket.emit('post:torrent:url', {"url":$scope.newTorrentUrl, "id": $rootScope.user._id});
 	};
 
 	$scope.torrentStop = function(id){
