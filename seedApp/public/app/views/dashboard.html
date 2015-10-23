@@ -99,13 +99,13 @@
                 <div class="panel-body">
                     <div class="content-messages">
                         <div ng-repeat="message in messages">
-                            <div class="name">{{message.user}}</div>
+                            <div class="name">{{message.user.login}}</div>
                             <p>{{message.message}}</p>
                         </div>
                     </div>
                     <div class="form-message">
                         <p>Your message: </p>
-                        <textarea ng-model="newMessage" id="sendie" maxlength = '100'></textarea>
+                        <textarea code="13" key-press='sendMessage()' ng-model="newMessage"  maxlength='100'></textarea>
                         <button ng-click="sendMessage()">Send</button>
                     <div>
                 </div>
