@@ -1,18 +1,18 @@
-angular.module("myApp").directive('keyPressEnter', function() {
-    return function(scope, element, attrs) {
+app.directive('keyPress', keyPress);
 
-        element.bind("keydown keypress", function(event) {
-            var keyCode = event.which || event.keyCode;
+function keyPress() {
+    return {
+        restrict: 'A',
+        link: function($scope, $element, $attrs) {
+            $element.bind("keypress", function(event) {
+                var keyCode = event.which || event.keyCode;
+                if (keyCode == $attrs.code) {
+                    $scope.$apply(function() {
+                        $scope.$eval($attrs.keyPress, {$event: event});
+                    });
 
-            // If enter key is pressed
-            if (keyCode === 13) {
-                scope.$apply(function() {
-                        // Evaluate the expression
-                    scope.$eval(attrs.dlEnterKey);
-                });
-
-                event.preventDefault();
-            }
-        });
+                }
+            });
+        }
     };
-});
+}

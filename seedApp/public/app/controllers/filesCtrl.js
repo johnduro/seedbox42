@@ -151,10 +151,15 @@ app.controller('filesCtrl', function ($scope, $rootScope, RequestHandler, socket
 	};
 
 	$scope.showInfo = function(item){
+		if (item._id == $scope.itemSelected._id){
+			$scope.itemSelected = "";
+			return;
+		}
 		RequestHandler.get(api + "file/" + item._id)
 			.then(function(result){
-				console.log(result.data.data[0]);
-				$scope.itemSelected = result.data.data[0];
+				console.log(result);
+				console.log(result.data.data);
+				$scope.itemSelected = result.data.data;
 			});
 	};
 
