@@ -231,6 +231,11 @@ ul.rating {
     font-size: larger;
     font-family: sans-serif;
     color: black;
+    display: inline-block;
+}
+
+.content-messages .message {
+    display: inline-block;;
 }
 
 .form-message {
