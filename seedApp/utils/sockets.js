@@ -3,6 +3,7 @@ var WallMessage = require('../models/Wall.js');
 var jwt = require('jsonwebtoken');
 var fs = require('fs');
 var mime = require('mime');
+var ft = require('../utils/ft');
 
 /**
  * Sockets
@@ -262,10 +263,12 @@ module.exports = function (io, transmission, secret) {
 		 */
 		socket.on('chat:get:message', function (data, callback) {
 			WallMessage.find({}, function (err, messages) {
-				if (err)
-					callback({ success: false, message: 'could not get messages' });
-				else
-					callback({ success: true, message: messages });
+				ft.formatMessageList(messages, function (err, formatMess) {
+					if (err)
+						callback({ success: false, message: 'could not get messages' });
+					else
+						callback({ success: true, message: formatMess });
+				});
 			});
 		});
 
