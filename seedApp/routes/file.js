@@ -42,7 +42,16 @@ router.get('/:id', function (req, res, next) {
 				return next(err);
 			retFile.creator = user.toObject();
 			// console.log(retFile);
-			res.json({ success: true, data: retFile });
+			ft.formatCommentList(retFile.comments, function (err, formatCom) {
+				if (err)
+					res.json({ success: false, message: err });
+				else
+				{
+					retFile.comments = formatCom;
+					res.json({ success: true, data: retFile });
+				}
+			});
+			// res.json({ success: true, data: retFile });
 		});
 		// }
 		// res.json({ success: true, data: file });

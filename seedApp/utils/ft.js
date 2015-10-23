@@ -34,11 +34,11 @@ module.exports = {
 			var comment = comments[i++];
 			if (!comment)
 				return done(null, formattedComments);
-			User.findById(comment.user, function (err, user) {
+			User.findById(comment.user, { login: 1, avatar: 1, role: 1 }, function (err, user) {
 				if (err)
 					return done(err);
 				var temp = comment.toObject();
-				temp.user = user.login;
+				temp.user = user.toObject();
 				formattedComments.push(temp);
 				loop();
 			});
