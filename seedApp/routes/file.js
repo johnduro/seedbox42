@@ -33,20 +33,23 @@ router.get('/:id', function (req, res, next) {
 			return next(err);
 		// if (file.length > 0)
 		// {
-		var retFile = file.toObject();
+		// var retFile = file.toObject();
 		// console.log('CREATOR > ', file.creator);
 		var queryUser = User.findOne({'_id': file.creator });
 		queryUser.select("-password -mail");
 		queryUser.exec(function (err, user) {
 			if (err)
 				return next(err);
-			retFile.creator = user.toObject();
+			// retFile.creator = user.toObject();
 			// console.log(retFile);
-			ft.formatCommentList(retFile.comments, function (err, formatCom) {
+			// ft.formatCommentList(retFile.comments, function (err, formatCom) {
+			ft.formatCommentList(file.comments, function (err, formatCom) {
 				if (err)
 					res.json({ success: false, message: err });
 				else
 				{
+					var retFile = file.toObject();
+					retFile.creator = user.toObject();
 					retFile.comments = formatCom;
 					res.json({ success: true, data: retFile });
 				}
