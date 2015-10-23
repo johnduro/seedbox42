@@ -33,13 +33,31 @@ module.exports = {
 		(function loop () {
 			var comment = comments[i++];
 			if (!comment)
-				return done(null, formattedComments);;
+				return done(null, formattedComments);
 			User.findById(comment.user, function (err, user) {
 				if (err)
 					return done(err);
 				var temp = comment.toObject();
 				temp.user = user.login;
 				formattedComments.push(temp);
+				loop();
+			});
+		})();
+	},
+
+	formatMessageList: function (messages, done) {
+		var formattedMessages = [];
+		var i = 0;
+		(function loop () {
+			var message = messages[i++];
+			if (!message)
+				return done(null, formattedMessages);
+			User.findById(message.user, { login: 1, avatar: 1, role: 1 }, function (err, user) {
+				if (err)
+					return done(err);
+				var temp = message.toObject();
+				temp.user = user.toObject();
+				formattedMessages.push(temp);
 				loop();
 			});
 		})();
