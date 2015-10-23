@@ -1,7 +1,6 @@
 
 var express = require('express');
 var router = express.Router();
-// var WallMessage = require('../models/Wall.js');
 var File = require('../models/File.js');
 var njds = require('nodejs-disks');
 var ft = require('../utils/ft');
@@ -23,6 +22,42 @@ var getTotalDiskSpace = function (done) {
 			});
 	});
 };
+
+var sortRule = { createdAt: -1 };
+var selectRule = '-path -creator -hashString -isFinished -privacy -torrentAddedAt';
+
+router.get('/recent-user-file', function (req, res, next) {
+	File.find({ creator: req.user._id }).select(selectRule).sort(sortRule).limit(5).exec(function (err, userFiles) {
+		if (err)
+			res.json({ success: false, message: err });
+		else
+		{
+			var userRecentFiles = ft.formatFileList(userFiles, req.user);
+			res.json({ success: true, data: userRecentFiles });
+		}
+	});
+});
+
+router.get('/recent-file', function (req, res, next) {
+	File.find({}).select(selectRule).sort(sortRule).limit(5).exec(function (err, files) {
+		if (err)
+			res.json({ success: false, message: err });
+		else
+		{
+			var lastFiles = ft.formatFileList(files, req.user);
+			res.json({ success: true, data: lastFiles });
+		}
+	});
+});
+
+router.get('/disk-space', function (req, res, next) {
+	getTotalDiskSpace(function (err, diskInfos) {
+		if (err)
+			res.json({ success: false, message: err });
+		else
+			res.json({ success: true, data: diskInfos });
+	});
+});
 
 router.get('/', function (req, res, next) {
 	var userLastFiles = null;

@@ -223,6 +223,7 @@ module.exports = function (io, transmission, secret) {
 		 * Retourne un event 'post:torrent:url' true ou false
 		 */
 		socket.on('post:torrent:url',  function (data) {
+			console.log('DATA >', data);
 			transmission.torrentAdd({ filename: data.url }, function (err, resp) {
 				if (err)
 					socket.emit('post:torrent:url', { success: false, message: "torrent not added, wrong url" });
