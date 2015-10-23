@@ -247,6 +247,7 @@ module.exports = function (io, transmission, secret) {
 		 * Add a message on the dashboard
 		 */
 		socket.on('chat:post:message', function (data) {
+			console.log(data);
 			WallMessage.addMessage(data.id, data.message, function (err, message) {
 				if (err)
 					socket.emit('chat:post:message', { success: false, message: 'could not record message' });
@@ -259,12 +260,12 @@ module.exports = function (io, transmission, secret) {
 		 * Socket - On - Event
 		 * Get all message from the dashboard
 		 */
-		socket.on('chat:get:message', function (data) {
+		socket.on('chat:get:message', function (data, callback) {
 			WallMessage.find({}, function (err, messages) {
 				if (err)
-					socket.emit('chat:get:message', { success: false, message: 'could not get messages' });
+					callback({ success: false, message: 'could not get messages' });
 				else
-					socket.emit('chat:get:message', { success: true, message: messages });
+					callback({ success: true, message: messages });
 			});
 		});
 

@@ -1,7 +1,9 @@
 
-app.controller('dashboardCtrl', function ($scope, $rootScope, $timeout, RequestHandler) {
+app.controller('dashboardCtrl', function ($scope, $rootScope, $timeout, RequestHandler, socket) {
 
 	console.log("dashboardCtrl");
+
+	$scope.newMessage = "";
 
 	RequestHandler.get(api + "dashboard")
 		.then(function(result){
@@ -9,8 +11,20 @@ app.controller('dashboardCtrl', function ($scope, $rootScope, $timeout, RequestH
 			$scope.userLastFiles = result.data.userLastFiles;
 			$rootScope.tools.convertFields($scope.userLastFiles);
 			$rootScope.tools.convertFields($scope.lastFiles);
-			console.log(result);
 		});
+
+	socket.emit("chat:get:message", null, function(data){
+		$scope.messages = data.message;
+	});
+
+	$scope.sendMessage = function(){
+		socket.emit("chat:post:message", {message: $scope.newMessage, id:$rootScope.user._id})
+	};
+
+	socket.on("chat:post:message", function(data){
+		$scope.messages.push(data.newmessage);
+	});
+
 
 		var ctrl = this;
 		ctrl.chartData = [
