@@ -75,7 +75,7 @@
             <div class="star-rating" star-rating rating-value="5" data-max="5"></div>
             Commentaire
             <div ng-repeat="comment in itemSelected.comments">
-                -> {{comment.text}}
+                {{comment.user.login}} :{{comment.text}}
             </div>
             Ajouter un commentaire:
             <textarea ng-model="$parent.newComment"> </textarea>
