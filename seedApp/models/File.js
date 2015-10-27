@@ -1,6 +1,7 @@
 
 var mongoose = require('mongoose');
 var ft = require('../utils/ft');
+var User = require('../models/User.js');
 
 
 /**
@@ -35,6 +36,73 @@ var FileSchema = new mongoose.Schema({
 	torrentAddedAt : { type: Date, default: Date.now }
 });
 
+
+/**
+ * Methods statics
+ */
+FileSchema.statics = {
+	getFileById: function (id, cb) {
+		this.findOne({ _id: id, isFinished: true })
+			.select('-isFinished -path -hashString -torrentAddedAt')
+			.exec(function (err, file) {
+				if (err)
+					return cb(err);
+				var retFile = file.toObject();
+				User.getByIdFormatShow(file.creator, function (err, fileCreator) {
+					if (err)
+						return cb(err);
+					retFile.creator = fileCreator;
+					ft.formatCommentList(file.comments, function (err, formatCom) {
+						if (err)
+							return cb(err);
+						retFile.comments = formatCom;
+						return cb(null, retFile);
+					});
+				});
+			});
+	},
+
+	getFileList: function (match, sort, limit, user, cb) {
+		match.isFinished = true;
+		var query = this.find(match);
+		query.select('-path -creator -hashString -isFinished -privacy -torrentAddedAt');
+		query.sort(sort);
+		if (limit > 0)
+			query.limit(limit);
+		query.exec(function (err, files) {
+			if (err)
+				return cb(err);
+			var formatFiles = ft.formatFileList(files, user);
+			return cb(null, formatFiles);
+		});
+	},
+
+	getCommentsById: function (id, cb) {
+		this.findById(id, function (err, file) {
+			if (err)
+				return cb(err);
+			ft.formatCommentList(file.comments, function (err, comments) {
+				if (err)
+					return cb(err);
+				return cb(null, comments);
+			});
+		});
+	},
+
+	getUserLockedFiles: function (user, sortOrder, limit, cb) {
+		var query = this.find({ "locked.user": user._id })
+				.select('-path -creator -hashString -isFinished -privacy -torrentAddedAt')
+				.sort({ "locked.createdAt": sortOrder });
+		if (limit > 0)
+			query.limit(limit);
+		query.exec(function (err, files) {
+			if (err)
+				return cb(err);
+			var formatFiles = ft.formatFileList(files, user);
+			return cb(null, formatFiles);
+		});
+	}
+};
 
 /**
  * Methods
@@ -138,7 +206,10 @@ FileSchema.methods = {
 
 	incDownloads: function () {
 		this.downloads += 1;
-		this.save();
+		this.save(function (err) {
+			if (err)
+				console.log("Download increment error: ", err);
+		});
 	}
 };
 

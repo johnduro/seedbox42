@@ -26,27 +26,30 @@ var getTotalDiskSpace = function (done) {
 var sortRule = { createdAt: -1 };
 var selectRule = '-path -creator -hashString -isFinished -privacy -torrentAddedAt';
 
-router.get('/recent-user-file', function (req, res, next) {
-	File.find({ creator: req.user._id }).select(selectRule).sort(sortRule).limit(5).exec(function (err, userFiles) {
+router.get('/oldest-locked-file', function (req, res, next) {
+	File.getUserLockedFiles(req.user, 1, 5, function (err, files) {
 		if (err)
 			res.json({ success: false, message: err });
 		else
-		{
-			var userRecentFiles = ft.formatFileList(userFiles, req.user);
-			res.json({ success: true, data: userRecentFiles });
-		}
+			res.json({ success: true, data: files });
+	});
+});
+
+router.get('/recent-user-file', function (req, res, next) {
+	File.getFileList({ creator: req.user._id }, { createdAt: -1 }, 5, req.user, function (err, files) {
+		if (err)
+			res.json({ success: false, message: err });
+		else
+			res.json({ success: true, data: files });
 	});
 });
 
 router.get('/recent-file', function (req, res, next) {
-	File.find({}).select(selectRule).sort(sortRule).limit(5).exec(function (err, files) {
+	File.getFileList({}, { createdAt: -1 }, 5, req.user, function (err, files) {
 		if (err)
 			res.json({ success: false, message: err });
 		else
-		{
-			var lastFiles = ft.formatFileList(files, req.user);
-			res.json({ success: true, data: lastFiles });
-		}
+			res.json({ success: true, data: files });
 	});
 });
 
