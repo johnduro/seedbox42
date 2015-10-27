@@ -34,12 +34,12 @@ module.exports = {
 			var comment = comments[i++];
 			if (!comment)
 				return done(null, formattedComments);
-			User.findById(comment.user, { login: 1, avatar: 1, role: 1 }, function (err, user) {
+			User.getByIdFormatShow(comment.user, function (err, user) {
 				if (err)
 					return done(err);
-				var temp = comment.toObject();
-				temp.user = user.toObject();
-				formattedComments.push(temp);
+				var formatComment = comment.toObject();
+				formatComment.user = user;
+				formattedComments.push(formatComment);
 				loop();
 			});
 		})();
@@ -52,12 +52,12 @@ module.exports = {
 			var message = messages[i++];
 			if (!message)
 				return done(null, formattedMessages);
-			User.findById(message.user, { login: 1, avatar: 1, role: 1 }, function (err, user) {
+			User.getByIdFormatShow(message.user, function (err, user) {
 				if (err)
 					return done(err);
-				var temp = message.toObject();
-				temp.user = user.toObject();
-				formattedMessages.push(temp);
+				var formatMessage = message.toObject();
+				formatMessage.user = user;
+				formattedMessages.push(formatMessage);
 				loop();
 			});
 		})();

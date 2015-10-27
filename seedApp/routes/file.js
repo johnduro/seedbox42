@@ -15,55 +15,22 @@ var ft = require('../utils/ft');
  */
 
 router.get('/all', function (req, res, next) {
-	var query = File.find({ isFinished: true });
-	query.select('-path -creator -hashString -isFinished -privacy -torrentAddedAt');
-	query.exec(function (err, files) {
+	File.getFileList({}, {}, 0, req.user, function (err, files) {
 		if (err)
-			return next(err);
-		var data = ft.formatFileList(files, req.user);
-		res.json({ success: true, data: data });
+			res.json({ success: false, message: err });
+		else
+			res.json({ success: true, data: files });
 	});
 });
 
 router.get('/:id', function (req, res, next) {
-	var query = File.findOne({ _id: req.params.id, isFinished: true });
-	query.select('-isFinished -path -hashString -torrentAddedAt'); //rajouter d'autres !!!
-	query.exec(function (err, file) {
+	File.getFileById(req.params.id, function (err, file) {
 		if (err)
-			return next(err);
-		// if (file.length > 0)
-		// {
-		// var retFile = file.toObject();
-		// console.log('CREATOR > ', file.creator);
-		var queryUser = User.findOne({'_id': file.creator });
-		queryUser.select("-password -mail");
-		queryUser.exec(function (err, user) {
-			if (err)
-				return next(err);
-			// retFile.creator = user.toObject();
-			// console.log(retFile);
-			// ft.formatCommentList(retFile.comments, function (err, formatCom) {
-			ft.formatCommentList(file.comments, function (err, formatCom) {
-				if (err)
-					res.json({ success: false, message: err });
-				else
-				{
-					var retFile = file.toObject();
-					retFile.creator = user.toObject();
-					retFile.comments = formatCom;
-					res.json({ success: true, data: retFile });
-				}
-			});
-			// res.json({ success: true, data: retFile });
-		});
-		// }
-		// res.json({ success: true, data: file });
+			res.json({ success: false, message: err });
+		else
+			res.json({ success: true, data: file });
+
 	});
-	// File.find({ _id: req.params.id, isFinished: true }, function (err, file) {
-	// 	if (err)
-	// 		return next(err);
-	// 	res.json({ success: true, data: file });
-	// });
 });
 
 
@@ -118,15 +85,11 @@ router.delete('/remove-lock/:id', function (req, res, next) {
 });
 
 router.get("/comments/:id", function (req, res, next) {
-	File.findById(req.params.id, function (err, file) {
+	File.getCommentsById(req.params.id, function (err, comments) {
 		if (err)
-			return next(err);
-		ft.formatCommentList(file.comments, function (err, comments) {
-			if (err)
-				res.json({ success: false, message: err });
-			else
-				res.json({ success: true, data: comments });
-		});
+			res.json({ success: false, message: err });
+		else
+			res.json({ success: true, data: comments });
 	});
 });
 
@@ -282,16 +245,15 @@ router.get('/show/:id', function (req, res, next) {
 
 router.get('/download/:id/:path/:name', function (req, res, next) {
 	var query = File.findById(req.params.id);
-	query.select('path');
+	query.select('path downloads');
 	query.exec(function (err, file) {
 		if (err)
 			return next(err);
 		var pathDecode = atob(req.params.path);
-		var nameDecode = atob(req.params.name);
+		var fileName = atob(req.params.name);
 		var filePath = file.path + pathDecode;
 		if (filePath.slice(-1) === '/')
 			filePath = filePath.slice(0, -1);
-		var fileName = nameDecode;
 		fileInfos.isDirectory(filePath, function (err, isDirectory, fileSize) {
 			if (err)
 				return next(err);
