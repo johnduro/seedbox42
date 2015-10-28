@@ -16,7 +16,7 @@
         <div class="col-md-6">
             <div class="panel panel-white">
                 <div class="panel-heading">
-                    <h3 class="panel-title">5 derniers films ajoutés</h3>
+                    <h3 class="panel-title">5 derniers torrents ajoutés</h3>
                 </div>
                 <div class="panel-body">
                     <table class="display table" style="width: 100%; cellspacing: 0;">
@@ -48,7 +48,7 @@
         <div class="col-md-6">
             <div class="panel panel-white">
                 <div class="panel-heading">
-                    <h3 class="panel-title">5 derniers films que vous avez ajoutés</h3>
+                    <h3 class="panel-title">5 derniers torrents que vous avez ajoutés</h3>
                 </div>
                 <div class="panel-body">
                     <table class="display table" style="width: 100%; cellspacing: 0;">
@@ -86,7 +86,8 @@
                 </div>
                 <div class="panel-body">
                     <div>
-                        <!-- <div donut-chart donut-data='[{resize:true, label: "Download Sales", value: 12},{label: "In-Store Sales",value: 30},{label: "Mail-Order Sales", value: 20}]' donut-colors='["#31C0BE","#c7254e","#98a0d3"]' donut-formatter='"currency"'> </div> -->
+                        <!-- <canvas id="polar-area" class="chart chart-polar-area" chart-data="data" chart-labels="labels"> </canvas> -->
+                        <div donut-chart donut-data='chartData' donut-colors='["#31C0BE","#c7254e","#98a0d3"]' donut-formatter='myFormatter'> </div>
                     </div>
                 </div>
             </div>

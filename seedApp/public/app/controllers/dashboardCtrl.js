@@ -5,11 +5,26 @@ app.controller('dashboardCtrl', function ($scope, $rootScope, $timeout, RequestH
 
 	$scope.newMessage = "";
 
-	RequestHandler.get(api + "dashboard")
+	RequestHandler.get(api + "dashboard/disk-space")
 		.then(function(result){
-			$scope.lastFiles = result.data.lastFiles;
-			$scope.userLastFiles = result.data.userLastFiles;
+			$scope.chartData = [
+		      {label: "Free space", value: result.data.data.freePer},
+		      {label: "Used space", value: result.data.data.usedPer},
+		    ];
+			$scope.myFormatter = function(input) {
+		      return input + '%';
+		    };
+		});
+
+	RequestHandler.get(api + "dashboard/recent-user-file")
+		.then(function(result){
+			$scope.userLastFiles = result.data.data;
 			$rootScope.tools.convertFields($scope.userLastFiles);
+		});
+
+	RequestHandler.get(api + "dashboard/recent-file")
+		.then(function(result){
+			$scope.lastFiles = result.data.data;
 			$rootScope.tools.convertFields($scope.lastFiles);
 		});
 
@@ -26,16 +41,4 @@ app.controller('dashboardCtrl', function ($scope, $rootScope, $timeout, RequestH
 		$scope.messages.push(data.newmessage);
 	});
 
-
-		var ctrl = this;
-		ctrl.chartData = [
-		      {label: "Download Sales", value: 12},
-		      {label: "In-Store Sales", value: 30},
-		      {label: "Mail-Order Sales", value: 20}
-		    ];
-	    ctrl.chartColors = ["#31C0BE", "#c7254e", "#98a0d3"];
-		ctrl.resize = true;
-	    ctrl.myFormatter = function(input) {
-	      return input + '%';
-	    };
 });
