@@ -13,10 +13,11 @@ var socketIO = require('socket.io');
 // ====================================
 // EXTRAS
 // ====================================
+var fs = require('fs');
 var mongoose = require('mongoose');
 var jwt = require('jsonwebtoken');
 var multer = require('multer');
-var config = require('./config');
+// var config = require('./config');
 var authMW = require('./utils/authMiddleware');
 var TransmissionNode = require('./utils/transmissionNode');
 // ************************************
@@ -36,6 +37,7 @@ var dashboard = require('./routes/dashboard');
 // CONFIG
 // ====================================
 var app = express();
+var config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
 app.set('secret', config.secret);
 app.set('config', config);
 // ************************************
