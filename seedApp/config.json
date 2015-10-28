@@ -1,0 +1,9 @@
+{
+	"appPort": 3000,
+	"secret": "ilovesecret",
+	"database": "mongodb://localhost/seedapp",
+	"downloadDir": "/home/downloader",
+	"transmissionAdress": "localhost",
+	"transmissionPort": 9091,
+	"transmissionUrl": "/transmission/rpc"
+}
