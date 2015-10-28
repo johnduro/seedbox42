@@ -92,6 +92,7 @@ app.controller('filesCtrl', function ($scope, $rootScope, RequestHandler, socket
 				.then(function(result){
 					if (result.data.data.isDirectory){
 						console.log(result);
+						$scope.itemSelected = result.data.file;
 						$scope.treeSelected = result.data.data;
 						$scope.treeSelected.id = value;
 						$scope.elementsActual = result.data.data;
@@ -128,6 +129,7 @@ app.controller('filesCtrl', function ($scope, $rootScope, RequestHandler, socket
 			$scope.elementsActual = $scope.treeBase;
 			pathActualArray = [];
 			$scope.pathActual = "/";
+			$scope.itemSelected = "";
 			return;
 		}
 

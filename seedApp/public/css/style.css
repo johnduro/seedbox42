@@ -184,13 +184,13 @@ _:-ms-input-placeholder, :root .demo-graph {
 }
 
 .file-info {
-    position: absolute;
-    right: 0;
     background-color: #ddd;
-    height: 100%;
     padding: 10px;
+    /**position: absolute;
+    right: 0;
+    height: 100%;
     border-top-left-radius: 10px;
-    width: 300px;
+    width: 300px;**/
 }
 
 /** RATING STAR */
