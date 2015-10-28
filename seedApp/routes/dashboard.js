@@ -12,9 +12,6 @@ var getTotalDiskSpace = function (done) {
 			return done(err);
 		else
 			njds.drivesDetail(drives, function (err, data) {
-				console.log("DRIVES :", drives);
-				console.log("DATA :", data);
-				// console.log(data);
 				for (var i = 0; i < data.length; i++)
 				{
 					if (data[i].mountpoint === '/')
