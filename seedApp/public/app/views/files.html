@@ -35,6 +35,7 @@
                     <th class="col-md-10">Name</th>
                     <th class="">Nombre de commentaires</th>
                     <th class="">Nombre de Telechargements</th>
+                    <th class="">Lock</th>
                     <th class="">Size</th>
                     <th class=""></th>
                 </tr>
@@ -52,6 +53,10 @@
                     <td ng-dblclick="openFolder(item._id)" ng-clickc="showInfo(item)">{{item.name}}</td>
                     <td>{{item.commentsNbr}}</td>
                     <td>{{item.downloads}}</td>
+                    <td>
+                        <i ng-if="item.isLockedByUser == 1" class="fa fa-lock" ng-click="unlockFile()"></i>
+                        <i ng-if="item.isLockedByUser == 0" class="fa fa-unlock-alt" ng-click="lockFile()"></i>
+                    </td>
                     <td>{{item.sizeConvert}}</td>
                     <td> <i ng-click="download(item._id, item.name)" class="fa fa-download"></i> </td>
                 </tr>
@@ -90,4 +95,4 @@
 
 
 
-<video controls src="{{pathStreaming}}" type="video/mp4">Ici la description alternative</video>
+<video controls src="{{pathStreaming}}" type="video/avi">Ici la description alternative</video>
