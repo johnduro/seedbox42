@@ -45,13 +45,11 @@ app.set('config', config);
 // ====================================
 // DATABASE CONNEXION
 // ====================================
-var connexionDB = mongoose.connect(config.database, function(err) {
-	if (err){
+var connexionDB = mongoose.connect(config.database, function (err) {
+	if (err)
 		console.log('database: connection error', err);
-	}
-	else {
+	else
 		console.log('database: connection successful');
-	}
 });
 app.set('connexionDB', connexionDB);
 // ************************************
