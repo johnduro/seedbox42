@@ -1,11 +1,6 @@
 {
 	"appPort": 3000,
-	"secret": "ilovesecret",
-	"database": "mongodb://localhost/seedapp",
-	"downloadDir": "/home/downloader",
-	"transmissionAdress": "localhost",
-	"transmissionPort": 9091,
-	"transmissionUrl": "/transmission/rpc",
+	"secret": "",
 	"mongo": {
 		"address": "localhost",
 		"name" : "seedapp"
@@ -16,9 +11,9 @@
 		"url": "/transmission/rpc"
 	},
 	"transmission-settings": {
-		"download-dir": "/home/downloader",
-		"incomplete-dir-enabled": true,
-		"incomplete-dir": "/home/downloader/incomplete",
+		"download-dir": "",
+		"incomplete-dir-enabled": false,
+		"incomplete-dir": "",
 		"rename-partial-files": true,
 		"start-added-torrents": true,
 		"ratio-limit-enabled": false,
