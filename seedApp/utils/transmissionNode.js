@@ -28,12 +28,12 @@ var http = require('http');
 
 var Transmission = module.exports = function (config) {
 	config = config || {};
-	this.adress = config.adress || 'localhost';
+	this.address = config.address || 'localhost';
 	this.port = config.port || 9091;
 	this.url = config.url || '/transmission/rpc';
 	this.sessionId = '',
 	this.postOptions = {
-		host: this.adress,
+		host: this.address,
 		port: this.port,
 		path: this.url,
 		method: 'POST',
@@ -603,7 +603,7 @@ Transmission.prototype.statusArray = ['STOPPED', 'CHECK_WAIT', 'CHECK', 'DOWNLOA
 
 
 // Transmission.prototype.getInfos = function () {
-// 	console.log(this.adress + ' -- ' + this.port + ' -- ' + this.url);
+// 	console.log(this.address + ' -- ' + this.port + ' -- ' + this.url);
 // };
 
 /* ********************************************************************** */

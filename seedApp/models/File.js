@@ -101,6 +101,16 @@ FileSchema.statics = {
 			var formatFiles = ft.formatFileList(files, user);
 			return cb(null, formatFiles);
 		});
+	},
+
+	removeDayLock: function (days, cb) {
+		var dateDelete = new Date();
+		dateDelete.setDate(dateDelete.getDate() - days);
+		this.find({ "locked.createdAt": { $lt: dateDelete } }, function (err, files) {
+			files.map(function (file) {
+				file.removeAllLock();
+			});
+		});
 	}
 };
 
@@ -189,6 +199,11 @@ FileSchema.methods = {
 		else
 			return cb('this file is not locked by this user');
 		this.save(cb);
+	},
+
+	removeAllLock: function () {
+		this.locked = [];
+		this.save();
 	},
 
 	getIsLocked: function () {

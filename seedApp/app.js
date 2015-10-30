@@ -14,7 +14,7 @@ var socketIO = require('socket.io');
 // EXTRAS
 // ====================================
 var fs = require('fs');
-var mongoose = require('mongoose');
+var mongoose = require('mongoose');//dans init
 var jwt = require('jsonwebtoken');
 var multer = require('multer');
 // var config = require('./config');
