@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-
+var btoa = require('btoa');
 var multer = require('multer');
 //var mongoose = require('mongoose'); // UTILE ?
 var User = require("../models/User.js");
@@ -12,10 +12,13 @@ var User = require("../models/User.js");
  */
 var avatarStorage = multer.diskStorage({
 	destination: function (req, file, cb) {
-		cb(null, './files/avatars');
+		// cb(null, './files/avatars');
+		cb(null, './public/assets/avatar');
 	},
 	filename: function (req, file, cb) {
-		var filename = file.originalname.replace(/\W+/g, '-').toLowerCase();
+		// var filename = file.originalname.replace(/\W+/g, '-').toLowerCase();
+		var filename = btoa(file.originalname);
+		// cb(null, Date.now() + '_' + filename);
 		cb(null, Date.now() + '_' + filename);
 	}
 });
