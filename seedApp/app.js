@@ -20,6 +20,7 @@ var multer = require('multer');
 // var config = require('./config');
 var authMW = require('./utils/authMiddleware');
 var TransmissionNode = require('./utils/transmissionNode');
+var configInit = require('./utils/configInit');
 // ************************************
 
 // ====================================
@@ -37,7 +38,8 @@ var dashboard = require('./routes/dashboard');
 // CONFIG
 // ====================================
 var app = express();
-var config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
+var configFile = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
+var config = configInit(configFile);
 app.set('secret', config.secret);
 app.set('config', config);
 // ************************************
@@ -45,13 +47,11 @@ app.set('config', config);
 // ====================================
 // DATABASE CONNEXION
 // ====================================
-var connexionDB = mongoose.connect(config.database, function(err) {
-	if (err){
+var connexionDB = mongoose.connect(config.database, function (err) {
+	if (err)
 		console.log('database: connection error', err);
-	}
-	else {
+	else
 		console.log('database: connection successful');
-	}
 });
 app.set('connexionDB', connexionDB);
 // ************************************
