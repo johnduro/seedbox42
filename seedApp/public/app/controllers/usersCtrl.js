@@ -54,7 +54,16 @@ app.controller('usersCtrl', function ($scope, $rootScope, RequestHandler, Upload
 			});
 	};
 
-	$scope.showUser = function(user){
-		console.log(user);
-	}
+	$scope.editUser = function (user){
+		$scope.changeView("edit");
+		$scope.selectUser = user;
+	};
+
+	$scope.updateUser = function(){
+		RequestHandler.put(api + "users/" + $scope.selectUser._id, $scope.selectUser)
+			.then(function(result){
+				console.log(result);
+			});
+	};
+
 });
