@@ -22,7 +22,7 @@
                             </thead>
                             <tbody ng-repeat="user in users">
                                 <tr ng-click="showUser(user)">
-                                    <td><img src="assets/avatar/{{user.avatar}}" alt="Smiley face" height="42" width="42"></td>
+                                    <td><img ng-src="assets/avatar/{{user.avatar}}" err-SRC="assets/avatar/default.png" alt="Smiley face" height="42" width="42"></td>
                                     <td>{{user.login}}</td>
                                     <td>{{user.mail}}</td>
                                     <td>{{user.password}}</td>
