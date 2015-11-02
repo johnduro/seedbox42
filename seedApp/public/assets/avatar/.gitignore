@@ -2,3 +2,4 @@
 *
 # except this file
 !.gitignore
+!default.png
