@@ -75,7 +75,7 @@ var checkTransmissionSettings = function (t, tSettings) {
 	});
 };
 
-var checkFileSettings = function (fSettings) {
+var checkFileSettings = function (fSettings, transmission) {
 	if (fSettings['auto-remove-lock-enabled'])
 	{
 		File.removeDayLock(fSettings['auto-remove-lock'], function (err, files) {
@@ -83,6 +83,15 @@ var checkFileSettings = function (fSettings) {
 				console.log("ERROR > ", err);
 			else
 				console.log("SUCCESS AUTO LOCK > ", files);
+		});
+	}
+	if (fSettings["auto-delete-enabled"])
+	{
+		File.removeOldFile(fSettings["auto-delete"], transmission, function (err, files) {
+			if (err)
+				console.log("ERROR > ", err);
+			else
+				console.log("SUCCESS REMOVE FILE");
 		});
 	}
 	//FAIRE L AUTO DELETE // REVOIR LE REMOVE LOCK POUR QU IL N ENLEVE QU UN LOCK
@@ -93,7 +102,7 @@ var configInit = function (configFile) {
 	// var connexionDB = getMongoConnex(configFile.mongodb); //OK??
 	var transmission = new TransmissionNode(configFile.transmission);
 	checkTransmissionSettings(transmission, configFile['transmission-settings']);
-	checkFileSettings(configFile.files);
+	checkFileSettings(configFile.files, transmission);
 	// si problemes :
 	// process.exit();
 	var ret = {

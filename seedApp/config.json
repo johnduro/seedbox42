@@ -72,7 +72,7 @@
 		"auto-remove-lock-enabled": false,
 		"auto-remove-lock": 300,
 		"auto-delete-enabled": false,
-		"auto-delete": 60
+		"auto-delete": 13
 	},
 	"dashboard": {
 		"recent-file-enabled": true,

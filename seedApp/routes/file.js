@@ -198,7 +198,7 @@ router.delete('/:id', function (req, res, next) {
 				if (err)
 					return next(err);
 				//TRANSMISSION
-				req.app.get('transmission').torrentRemove(deletedFile.hashString, function (err, resp) {
+				req.app.get('transmission').torrentRemove(deletedFile.hashString, false, function (err, resp) {
 					if (err)
 					{
 						console.log(err);

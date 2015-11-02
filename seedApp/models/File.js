@@ -1,6 +1,7 @@
 
 var mongoose = require('mongoose');
 var ft = require('../utils/ft');
+var fs = require('fs');
 var User = require('../models/User.js');
 
 
@@ -107,9 +108,36 @@ FileSchema.statics = {
 		var dateDelete = new Date();
 		dateDelete.setDate(dateDelete.getDate() - days);
 		this.find({ "locked.createdAt": { $lt: dateDelete } }, function (err, files) {
-			files.map(function (file) {
-				file.removeAllLock();
-			});
+			if (err)
+				cb(err);
+			else
+			{
+				files.map(function (file) {
+					file.removeDayLockInFile(dateDelete);
+				});
+				cb(null, files);
+			}
+		});
+	},
+
+	removeOldFile: function (days, transmission, cb) {
+		var dateDelete = new Date();
+		console.log("DATE NOWE > ", dateDelete);
+		console.log("DAYS > ", days);
+		dateDelete.setDate(dateDelete.getDate() - days);
+		console.log("DATE > ", dateDelete);
+		// this.find({ "createdAt": { $lt: dateDelete }, "locked": { $size: 0 } }).remove().exec(function (err, files) {
+		this.find({ "createdAt": { $lt: dateDelete }, "locked": { $size: 0 } }).exec(function (err, files) {
+			console.log(files);
+			if (err)
+				cb(err);
+			else
+			{
+				files.map(function (file) {
+					file.deleteFile(transmission);
+				});
+				cb(null, files);
+			}
 		});
 	}
 };
@@ -119,6 +147,22 @@ FileSchema.statics = {
  */
 
 FileSchema.methods = {
+	deleteFile: function (transmission) {
+		console.log("YOLO DELETE !! > ", this.name);
+		transmission.torrentRemove(this.hashString, false, function (err, resp) {
+			if (err)
+				console.log("ERROR DEL TRANS > ", err);
+			else
+				console.log('OKOK > ', resp);
+		});
+		// A REFAIRE !!!!
+		// fs.unlink(this.path, function (err) {
+		// 	if (err)
+		// 		console.log("ERROR UNLINK >> ", err);
+		// });
+		this.remove();
+	},
+
 	addComment: function (user, comment, cb) {
 		this.comments.push({ text: comment, user: user._id });
 		this.save(cb);
@@ -199,6 +243,15 @@ FileSchema.methods = {
 		else
 			return cb('this file is not locked by this user');
 		this.save(cb);
+	},
+
+	removeDayLockInFile: function (dateDelete) {
+		for (var i = (this.locked.length - 1); i >= 0; i--)
+		{
+			if (this.locked[i].createdAt.getTime() < dateDelete.getTime())
+				this.locked.splice(i, 1);
+		}
+		this.save();
 	},
 
 	removeAllLock: function () {
