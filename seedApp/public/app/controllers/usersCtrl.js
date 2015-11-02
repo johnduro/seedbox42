@@ -1,4 +1,4 @@
-app.controller('usersCtrl', function ($scope, $rootScope, RequestHandler) {
+app.controller('usersCtrl', function ($scope, $rootScope, RequestHandler, Upload) {
 
 	console.log("usersCtrl");
 
@@ -7,8 +7,15 @@ app.controller('usersCtrl', function ($scope, $rootScope, RequestHandler) {
 		login: "test",
 		mail: "test@hotmail.fr",
 		password: "okok",
-		role: 1
+		role: 1,
+		avatar: ""
 	}
+
+	$scope.myFile;
+
+	$scope.$on("fileSelected", function (event, args) {
+        $scope.myFile = args.file;
+    });
 
 	RequestHandler.get(api + "users")
 		.then(function(result){
@@ -20,7 +27,16 @@ app.controller('usersCtrl', function ($scope, $rootScope, RequestHandler) {
 	};
 
 	$scope.addUser = function(){
-		RequestHandler.post(api + "/users", $scope.newUser)
+		console.log($scope);
+		var file = $scope.myFile;
+
+		var fd = new FormData();
+        fd.append('avatar', file);
+		fd.append('login', $scope.newUser.login);
+		fd.append('mail', $scope.newUser.mail);
+		fd.append('password', $scope.newUser.password);
+		fd.append('role', $scope.newUser.role);
+		RequestHandler.post(api + "users", fd, false, {transformRequest: angular.identity, headers: {'Content-Type': undefined}})
 			.then(function(result){
 				if (result.data.success){
 					$scope.users = result.data.data;
@@ -36,4 +52,8 @@ app.controller('usersCtrl', function ($scope, $rootScope, RequestHandler) {
 				}
 			});
 	};
+
+	$scope.showUser = function(user){
+		console.log(user);
+	}
 });
