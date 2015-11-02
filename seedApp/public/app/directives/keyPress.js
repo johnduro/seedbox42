@@ -22,17 +22,9 @@ app.directive('fileModel', ['$parse', function ($parse) {
         restrict: 'A',
         scope: true,
         link: function(scope, element, attrs) {
-            var model = $parse(attrs.fileModel);
-
-            var modelSetter = model.assign;
-            console.log(modelSetter);
-
             element.bind('change', function(){
                 scope.$apply(function(){
-                    console.log("isodfjiosdfj");
-                    console.log(element[0].files[0]);
                     scope.$emit("fileSelected", { file: element[0].files[0] });
-                    //modelSetter(scope, element[0].files[0]);
                 });
             });
         }
