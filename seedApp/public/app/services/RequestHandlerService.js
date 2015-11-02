@@ -7,10 +7,10 @@ app.factory('RequestHandler', ['$http', '$q', '$log', '$rootScope',
         $rootScope.transaction = {};
 
         return {
-            post: function (url, data, transform) {
+            post: function (url, data, transform, config) {
                 transform = (transform == false ? false : true);
+                config = (config == false ? {} : config);
                 var promise = $q.defer();
-                var config = {};
                 if (!transform) {
                     config.transformResponse = function (data) {
                         return data;

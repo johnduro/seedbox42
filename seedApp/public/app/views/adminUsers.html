@@ -20,7 +20,7 @@
                                 </tr>
                             </thead>
                             <tbody ng-repeat="user in users">
-                                <tr>
+                                <tr ng-click="showUser(user)">
                                     <td>{{user.login}}</td>
                                     <td>{{user.mail}}</td>
                                     <td>{{user.password}}</td>
@@ -40,7 +40,7 @@
                         <a href="#" ng-click="changeView('list')">Voir la liste</a>
                     </div>
                     <div class="panel-body">
-                        <form ng-submit="addUser()">
+                        <form ng-submit="addUser()" enctype="multipart/form-data">
                             <div class="form-group">
                                 <label for="exampleInputLogin">Login</label>
                                 <input ng-model="newUser.login" type="text" class="form-control" id="exampleInputEmail1" placeholder="Entrer un login">
@@ -58,6 +58,7 @@
                                     <input type="checkbox" ng-model="newUser.role" ng-true-value="0" ng-false-value="1"> Admin
                                 </label>
                             </div>
+                            <input type="file" file-model="myFile"/>
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </form>
                     </div>
