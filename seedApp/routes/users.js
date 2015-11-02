@@ -44,7 +44,8 @@ router.post('/', avatarUpldHandler.single('avatar'), function (req, res, next) {
 	if (req.user.role === 0 || req.user.login === req.body.login)
 	{
 		console.log("FILE >> ", req.file);
-		req.body.avatar = req.file.filename;
+		if ("file" in req && 'filename' in req.file)
+			req.body.avatar = req.file.filename;
 		console.log("AVAATR > ", req.body.avatar);
 		User.create(req.body, function (err, post) {
 			if (err)
