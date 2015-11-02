@@ -2,6 +2,7 @@
 var mongoose = require('mongoose');
 var ft = require('../utils/ft');
 var fs = require('fs');
+var rimraf = require('rimraf');
 var User = require('../models/User.js');
 
 
@@ -122,13 +123,9 @@ FileSchema.statics = {
 
 	removeOldFile: function (days, transmission, cb) {
 		var dateDelete = new Date();
-		console.log("DATE NOWE > ", dateDelete);
-		console.log("DAYS > ", days);
 		dateDelete.setDate(dateDelete.getDate() - days);
-		console.log("DATE > ", dateDelete);
 		// this.find({ "createdAt": { $lt: dateDelete }, "locked": { $size: 0 } }).remove().exec(function (err, files) {
 		this.find({ "createdAt": { $lt: dateDelete }, "locked": { $size: 0 } }).exec(function (err, files) {
-			console.log(files);
 			if (err)
 				cb(err);
 			else
@@ -155,11 +152,10 @@ FileSchema.methods = {
 			else
 				console.log('OKOK > ', resp);
 		});
-		// A REFAIRE !!!!
-		// fs.unlink(this.path, function (err) {
-		// 	if (err)
-		// 		console.log("ERROR UNLINK >> ", err);
-		// });
+		rimraf(this.path, function (err) {
+			if (err)
+				console.log("ERROR > ", err);
+		});
 		this.remove();
 	},
 

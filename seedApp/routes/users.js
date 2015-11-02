@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var btoa = require('btoa');
 var multer = require('multer');
+var fs = require('fs');
 //var mongoose = require('mongoose'); // UTILE ?
 var User = require("../models/User.js");
 // var validateAvatar = require('../utils/validateAvatar');
@@ -43,14 +44,16 @@ router.get('/', function (req, res, next) {
 router.post('/', avatarUpldHandler.single('avatar'), function (req, res, next) {
 	if (req.user.role === 0 || req.user.login === req.body.login)
 	{
-		console.log("FILE >> ", req.file);
+		// console.log("FILE >> ", req.file);
 		if ("file" in req && 'filename' in req.file)
 			req.body.avatar = req.file.filename;
-		console.log("AVAATR > ", req.body.avatar);
+		// console.log("AVATAR > ", req.body.avatar);
 		User.create(req.body, function (err, post) {
 			if (err)
-				return next(err);
-			res.json({ success: true, message: 'user successfully created', data: post });
+				res.json({ success: false, message: err });
+			// return next(err);
+			else
+				res.json({ success: true, message: 'user successfully created', data: post });
 			// User.find(function (err, users) {
 			// 	if (err)
 			// 		return next(err);
@@ -91,10 +94,15 @@ router.delete('/:id', function (req, res, next) {
 		User.findByIdAndRemove(req.params.id, req.body, function (err, post) {
 			if (err)
 				return next(err);
+			fs.unlink('public/assets/avatar/' + post.avatar, function (err) {
+				if (err)
+					console.log(err);
+			});
+			// res.json({ success: true, message: 'user successfully deleted', data: post });
 			User.find(function (err, users) {
 				if (err)
 					return next(err);
-				res.json({ success: true, message: 'user successfully deleted', data: users});
+				res.json({ success: true, message: 'user successfully deleted', data: users });
 			});
 			//res.json(post);
 		});

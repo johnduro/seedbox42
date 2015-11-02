@@ -90,8 +90,6 @@ var checkFileSettings = function (fSettings, transmission) {
 		File.removeOldFile(fSettings["auto-delete"], transmission, function (err, files) {
 			if (err)
 				console.log("ERROR > ", err);
-			else
-				console.log("SUCCESS REMOVE FILE");
 		});
 	}
 	//FAIRE L AUTO DELETE // REVOIR LE REMOVE LOCK POUR QU IL N ENLEVE QU UN LOCK
