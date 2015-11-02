@@ -3,15 +3,13 @@ app.controller('usersCtrl', function ($scope, $rootScope, RequestHandler, Upload
 	console.log("usersCtrl");
 
 	$scope.view = "list";
+	$scope.myFile;
 	$scope.newUser = {
 		login: "test",
 		mail: "test@hotmail.fr",
 		password: "okok",
 		role: 1,
-		avatar: ""
 	}
-
-	$scope.myFile;
 
 	$scope.$on("fileSelected", function (event, args) {
         $scope.myFile = args.file;
@@ -19,6 +17,11 @@ app.controller('usersCtrl', function ($scope, $rootScope, RequestHandler, Upload
 
 	RequestHandler.get(api + "users")
 		.then(function(result){
+			for (var key in result.data){
+				if (!("avatar" in result.data[key]) || result.data[key].avatar == "undefined"){
+					result.data[key].avatar = "default.png";
+				}
+			}
 			$scope.users = result.data;
 	});
 
@@ -27,19 +30,16 @@ app.controller('usersCtrl', function ($scope, $rootScope, RequestHandler, Upload
 	};
 
 	$scope.addUser = function(){
-		console.log($scope);
-		var file = $scope.myFile;
-
+		$scope.newUser.avatar = $scope.myFile;
 		var fd = new FormData();
-        fd.append('avatar', file);
-		fd.append('login', $scope.newUser.login);
-		fd.append('mail', $scope.newUser.mail);
-		fd.append('password', $scope.newUser.password);
-		fd.append('role', $scope.newUser.role);
+		for (var key in $scope.newUser){
+			fd.append(key, $scope.newUser[key]);
+		}
 		RequestHandler.post(api + "users", fd, false, {transformRequest: angular.identity, headers: {'Content-Type': undefined}})
 			.then(function(result){
+				result.data = JSON.parse(result.data);
 				if (result.data.success){
-					$scope.users = result.data.data;
+					$scope.users.push(result.data.data);
 				}
 			});
 	};
@@ -49,6 +49,7 @@ app.controller('usersCtrl', function ($scope, $rootScope, RequestHandler, Upload
 			.then(function(result){
 				if (result.data.success){
 					$scope.users = result.data.data;
+					console.log($scope.users);
 				}
 			});
 	};

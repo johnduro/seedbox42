@@ -12,6 +12,7 @@
                         <table id="example" class="display table" style="width: 100%; cellspacing: 0;">
                             <thead>
                                 <tr>
+                                    <th>Avatar</th>
                                     <th>Login</th>
                                     <th>Mail</th>
                                     <th>Password</th>
@@ -21,6 +22,7 @@
                             </thead>
                             <tbody ng-repeat="user in users">
                                 <tr ng-click="showUser(user)">
+                                    <td><img src="assets/avatar/{{user.avatar}}" alt="Smiley face" height="42" width="42"></td>
                                     <td>{{user.login}}</td>
                                     <td>{{user.mail}}</td>
                                     <td>{{user.password}}</td>
@@ -37,7 +39,7 @@
             <div class="panel panel-white">
                 <div class="col-md-6 center">
                     <div class="panel-heading clearfix">
-                        <a href="#" ng-click="changeView('list')">Voir la liste</a>
+                        <a ng-click="changeView('list')">Voir la liste</a>
                     </div>
                     <div class="panel-body">
                         <form ng-submit="addUser()" enctype="multipart/form-data">
