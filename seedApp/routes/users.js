@@ -42,7 +42,8 @@ router.get('/', function (req, res, next) {
 
 // router.post('/', avatarUpldHandler.single('avatar'), validateAvatar, function(req, res, next) {
 router.post('/', avatarUpldHandler.single('avatar'), function (req, res, next) {
-	if (req.user.role === 0 || req.user.login === req.body.login) //a modifier 111
+	// if (req.user.role === 0 || req.user.login === req.body.login) //a modifier 111
+	if (req.user.role === 0 || req.user._id === req.body._id) //a modifier 111
 	{
 		// console.log("FILE >> ", req.file);
 		if ("file" in req && 'filename' in req.file)
@@ -79,16 +80,21 @@ router.get('/:id', function (req, res, next) {
 router.put('/:id', avatarUpldHandler.single('avatar'), function (req, res, next) {
 	// console.log("ID > ", req.params.id);
 	// console.log("PUT >> ", req.body);
-	if (req.user.login == req.body.login || req.user.role == 0) //a modifier 111
+	// if (req.user.login == req.body.login || req.user.role == 0) //a modifier 111
+	if (req.user._id == req.body._id || req.user.role == 0) //a modifier 111
 	{
 		delete req.body._id;
 		// console.log("PUT AVAT > ", req.file);
 		if ("file" in req && 'filename' in req.file)
 			req.body.avatar = req.file.filename;
-		User.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
+		// User.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
+		User.findByIdAndUpdate(req.params.id, { $set: req.body }, function (err, post) {
 			if (err)
-				return next(err);
-			res.json(post);
+				res.json({ success: false, message: err });
+			else
+				res.json({ success: true, data: post });
+				// res.json(post);
+				// return next(err);
 		});
 	}
 	else
@@ -96,7 +102,8 @@ router.put('/:id', avatarUpldHandler.single('avatar'), function (req, res, next)
 });
 
 router.delete('/:id', function (req, res, next) {
-	if (req.user.login == req.body.login || req.user.role == 0) //a modifier 111
+	// if (req.user.login == req.body.login || req.user.role == 0) //a modifier 111
+	if (req.user._id == req.body._id || req.user.role == 0) //a modifier 111
 	{
 		//req.body ??? sert a quoi ???
 		User.findByIdAndRemove(req.params.id, req.body, function (err, post) {
