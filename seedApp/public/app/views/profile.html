@@ -10,17 +10,17 @@
                     <form ng-submit="updateUser()" enctype="multipart/form-data">
                         <div class="form-group">
                             <label for="exampleInputLogin">Login</label>
-                            <input ng-model="user.login" type="text" class="form-control" id="exampleInputEmail1" placeholder="Entrer un login">
+                            <input ng-model="editUser.login" type="text" class="form-control" id="exampleInputEmail1" placeholder="Entrer un login">
                         </div>
                         <div class="form-group">
                             <label for="exampleInputEmail1">Email address</label>
-                            <input ng-model="user.mail" type="email" class="form-control" id="exampleInputEmail1" placeholder="Entrer une adresse mail">
+                            <input ng-model="editUser.mail" type="email" class="form-control" id="exampleInputEmail1" placeholder="Entrer une adresse mail">
                         </div>
                         <div class="form-group">
                             <label for="exampleInputPassword1">Password</label>
-                            <input ng-model="user.password" type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                            <input ng-model="editUser.password" type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
                         </div>
-                        <img ng-src="/assets/avatar/{{user.avatar}}" err-SRC="/assets/avatar/default.png" alt="Smiley face" height="42" width="42">
+                        <img ng-src="/assets/avatar/{{editUser.avatar}}" err-SRC="/assets/avatar/default.png" alt="Smiley face" height="42" width="42">
                         <input type="file" file-model="myFile"/>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>

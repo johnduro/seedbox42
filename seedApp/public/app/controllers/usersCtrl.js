@@ -18,8 +18,8 @@ app.controller('usersCtrl', function ($scope, $rootScope, RequestHandler, Upload
 	RequestHandler.get(api + "users")
 		.then(function(result){
 			for (var key in result.data){
-				if (!("avatar" in result.data[key]) || result.data[key].avatar == "undefined"){
-					result.data[key].avatar = "default.png";
+				if (!("avatar" in result.data[key])){
+					result.data[key].avatar = "undefined";
 				}
 			}
 			$scope.users = result.data;
