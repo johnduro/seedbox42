@@ -7,7 +7,6 @@ app.run(function ($rootScope, $location, $http, $state, $location) {
 
     api = "/";
     $rootScope.token = localStorage.getItem("token");
-    $rootScope.user = JSON.parse(localStorage.getItem("user"));
     $http.defaults.headers.common['X-Access-Token'] = $rootScope.token;
 
     $rootScope.tools = {
