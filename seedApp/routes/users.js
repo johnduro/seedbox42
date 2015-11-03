@@ -69,6 +69,15 @@ router.post('/', avatarUpldHandler.single('avatar'), function (req, res, next) {
 		res.json({ success: false, message: "You don't have enought rights for this action"});
 });
 
+router.get('/profile', function (req, res, next) {
+	User.findById(req.user._id, function (err, post) {
+		if (err)
+			res.json({ success: false, message: err });
+		else
+			res.json({ success: true, data: post });
+	});
+});
+
 router.get('/:id', function (req, res, next) {
 	User.findById(req.params.id, function (err, post) {
 		if (err)
@@ -85,7 +94,6 @@ router.put('/:id', avatarUpldHandler.single('avatar'), function (req, res, next)
 	console.log("BODY ID > ", req.params.id);
 	if (req.user._id == req.params.id || req.user.role == 0) //a modifier 111
 	{
-		delete req.body._id;
 		// console.log("PUT AVAT > ", req.file);
 		if ("file" in req && 'filename' in req.file)
 			req.body.avatar = req.file.filename;
