@@ -182,16 +182,20 @@ app.controller('filesCtrl', function ($scope, $rootScope, RequestHandler, socket
 			});
 	};
 
-	$scope.lockFile = function(){
-		RequestHandler.post(api + "file/add-lock/" + $scope.itemSelected._id)
+	$scope.lockFile = function(item){
+		RequestHandler.post(api + "file/add-lock/" + item._id)
 			.then(function(result){
-				console.log(result);
+				if (result.data.success)
+					item.isLockedByUser = true;
+				console.log(item);
 			});
 	};
 
-	$scope.unlockFile = function(){
-		RequestHandler.delete(api + "file/remove-lock/" + $scope.itemSelected._id, {})
+	$scope.unlockFile = function(item){
+		RequestHandler.delete(api + "file/remove-lock/" + item._id, {})
 			.then(function(result){
+				if (result.data.success)
+					item.isLockedByUser = false;
 				console.log(result);
 			});
 	};
