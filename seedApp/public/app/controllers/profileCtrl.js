@@ -1,6 +1,11 @@
 app.controller("profileCtrl", function($scope, $rootScope, Upload){
 
     console.log("profileCtrl");
+    console.log($rootScope.user);
+
+    if (!("avatar" in $rootScope)){
+        $rootScope.user.avatar = "undefined";
+    }
 
     $scope.$watch('files', function () {
         $scope.upload($scope.files);
