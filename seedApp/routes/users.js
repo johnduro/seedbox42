@@ -47,6 +47,8 @@ router.post('/', avatarUpldHandler.single('avatar'), function (req, res, next) {
 		// console.log("FILE >> ", req.file);
 		if ("file" in req && 'filename' in req.file)
 			req.body.avatar = req.file.filename;
+		else
+			req.body.avatar = req.app.get("config").users["default-avatar"];
 		// console.log("AVATAR > ", req.body.avatar);
 		User.create(req.body, function (err, post) {
 			if (err)
@@ -74,12 +76,15 @@ router.get('/:id', function (req, res, next) {
 	});
 });
 
-router.put('/:id', function (req, res, next) {
+router.put('/:id', avatarUpldHandler.single('avatar'), function (req, res, next) {
 	// console.log("ID > ", req.params.id);
 	// console.log("PUT >> ", req.body);
 	if (req.user.login == req.body.login || req.user.role == 0) //a modifier 111
 	{
 		delete req.body._id;
+		// console.log("PUT AVAT > ", req.file);
+		if ("file" in req && 'filename' in req.file)
+			req.body.avatar = req.file.filename;
 		User.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
 			if (err)
 				return next(err);
@@ -97,10 +102,13 @@ router.delete('/:id', function (req, res, next) {
 		User.findByIdAndRemove(req.params.id, req.body, function (err, post) {
 			if (err)
 				return next(err);
-			fs.unlink('public/assets/avatar/' + post.avatar, function (err) {
-				if (err)
-					console.log(err);
-			});
+			if (post.avatar != req.app.get("config").users["default-avatar"])
+			{
+				fs.unlink('public/assets/avatar/' + post.avatar, function (err) {
+					if (err)
+						console.log(err);
+				});
+			}
 			// res.json({ success: true, message: 'user successfully deleted', data: post });
 			User.find(function (err, users) {
 				if (err)

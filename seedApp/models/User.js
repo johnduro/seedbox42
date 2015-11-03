@@ -22,8 +22,10 @@ UserSchema.statics = {
 			.exec(function (err, user) {
 				if (err)
 					return cb(err);
-				console.log('USER >> ', user);
-				return cb(null, user.toObject());
+				else if (user == null)
+					return cb(null, { login: "unknown user", avatar: "undefined", role: 1 });
+				else
+					return cb(null, user.toObject());
 			});
 	}
 };
