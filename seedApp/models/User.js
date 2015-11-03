@@ -7,7 +7,7 @@ var UserSchema = new mongoose.Schema({
 	mail: String, //?? garder ??
 	avatar: String,
 	role: { type: Number, default: 1 },
-	dateCreated: { type: Date, default: Date.now }
+	createdAt: { type: Date, default: Date.now }
 });
 
 
@@ -18,10 +18,11 @@ var UserSchema = new mongoose.Schema({
 UserSchema.statics = {
 	getByIdFormatShow: function (id, cb) {
 		this.findOne({ _id: id })
-			.select('-passsword -mail')
+			.select('-password -mail')
 			.exec(function (err, user) {
 				if (err)
 					return cb(err);
+				console.log('USER >> ', user);
 				return cb(null, user.toObject());
 			});
 	}
