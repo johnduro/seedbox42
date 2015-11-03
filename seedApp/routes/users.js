@@ -35,7 +35,8 @@ var avatarUpldHandler = multer({
 router.get('/', function (req, res, next) {
 	// check role si besoin
 	User.find(function (err, users) {
-		if (err) return next(err);
+		if (err)
+			return next(err);
 		res.json(users);
 	});
 });
@@ -43,7 +44,7 @@ router.get('/', function (req, res, next) {
 // router.post('/', avatarUpldHandler.single('avatar'), validateAvatar, function(req, res, next) {
 router.post('/', avatarUpldHandler.single('avatar'), function (req, res, next) {
 	// if (req.user.role === 0 || req.user.login === req.body.login) //a modifier 111
-	if (req.user.role === 0 || req.user._id === req.body._id) //a modifier 111
+	if (req.user.role === 0 || req.user._id === req.body._id)
 	{
 		// console.log("FILE >> ", req.file);
 		if ("file" in req && 'filename' in req.file)
@@ -90,9 +91,9 @@ router.put('/:id', avatarUpldHandler.single('avatar'), function (req, res, next)
 	// console.log("ID > ", req.params.id);
 	// console.log("PUT >> ", req.body);
 	// if (req.user.login == req.body.login || req.user.role == 0) //a modifier 111
-	console.log("USER ID > ", req.user._id);
-	console.log("BODY ID > ", req.params.id);
-	if (req.user._id == req.params.id || req.user.role == 0) //a modifier 111
+	// console.log("USER ID > ", req.user._id);
+	// console.log("BODY ID > ", req.params.id);
+	if (req.user._id == req.params.id || req.user.role == 0)
 	{
 		// console.log("PUT AVAT > ", req.file);
 		if ("file" in req && 'filename' in req.file)
@@ -113,7 +114,8 @@ router.put('/:id', avatarUpldHandler.single('avatar'), function (req, res, next)
 
 router.delete('/:id', function (req, res, next) {
 	// if (req.user.login == req.body.login || req.user.role == 0) //a modifier 111
-	if (req.user._id == req.body._id || req.user.role == 0) //a modifier 111
+	// if (req.user._id == req.body._id || req.user.role == 0) //a modifier 111
+	if (req.user._id == req.params.id || req.user.role == 0)
 	{
 		//req.body ??? sert a quoi ???
 		User.findByIdAndRemove(req.params.id, req.body, function (err, post) {

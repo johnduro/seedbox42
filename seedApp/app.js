@@ -68,7 +68,8 @@ app.set('transmission', transmission);
 // ====================================
 var io = socketIO();
 app.io = io;
-var sockets = require('./utils/sockets')(io, transmission, app.get('secret'));
+// var sockets = require('./utils/sockets')(io, transmission, app.get('secret'));
+var sockets = require('./utils/sockets')(io, transmission, app);
 //************************************
 
 // view engine setup

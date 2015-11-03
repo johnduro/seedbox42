@@ -11,7 +11,8 @@ var ft = require('../utils/ft');
 
 
 
-module.exports = function (io, transmission, secret) {
+// module.exports = function (io, transmission, secret) {
+module.exports = function (io, transmission, app) {
 
 	var second = 1000;
 	var torrentRefreshCounter = 0;
@@ -126,7 +127,8 @@ module.exports = function (io, transmission, secret) {
 		if ('_query' in socket.request && 'token' in socket.request._query)
 		{
 			var token = socket.request._query['token'];
-			jwt.verify(token, secret, function (err, decoded) {
+			// jwt.verify(token, secret, function (err, decoded) {
+			jwt.verify(token, app.get('secret'), function (err, decoded) {
 				if (err)
 					next (new Error('not authorized'));
 				else
@@ -248,8 +250,8 @@ module.exports = function (io, transmission, secret) {
 		 * Add a message on the dashboard
 		 */
 		socket.on('chat:post:message', function (data) {
-			console.log(data);
-			WallMessage.addMessage(data.id, data.message, function (err, message) {
+			console.log("data::post::messages ", data);
+			WallMessage.addMessage(data.id, data.message, app.get('config').dashboard["mini-chat-message-limit"], function (err, message) {
 				if (err)
 					socket.emit('chat:post:message', { success: false, message: 'could not record message' });
 				else
@@ -262,14 +264,20 @@ module.exports = function (io, transmission, secret) {
 		 * Get all message from the dashboard
 		 */
 		socket.on('chat:get:message', function (data, callback) {
-			WallMessage.find({}, function (err, messages) {
-				ft.formatMessageList(messages, function (err, formatMess) {
-					if (err)
-						callback({ success: false, message: 'could not get messages' });
-					else
-						callback({ success: true, message: formatMess });
-				});
+			WallMessage.getMessages(function (err, messages) {
+				if (err)
+					callback({ success: false, message: 'could not get messages' });
+				else
+					callback({ success: true, message: messages });
 			});
+			// WallMessage.find({}, function (err, messages) {
+			// 	ft.formatMessageList(messages, function (err, formatMess) {
+			// 		if (err)
+			// 			callback({ success: false, message: 'could not get messages' });
+			// 		else
+			// 			callback({ success: true, message: formatMess });
+			// 	});
+			// });
 		});
 
 		socket.once('disconnect', function () {

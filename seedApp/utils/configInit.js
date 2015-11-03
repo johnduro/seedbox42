@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var TransmissionNode = require('../utils/transmissionNode');
 var File = require('../models/File.js');
+var WallMessage = require('../models/Wall.js');
 
 
 var configFileError = function (message) {
@@ -93,7 +94,19 @@ var checkFileSettings = function (fSettings, transmission) {
 				console.log("ERROR > ", err);
 		});
 	}
-	//FAIRE L AUTO DELETE // REVOIR LE REMOVE LOCK POUR QU IL N ENLEVE QU UN LOCK
+};
+
+var checkDashboardSettings = function (dSettings) {
+	WallMessage.count({}, function (err, count) {
+		if (err)
+			console.log("ERROR > ", err);
+		else
+		{
+			if (count > dSettings["mini-chat-message-limit"])
+				WallMessage.deleteXOldMessages(count - dSettings["mini-chat-message-limit"]);
+		}
+	});
+
 };
 
 var configInit = function (configFile) {
@@ -102,11 +115,13 @@ var configInit = function (configFile) {
 	var transmission = new TransmissionNode(configFile.transmission);
 	checkTransmissionSettings(transmission, configFile['transmission-settings']);
 	checkFileSettings(configFile.files, transmission);
+	checkDashboardSettings(configFile.dashboard);
 	// si problemes :
 	// process.exit();
 	var ret = {
 		// 'connexionDB': connexionDB,
-		'transmission': transmission
+		'transmission': transmission,
+		'config': configFile
 	};
 	return configFile;
 };

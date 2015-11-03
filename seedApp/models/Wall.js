@@ -18,13 +18,25 @@ var WallMessageSchema = new mongoose.Schema({
  */
 
 WallMessageSchema.statics = {
-	addMessage: function (user, message, cb) {
+	deleteXOldMessages: function (nb) {
+		this.find({}).sort({"createdAt": 1 }).limit(nb).exec(function (err, messages) {
+			if (err || messages == null)
+				console.log("error in delete messages", err);
+			else
+				messages.map(function (message) {
+					message.remove();
+				});
+		});
+	},
+
+	addMessage: function (user, message, limit, cb) {
 		this.create({ message: message, user: user }, function (err, file) {
 			if (err)
 				return cb(err);
 				// throw err;
 			this.count({}, function (err, count) {
-				if (count > 100)
+				// if (count > 100)
+				if (count > limit)
 				{
 					this.findOneAndRemove({}).sort({ createdAt: 1 }).exec(function (err, message) {
 						if (err)
@@ -39,6 +51,19 @@ WallMessageSchema.statics = {
 				return cb(null, formatFile[0]);
 			});
 			// return cb(null, file);
+		});
+	},
+
+	getMessages: function (cb) {
+		this.find({}, function (err, messages) {
+			if (err)
+				return cb(err);
+			else
+				ft.formatMessageList(messages, function (err, formatFiles) {
+					if (err)
+						return cb(err);
+					return cb(null, formatFiles);
+				});
 		});
 	}
 };
