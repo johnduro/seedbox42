@@ -42,7 +42,7 @@ router.get('/', function (req, res, next) {
 
 // router.post('/', avatarUpldHandler.single('avatar'), validateAvatar, function(req, res, next) {
 router.post('/', avatarUpldHandler.single('avatar'), function (req, res, next) {
-	if (req.user.role === 0 || req.user.login === req.body.login)
+	if (req.user.role === 0 || req.user.login === req.body.login) //a modifier 111
 	{
 		// console.log("FILE >> ", req.file);
 		if ("file" in req && 'filename' in req.file)
@@ -75,8 +75,11 @@ router.get('/:id', function (req, res, next) {
 });
 
 router.put('/:id', function (req, res, next) {
-	if (req.user.login == req.body.login || req.user.role == 0)
+	// console.log("ID > ", req.params.id);
+	// console.log("PUT >> ", req.body);
+	if (req.user.login == req.body.login || req.user.role == 0) //a modifier 111
 	{
+		delete req.body._id;
 		User.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
 			if (err)
 				return next(err);
@@ -88,7 +91,7 @@ router.put('/:id', function (req, res, next) {
 });
 
 router.delete('/:id', function (req, res, next) {
-	if (req.user.login == req.body.login || req.user.role == 0)
+	if (req.user.login == req.body.login || req.user.role == 0) //a modifier 111
 	{
 		//req.body ??? sert a quoi ???
 		User.findByIdAndRemove(req.params.id, req.body, function (err, post) {
