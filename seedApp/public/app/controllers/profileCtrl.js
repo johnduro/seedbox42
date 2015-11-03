@@ -1,4 +1,4 @@
-app.controller("profileCtrl", function($scope, $rootScope, Upload){
+app.controller("profileCtrl", function($scope, $rootScope, Upload, RequestHandler){
 
     console.log("profileCtrl");
     console.log($rootScope.user);
@@ -16,10 +16,10 @@ app.controller("profileCtrl", function($scope, $rootScope, Upload){
         });
         console.log($rootScope.user);
         console.log(send);
-		/*RequestHandler.put(api + "users/" + $rootScope.user._id, $scope.selectUser)
+		RequestHandler.put(api + "users/" + $rootScope.user._id, send)
 			.then(function(result){
 				console.log(result);
-			});*/
+			});
 	};
 
     /*if (!("avatar" in $rootScope)){
