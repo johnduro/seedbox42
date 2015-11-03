@@ -14,7 +14,8 @@ var cfPropertys = {
 	'transmission-settings': ["download-dir", "incomplete-dir-enabled", "incomplete-dir", "rename-partial-files", "start-added-torrents", "seedRatioLimited", "seedRatioLimit", "peer-limit-global", "peer-limit-per-torrent", "blocklist-enabled", "blocklist-url", "speed-limit-down-enabled", "speed-limit-down", "speed-limit-up-enabled", "speed-limit-up", "alt-speed-enabled", "alt-speed-down", "alt-speed-up", "alt-speed-time-enabled", "alt-speed-time-begin", "alt-speed-time-day", "alt-speed-time-end", "peer-port", "peer-port-random-on-start", "speed-limit-down", "speed-limit-down-enabled", "speed-limit-up", "speed-limit-up-enabled", "seed-queue-enabled", "seed-queue-size", "download-queue-enabled", "download-queue-size", "cache-size-mb", "dht-enabled", "encryption", "idle-seeding-limit", "idle-seeding-limit-enabled", "lpd-enabled", "pex-enabled", "queue-stalled-enabled", "queue-stalled-minutes", "script-torrent-done-enabled", "script-torrent-done-filename", "trash-original-torrent-files", "utp-enabled", "port-forwarding-enabled"],
 	'torrents': ['add-torrent-enabled', 'delete-torrent-enabled', 'settings-access-enabled'],
 	'files': ['show-creator', 'lock-enabled', 'comments-enabled', 'grades-enabled', 'auto-remove-lock-enabled', 'auto-remove-lock', 'auto-delete-enabled', 'auto-delete'],
-	'dashboard': ["recent-file-enabled", "recent-user-file-enabled", "recent-user-locked-file-enabled", "file-number-exhibit", "disk-space-enabled", "disk-space-user-enabled", "mini-chat-enabled", "mini-chat-message-limit"]
+	'dashboard': ["recent-file-enabled", "recent-user-file-enabled", "recent-user-locked-file-enabled", "file-number-exhibit", "disk-space-enabled", "disk-space-user-enabled", "mini-chat-enabled", "mini-chat-message-limit"],
+	'users': ["secret", "default-avatar"]
 };
 
 var checkCatValidity = function (cf, propertys, cat) {
@@ -25,7 +26,7 @@ var checkCatValidity = function (cf, propertys, cat) {
 };
 
 var checkFileValidity = function (cf) {
-	var categories = ['mongodb', 'transmission', 'transmission-settings', 'torrents', 'files', 'dashboard'];
+	var categories = ['mongodb', 'transmission', 'transmission-settings', 'torrents', 'files', 'dashboard', 'users'];
 	categories.map(function (categorie) {
 		if (cf.hasOwnProperty(categorie))
 			checkCatValidity(cf[categorie], cfPropertys[categorie], categorie);

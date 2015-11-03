@@ -83,5 +83,9 @@
 		"disk-space-user-enabled": true,
 		"mini-chat-enabled": true,
 		"mini-chat-message-limit": 100
+	},
+	"users": {
+		"secret": "ilovesecret",
+		"default-avatar": "default.png"
 	}
 }
