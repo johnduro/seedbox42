@@ -1,4 +1,4 @@
-app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http, $location, socket, $timeout, $cookies) {
+app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http, $location, socket, $timeout, $cookies, RequestHandler) {
 
 	console.log("seedboxCtrl");
 
@@ -7,6 +7,12 @@ app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http, $loca
 		$state.go("connexion");
 	}else{
 		$cookies.put("token", $rootScope.token);
+		if (!$rootScope.user){
+			RequestHandler.get(api + "users/profile")
+				.then(function(result){
+					$rootScope.user = result.data.data;
+				});
+		}
 	}
 
 	$scope.isActive = function (viewLocation) {

@@ -51,13 +51,16 @@ app.factory('RequestHandler', ['$http', '$q', '$log', '$rootScope',
                         });
                 return promise.promise;
             },
-            put: function (url, data) {
-                $http.defaults.headers.common['Accept'] = 'application/json';
-                $http.defaults.headers.common['Content-Type'] = 'application/json';
-
+            put: function (url, data, transform, config) {
+                transform = (transform == false ? false : true);
+                config = (config == false ? {} : config);
                 var promise = $q.defer();
-
-                var http = $http.put(url, data);
+                if (!transform) {
+                    config.transformResponse = function (data) {
+                        return data;
+                    };
+                }
+                var http = $http.put(url, data, config);
 
                 http.success(function (data, status, headers, config) {
                     promise.resolve({"data": data, "status": status});
