@@ -1,4 +1,5 @@
 var jwt = require('jsonwebtoken');
+var User = require("../models/User.js");
 
 
 var authMiddleware = function (req, res, next) {
@@ -8,11 +9,15 @@ var authMiddleware = function (req, res, next) {
 		console.log("token:  ", token);
 		jwt.verify(token, req.app.get('secret'), function (err, decoded) {
 			if (err)
-				return res.json({ success: false, message: 'Failed to authenticate token.' });
+				return res.status(403).json({ success: false, message: 'Failed to authenticate token.' });
 			else
 			{
-				req.user = decoded;
-				next();
+				User.findById(decoded._id, function (err, user) {
+					if (err || user == null)
+						return res.status(403).json({ success: false, message: 'Failed to authenticate token.' });
+					req.user = decoded;
+					next();
+				});
 			}
 		});
 	}
