@@ -81,14 +81,16 @@ router.put('/:id', avatarUpldHandler.single('avatar'), function (req, res, next)
 	// console.log("ID > ", req.params.id);
 	// console.log("PUT >> ", req.body);
 	// if (req.user.login == req.body.login || req.user.role == 0) //a modifier 111
-	if (req.user._id == req.body._id || req.user.role == 0) //a modifier 111
+	console.log("USER ID > ", req.user._id);
+	console.log("BODY ID > ", req.params.id);
+	if (req.user._id == req.params.id || req.user.role == 0) //a modifier 111
 	{
 		delete req.body._id;
 		// console.log("PUT AVAT > ", req.file);
 		if ("file" in req && 'filename' in req.file)
 			req.body.avatar = req.file.filename;
 		// User.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
-		User.findByIdAndUpdate(req.params.id, { $set: req.body }, function (err, post) {
+		User.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true }, function (err, post) {
 			if (err)
 				res.json({ success: false, message: err });
 			else

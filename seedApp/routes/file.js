@@ -176,10 +176,15 @@ router.put('/:id', function (req, res, next) {
 			delete req.body.createdAt;
 		if ('torrentAddedAt' in req.body)
 			delete req.body.torrentAddedAt;
-		File.findByIdAndUpdate(req.params.id, req.body, { new: true }, function (err, file) {
+		delete req.body._id;
+		// File.findByIdAndUpdate(req.params.id, req.body, { new: true }, function (err, file) {
+		File.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true }, function (err, file) {
 			if (err)
-				return next(err);
-			res.json(file);
+				res.json({ success: false, message: err });
+			else
+				res.json({ success: true, data: file });
+				// return next(err);
+			// res.json(file);
 		});
 	}
 	else
