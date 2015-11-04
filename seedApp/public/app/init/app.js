@@ -6,8 +6,6 @@ var api = "";
 app.run(function ($rootScope, $location, $http, $state, $location) {
 
     api = "/";
-    $rootScope.token = localStorage.getItem("token");
-    $http.defaults.headers.common['X-Access-Token'] = $rootScope.token;
 
     $rootScope.tools = {
         convertSize: function (aSize){
@@ -27,6 +25,7 @@ app.run(function ($rootScope, $location, $http, $state, $location) {
         }
     };
 
+    // gestion des droits d'access aux url
     $rootScope.$on("$stateChangeStart", function (event, toState, toParams, fromState, fromParams) {
 
         if ("access" in toState){

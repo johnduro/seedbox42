@@ -2,8 +2,6 @@
 app.factory('RequestHandler', ['$http', '$q', '$log', '$rootScope',
     function ($http, $q, $log, $rootScope) {
 
-        //Ajout tu token dans le header pour les requete
-        //$http.defaults.headers.common.Authorization = 'Bearer ' + $rootScope.api_token;
         $rootScope.transaction = {};
 
         return {

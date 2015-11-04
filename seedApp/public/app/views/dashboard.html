@@ -99,8 +99,10 @@
                 </div>
                 <div class="panel-body">
                     <div scroll-glue class="content-messages">
-                        <div ng-repeat="message in messages">
-                            <div class="name">{{message.user.login}}: </div>
+                        <div class="content-message" ng-repeat="message in messages">
+                            <div class="name"><img ng-src="/assets/avatar/{{message.user.avatar}}" err-SRC="/assets/avatar/default.png" alt="Smiley face" height="42" width="42"></div>
+                            <div class="name">{{message.createdAt | date : 'dd-MM-yyyy HH:mm'}}</div>
+                            <div class="name">{{message.user.login}} : </div>
                             <div class="message">{{message.message}}</div>
                         </div>
                     </div>

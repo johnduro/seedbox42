@@ -21,9 +21,9 @@
                                 </tr>
                             </thead>
                             <tbody ng-repeat="user in users">
-                                <tr ng-click="editUser(user)">
+                                <tr>
                                     <td><img ng-src="assets/avatar/{{user.avatar}}" err-SRC="assets/avatar/default.png" alt="Smiley face" height="42" width="42"></td>
-                                    <td>{{user.login}}</td>
+                                    <td ng-click="editUser(user)">{{user.login}}</td>
                                     <td>{{user.mail}}</td>
                                     <td>{{user.password}}</td>
                                     <td>{{user.role}}</td>

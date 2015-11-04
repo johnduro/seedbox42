@@ -7,10 +7,10 @@ var User = require("../models/User.js");
 
 router.get('/users-reset', function (req, res, next) {
 	var usersBase =
-			[{ login: 'admin', password: 'admin', mail: 'yolo@duro.lif', role: 0, avatar: "undefined", dateCreated: new Date()},
-			 { login: 'lambda1', password: 'lambda1', mail: 'a@b.com', role: 1, avatar: "undefined", dateCreated: new Date()},
-			 { login: 'lambda2', password: 'lambda2', mail: 'a@g.com', role: 1, avatar: "undefined", dateCreated: new Date()},
-			 { login: 'lambda3', password: 'lambda3', mail: 't@b.com', role: 1, avatar: "undefined", dateCreated: new Date()}];
+			[{ login: 'admin', password: 'admin', mail: 'yolo@duro.lif', role: 0, avatar: "default.png", dateCreated: new Date()},
+			 { login: 'lambda1', password: 'lambda1', mail: 'a@b.com', role: 1, avatar: "default.png", dateCreated: new Date()},
+			 { login: 'lambda2', password: 'lambda2', mail: 'a@g.com', role: 1, avatar: "default.png", dateCreated: new Date()},
+			 { login: 'lambda3', password: 'lambda3', mail: 't@b.com', role: 1, avatar: "default.png", dateCreated: new Date()}];
 	console.log('dropping users database');
 	req.app.get('connexionDB').connection.db.collection('users', function (err, collection) {
 		if (err)
