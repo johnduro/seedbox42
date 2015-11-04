@@ -22,7 +22,7 @@ app.controller("settingsCtrl", function($rootScope, $scope, RequestHandler){
     };
 
     $scope.addDirectory = function(){
-        RequestHandler.get(api + "admin/new-directory/" + $scope.sendDir)
+        RequestHandler.get(api + "admin/new-directory/" + btoa($scope.sendDir))
             .then(function(result){
                 if (result.data.success)
                     newDir = result.data.data;
