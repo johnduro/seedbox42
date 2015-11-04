@@ -25,7 +25,7 @@
         <link href="assets/plugins/slidepushmenus/css/component.css" rel="stylesheet" type="text/css"/>
         <link href="assets/plugins/weather-icons-master/css/weather-icons.min.css" rel="stylesheet" type="text/css"/>
         <link href="assets/plugins/metrojs/MetroJs.min.css" rel="stylesheet" type="text/css"/>
-        <link href="assets/plugins/toastr/toastr.min.css" rel="stylesheet" type="text/css"/>
+        <!-- <link href="assets/plugins/toastr/toastr.min.css" rel="stylesheet" type="text/css"/> -->
 
         <!-- Theme Styles -->
         <link href="assets/css/modern.css" rel="stylesheet" type="text/css"/>
@@ -152,6 +152,13 @@
                             <a ui-sref="seedbox.adminUsers" class="waves-effect waves-button">
                                 <span class="menu-icon glyphicon fa fa-users"></span>
                                 <p>Les comptes</p>
+                            </a>
+                        </li>
+
+                        <li ng-if="user.role == 0" ng-class="{active: isActive('/seedbox/admin/settings')}">
+                            <a ui-sref="seedbox.adminSettings" class="waves-effect waves-button">
+                                <span class="menu-icon glyphicon fa fa-wrench"></span>
+                                <p>Configuration</p>
                             </a>
                         </li>
                     </ul>

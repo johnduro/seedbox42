@@ -1,0 +1,57 @@
+<div class="page-title">
+    <h3>Configuration</h3>
+</div>
+
+<div id="main-wrapper">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-white">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Torrents</h3>
+                </div>
+                <div class="panel-body">
+                    <form ng-submit="updatePart('torrents')">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" ng-model="settings.torrents['add-torrent-enabled']" > add-torrent-enabled
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" ng-model="settings.torrents['delete-torrent-enabled']"> delete-torrent-enabled
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" ng-model="settings.torrents['settings-access-enabled']"> settings-access-enabled
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="panel panel-white">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Test url</h3>
+                </div>
+
+                <div class="panel-body">
+                    <form ng-submit="addDirectory()">
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">URL</label>
+                            <input type="text" class="form-control" ng-model="sendDir" placeholder="Url">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">NewDir</label>
+                            <input type="text" class="form-control" ng-model="newDir" placeholder="Url">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
