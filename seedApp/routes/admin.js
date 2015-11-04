@@ -105,7 +105,7 @@ router.put('/settings/torrents', function (req, res, next) {
 	{
 		req.app.get('config').torrents = ft.updateSettings(req.body, req.app.get('config').torrents);
 		// WRITE TO FILE
-		res.json({ success: true, message: "torrents settings succesfully updated" });
+		res.json({ success: true, message: "torrents settings succesfully updated", data: req.app.get('config').torrents});
 	}
 	else
 		res.json({ success: false, message: "You don't have enought rights for this action" });
