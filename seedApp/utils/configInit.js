@@ -16,7 +16,7 @@ var cfPropertys = {
 	'torrents': ['add-torrent-enabled', 'delete-torrent-enabled', 'settings-access-enabled'],
 	'files': ['show-creator', 'lock-enabled', 'comments-enabled', 'grades-enabled', 'auto-remove-lock-enabled', 'auto-remove-lock', 'auto-delete-enabled', 'auto-delete'],
 	'dashboard': ["recent-file-enabled", "recent-user-file-enabled", "recent-user-locked-file-enabled", "file-number-exhibit", "disk-space-enabled", "disk-space-user-enabled", "mini-chat-enabled", "mini-chat-message-limit"],
-	'users': ["secret", "default-avatar"]
+	'users': ["default-avatar"]
 };
 
 var checkCatValidity = function (cf, propertys, cat) {
@@ -37,7 +37,7 @@ var checkFileValidity = function (cf) {
 };
 
 var getMongoConnex = function (mongoConfig) {
-	var connex = mongoose("mongodb://" + mongoConfig.address + '/' + mongoConfig.name, function (err) {
+	var connex = mongoose.connect("mongodb://" + mongoConfig.address + '/' + mongoConfig.name, function (err) {
 		if (err)
 		{
 			console.log('database: connection error', err);
@@ -111,7 +111,7 @@ var checkDashboardSettings = function (dSettings) {
 
 var configInit = function (configFile) {
 	checkFileValidity(configFile);
-	// var connexionDB = getMongoConnex(configFile.mongodb); //OK??
+	var connexionDB = getMongoConnex(configFile.mongodb); //OK??
 	var transmission = new TransmissionNode(configFile.transmission);
 	checkTransmissionSettings(transmission, configFile['transmission-settings']);
 	checkFileSettings(configFile.files, transmission);
@@ -119,11 +119,12 @@ var configInit = function (configFile) {
 	// si problemes :
 	// process.exit();
 	var ret = {
-		// 'connexionDB': connexionDB,
+		'connexionDB': connexionDB,
 		'transmission': transmission,
 		'config': configFile
 	};
-	return configFile;
+	// return configFile;
+	return ret;
 };
 
 
