@@ -78,6 +78,20 @@ module.exports = {
 			fileStream.push({ stream: fs.createReadStream(fileDetail.path), name: pathInDir });
 			return done(null, fileStream);
 		}
+	},
+
+	getDirInfos: function (path, done) {
+		var dirInfos = {};
+		fs.stat(path, function (err, fStat) {
+			if (fStat.isDirectory())
+			{
+				done(null, dirInfos);
+			}
+			else
+			{
+				done(null, dirInfos);
+			}
+		});
 	}
 
 };

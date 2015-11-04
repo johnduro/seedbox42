@@ -3,6 +3,8 @@ var router = express.Router();
 var fs = require('fs');
 var TransmissionNode = require('../utils/transmissionNode');
 var ft = require('../utils/ft');
+var atob = require('atob');
+var filesInfos = require('../utils/filesInfos');
 
 router.get('/settings', function (req, res, next) {
 	var config = req.app.get('config');
@@ -101,13 +103,6 @@ router.put('/settings/transmission-settings', function (req, res, next) {
 router.put('/settings/torrents', function (req, res, next) {
 	if (req.user.role == 0)
 	{
-		// var trSettings = req.app.get('config').torrents;
-		// for (var key in req.body)
-		// {
-		// 	if (trSettings.hasOwnProperty(key) && trSettings[key] != req.body[key])
-		// 		trSettings[key] = req.body[key];
-		// }
-		// req.app.get('config').torrents = trSettings;
 		req.app.get('config').torrents = ft.updateSettings(req.body, req.app.get('config').torrents);
 		// WRITE TO FILE
 		res.json({ success: true, message: "torrents settings succesfully updated" });
@@ -121,7 +116,7 @@ router.put('/settings/files', function (req, res, next) {
 	{
 		req.app.get('config').files = ft.updateSettings(req.body, req.app.get('config').files);
 		// WRITE TO FILE
-		res.json({ success: true, message: "files settings succesfully updated" });
+		res.json({ success: true, message: "files settings succesfully updated", data: req.app.get('config').files });
 	}
 	else
 		res.json({ success: false, message: "You don't have enought rights for this action" });
@@ -132,7 +127,7 @@ router.put('/settings/dashboard', function (req, res, next) {
 	{
 		req.app.get('config').dashboard = ft.updateSettings(req.body, req.app.get('config').dashboard);
 		// WRITE TO FILE
-		res.json({ success: true, message: "dashboard settings succesfully updated" });
+		res.json({ success: true, message: "dashboard settings succesfully updated", data: req.app.get('config').dashboard });
 	}
 	else
 		res.json({ success: false, message: "You don't have enought rights for this action" });
@@ -143,11 +138,25 @@ router.put('/settings/users', function (req, res, next) {
 	{
 		req.app.get('config').users = ft.updateSettings(req.body, req.app.get('config').users);
 		// WRITE TO FILE
-		res.json({ success: true, message: "users settings succesfully updated" });
+		res.json({ success: true, message: "users settings succesfully updated", data: req.app.get('config').users });
 	}
 	else
 		res.json({ success: false, message: "You don't have enought rights for this action" });
 });
 
+router.get('/new-directory/:path', function (req, res, next) {
+	if (req.user.role == 0)
+	{
+		var path = atob(req.params.path);
+		filesInfos.getDirInfos(path, function (err, data) {
+			if (err)
+				res.json({ success: false, message: err });
+			else
+				res.json({ success: true, data: data });
+		});
+	}
+	else
+		res.json({ success: false, message: "You don't have enought rights for this action" });
+});
 
 module.exports = router;
