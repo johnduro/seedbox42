@@ -14,10 +14,9 @@ var socketIO = require('socket.io');
 // EXTRAS
 // ====================================
 var fs = require('fs');
-var mongoose = require('mongoose');//dans init
+// var mongoose = require('mongoose');//dans init
 var jwt = require('jsonwebtoken');
 var multer = require('multer');
-// var config = require('./config');
 var authMW = require('./utils/authMiddleware');
 var TransmissionNode = require('./utils/transmissionNode');
 var configInit = require('./utils/configInit');
@@ -32,6 +31,7 @@ var debugSetup = require('./routes/ds');
 var torrent = require('./routes/torrent');
 var file = require('./routes/file');
 var dashboard = require('./routes/dashboard');
+var admin = require('./routes/admin');
 // ************************************
 
 // ====================================
@@ -39,28 +39,34 @@ var dashboard = require('./routes/dashboard');
 // ====================================
 var app = express();
 var configFile = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
-var config = configInit(configFile);
-app.set('secret', config.secret);
-app.set('config', config);
+var configInfos = configInit(configFile);
+// var config = configInit(configFile);
+// app.set('secret', config.secret);
+// app.set('config', config);
+// app.set('secret', configInfos.config.users.secret);
+app.set('secret', configInfos.config.secret);
+app.set('config', configInfos.config);
+app.set('connexionDB', configInfos.connexionDB);
+app.set('transmission', configInfos.transmission);
 // ************************************
 
 // ====================================
 // DATABASE CONNEXION
 // ====================================
-var connexionDB = mongoose.connect(config.database, function (err) {
-	if (err)
-		console.log('database: connection error', err);
-	else
-		console.log('database: connection successful');
-});
-app.set('connexionDB', connexionDB);
+// var connexionDB = mongoose.connect(config.database, function (err) {
+// 	if (err)
+// 		console.log('database: connection error', err);
+// 	else
+// 		console.log('database: connection successful');
+// });
+// app.set('connexionDB', connexionDB);
 // ************************************
 
 // ====================================
 // TORRENTS
 // ====================================
-var transmission = new TransmissionNode();
-app.set('transmission', transmission);
+// var transmission = new TransmissionNode();
+// app.set('transmission', transmission);
 //************************************
 
 // ====================================
@@ -69,7 +75,8 @@ app.set('transmission', transmission);
 var io = socketIO();
 app.io = io;
 // var sockets = require('./utils/sockets')(io, transmission, app.get('secret'));
-var sockets = require('./utils/sockets')(io, transmission, app);
+// var sockets = require('./utils/sockets')(io, transmission, app);
+var sockets = require('./utils/sockets')(io, configInfos.transmission, app);
 //************************************
 
 // view engine setup
@@ -98,6 +105,7 @@ app.use('/dashboard', authMW, dashboard);
 app.use('/users', authMW, users);
 app.use('/torrent', authMW, torrent);
 app.use('/file', authMW, file);
+app.use('/admin', authMW, admin);
 // ************************************
 
 // catch 404 and forward to error handler

@@ -85,7 +85,6 @@
 		"mini-chat-message-limit": 100
 	},
 	"users": {
-		"secret": "ilovesecret",
 		"default-avatar": "default.png"
 	}
 }

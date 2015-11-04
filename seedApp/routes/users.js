@@ -109,7 +109,7 @@ router.put('/:id', avatarUpldHandler.single('avatar'), function (req, res, next)
 		});
 	}
 	else
-		res.json({ success: false, message: "You don't have enought rights for this action"});
+		res.json({ success: false, message: "You don't have enought rights for this action" });
 });
 
 router.delete('/:id', function (req, res, next) {
