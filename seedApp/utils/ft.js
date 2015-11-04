@@ -61,5 +61,14 @@ module.exports = {
 				loop();
 			});
 		})();
+	},
+
+	updateSettings: function (newSettings, oldSettings) {
+		for (var key in newSettings)
+		{
+			if (oldSettings.hasOwnProperty(key) && oldSettings[key] != newSettings[key])
+				oldSettings[key] = newSettings[key];
+		}
+		return oldSettings;
 	}
 };
