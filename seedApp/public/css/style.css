@@ -227,14 +227,19 @@ ul.rating {
     padding: 5px;
     overflow-y: auto;
 }
-.content-messages .name {
+
+.content-messages .content-message {
+    margin-bottom: 10px;
+}
+
+.content-messages .content-message .name {
     font-size: larger;
     font-family: sans-serif;
     color: black;
     display: inline-block;
 }
 
-.content-messages .message {
+.content-messages .content-message .message {
     display: inline-block;;
 }
 
