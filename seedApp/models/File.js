@@ -131,7 +131,10 @@ FileSchema.statics = {
 			else
 			{
 				files.map(function (file) {
-					file.deleteFile(transmission);
+					file.deleteFile(transmission, function (err, message) {
+						if (err)
+							console.log("delete:file:unlink:message: ", message);
+					});
 				});
 				cb(null, files);
 			}
@@ -144,19 +147,24 @@ FileSchema.statics = {
  */
 
 FileSchema.methods = {
-	deleteFile: function (transmission) {
-		console.log("YOLO DELETE !! > ", this.name);
-		transmission.torrentRemove(this.hashString, false, function (err, resp) {
+	deleteFile: function (transmission, cb) {
+		// console.log("YOLO DELETE !! > ", this.name);
+		var self = this;
+		transmission.torrentRemove(self.hashString, false, function (err, resp) {
 			if (err)
-				console.log("ERROR DEL TRANS > ", err);
+				console.log("delete:file:torrent-remove:err: ", err);
 			else
-				console.log('OKOK > ', resp);
+				console.log('delete:file:torrent-remove:success: ', resp);
+			rimraf(self.path, function (err) {
+				if (err)
+					console.log("delete:file:unlink:err: ", err);
+				self.remove();
+				if (err)
+					cb(err, "File removed from database but there was an issue while deleting from the server");
+				else
+					cb(null, "File successfuly removed");
+			});
 		});
-		rimraf(this.path, function (err) {
-			if (err)
-				console.log("ERROR > ", err);
-		});
-		this.remove();
 	},
 
 	addComment: function (user, comment, cb) {

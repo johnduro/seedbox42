@@ -199,31 +199,41 @@ router.delete('/:id', function (req, res, next) {
 			return next(err);
 		if (req.user.role === 0 || (file.privacy === 0 && req.user._id === file.creator))
 		{
-			File.findByIdAndRemove(file._id, function (err, deletedFile) {
+			File.findById(file._id, function (err, file) {
 				if (err)
 					return next(err);
-				//TRANSMISSION
-				req.app.get('transmission').torrentRemove(deletedFile.hashString, false, function (err, resp) {
+				file.deleteFile(req.app.get('transmission'), function (err, message) {
 					if (err)
-					{
-						console.log(err);
-						res.json({ success: false, message: err });
-					}
+						res.json({ success: false, err: err, message: message });
 					else
-						res.json({ success: true, message: 'File successfuly removed' });;
-				});
-				//delete le fichier sur le serveur
-				//attention aux droits !
-				fs.unlink(file.path, function (err) {
-					if (err)
-					{
-						console.log(err);
-						res.json({ success: false, message: err });
-					}
-					else
-						res.json({ success: true, message: 'File successfuly removed' });;
+						res.json({ success: true, message: message });
 				});
 			});
+			// File.findByIdAndRemove(file._id, function (err, deletedFile) {
+			// 	if (err)
+			// 		return next(err);
+			// 	//TRANSMISSION
+			// 	req.app.get('transmission').torrentRemove(deletedFile.hashString, false, function (err, resp) {
+			// 		if (err)
+			// 		{
+			// 			console.log(err);
+			// 			res.json({ success: false, message: err });
+			// 		}
+			// 		else
+			// 			res.json({ success: true, message: 'File successfuly removed' });;
+			// 	});
+			// 	//delete le fichier sur le serveur
+			// 	//attention aux droits !
+			// 	fs.unlink(file.path, function (err) {
+			// 		if (err)
+			// 		{
+			// 			console.log(err);
+			// 			res.json({ success: false, message: err });
+			// 		}
+			// 		else
+			// 			res.json({ success: true, message: 'File successfuly removed' });;
+			// 	});
+			// });
 		}
 		else
 			res.json({ success: false, message: "You don't have enought rights for this action" });
