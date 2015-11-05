@@ -5,6 +5,7 @@ var TransmissionNode = require('../utils/transmissionNode');
 var ft = require('../utils/ft');
 var atob = require('atob');
 var filesInfos = require('../utils/filesInfos');
+var rimraf = require('rimraf');
 
 router.get('/settings', function (req, res, next) {
 	var config = req.app.get('config');
@@ -69,22 +70,22 @@ router.put('/settings/transmission-settings', function (req, res, next) {
 			}
 		}
 		// ft.updateSettings(req.body, tSettings);
-		transmission.sessionSet(tMod, function (err, res) {
+		transmission.sessionSet(tMod, function (err, respSet) {
 			if (err)
 				res.json({ success: false, message: err });
 			else
 			{
-				transmission.sessionGet(function (err, res) {
+				transmission.sessionGet(function (err, resp) {
 					if (err)
 						res.json({ success: true, message: "transmission settings succesfully updated, but could not get session infos from transmission", data: null });
 					else
 					{
 						for (var key in tSettings)
 						{
-							if (res.hasOwnProperty(key))
+							if (resp.hasOwnProperty(key))
 							{
-								if (tSettings[key] != res[key])
-									tSettings[key] = res[key];
+								if (tSettings[key] != resp[key])
+									tSettings[key] = resp[key];
 							}
 						}
 						req.app.get('config')["transmission-settings"] = tSettings;
@@ -93,7 +94,7 @@ router.put('/settings/transmission-settings', function (req, res, next) {
 					}
 				});
 			}
-				res.json({ success: true, message: "transmission settings succesfully updated", data: res });
+				// res.json({ success: true, message: "transmission settings succesfully updated", data: res });
 		});
 	}
 	else
@@ -145,6 +146,12 @@ router.put('/settings/users', function (req, res, next) {
 });
 
 router.get('/new-directory/:path', function (req, res, next) {
+	rimraf('/home/downloader/testing', function (err) {
+		if (err)
+			console.log('ERROR UNLINK TEST > ', err);
+		else
+			console.log('UNLINK SUCCESS !!! ');
+	});
 	if (req.user.role == 0)
 	{
 		var path = atob(req.params.path);
