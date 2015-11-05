@@ -4,30 +4,28 @@
 
 <div id="main-wrapper">
     <div class="row">
-        <div class="col-md-6">
-            <div class="panel panel-white">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Torrents</h3>
-                </div>
-                <div class="panel-body">
-                    <form ng-submit="updatePart('torrents')">
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" ng-model="settings.torrents['add-torrent-enabled']" > add-torrent-enabled
-                            </label>
-                        </div>
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" ng-model="settings.torrents['delete-torrent-enabled']"> delete-torrent-enabled
-                            </label>
-                        </div>
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" ng-model="settings.torrents['settings-access-enabled']"> settings-access-enabled
-                            </label>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
+        <div ng-repeat="(settingKey, setting) in settings">
+            <div class="col-md-6 center">
+                <div class="panel panel-white">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">{{settingKey}}</h3>
+                    </div>
+                    <div class="panel-body">
+                        <form ng-submit="updatePart(settingKey)">
+                            <div ng-repeat="(elementKey, element) in setting" ng-switch="element" >
+                                <label ng-switch-when="true">
+                                    {{elementKey}} <input  type="checkbox" ng-model="element">
+                                </label>
+                                <label ng-switch-when="false">
+                                    {{elementKey}} <input  type="checkbox" ng-model="element">
+                                </label>
+                                <label ng-switch-default>
+                                    {{elementKey}} <input type="text" ng-model="element">
+                                </label>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
