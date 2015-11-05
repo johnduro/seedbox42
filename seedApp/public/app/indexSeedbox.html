@@ -161,6 +161,13 @@
                                 <p>Configuration</p>
                             </a>
                         </li>
+
+                        <li ng-if="user.role == 0" ng-class="{active: isActive('/seedbox/admin/directory')}">
+                            <a ui-sref="seedbox.adminDirectory" class="waves-effect waves-button">
+                                <span class="menu-icon glyphicon fa fa-sitemap"></span>
+                                <p>Ajout de dossier</p>
+                            </a>
+                        </li>
                     </ul>
                 </div><!-- Page Sidebar Inner -->
             </div><!-- Page Sidebar -->

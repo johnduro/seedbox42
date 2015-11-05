@@ -4,11 +4,36 @@ app.controller("settingsCtrl", function($rootScope, $scope, RequestHandler){
     $scope.sendDir = "";
     $scope.newDir = "";
 
+    function merge_options(obj1,obj2){
+        var obj3 = {};
+        for (var attrname in obj1) { obj3[attrname] = obj1[attrname]; }
+        for (var attrname in obj2) { obj3[attrname] = obj2[attrname]; }
+        return obj3;
+    }
+
+    function sortSettings (){
+        var boolean = {};
+        var others = {};
+
+        for (var settingskey in $scope.settings){
+            boolean = {};
+            others = {};
+            for (var elementkey in $scope.settings[settingskey]){
+                if ($scope.settings[settingskey][elementkey] === true || $scope.settings[settingskey][elementkey] === false)
+                    boolean[elementkey] = $scope.settings[settingskey][elementkey];
+                else
+                    others[elementkey] = $scope.settings[settingskey][elementkey];
+            }
+            $scope.settings[settingskey] = jQuery.extend(boolean, others);
+        }
+    };
+
     RequestHandler.get(api + "admin/settings")
         .then(function(result){
-            if (result.data.success)
+            if (result.data.success){
                 $scope.settings = result.data.data;
-            console.log($scope.settings.torrents['add-torrent-enabled']);
+                sortSettings();
+            }
         });
 
     $scope.updatePart = function(part){
