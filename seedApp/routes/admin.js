@@ -6,6 +6,9 @@ var ft = require('../utils/ft');
 var atob = require('atob');
 var filesInfos = require('../utils/filesInfos');
 var rimraf = require('rimraf');
+var File = require('../models/File.js');
+var pathS = require('path');
+var mongoose = require('mongoose');
 
 router.get('/settings', function (req, res, next) {
 	var config = req.app.get('config');
@@ -36,7 +39,7 @@ router.put('/settings/transmission', function (req, res, next) {
 		if (mod)
 		{
 			var newTransmission = new TransmissionNode(transmission);
-			newTransmission.sessionGet(function (err, res) {
+			newTransmission.sessionGet(function (err, resp) {
 				if (err)
 					res.json({ success: false, message: "could not change transmission settings" });
 				else
@@ -164,6 +167,55 @@ router.get('/new-directory/:path', function (req, res, next) {
 	}
 	else
 		res.json({ success: false, message: "You don't have enought rights for this action" });
+});
+
+router.put('/new-directory', function (req, res, next) {
+	var i = 0;
+	var error = false;
+	var result = [];
+	(function next () {
+		var file = req.body[i++];
+		if (!file)
+		{
+			if (error)
+				res.json({ success: false, message: "An occured while adding files", data: result });
+			else
+				res.json({ success: true, message: "File(s) successfully added", data: result });
+		}
+		var fileToInsert = {
+			name: pathS.basename(file.path),
+			path: file.path,
+			size: file.size,
+			creator:  mongoose.mongo.ObjectID(req.user._id), //faire un object id avec mongoose
+			hashString: "",
+			isFinished: true,
+			fileType: file.fileType,
+			createdAt: Date.now()
+		};
+		File.create(fileToInsert, function (err, newFile) {
+			if (err)
+			{
+				error = true;
+				result.push({ error: err, path: fileToInsert.path });
+			}
+			else
+				result.push(newFile);
+			next();
+		});
+	})();
+	// req.body.map(function (file) {
+	// 	var fileToInsert = {
+	// 		name: pathS.basename(file.path),
+	// 		path: file.path,
+	// 		size: file.size,
+	// 		creator:  mongoose.mongo.ObjectID(req.user._id), //faire un object id avec mongoose
+	// 		hashString: "",
+	// 		isFinished: true,
+	// 		fileType: file.fileType,
+	// 		createdAt: Date.now()
+	// 	};
+	// 	File.create(fileToInsert, function (err, file) {});
+	// });
 });
 
 module.exports = router;

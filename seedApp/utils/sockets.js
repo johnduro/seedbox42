@@ -59,7 +59,7 @@ module.exports = function (io, transmission, app) {
 							fileType = mime.lookup(path);
 						File.findOneAndUpdate(
 							{ hashString: torrent['hashString'], isFinished: false },
-							{ name: name, path: path, size: torrent['totalSize'], hashString: torrent['hashString'], isFinished: true, fileType: fileType, createdAt: Date.now() },
+							{ $set :{ name: name, path: path, size: torrent['totalSize'], hashString: torrent['hashString'], isFinished: true, fileType: fileType, createdAt: Date.now() } },
 							// { new: true, upsert: true, setDefaultsOnInsert: true },
 							{ new: true },
 							function (err, newFile) {
