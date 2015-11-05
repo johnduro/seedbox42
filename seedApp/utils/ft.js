@@ -1,5 +1,5 @@
-
 var User = require('../models/User.js');
+var fs = require('fs');
 
 module.exports = {
 	indexOfByIdKey: function (arr, key, value) {
@@ -70,5 +70,13 @@ module.exports = {
 				oldSettings[key] = newSettings[key];
 		}
 		return oldSettings;
+	},
+
+	jsonToFile: function (file, json) {
+		var jsonFormat = JSON.stringify(json, null, 4);
+		fs.writeFile(file, jsonFormat, function (err) {
+			if (err)
+				console.log("ERR WRITE FILE > ", err); //mettre un callback qui remonte l erreure
+		});
 	}
 };

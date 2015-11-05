@@ -38,12 +38,15 @@ var admin = require('./routes/admin');
 // CONFIG
 // ====================================
 var app = express();
-var configFile = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
+var configFileName = './config.json';
+// var configFile = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
+var configFile = JSON.parse(fs.readFileSync(configFileName, 'utf8'));
 var configInfos = configInit(configFile);
 // var config = configInit(configFile);
 // app.set('secret', config.secret);
 // app.set('config', config);
 // app.set('secret', configInfos.config.users.secret);
+app.set('configFileName', configFileName);
 app.set('secret', configInfos.config.secret);
 app.set('config', configInfos.config);
 app.set('connexionDB', configInfos.connexionDB);

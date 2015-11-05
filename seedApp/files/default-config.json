@@ -71,13 +71,12 @@
 		"auto-delete": 60
 	},
 	"dashboard": {
-		"recent-file-enabled": true,
-		"recent-user-file-enabled": true,
-		"recent-user-locked-file-enabled": true,
+		"recent-file-enabled": "all",
+		"recent-user-file-enabled": "all",
+		"recent-user-locked-file-enabled": "all",
 		"file-number-exhibit": 5,
-		"disk-space-enabled": true,
-		"disk-space-user-enabled": true,
-		"mini-chat-enabled": true,
+		"disk-space-enabled": "admin",
+		"mini-chat-enabled": "all",
 		"mini-chat-message-limit": 100
 	},
 	"users": {
