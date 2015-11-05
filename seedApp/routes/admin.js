@@ -42,7 +42,7 @@ router.put('/settings/transmission', function (req, res, next) {
 				{
 					req.app.get('config').transmission = transmissionConfig;
 					req.app.set('transmission', newTransmission);
-					// WRITE TO FILE
+					ft.jsonToFile(req.app.get('configFileName'), req.app.get('config'));
 					res.json({ success: true, message: "transmission infos were successfuly updated" });
 				}
 			});
@@ -88,7 +88,7 @@ router.put('/settings/transmission-settings', function (req, res, next) {
 							}
 						}
 						req.app.get('config')["transmission-settings"] = tSettings;
-						// WRITE TO FILE
+						ft.jsonToFile(req.app.get('configFileName'), req.app.get('config'));
 						res.json({ success: true, message: "transmission settings succesfully updated", data: tSettings });
 					}
 				});
@@ -104,7 +104,7 @@ router.put('/settings/torrents', function (req, res, next) {
 	if (req.user.role == 0)
 	{
 		req.app.get('config').torrents = ft.updateSettings(req.body, req.app.get('config').torrents);
-		// WRITE TO FILE
+		ft.jsonToFile(req.app.get('configFileName'), req.app.get('config'));
 		res.json({ success: true, message: "torrents settings succesfully updated", data: req.app.get('config').torrents });
 	}
 	else
@@ -115,7 +115,7 @@ router.put('/settings/files', function (req, res, next) {
 	if (req.user.role == 0)
 	{
 		req.app.get('config').files = ft.updateSettings(req.body, req.app.get('config').files);
-		// WRITE TO FILE
+		ft.jsonToFile(req.app.get('configFileName'), req.app.get('config'));
 		res.json({ success: true, message: "files settings succesfully updated", data: req.app.get('config').files });
 	}
 	else
@@ -126,7 +126,7 @@ router.put('/settings/dashboard', function (req, res, next) {
 	if (req.user.role == 0)
 	{
 		req.app.get('config').dashboard = ft.updateSettings(req.body, req.app.get('config').dashboard);
-		// WRITE TO FILE
+		ft.jsonToFile(req.app.get('configFileName'), req.app.get('config'));
 		res.json({ success: true, message: "dashboard settings succesfully updated", data: req.app.get('config').dashboard });
 	}
 	else
@@ -137,7 +137,7 @@ router.put('/settings/users', function (req, res, next) {
 	if (req.user.role == 0)
 	{
 		req.app.get('config').users = ft.updateSettings(req.body, req.app.get('config').users);
-		// WRITE TO FILE
+		ft.jsonToFile(req.app.get('configFileName'), req.app.get('config'));
 		res.json({ success: true, message: "users settings succesfully updated", data: req.app.get('config').users });
 	}
 	else
