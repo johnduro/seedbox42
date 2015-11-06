@@ -203,17 +203,15 @@ router.put('/new-directory', function (req, res, next) {
 		if (!file)
 		{
 			if (error)
-				res.json({ success: false, message: "An occured while adding files", data: result });
+				return res.json({ success: false, message: "An occured while adding files", data: result });
 			else
-				res.json({ success: true, message: "File(s) successfully added", data: result });
+				return res.json({ success: true, message: "File(s) successfully added", data: result });
 		}
-		// if (file[0] == '.')
-		// 	loop();
 		var fileToInsert = {
 			name: pathS.basename(file.path),
 			path: file.path,
 			size: file.size,
-			creator:  mongoose.mongo.ObjectID(req.user._id), //faire un object id avec mongoose
+			creator:  mongoose.mongo.ObjectID(req.user._id),
 			hashString: "",
 			isFinished: true,
 			fileType: file.fileType,
