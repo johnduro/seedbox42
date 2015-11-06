@@ -43,7 +43,7 @@ var getFileRightsRecurs = function self (path, done) {
 	// };
 	fs.stat(path, function (err, fStat) {
 		if (err)
-			done(err);
+			return done(err);
 		getFileRights(path, function (pRights) {
 			// rights.read = pRights.read ? rights.read : pRights.read; //refaire ternaire inutile
 			// rights.write = pRights.write ? rights.write : pRights.write; //refaire ternaire inutile
