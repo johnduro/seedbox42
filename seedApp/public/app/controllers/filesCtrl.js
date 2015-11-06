@@ -1,4 +1,4 @@
-app.controller('filesCtrl', function ($scope, $rootScope, RequestHandler, socket, $timeout, $http, $cookies, Lightbox) {
+app.controller('filesCtrl', function ($scope, $rootScope, $stateParams, RequestHandler, socket, $timeout, $http, $cookies, Lightbox) {
 
 	console.log("filesCtrl");
 
@@ -12,6 +12,7 @@ app.controller('filesCtrl', function ($scope, $rootScope, RequestHandler, socket
 	$scope.itemSelected = false;
 	Lightbox.templateUrl = 'app/views/partials/imagesTemplate.html';
 	$scope.newComment = "";
+	console.log($stateParams);
 
 	socket.on("newFile", function(data){
 		RequestHandler.get(api + "file/all")

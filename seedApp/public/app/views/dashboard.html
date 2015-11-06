@@ -28,7 +28,7 @@
                             </tr>
                         </thead>
                         <tbody ng-repeat="item in lastFiles">
-                            <tr>
+                            <tr ng-dblclick="openFile(item)">
                                 <td>
                                     <div ng-switch="item.type">
                                         <div ng-switch-when="folder" ><i class="fa fa-folder fa-4"></i> {{item.type}}</div>

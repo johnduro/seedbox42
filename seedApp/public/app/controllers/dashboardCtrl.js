@@ -1,9 +1,14 @@
 
-app.controller('dashboardCtrl', function ($scope, $rootScope, $timeout, RequestHandler, socket) {
+app.controller('dashboardCtrl', function ($scope, $rootScope, $timeout, $location, RequestHandler, socket) {
 
 	console.log("dashboardCtrl");
 
 	$scope.newMessage = "";
+
+	$scope.openFile = function(file){
+		//console.log(file);
+		$location.url('seedbox/files/' + file._id);
+	};
 
 	RequestHandler.get(api + "dashboard/disk-space")
 		.then(function(result){

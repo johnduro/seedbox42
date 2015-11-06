@@ -12,15 +12,15 @@
                     </div>
                     <div class="panel-body">
                         <form ng-submit="updatePart(settingKey)">
-                            <div ng-repeat="(elementKey, element) in setting" ng-switch="element" >
+                            <div ng-repeat="(elementKey, element) in setting" ng-switch="element">
                                 <label ng-switch-when="true">
-                                    {{elementKey}} <input  type="checkbox" ng-model="element">
+                                    {{elementKey}} <input type="checkbox" ng-model="settings[settingKey][elementKey]">
                                 </label>
                                 <label ng-switch-when="false">
-                                    {{elementKey}} <input  type="checkbox" ng-model="element">
+                                    {{elementKey}} <input type="checkbox" ng-model="settings[settingKey][elementKey]">
                                 </label>
                                 <label ng-switch-default>
-                                    {{elementKey}} <input type="text" ng-model="element">
+                                    {{elementKey}} <input type="text" ng-model="settings[settingKey][elementKey]">
                                 </label>
                             </div>
                             <button type="submit" class="btn btn-primary">Submit</button>
