@@ -1,4 +1,4 @@
-app.controller('filesCtrl', function ($scope, $rootScope, $stateParams, RequestHandler, socket, $timeout, $http, $cookies, Lightbox) {
+app.controller('filesCtrl', function ($scope, $rootScope, $state, $stateParams, RequestHandler, socket, $timeout, $http, $cookies, Lightbox) {
 
 	console.log("filesCtrl");
 
@@ -84,12 +84,30 @@ app.controller('filesCtrl', function ($scope, $rootScope, $stateParams, RequestH
 		}
 	};
 
+	if ($stateParams.file){
+		console.log("okok");
+		RequestHandler.get(api + "file/show/" + $stateParams.file)
+			.then(function(result){
+				if (result.data.data.isDirectory){
+					console.log(result);
+					$scope.itemSelected = result.data.file;
+					$scope.treeSelected = result.data.data;
+					$scope.treeSelected.id = $stateParams.file;
+					$scope.elementsActual = result.data.data;
+					addType($scope.elementsActual.fileList);
+					pathActualArray.push(result.data.data.name);
+					generatePath(pathActualArray);
+				}
+			});
+	}
+
 	$scope.openFolder = function(value){
 
 		console.log(value);
 
 		if ($scope.treeSelected == ''){
-			RequestHandler.get(api + "file/show/" + value)
+			$state.go('seedbox.files', {file: value});
+			/*RequestHandler.get(api + "file/show/" + value)
 				.then(function(result){
 					if (result.data.data.isDirectory){
 						console.log(result);
@@ -101,7 +119,7 @@ app.controller('filesCtrl', function ($scope, $rootScope, $stateParams, RequestH
 						pathActualArray.push(result.data.data.name);
 						generatePath(pathActualArray);
 					}
-				});
+				});*/
 		}else if (value.isDirectory){
 			$scope.elementsActual = value;
 			addType($scope.elementsActual.fileList);
@@ -126,12 +144,14 @@ app.controller('filesCtrl', function ($scope, $rootScope, $stateParams, RequestH
 		}
 
 		if ($scope.treeSelected == $scope.elementsActual){
-			$scope.treeSelected = '';
+			$state.go('seedbox.files', {file: ""});
+
+			/*$scope.treeSelected = '';
 			$scope.elementsActual = $scope.treeBase;
 			pathActualArray = [];
 			$scope.pathActual = "/";
 			$scope.itemSelected = "";
-			return;
+			return;*/
 		}
 
 		if(folder.path == $scope.elementsActual.path){
