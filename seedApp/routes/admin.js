@@ -46,8 +46,13 @@ router.put('/settings/transmission', function (req, res, next) {
 				{
 					req.app.get('config').transmission = transmissionConfig;
 					req.app.set('transmission', newTransmission);
-					ft.jsonToFile(req.app.get('configFileName'), req.app.get('config'));
-					res.json({ success: true, message: "transmission infos were successfuly updated" });
+					// ft.jsonToFile(req.app.get('configFileName'), req.app.get('config'));
+					ft.jsonToFile(req.app.get('configFileName'), req.app.get('config'), function (err) {
+						if (err)
+							res.json({ success: false, message: "Could not update config file", err: err });
+						else
+							res.json({ success: true, message: "transmission infos were successfuly updated" });
+					});
 				}
 			});
 		}
@@ -92,8 +97,13 @@ router.put('/settings/transmission-settings', function (req, res, next) {
 							}
 						}
 						req.app.get('config')["transmission-settings"] = tSettings;
-						ft.jsonToFile(req.app.get('configFileName'), req.app.get('config'));
-						res.json({ success: true, message: "transmission settings succesfully updated", data: tSettings });
+						// ft.jsonToFile(req.app.get('configFileName'), req.app.get('config'));
+						ft.jsonToFile(req.app.get('configFileName'), req.app.get('config'), function (err) {
+							if (err)
+								res.json({ success: false, message: "Could not update config file", err: err });
+							else
+								res.json({ success: true, message: "transmission settings succesfully updated", data: tSettings });
+						});
 					}
 				});
 			}
@@ -108,8 +118,13 @@ router.put('/settings/torrents', function (req, res, next) {
 	if (req.user.role == 0)
 	{
 		req.app.get('config').torrents = ft.updateSettings(req.body, req.app.get('config').torrents);
-		ft.jsonToFile(req.app.get('configFileName'), req.app.get('config'));
-		res.json({ success: true, message: "torrents settings succesfully updated", data: req.app.get('config').torrents });
+		// ft.jsonToFile(req.app.get('configFileName'), req.app.get('config'));
+		ft.jsonToFile(req.app.get('configFileName'), req.app.get('config'), function (err) {
+			if (err)
+				res.json({ success: false, message: "Could not update config file", err: err });
+			else
+				res.json({ success: true, message: "torrents settings succesfully updated", data: req.app.get('config').torrents });
+		});
 	}
 	else
 		res.json({ success: false, message: "You don't have enought rights for this action" });
@@ -118,9 +133,17 @@ router.put('/settings/torrents', function (req, res, next) {
 router.put('/settings/files', function (req, res, next) {
 	if (req.user.role == 0)
 	{
+		// var ret = ft.updateSettings(req.body, req.app.get('config').files);
+		// req.app.get('config').files = ret;
 		req.app.get('config').files = ft.updateSettings(req.body, req.app.get('config').files);
-		ft.jsonToFile(req.app.get('configFileName'), req.app.get('config'));
-		res.json({ success: true, message: "files settings succesfully updated", data: req.app.get('config').files });
+		// console.log("RET > ", ret);
+		// console.log(req.app.get('config'));
+		ft.jsonToFile(req.app.get('configFileName'), req.app.get('config'), function (err) {
+			if (err)
+				res.json({ success: false, message: "Could not update config file", err: err });
+			else
+				res.json({ success: true, message: "files settings succesfully updated", data: req.app.get('config').files });
+		});
 	}
 	else
 		res.json({ success: false, message: "You don't have enought rights for this action" });
@@ -130,8 +153,12 @@ router.put('/settings/dashboard', function (req, res, next) {
 	if (req.user.role == 0)
 	{
 		req.app.get('config').dashboard = ft.updateSettings(req.body, req.app.get('config').dashboard);
-		ft.jsonToFile(req.app.get('configFileName'), req.app.get('config'));
-		res.json({ success: true, message: "dashboard settings succesfully updated", data: req.app.get('config').dashboard });
+		ft.jsonToFile(req.app.get('configFileName'), req.app.get('config'), function (err) {
+			if (err)
+				res.json({ success: false, message: "Could not update config file", err: err });
+			else
+				res.json({ success: true, message: "dashboard settings succesfully updated", data: req.app.get('config').dashboard });
+		});
 	}
 	else
 		res.json({ success: false, message: "You don't have enought rights for this action" });
@@ -141,20 +168,24 @@ router.put('/settings/users', function (req, res, next) {
 	if (req.user.role == 0)
 	{
 		req.app.get('config').users = ft.updateSettings(req.body, req.app.get('config').users);
-		ft.jsonToFile(req.app.get('configFileName'), req.app.get('config'));
-		res.json({ success: true, message: "users settings succesfully updated", data: req.app.get('config').users });
+		ft.jsonToFile(req.app.get('configFileName'), req.app.get('config'), function (err) {
+			if (err)
+				res.json({ success: false, message: "Could not update config file", err: err });
+			else
+				res.json({ success: true, message: "users settings succesfully updated", data: req.app.get('config').users });
+		});
 	}
 	else
 		res.json({ success: false, message: "You don't have enought rights for this action" });
 });
 
 router.get('/new-directory/:path', function (req, res, next) {
-	rimraf('/home/downloader/testing', function (err) {
-		if (err)
-			console.log('ERROR UNLINK TEST > ', err);
-		else
-			console.log('UNLINK SUCCESS !!! ');
-	});
+	// rimraf('/home/downloader/testing', function (err) {
+	// 	if (err)
+	// 		console.log('ERROR UNLINK TEST > ', err);
+	// 	else
+	// 		console.log('UNLINK SUCCESS !!! ');
+	// });
 	if (req.user.role == 0)
 	{
 		var path = atob(req.params.path);

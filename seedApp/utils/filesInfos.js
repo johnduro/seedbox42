@@ -67,7 +67,7 @@ var getFileRightsRecurs = function self (path, done) {
 						// self(filePath, function (err, fRights) {
 						self(filePath, function (err, fInfos) {
 							if (err)
-								done(err);
+								return done(err);
 							// rights.read = fRights.read ? rights.read : fRights.read;
 							// rights.write = fRights.write ? rights.write : fRights.write;
 							infos.rights.read = fInfos.rights.read ? infos.rights.read : fInfos.rights.read;
@@ -80,7 +80,7 @@ var getFileRightsRecurs = function self (path, done) {
 			}
 			else
 				// done(null, pRights);
-				done(null, infos);
+				return done(null, infos);
 		});
 	});
 };
