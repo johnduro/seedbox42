@@ -11,7 +11,7 @@
                 </div>
 
                 <div class="panel-body">
-                    <form ng-submit="addDirectory()">
+                    <form ng-submit="searchDirectory()">
                         <div class="form-group">
                             <label for="exampleInputEmail1">Path</label>
                             <input type="text" class="form-control" ng-model="sendDir" placeholder="Your path">
@@ -29,11 +29,11 @@
                 </div>
 
                 <div class="panel-body">
-                    <div ng-repeat="element in tree">
-                        <input type="checkbox"> {{element.path}}
+                    <div ng-repeat="(index, element) in tree">
+                        <input type="checkbox" ng-model="model" ng-change="selectItem(index)">{{index}} {{element.path}}
                     </div>
 
-                    <button class="btn btn-primary">Ajouter les elements selectionnés</button>
+                    <button class="btn btn-primary" ng-click="addDirectory()">Ajouter les elements selectionnés</button>
                 </div>
             </div>
         </div>
