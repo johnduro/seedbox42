@@ -27,7 +27,7 @@ app.config(function ($stateProvider, $urlRouterProvider) {
         access: ["0", "1"]
     })
     .state('seedbox.files', {
-        url: "/files",
+        url: "/files/:file",
         templateUrl: "app/views/files.html",
         controller: "filesCtrl",
         access: ["0", "1"]

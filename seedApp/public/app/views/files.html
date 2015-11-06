@@ -7,6 +7,13 @@
         <div class="col-md-12">
             <div class="panel panel-white">
                 <div class="panel-body">
+                    <input type="text" placeholder="Search" ng-model="search"> <button type="button" class="btn btn-primary">Search <i class="fa fa-search"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="panel panel-white">
+                <div class="panel-body">
                     <button type="button" class="btn btn-info" ng-click="backFolder(treeSelected, []);"><i class="fa fa-chevron-left fa-2"></i></button> {{pathActual}}
                 </div>
             </div>
@@ -35,14 +42,15 @@
                 <tr>
                     <th class="">Type</th>
                     <th class="col-md-10">Name</th>
-                    <th class="">Nombre de commentaires</th>
-                    <th class="">Nombre de Telechargements</th>
+                    <th class="col-md-2">Nb commentaires <i class="fa fa-sort"></i></th>
+                    <th class="col-md-2">Nb telechargements <i class="fa fa-sort"></i></th>
                     <th class="">Lock</th>
-                    <th class="">Size</th>
+                    <th class="">Size  <i class="fa fa-sort"></i></th>
+                    <th class=""></th>
                     <th class=""></th>
                 </tr>
             </thead>
-            <tbody ng-repeat="(key, item) in elementsActual">
+            <tbody ng-repeat="(key, item) in elementsActual | filter : search">
                 <tr>
                     <td>
                         <div ng-switch="item.type">
@@ -52,7 +60,7 @@
                             <div ng-switch-default ><i class="fa fa-question-circle fa-4"></i> {{item.type}}</div>
                         </div>
                     </td>
-                    <td ng-dblclick="openFolder(item._id)" ng-clickc="showInfo(item)">{{item.name}}</td>
+                    <td ng-dblclick="openFolder(item._id)">{{item.name}}</td>
                     <td>{{item.commentsNbr}}</td>
                     <td>{{item.downloads}}</td>
                     <td>
@@ -60,6 +68,7 @@
                         <i ng-if="item.isLockedByUser == 0" class="fa fa-unlock-alt" ng-click="lockFile(item)"></i>
                     </td>
                     <td>{{item.sizeConvert}}</td>
+                    <td ng-click="showInfo(item)"><i class="fa fa-info-circle"></i></td>
                     <td> <i ng-click="download(item._id, item.name)" class="fa fa-download"></i> </td>
                 </tr>
             </tbody>
