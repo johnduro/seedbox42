@@ -64,19 +64,24 @@ module.exports = {
 	},
 
 	updateSettings: function (newSettings, oldSettings) {
+		console.log("BEFORE > ", oldSettings);
 		for (var key in newSettings)
 		{
 			if (oldSettings.hasOwnProperty(key) && oldSettings[key] != newSettings[key])
 				oldSettings[key] = newSettings[key];
 		}
+		console.log("AFTER > ", oldSettings);
 		return oldSettings;
 	},
 
-	jsonToFile: function (file, json) {
+	jsonToFile: function (file, json, cb) {
 		var jsonFormat = JSON.stringify(json, null, 4);
 		fs.writeFile(file, jsonFormat, function (err) {
 			if (err)
-				console.log("ERR WRITE FILE > ", err); //mettre un callback qui remonte l erreure
+				cb(err);
+			else
+				cb(null);
+				// console.log("ERR WRITE FILE > ", err); //mettre un callback qui remonte l erreure
 		});
 	}
 };
