@@ -43,8 +43,6 @@ var getFileRightsRecurs = function self (path, done) {
 		if (fStat == null)
 			return done('File does not exist');
 		getFileRights(path, function (pRights) {
-			// rights.read = pRights.read ? rights.read : pRights.read; //refaire ternaire inutile
-			// rights.write = pRights.write ? rights.write : pRights.write; //refaire ternaire inutile
 			infos.rights.read = pRights.read;
 			infos.rights.write = pRights.write;
 			infos.fileType = mime.lookup(path);
@@ -60,14 +58,10 @@ var getFileRightsRecurs = function self (path, done) {
 						var file = files[i++];
 						if (!file)
 							return done(null, infos);
-							// return done(null, rights);
 						var filePath = path + '/' + file;
-						// self(filePath, function (err, fRights) {
 						self(filePath, function (err, fInfos) {
 							if (err)
 								return done(err);
-							// rights.read = fRights.read ? rights.read : fRights.read;
-							// rights.write = fRights.write ? rights.write : fRights.write;
 							infos.rights.read = fInfos.rights.read ? infos.rights.read : fInfos.rights.read;
 							infos.rights.write = fInfos.rights.write ? infos.rights.write : fInfos.rights.write;
 							infos.size += fInfos.size;
@@ -77,7 +71,6 @@ var getFileRightsRecurs = function self (path, done) {
 				});
 			}
 			else
-				// done(null, pRights);
 				return done(null, infos);
 		});
 	});
