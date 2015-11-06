@@ -180,12 +180,6 @@ router.put('/settings/users', function (req, res, next) {
 });
 
 router.get('/new-directory/:path', function (req, res, next) {
-	// rimraf('/home/downloader/testing', function (err) {
-	// 	if (err)
-	// 		console.log('ERROR UNLINK TEST > ', err);
-	// 	else
-	// 		console.log('UNLINK SUCCESS !!! ');
-	// });
 	if (req.user.role == 0)
 	{
 		var path = atob(req.params.path);
@@ -213,6 +207,8 @@ router.put('/new-directory', function (req, res, next) {
 			else
 				res.json({ success: true, message: "File(s) successfully added", data: result });
 		}
+		// if (file[0] == '.')
+		// 	loop();
 		var fileToInsert = {
 			name: pathS.basename(file.path),
 			path: file.path,

@@ -37,13 +37,11 @@ var getFileRightsRecurs = function self (path, done) {
 		size: 0,
 		path: path
 	};
-	// var rights = {
-	// 	read: true,
-	// 	write: true
-	// };
 	fs.stat(path, function (err, fStat) {
 		if (err)
 			return done(err);
+		if (fStat == null)
+			return done('File does not exist');
 		getFileRights(path, function (pRights) {
 			// rights.read = pRights.read ? rights.read : pRights.read; //refaire ternaire inutile
 			// rights.write = pRights.write ? rights.write : pRights.write; //refaire ternaire inutile
@@ -167,53 +165,40 @@ module.exports = {
 
 
 	getDirInfos: function (path, done) {
-		// var dirInfos = {};
 		var result = [];
-		// console.log('Current uid: ' + process.getuid());
-		// console.log('effective > ', process.geteuid());
-		// console.log('Current gid: ' + process.getgid());
 		fs.stat(path, function (err, fStat) {
 			if (err)
-				done(err);
+				return done(err);
+			if (fStat == null)
+				return done("File does not exist");
 			if (fStat.isDirectory())
 			{
-				console.log('IS DIR > ', fStat);
 				fs.readdir(path, function (err, files) {
 					if (err)
-						done(err);
+						return done(err);
 					var i = 0;
 					(function next () {
 						var file = files[i++];
 						if (!file)
 							return done(null, result);
-						// getFileRightsRecurs(path + '/' + file, function (err, rights) {
+						if (file.length > 0 && file[0] == '.')
+							return next();
 						getFileRightsRecurs(path + '/' + file, function (err, infos) {
 							if (err)
-								done(err);
-
-								// console.log(err);
-							// console.log('FILE > ', file);
-							// console.log('RIGHTS > ', rights);
+								return done(err);
 							result.push(infos);
 							next();
 						});
 					})();
-					console.log("DIR INFOS > ", files);
 				});
-				// done(null, fStat);
 			}
 			else
 			{
-				// getFileRightsRecurs(path, function (err, rights) {
 				getFileRightsRecurs(path, function (err, infos) {
 					if (err)
-						done(err);
-						// console.log(err);
-					// console.log('IS NOT DIR > ', fStat);
-					done(null, infos);
-					// done(null, [{ size: fStat.size, rights: rights, path: path }]);
+						return done(err);
+					return done(null, [infos]);
 				});
-				// done(null, fStat);
 			}
 		});
 	}
