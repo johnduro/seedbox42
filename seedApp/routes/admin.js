@@ -204,7 +204,7 @@ router.put('/new-directory', function (req, res, next) {
 	var i = 0;
 	var error = false;
 	var result = [];
-	(function next () {
+	(function loop () {
 		var file = req.body[i++];
 		if (!file)
 		{
@@ -231,7 +231,7 @@ router.put('/new-directory', function (req, res, next) {
 			}
 			else
 				result.push(newFile);
-			next();
+			loop();
 		});
 	})();
 	// req.body.map(function (file) {
