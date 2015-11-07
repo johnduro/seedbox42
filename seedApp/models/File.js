@@ -140,6 +140,24 @@ FileSchema.statics = {
 			}
 		});
 	}
+
+	// removeExistingFiles: function (files, cb) {
+	// 	var i = 0;
+	// 	var result = [];
+	// 	(function next () {
+	// 		var addFile = files[i++];
+	// 		if (!addFile)
+	// 			cb(null, result);
+	// 		console.log('user', User);
+	// 		// console.log('file' ,File);
+	// 		this.findOne({ path: addFile.path }, function (err, file) {
+	// 			if (err)
+	// 				cb(err);
+	// 			console.log(file);
+	// 			next();
+	// 		});
+	// 	})();
+	// }
 };
 
 /**

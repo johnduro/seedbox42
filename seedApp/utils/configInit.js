@@ -46,6 +46,7 @@ var getMongoConnex = function (mongoConfig) {
 		else
 			console.log('database: connection successful');
 	});
+	return connex;
 };
 
 var checkTransmissionSettings = function (t, tSettings) {
