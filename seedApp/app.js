@@ -14,24 +14,16 @@ var socketIO = require('socket.io');
 // EXTRAS
 // ====================================
 var fs = require('fs');
+// var join = require('path').join;
 // var mongoose = require('mongoose');//dans init
+// fs.readdirSync(join(__dirname, 'models')).forEach(function (file) {
+// 	if (~file.indexOf('.js')) require(join(__dirname, 'models', file));
+// });
 var jwt = require('jsonwebtoken');
 var multer = require('multer');
 var authMW = require('./utils/authMiddleware');
 var TransmissionNode = require('./utils/transmissionNode');
 var configInit = require('./utils/configInit');
-// ************************************
-
-// ====================================
-// ROUTES REQUIRE
-// ====================================
-var users = require('./routes/users');
-var auth = require('./routes/authenticate');
-var debugSetup = require('./routes/ds');
-var torrent = require('./routes/torrent');
-var file = require('./routes/file');
-var dashboard = require('./routes/dashboard');
-var admin = require('./routes/admin');
 // ************************************
 
 // ====================================
@@ -51,7 +43,23 @@ app.set('secret', configInfos.config.secret);
 app.set('config', configInfos.config);
 app.set('connexionDB', configInfos.connexionDB);
 app.set('transmission', configInfos.transmission);
+require('./models/File');
+require('./models/User');
+require('./models/Wall');
 // ************************************
+
+// ====================================
+// ROUTES REQUIRE
+// ====================================
+var users = require('./routes/users');
+var auth = require('./routes/authenticate');
+var debugSetup = require('./routes/ds');
+var torrent = require('./routes/torrent');
+var file = require('./routes/file');
+var dashboard = require('./routes/dashboard');
+var admin = require('./routes/admin');
+// ************************************
+
 
 // ====================================
 // DATABASE CONNEXION

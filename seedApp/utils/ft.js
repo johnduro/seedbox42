@@ -1,5 +1,10 @@
+// var File = require('../models/File.js');
+var mongoose = require('mongoose');
+// var File = mongoose.model('File');
 var User = require('../models/User.js');
 var fs = require('fs');
+
+// console.log('FILE > ', File);
 
 module.exports = {
 	indexOfByIdKey: function (arr, key, value) {
@@ -81,7 +86,23 @@ module.exports = {
 				cb(err);
 			else
 				cb(null);
-				// console.log("ERR WRITE FILE > ", err); //mettre un callback qui remonte l erreure
 		});
+	},
+
+	checkExistentFiles: function (files, done) {
+		var i = 0;
+		var result = [];
+		(function next () {
+			var addFile = files[i++];
+			if (!addFile)
+				return done(null, result);
+			mongoose.model('File').findOne({ path: addFile.path }, function (err, file) {
+				if (err)
+					return done(err);
+				if (file == null)
+					result.push(addFile);
+				next();
+			});
+		})();
 	}
 };

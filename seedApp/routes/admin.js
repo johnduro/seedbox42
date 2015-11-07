@@ -187,7 +187,14 @@ router.get('/new-directory/:path', function (req, res, next) {
 			if (err)
 				res.json({ success: false, message: err });
 			else
-				res.json({ success: true, data: data });
+			{
+				ft.checkExistentFiles(data, function (err, result) {
+					if (err)
+						res.json({ success: false, message: err });
+					else
+						res.json({ success: true, data: result });
+				});
+			}
 		});
 	}
 	else
