@@ -31,8 +31,11 @@ var configInit = require('./utils/configInit');
 // ====================================
 var app = express();
 var configFileName = './config.json';
+var configDefaultName = './files/default-test.json';
 // var configFile = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
 var configFile = JSON.parse(fs.readFileSync(configFileName, 'utf8'));
+var configDefault = JSON.parse(fs.readFileSync(configDefaultName, 'utf8'));
+app.set('defaultConfig', configDefault);
 var configInfos = configInit(configFile);
 // var config = configInit(configFile);
 // app.set('secret', config.secret);

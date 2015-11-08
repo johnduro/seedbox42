@@ -60,10 +60,10 @@
         "settings-access-enabled": true
     },
     "files": {
-        "show-creator": true,
-        "lock-enabled": true,
-        "comments-enabled": true,
-        "grades-enabled": true,
+        "show-creator": "all",
+        "lock-enabled": "all",
+        "comments-enabled": "all",
+        "grades-enabled": "all",
         "auto-remove-lock-enabled": false,
         "auto-remove-lock": 300,
         "auto-delete-enabled": false,

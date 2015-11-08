@@ -23,6 +23,10 @@ router.get('/settings', function (req, res, next) {
 	res.json({ success: true, data: ret });
 });
 
+router.get('/settings-default', function (req, res, next) {
+	res.json({ success: true, data: req.app.get('defaultConfig') });
+});
+
 router.put('/settings/transmission', function (req, res, next) {
 	if (req.user.role == 0 && Object.keys(req.body).length)
 	{

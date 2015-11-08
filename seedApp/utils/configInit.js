@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var TransmissionNode = require('../utils/transmissionNode');
 var File = require('../models/File.js');
 var WallMessage = require('../models/Wall.js');
+var fs = require('fs');
 
 
 var configFileError = function (message) {
@@ -34,6 +35,37 @@ var checkFileValidity = function (cf) {
 		else
 			configFileError("config file has no property '" + categorie + "'");
 	});
+};
+
+var checkConfigValidity = function self (config, defaultConfig) {
+	for (var key in defaultConfig)
+	{
+		if (typeof defaultConfig[key] == 'object')
+		{
+			if (defaultConfig[key].hasOwnProperty('type') && config.hasOwnProperty(key))
+			{
+				if (defaultConfig[key].type != typeof config[key])
+					configFileError("Type of " + key + " is wrong, should be " + defaultConfig[key].type);
+				else
+				{
+					if (defaultConfig[key].switch == true)
+					{
+						if (defaultConfig[key].values.indexOf(config[key]) == -1)
+							configFileError("Key " + key + " is a switch and has the wrong value"); //ameliorer message erreur
+					}
+					if (defaultConfig[key].type == "number" && defaultConfig[key].range == true)
+					{
+						if (config[key] < defaultConfig[key].rangeValues.min || config[key] > defaultConfig[key].rangeValues.max)
+							configFileError("Key " + key + " is not in range"); //ameliorer message erreur
+					}
+				}
+			}
+			else if (config.hasOwnProperty(key) && typeof config[key] == 'object')
+				self(config[key], defaultConfig[key]);
+			else
+				configFileError("Config file has no property: " + key);
+		}
+	}
 };
 
 var getMongoConnex = function (mongoConfig) {
@@ -111,6 +143,8 @@ var checkDashboardSettings = function (dSettings) {
 };
 
 var configInit = function (configFile) {
+	var defaultTest = JSON.parse(fs.readFileSync("./files/default-test.json", 'utf8'));
+	checkConfigValidity(configFile, defaultTest);
 	checkFileValidity(configFile);
 	var connexionDB = getMongoConnex(configFile.mongodb); //OK??
 	var transmission = new TransmissionNode(configFile.transmission);
