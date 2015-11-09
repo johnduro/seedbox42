@@ -22,33 +22,23 @@ var fs = require('fs');
 var jwt = require('jsonwebtoken');
 var multer = require('multer');
 var authMW = require('./utils/authMiddleware');
-var TransmissionNode = require('./utils/transmissionNode');
-var configInit = require('./utils/configInit');
+// var TransmissionNode = require('./utils/transmissionNode');
+// var configInit = require('./utils/configInit');
+var configInit = require('./config/init');
 // ************************************
 
 // ====================================
 // CONFIG
 // ====================================
 var app = express();
-var configFileName = './config.json';
-var configDefaultName = './files/default-test.json';
-// var configFile = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
-var configFile = JSON.parse(fs.readFileSync(configFileName, 'utf8'));
-var configDefault = JSON.parse(fs.readFileSync(configDefaultName, 'utf8'));
-app.set('defaultConfig', configDefault);
-var configInfos = configInit(configFile);
-// var config = configInit(configFile);
-// app.set('secret', config.secret);
-// app.set('config', config);
-// app.set('secret', configInfos.config.users.secret);
-app.set('configFileName', configFileName);
+var configInfos = configInit();
+app.set('configFileName', configInfos.configFileName);
+app.set('defaultConfig', configInfos.configDefault);
 app.set('secret', configInfos.config.secret);
 app.set('config', configInfos.config);
 app.set('connexionDB', configInfos.connexionDB);
 app.set('transmission', configInfos.transmission);
-require('./models/File');
-require('./models/User');
-require('./models/Wall');
+app.ttConfig = configInfos; //IMPLEMENTER DANS TOUTE L APP !!!!!!!!!!!
 // ************************************
 
 // ====================================
@@ -90,7 +80,8 @@ var io = socketIO();
 app.io = io;
 // var sockets = require('./utils/sockets')(io, transmission, app.get('secret'));
 // var sockets = require('./utils/sockets')(io, transmission, app);
-var sockets = require('./utils/sockets')(io, configInfos.transmission, app);
+var sockets = require('./sockets/sockets')(io, configInfos.transmission, app);
+// var sockets = require('./utils/sockets')(io, configInfos.transmission, app);
 //************************************
 
 // view engine setup

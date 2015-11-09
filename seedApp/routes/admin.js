@@ -1,7 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var fs = require('fs');
-var TransmissionNode = require('../utils/transmissionNode');
+// var TransmissionNode = require('../utils/transmissionNode');
+var TransmissionNode = require('../transmission/transmissionNode');
 var ft = require('../utils/ft');
 var atob = require('atob');
 var filesInfos = require('../utils/filesInfos');
