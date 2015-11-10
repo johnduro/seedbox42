@@ -3,32 +3,13 @@ var multer = require('multer');
 var router = express.Router();
 var io = require('socket.io');
 var File = require("../models/File.js");
-
-// ====================================
-// TORRENT UPLOADS
-// ====================================
-var torrentStorage = multer.diskStorage({
-	destination: function (req, file, cb) {
-		cb(null, './files/torrents');
-	},
-	filename: function (req, file, cb) {
-		cb(null, file.originalname);
-	}
-});
-
-var torrentUpldHandler = multer({
-	storage: torrentStorage,
-	limits: {
-		files: 10,
-		fileSize: 3 * 1000 * 1000 //3 MB
-	}});
-// ************************************
+var upload = require("../middlewares/upload");
 
 
 // ====================================
 // CREATE FILE
 // ====================================
-var createFile = function (torrentAdded, userId) {
+var createFile = function (torrentAdded, userId) { //MODIF : DEPLACER DANS LE FICHIER FILE !
 	File.create({ name: torrentAdded['name'], creator: userId, hashString: torrentAdded['hashString']}, function (err, file) {
 		if (err)
 			throw err;
@@ -48,7 +29,7 @@ router.post('/', function (req, res, next) {
 });
 
 router.post('/add-url', function (req, res, next) {
-	req.app.get('transmission').torrentAdd({filename: req.body.url}, function (err, resp) {
+	req.app.locals.transmission.torrentAdd({filename: req.body.url}, function (err, resp) {
 		if (err)
 			res.json({ success: false, message: 'torrent not added, wrong url' });
 		else
@@ -66,13 +47,13 @@ router.post('/add-url', function (req, res, next) {
 	});
 });
 
-router.post('/add-torrents', torrentUpldHandler.array('torrent', 10), function(req, res, next) {
+router.post('/add-torrents', upload.torrent.array('torrent', 10), function(req, res, next) {
 	// array de torrent dans req.files
 	var resAll = [];
 	var counter = 0;
 	req.files.forEach(function (file) {
 		counter++;
-		req.app.get('transmission').torrentAdd({ filename: process.cwd() + '/' + file.path }, function (err, resp) {
+		req.app.locals.transmission.torrentAdd({ filename: process.cwd() + '/' + file.path }, function (err, resp) {
 			counter--;
 			if (err)
 				resAll.push({ torrent: file.filename, success: false });
@@ -96,7 +77,8 @@ router.post('/add-torrents', torrentUpldHandler.array('torrent', 10), function(r
 });
 
 router.get('/refresh/:id', function (req, res, next) {
-	req.app.get('transmission').torrentGet(["id", "addedDate", "name", "totalSize",  "error", "errorString", "eta", "isFinished", "isStalled", "leftUntilDone", "metadataPercentComplete", "peersConnected", "peersGettingFromUs", "peersSendingToUs", "percentDone", "queuePosition", "rateDownload", "rateUpload", "recheckProgress", "seedRatioMode", "seedRatioLimit", "sizeWhenDone", "status", "trackers", "downloadDir", "uploadedEver", "uploadRatio", "Webseedssendingtous"], parseInt(req.params.id, 10), function (err, resp) {
+	var transmission = req.app.locals.transmission;
+	transmission.torrentGet(transmission.requestFormat.refreshAll, parseInt(req.params.id, 10), function (err, resp) {
 		if (err)
 			throw err;
 		else
@@ -109,7 +91,7 @@ router.delete('/:id', function (req, res, next) {
 	var id = parseInt(req.params.id, 10);
 	if (removeLocalData)
 	{
-		req.app.get('transmission').torrentGet(['hashString'], id, function (err, resp) {
+		req.app.locals.transmission.torrentGet(['hashString'], id, function (err, resp) {
 			if (err)
 				throw err;
 			else
@@ -124,7 +106,7 @@ router.delete('/:id', function (req, res, next) {
 			}
 		});
 	}
-	req.app.get('transmission').torrentRemove(id, removeLocalData, function (err, resp) {
+	req.app.locals.transmission.torrentRemove(id, removeLocalData, function (err, resp) {
 		if (err)
 			res.json({ success: false, message: "Could not remove torrent" });
 		else
@@ -138,7 +120,7 @@ router.post('/move/:direction/:id?', function (req, res, next) {
 		ids = {};
 	else
 		ids = parseInt(req.params.id, 10);
-	req.app.get('transmission').queueMovementRequest('queue-move-' + req.params.direction, ids, function (err, resp) {
+	req.app.locals.transmission.queueMovementRequest('queue-move-' + req.params.direction, ids, function (err, resp) {
 		if (err)
 			res.json({ success: false, message: "Could not move torrent " + req.params.direction });
 		else
@@ -152,7 +134,7 @@ router.post('/action/:action/:id?', function (req, res, next) {
 		ids = {};
 	else
 		ids = parseInt(req.params.id, 10);
-	req.app.get('transmission').torrentActionRequest('torrent-' + req.params.action, ids, function (err, resp) {
+	req.app.locals.transmission.torrentActionRequest('torrent-' + req.params.action, ids, function (err, resp) {
 		if (err)
 			res.json({ success: false, message: "Action: " + req.params.action + " failed" });
 		else
@@ -161,7 +143,7 @@ router.post('/action/:action/:id?', function (req, res, next) {
 });
 
 router.get('/session-stats', function (req, res, next) {
-	req.app.get('transmission').sessionStats(function (err, resp) {
+	req.app.locals.transmission.sessionStats(function (err, resp) {
 		if (err)
 			res.json({ success: false, message: "Could not get session stats" });
 		else
@@ -170,7 +152,7 @@ router.get('/session-stats', function (req, res, next) {
 });
 
 router.get('/session-get', function (req, res, next) {
-	req.app.get('transmission').sessionGet(function (err, resp) {
+	req.app.locals.transmission.sessionGet(function (err, resp) {
 		if (err)
 			res.json({ success: false, message: "Could not get session detailled infos" });
 		else
@@ -180,7 +162,7 @@ router.get('/session-get', function (req, res, next) {
 
 //http://john.bitsurge.net/public/biglist.p2p.gz
 router.post('/blocklist-update', function (req, res, next) {
-	req.app.get('transmission').blocklistUpdate(function (err, resp) {
+	req.app.locals.transmission.blocklistUpdate(function (err, resp) {
 		if (err)
 			res.json({ success: false, message: "Could not update blocklist"} );
 		else
@@ -189,7 +171,7 @@ router.post('/blocklist-update', function (req, res, next) {
 });
 
 router.get('/port-test', function (req, res, next) {
-	req.app.get('transmission').portTest(function (err, resp) {
+	req.app.locals.transmission.portTest(function (err, resp) {
 		if (err)
 			res.json({ success: false, message: "Could not check port" } );
 		else
@@ -200,7 +182,7 @@ router.get('/port-test', function (req, res, next) {
 router.post('/session-shutdown', function (req, res, next) {
 	if (req.user.role === 0)
 	{
-		req.app.get('transmission').sessionClose(function (err, resp) {
+		req.app.locals.transmission.sessionClose(function (err, resp) {
 			if (err)
 				res.json({ success: false, message: "Could not close session" });
 			else
@@ -212,8 +194,8 @@ router.post('/session-shutdown', function (req, res, next) {
 });
 
 router.get('/get-all-torrents', function (req, res, next) {
-	var fields = ['uploadRatio', 'id', 'addedDate', 'isFinished', 'leftUntilDone', 'name', 'rateDownload', 'rateUpload', 'queuePosition', 'downloadDir', 'eta', 'peerConnected', 'percentDone', 'startDate', 'status', 'totalSize', 'torrentFile'];
-	req.app.get('transmission').torrentGet(fields, {}, function (err, resp) {
+	var fields = req.app.locals.transmission.requestFormat.allTorrents;
+	req.app.locals.transmission.torrentGet(fields, {}, function (err, resp) {
 		if (err)
 			res.json({ success: false, message: "Could not get all torrents infos" });
 		else

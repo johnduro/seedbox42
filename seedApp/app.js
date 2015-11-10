@@ -21,7 +21,7 @@ var fs = require('fs');
 // });
 var jwt = require('jsonwebtoken');
 var multer = require('multer');
-var authMW = require('./utils/authMiddleware');
+var auth = require('./middlewares/auth.js');
 // var TransmissionNode = require('./utils/transmissionNode');
 // var configInit = require('./utils/configInit');
 var configInit = require('./config/init');
@@ -32,20 +32,25 @@ var configInit = require('./config/init');
 // ====================================
 var app = express();
 var configInfos = configInit();
-app.set('configFileName', configInfos.configFileName);
-app.set('defaultConfig', configInfos.configDefault);
-app.set('secret', configInfos.config.secret);
+// app.set('configFileName', configInfos.configFileName);
+// app.set('defaultConfig', configInfos.configDefault);
+// app.set('secret', configInfos.config.secret);
 app.set('config', configInfos.config);
-app.set('connexionDB', configInfos.connexionDB);
-app.set('transmission', configInfos.transmission);
-app.ttConfig = configInfos; //IMPLEMENTER DANS TOUTE L APP !!!!!!!!!!!
+// app.set('connexionDB', configInfos.connexionDb);
+// app.set('transmission', configInfos.transmission);
+app.locals.ttConfig = configInfos.config; //IMPLEMENTER DANS TOUTE L APP !!!!!!!!!!!
+app.locals.ttConfigDefault = configInfos.configDefault;
+app.locals.ttConfigFileName = configInfos.configFileName;
+app.locals.ttConfigDefaultName = configInfos.configDefaultName;
+app.locals.connexionDb = configInfos.connexionDb;
+app.locals.transmission = configInfos.transmission;
 // ************************************
 
 // ====================================
 // ROUTES REQUIRE
 // ====================================
 var users = require('./routes/users');
-var auth = require('./routes/authenticate');
+var authenticate = require('./routes/authenticate');
 var debugSetup = require('./routes/ds');
 var torrent = require('./routes/torrent');
 var file = require('./routes/file');
@@ -103,14 +108,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // ----- STANDARDS -----
 app.use('/debug', debugSetup);
-app.use('/authenticate', auth);
+app.use('/authenticate', authenticate);
 
 // ----- CONNECTED -----
-app.use('/dashboard', authMW, dashboard);
-app.use('/users', authMW, users);
-app.use('/torrent', authMW, torrent);
-app.use('/file', authMW, file);
-app.use('/admin', authMW, admin);
+app.use('/dashboard', auth, dashboard);
+app.use('/users', auth, users);
+app.use('/torrent', auth, torrent);
+app.use('/file', auth, file);
+app.use('/admin', auth, admin);
 // ************************************
 
 // catch 404 and forward to error handler
