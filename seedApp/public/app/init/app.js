@@ -22,11 +22,20 @@ app.run(function ($rootScope, $location, $http, $state, $location) {
                 value.type = res[0];
                 value.sizeConvert = $rootScope.tools.convertSize(value.size);
             });
+        },
+        backPage: function(){
+            if ($rootScope.states.from.name != "")
+                $state.go($rootScope.states.from.name);
         }
     };
 
     // gestion des droits d'access aux url
     $rootScope.$on("$stateChangeStart", function (event, toState, toParams, fromState, fromParams) {
+
+        $rootScope.states = {
+            to: toState,
+            from: fromState
+        };
 
         if ("access" in toState){
             for (var key in toState.access){

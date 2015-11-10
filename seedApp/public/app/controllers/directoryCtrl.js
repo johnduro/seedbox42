@@ -1,4 +1,4 @@
-app.controller("directoryCtrl", function($rootScope, $scope, RequestHandler){
+app.controller("directoryCtrl", function($rootScope, $scope, RequestHandler, Tools){
 
     console.log("directoryCtrl");
 
@@ -31,7 +31,12 @@ app.controller("directoryCtrl", function($rootScope, $scope, RequestHandler){
             }
             RequestHandler.put(api + "admin/new-directory", send)
                 .then(function(result){
-                    console.log(result);
+                    console.log(result.data);
+                    if (result.data.success)
+                        console.log(result);
+                    else
+                        console.log("ss");
+                    Tools.popMessage("Erreur", result.data.message);
                 });
         }
     }
