@@ -30,7 +30,7 @@
 
                 <div class="panel-body">
                     <div ng-repeat="(index, element) in tree">
-                        <input type="checkbox" ng-model="model" ng-change="selectItem(index)">{{index}} {{element.path}}
+                        <input type="checkbox" ng-model="model" ng-change="selectItem(index)">{{index}} {{element.path}} {{element.rights}} {{element.size}} {{element.fileType}}
                     </div>
 
                     <button class="btn btn-primary" ng-click="addDirectory()">Ajouter les elements selectionnés</button>
