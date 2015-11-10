@@ -1,0 +1,88 @@
+<div class="page-title">
+    <h3><i ng-click="tools.backPage()" class="fa fa-chevron-left fa-2"></i> {{torrent.name}}</h3>
+</div>
+
+<div id="main-wrapper">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-white">
+                <div class="panel-body">
+                    <div ng-if="torrent">
+                        <div>
+                            Lock file : <i ng-if="torrent.isLockedByUser == 1" class="fa fa-lock" ng-click="unlockFile(torrent)"></i>
+                                        <i ng-if="torrent.isLockedByUser == 0" class="fa fa-unlock-alt" ng-click="lockFile(torrent)"></i>
+                        </div>
+                        <div>
+                            Note <div class="star-rating" star-rating rating-value="5" data-max="5"></div>
+                        </div>
+                        <div>
+                            Taille du dossier: {{torrent.sizeConvert}}
+                        </div>
+                        <div>
+                            Nombre de telechargement: {{torrent.downloads}}
+                        </div>
+                        <div>
+                            Telecharger le dossier: <i ng-clicks="download(item._id, item.name)" class="fa fa-download"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="panel panel-white">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Les commentaires</h3>
+                </div>
+                <div class="panel-body">
+                    <div ng-if="torrent">
+                        <div ng-repeat="comment in torrent.comments">
+                            {{comment.user.login}} :{{comment.text}}
+                        </div>
+
+                        <textarea ng-model="$parent.newComment"> </textarea>
+                        <button ng-click="addComment()">Ajouter</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" ng-if="treeActual">
+        <div class="col-md-12">
+            <div class="panel panel-white">
+                <div class="panel-body">
+                    <button type="button" class="btn btn-info" ng-click="backFolder(treeBase, []);"><i class="fa fa-chevron-left fa-2"></i> </button> / {{pathActualString}}
+                </div>
+            </div>
+        </div>
+
+        <table class="display table" style="width: 100%; cellspacing: 0;">
+            <thead>
+                <tr>
+                    <th class="">Type</th>
+                    <th class="col-md-14">Name</th>
+                    <th class="col-md-1">Size</th>
+                    <th class=""></th>
+                </tr>
+            </thead>
+            <tbody ng-repeat="item in treeActual.fileList">
+                <tr>
+                    <td>
+                        <div ng-switch="item.type">
+                            <div ng-switch-when="folder" ><i class="fa fa-folder fa-4"></i> {{item.type}}</div>
+                            <div ng-switch-when="audio" ><i class="fa fa-file-audio-o fa-4"></i> {{item.type}}</div>
+                            <div ng-switch-when="video" ><i class="fa fa-file-video-o fa-4"></i> {{item.type}}</div>
+                            <div ng-switch-when="image" ><i class="fa fa-file-image-o fa-4"></i> {{item.type}}</div>
+                            <div ng-switch-default ><i class="fa fa-question-circle fa-4"></i> {{item.type}}</div>
+                        </div>
+                    </td>
+                    <td ng-dblclick="openFolder(item)">{{item.name}}</td>
+                    <td>{{item.sizeConvert}}</td>
+                    <td> <i ng-click="download(treeSelected.id, item.name)" class="fa fa-download" ></i> </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>

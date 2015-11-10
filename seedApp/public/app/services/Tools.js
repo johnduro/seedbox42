@@ -129,6 +129,19 @@ app.service('Tools', function ($rootScope, RequestHandler, $timeout) {
         }
     };
 
+    var popMessage = function (title, message){
+        setTimeout(function() {
+			toastr.options = {
+				closeButton: true,
+				progressBar: true,
+				showMethod: 'fadeIn',
+				hideMethod: 'fadeOut',
+				timeOut: 10000
+			};
+			toastr.success(message, title);
+		}, 1800);
+    };
+
 
     return {
         phpjs: phpjs,
@@ -140,5 +153,6 @@ app.service('Tools', function ($rootScope, RequestHandler, $timeout) {
         getItem: getItem,
         setItemInRootScope: setItemInRootScope,
         loading: loading,
+        popMessage: popMessage
     };
 });

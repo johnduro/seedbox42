@@ -1,4 +1,4 @@
-app.controller('filesCtrl', function ($scope, $rootScope, $state, $stateParams, RequestHandler, socket, $timeout, $http, $cookies, Lightbox) {
+app.controller('filesCtrl', function ($scope, $rootScope, $state, $location, $stateParams, RequestHandler, socket, $timeout, $http, $cookies, Lightbox) {
 
 	console.log("filesCtrl");
 
@@ -84,88 +84,9 @@ app.controller('filesCtrl', function ($scope, $rootScope, $state, $stateParams, 
 		}
 	};
 
-	if ($stateParams.file){
-		console.log("okok");
-		RequestHandler.get(api + "file/show/" + $stateParams.file)
-			.then(function(result){
-				if (result.data.data.isDirectory){
-					console.log(result);
-					$scope.itemSelected = result.data.file;
-					$scope.treeSelected = result.data.data;
-					$scope.treeSelected.id = $stateParams.file;
-					$scope.elementsActual = result.data.data;
-					addType($scope.elementsActual.fileList);
-					pathActualArray.push(result.data.data.name);
-					generatePath(pathActualArray);
-				}
-			});
-	}
-
-	$scope.openFolder = function(value){
-
-		console.log(value);
-
-		if ($scope.treeSelected == ''){
-			$state.go('seedbox.files', {file: value});
-			/*RequestHandler.get(api + "file/show/" + value)
-				.then(function(result){
-					if (result.data.data.isDirectory){
-						console.log(result);
-						$scope.itemSelected = result.data.file;
-						$scope.treeSelected = result.data.data;
-						$scope.treeSelected.id = value;
-						$scope.elementsActual = result.data.data;
-						addType($scope.elementsActual.fileList);
-						pathActualArray.push(result.data.data.name);
-						generatePath(pathActualArray);
-					}
-				});*/
-		}else if (value.isDirectory){
-			$scope.elementsActual = value;
-			addType($scope.elementsActual.fileList);
-			pathActualArray.push($scope.elementsActual.name);
-			generatePath(pathActualArray);
-		}else if (value.type == "video"){
-			//video.addSource(value.type, generatePathDownload($scope.treeSelected.id, value.name));
-			//$scope.typeStreaming = value.fileType;
-			//Lightbox.openModal([{url:generatePathDownload($scope.treeSelected.id, value.name)}], 0);
-			$scope.pathStreaming = generatePathDownload($scope.treeSelected.id, value.name);
-		}else if (value.type == "image"){
-			Lightbox.openModal([{url:generatePathDownload($scope.treeSelected.id, value.name)}], 0);
-		}
-	};
-
-
-	var folderBack;
-	$scope.backFolder = function(folder, path){
-
-		if ($scope.treeBase == $scope.elementsActual){
-			return;
-		}
-
-		if ($scope.treeSelected == $scope.elementsActual){
-			$state.go('seedbox.files', {file: ""});
-
-			/*$scope.treeSelected = '';
-			$scope.elementsActual = $scope.treeBase;
-			pathActualArray = [];
-			$scope.pathActual = "/";
-			$scope.itemSelected = "";
-			return;*/
-		}
-
-		if(folder.path == $scope.elementsActual.path){
-			$scope.elementsActual = folderBack;
-			generatePath(path);
-		}else{
-			for (var key in folder.fileList){
-				if (folder.fileList[key].isDirectory){
-					folderBack = folder;
-					path.push(folder.name);
-					$scope.backFolder(folder.fileList[key], path);
-				}
-			}
-		}
+	$scope.openFile = function(file){
+		//console.log(file);
+		$location.url('seedbox/file/' + file._id);
 	};
 
 	$scope.download = function (id, name){
