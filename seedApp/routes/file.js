@@ -241,13 +241,17 @@ router.delete('/:id', function (req, res, next) {
 });
 
 router.get('/show/:id', function (req, res, next) {
-	var query = File.findById(req.params.id);
+	var query = File.findById(req.params.id);// faire une methode pour recuperer ces infos !
 	query.select('-hashString -isFinished -privacy -torrentAddedAt');
 	query.exec(function (err, file) {
 		if (err)
 			return next(err);
 		fileInfos.getFileInfosRecurs(file.path, file.name, function (err, data) {
 			var rawFile = file.toObject();
+			rawFile.commentsNbr = file.countComments();
+			rawFile.isLocked = file.getIsLocked();
+			rawFile.isLockedByUser = file.getIsLockedByUser(req.user);
+			rawFile.averageGrade = file.getAverageGrade();
 			delete rawFile.path;
 			if (err)
 				res.json({ success: false, error: err, file: rawFile });
