@@ -47,7 +47,7 @@ router.get('/recent-file', function (req, res, next) {
 });
 
 router.get('/disk-space', function (req, res, next) {
-	getTotalDiskSpace(req.app.get('config').downloadDir, function (err, diskInfos) {
+	getTotalDiskSpace(req.app.locals.ttConfig["transmission-settings"]["download-dir"], function (err, diskInfos) {
 		if (err)
 			res.json({ success: false, message: err });
 		else

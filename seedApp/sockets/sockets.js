@@ -18,7 +18,8 @@ module.exports = function (io, transmission, app) {
 		if ('_query' in socket.request && 'token' in socket.request._query)
 		{
 			var token = socket.request._query['token'];
-			jwt.verify(token, app.get('secret'), function (err, decoded) {
+			// jwt.verify(token, app.get('secret'), function (err, decoded) {
+			jwt.verify(token, app.locals.ttConfig.secret, function (err, decoded) {
 				if (err)
 					next (new Error('not authorized'));
 				else

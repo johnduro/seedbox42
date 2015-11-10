@@ -12,7 +12,7 @@ router.get('/users-reset', function (req, res, next) {
 			 { login: 'lambda2', password: 'lambda2', mail: 'a@g.com', role: 1, avatar: "default.png", dateCreated: new Date()},
 			 { login: 'lambda3', password: 'lambda3', mail: 't@b.com', role: 1, avatar: "default.png", dateCreated: new Date()}];
 	console.log('dropping users database');
-	req.app.get('connexionDB').connection.db.collection('users', function (err, collection) {
+	req.app.locals.connexionDb.connection.db.collection('users', function (err, collection) {
 		if (err)
 			res.json({ success: false, message: 'err1' });
 		collection.remove({}, function (err, removed) {
@@ -26,7 +26,6 @@ router.get('/users-reset', function (req, res, next) {
 			return next(err);
 		res.json({ success: true });
 	});
-	// req.app.get('connexionDB').connection.db.users.drop();
 });
 
 router.get('/admin-setup', function(req, res, next) {
@@ -56,7 +55,7 @@ router.get('/users-setup', function(req, res, next) {
 
 router.get('/drop-database', function(req, res, next) {
 	console.log('dropping database');
-	req.app.get('connexionDB').connection.db.dropDatabase();
+	req.app.locals.connexionDb.connection.db.dropDatabase();
 	res.json({ success: true });
 });
 

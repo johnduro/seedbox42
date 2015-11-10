@@ -141,7 +141,7 @@ module.exports = function () {
 		configDefaultName: './config/default-config.json',
 		config: null,
 		configDefault: null,
-		connexionDB: null,
+		connexionDb: null,
 		transmission: null
 	};
 

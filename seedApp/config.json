@@ -56,7 +56,7 @@
     },
     "torrents": {
         "add-torrent-enabled": true,
-        "delete-torrent-enabled": true,
+        "delete-torrent-enabled": false,
         "settings-access-enabled": true
     },
     "files": {
