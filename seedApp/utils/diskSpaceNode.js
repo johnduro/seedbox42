@@ -1,5 +1,6 @@
 var exec = require('child_process').exec;
 var os = require('os');
+var fs = require('fs');
 
 var async = require('async');
 var numeral = require('numeral');
@@ -10,14 +11,18 @@ var numeral = require('numeral');
  * @param callback
  */
 exports.drives = function (directory, callback) {
-    switch (os.platform().toLowerCase()) {
-        case'darwin':
-            getDrives('df -kl ' + directory + ' | awk \'{print $1}\'', callback);
-            break;
-        case'linux':
-        default:
-            getDrives('df ' + directory + ' | awk \'{print $1}\'', callback);
-    }
+	fs.access(directory, fs.F_OK, function (err) {
+		if (err)
+			return callback('Could not access directory, error: ' + err.code);
+	    switch (os.platform().toLowerCase()) {
+	        case'darwin':
+	            getDrives('df -kl ' + directory + ' | awk \'{print $1}\'', callback);
+	            break;
+	        case'linux':
+	        default:
+	            getDrives('df ' + directory + ' | awk \'{print $1}\'', callback);
+	    }
+	});
 };
 
 /**
