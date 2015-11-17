@@ -10,7 +10,8 @@
  */
 var fs = require('fs');
 var mini = require('minimist');
-var configUtils = require('./config/utils');
+var chalk = require('chalk');
+var validity = require('./config/validity');
 
 var miniOpt = {
 	string: ['add-directory'],
@@ -24,10 +25,25 @@ console.log('og> ', original);
 
 if (argv['check-conf-file'])
 {
-	//check config file exist
 	var configFileName = './config.json';
-	var config = JSON.parse(fs.readFileSync(configFileName, 'utf8'));
-	var configDefault = JSON.parse(fs.readFileSync('./config/default-config.json', 'utf8'));
-	var err = configUtils.checkConfigValidity(config, configDefault, '', configFileName);
-	configUtils.checkConfigValidityErrors(err, configFileName);
+	fs.readFile(configFileName, 'utf8', function (err, data) {
+		if (err)
+		{
+			if (err.code == 'ENOENT')
+			{
+				console.log(chalk.yellow('The file ' + configFileName + ' does not exist\n') + chalk.green('Use --generate-conf to create a new configuration file'));
+			}
+			else if (err.code == 'EACCES')
+			{
+				console.log(chalk.yellow('You does not have right to access "' + configFileName + '"\n') + chalk.green('Please change rights to grant access to the file'));
+			}
+		}
+		else
+		{
+			var config = JSON.parse(data);
+			var configDefault = JSON.parse(fs.readFileSync('./config/default-config.json', 'utf8'));
+			var valErr = validity.checkConfig(config, configDefault, '', configFileName);
+			validity.checkConfigErrors(valErr, configFileName);
+		}
+	});
 }
