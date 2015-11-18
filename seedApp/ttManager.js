@@ -1,3 +1,4 @@
+
 /**
  * ajout d'un dossier de film deja present (+ path)
  * verification de la conformite de la bdd
@@ -8,13 +9,14 @@
  * ????
  *
  */
+
 var fs = require('fs');
-// var accessSync = require('fs').accessSync;
 var mini = require('minimist');
 var chalk = require('chalk');
 var inquirer = require('inquirer');
 var validity = require('./config/validity');
 var generate = require('./config/generate');
+var ft = require('./utils/ft');
 
 var miniOpt = {
 	string: ['add-directory'],
@@ -34,7 +36,6 @@ console.log('1> ', argvParsed);
  */
 if (argvParsed['check-conf-file'])
 {
-	// var configFileName = './config.json';
 	fs.readFile(configFileName, 'utf8', function (err, data) {
 		if (err)
 		{
@@ -58,11 +59,7 @@ if (argvParsed['check-conf-file'])
 }
 
 
-/**
- * CONFIGURATION GENERATION
- */
-if (argvParsed['generate-conf'])
-{
+var generateConfigurationFile = function () {
 	var configDefault = JSON.parse(fs.readFileSync('./config/default-config.json', 'utf8'));
 	var newConfig = generate.configFromDefault(configDefault);
 
@@ -72,7 +69,7 @@ if (argvParsed['generate-conf'])
 			name: "appPort",
 			message: "Choose a port for this application:\n > ",
 			default: function () { return (newConfig['appPort']); },
-			validate: function (value) { //check if number
+			validate: function (value) {
 				if (value < configDefault['appPort']['rangeValues']['min'] || value > configDefault['appPort']['rangeValues']['max'])
 					return ("Port must be between " + configDefault['appPort']['rangeValues']['min'] + " and " + configDefault['appPort']['rangeValues']['max']);
 				return true;
@@ -121,38 +118,69 @@ if (argvParsed['generate-conf'])
 		},
 		{
 			type: "input",
-			name: "download-dir",
+			name: "transmission-settings:download-dir",
 			message: "Choose a download directory for your files:\n " + chalk.yellow('if you want to use transmission download-dir, leave this field blank and run this script with "--transmission-to-conf" after generating this configuration file') + "\n > ",
 			validate: function (value) {
 				if (value !== '')
 				{
 					try {
+						fs.accessSync(value, fs.F_OK | fs.R_OK | fs.W_OK);
 						var stats = fs.statSync(value);
 						if (stats.isDirectory())
 							return true;
-							// console.log('YOLO');
-						// console.log(stats);
+						else
+							return chalk.red(value + ' is not a directory, please enter a valid directory');
 					}
 					catch (err) {
-						return chalk.red('Invalid directory, check the rights of the directory "' + value + '"') + err;
+						return chalk.red('Invalid directory, check the rights of the directory "' + value + '", this process must have read and write rights on the directory') + err;
 					}
 				}
-					// return ;
 				else
 					return true;
 			}
-		},
-
-
+		}
 	];
-
+	console.log(chalk.green('Please select the settings for your applications:\n') + "Leaving the field blank and pressing enter will use default value");
 	inquirer.prompt(questions, function (answers) {
-		console.log('ANS > ', answers);
+		for (var key in answers)
+		{
+			var split = key.split(':');
+			var conf = newConfig;
+			var len = split.length;
+			for (var i = 0; i < (len - 1); i++)
+				conf = conf[split[i]];
+			conf[split[len - 1]] = answers[key];
+		}
+		ft.jsonToFile(configFileName, newConfig, function (err) {
+			if (err)
+				console.log(chalk.red('Could not write new configuration to file: "' + configFileName + '"'));
+			else
+				console.log(chalk.green('New configuration file: "' + configFileName + '" was successfully created'));
+		});
 	});
-	// if (newConfig.hasOwnProperty('transmission-settings') && newConfig['transmission-settings'].hasOwnProperty('download-dir'))
-	// {
+};
 
-	// }
-	// console.log('?>>', newConfig);
-	// for (var key in configDefault)
+/**
+ * CONFIGURATION GENERATION
+ */
+if (argvParsed['generate-conf'])
+{
+	var genConf = true;
+	try {
+		fs.accessSync(configFileName, fs.F_OK | fs.W_OK);
+		inquirer.prompt([
+			{	type: 'confirm',
+			 	name: 'overwrite',
+			 	message: configFileName + ' already exist, do you want to overwrite it ?'
+			}], function (answers) {
+				if (answers.overwrite)
+					generateConfigurationFile();
+			 });
+	}
+	catch (e) {
+		if (e.code == 'EACCES')
+			console.log(chalk.red('File already exist and you have no rights to access it, please change rights of "' + configFileName + '" to perform this action'));
+		else
+			generateConfigurationFile();
+	}
 }
