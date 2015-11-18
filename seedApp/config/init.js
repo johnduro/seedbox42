@@ -10,7 +10,9 @@ var getMongoConnex = function (mongoConfig) {
 		if (err)
 		{
 			console.log('database: connection error', err);
-			configFileError("Could not connect to database, exiting process");
+			console.log("Could not connect to database, exiting process");
+			process.exit();
+//			configFileError("Could not connect to database, exiting process");
 		}
 		else
 			console.log('database: connection successful');
@@ -92,7 +94,7 @@ module.exports = function () {
 	var validityError = validity.checkConfig(infos.config, infos.configDefault, "", infos.configFileName);
 	if (validity.checkConfigErrors(validityError, infos.configFileName))
 		process.exit();
-	infos.connexionDB = getMongoConnex(infos.config.mongodb);
+	infos.connexionDb = getMongoConnex(infos.config.mongodb);
 	infos.transmission = new TransmissionNode(infos.config.transmission);
 	checkTransmissionSettings(infos.transmission, infos.config['transmission-settings']);
 	checkFileSettings(infos.config.files, infos.transmission);
