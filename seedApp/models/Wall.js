@@ -1,6 +1,6 @@
 
 var mongoose = require('mongoose');
-var ft = require('../utils/ft');
+var format = require('../utils/format');
 
 /**
  * WallMessage Schema
@@ -45,7 +45,7 @@ WallMessageSchema.statics = {
 					});
 				}
 			});
-			ft.formatMessageList([file], function (err, formatFile) {
+			format.wallMessageList([file], function (err, formatFile) {
 				if (err)
 					return cb(err);
 				return cb(null, formatFile[0]);
@@ -59,7 +59,7 @@ WallMessageSchema.statics = {
 			if (err)
 				return cb(err);
 			else
-				ft.formatMessageList(messages, function (err, formatFiles) {
+				format.wallMessageList(messages, function (err, formatFiles) {
 					if (err)
 						return cb(err);
 					return cb(null, formatFiles);

@@ -11,6 +11,7 @@ var ft = require('../utils/ft');
 var filesInfos = require('../utils/filesInfos');
 var File = require('../models/File.js');
 var rightsMW = require('../middlewares/rights');
+var tSettings = require('../config/transmission');
 
 router.get('/settings', function (req, res, next) {
 	var config = req.app.locals.ttConfig;
@@ -69,36 +70,18 @@ router.put('/settings/transmission', rightsMW.admin, function (req, res, next) {
 });
 
 router.put('/settings/transmission-settings', rightsMW.admin, function (req, res, next) {
-	var tSettings = req.app.locals.ttConfig["transmission-settings"];
-	var tMod = {};
-	var transmission = req.app.locals.transmission;
-	for (var key in req.body)
-	{
-		if (tSettings.hasOwnProperty(key))
-		{
-			if (tSettings[key] != req.body[key])
-				tMod[key] = req.body[key];
-		}
-	}
-	transmission.sessionSet(tMod, function (err, respSet) {
+	var t = req.app.locals.transmission;
+	tSettings.configToTransmissionSettings(t, req.body, function (err) {
 		if (err)
 			res.json({ success: false, message: err });
 		else
 		{
-			transmission.sessionGet(function (err, resp) {
+			tSettings.transmissionSettingsToConfig(t, req.app.locals.ttConfig["transmission-settings"], function (err, newConf) {
 				if (err)
 					res.json({ success: true, message: "transmission settings succesfully updated, but could not get session infos from transmission", data: null });
 				else
 				{
-					for (var key in tSettings)
-					{
-						if (resp.hasOwnProperty(key))
-						{
-							if (tSettings[key] != resp[key])
-								tSettings[key] = resp[key];
-						}
-					}
-					req.app.locals.ttConfig["transmission-settings"] = tSettings;
+					req.app.locals.ttConfig["transmission-settings"] = newConf;
 					ft.jsonToFile(req.app.locals.ttConfigFileName, req.app.locals.ttConfig, function (err) {
 						if (err)
 							res.json({ success: false, message: "Could not update config file", err: err });

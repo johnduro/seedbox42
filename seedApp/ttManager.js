@@ -1,11 +1,12 @@
 
 /**
- * ajout d'un dossier de film deja present (+ path)
- * verification de la conformite de la bdd
- * verification de la conformite du fichier de config
- * mise a jour du fichier de config depuis transmission
- * mise a jour de transmission depuis le fichier de config
- * generation du fichier de config
+ * - ajout d'un dossier de film deja present (+ path)
+ * - verification de la conformite de la bdd
+ * + verification de la conformite du fichier de config
+ * + mise a jour du fichier de config depuis transmission
+ * + mise a jour de transmission depuis le fichier de config
+ * + generation du fichier de config
+ * - ajout des torrents non suivis dans la db
  * ????
  *
  */
@@ -16,6 +17,8 @@ var chalk = require('chalk');
 var inquirer = require('inquirer');
 var validity = require('./config/validity');
 var generate = require('./config/generate');
+var tSettings = require('./config/transmission');
+var TransmissionNode = require('./transmission/transmissionNode');
 var ft = require('./utils/ft');
 
 var miniOpt = {
@@ -24,10 +27,41 @@ var miniOpt = {
 };
 
 var configFileName = './config.json';
+// var configFileName = './toto.json';
 var argvOg = mini(process.argv.slice(2));
 var argvParsed = mini(process.argv.slice(2), miniOpt);
 console.log('og> ', argvOg);
 console.log('1> ', argvParsed);
+
+
+var getConfigFile = function () {
+	try {
+		var data = fs.readFileSync(configFileName, 'utf8');
+		var config = JSON.parse(data);
+		return (config);
+	} catch (e) {
+		if (e.code == 'ENOENT')
+		{
+			console.log(chalk.yellow('The file ' + configFileName + ' does not exist\n') + chalk.green('Use --generate-conf to create a new configuration file'));
+		}
+		else if (e.code == 'EACCES')
+		{
+			console.log(chalk.yellow('You does not have right to access "' + configFileName + '"\n') + chalk.green('Please change rights to grant access to the file'));
+		}
+		return (null);
+	}
+};
+
+
+var writeToConfigFile = function (newConfig, action) {
+	ft.jsonToFile(configFileName, newConfig, function (err) {
+		if (err)
+			console.log(chalk.red('Could not write to configuration file: "' + configFileName + '"'));
+		else
+			console.log(chalk.green('Configuration file: "' + configFileName + '" was successfully ' + action));
+	});
+
+};
 
 
 
@@ -151,12 +185,7 @@ var generateConfigurationFile = function () {
 				conf = conf[split[i]];
 			conf[split[len - 1]] = answers[key];
 		}
-		ft.jsonToFile(configFileName, newConfig, function (err) {
-			if (err)
-				console.log(chalk.red('Could not write new configuration to file: "' + configFileName + '"'));
-			else
-				console.log(chalk.green('New configuration file: "' + configFileName + '" was successfully created'));
-		});
+		writeToConfigFile(newConfig, 'created');
 	});
 };
 
@@ -183,4 +212,37 @@ if (argvParsed['generate-conf'])
 		else
 			generateConfigurationFile();
 	}
+}
+
+
+if (argvParsed['conf-to-transmission'] || argvParsed['transmission-to-conf'])
+{
+	var config = getConfigFile();
+	var transmission = new TransmissionNode(config.transmission);
+}
+
+/**
+ * CONFIGURATION FILE TO TRANSMISSION SETTINGS
+ */
+if (argvParsed['conf-to-transmission'])
+{
+	tSettings.configToTransmissionSettings(transmission, config['transmission-settings'], function (err) {
+		if (err)
+			process.exit();
+		console.log(chalk.green("Transmission was successfully updated from configuration file"));
+	});
+}
+
+
+/**
+ *  TRANSMISSION SETTINGS TO CONFIGURATION FILE
+ */
+if (argvParsed['transmission-to-conf'])
+{
+	tSettings.transmissionSettingsToConfig(transmission, config['transmission-settings'], function (err, tConf) {
+		if (err)
+			process.exit();
+		config['transmission-settings'] = tConf;
+		writeToConfigFile(config, 'updated');
+	});
 }
