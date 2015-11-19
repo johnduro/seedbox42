@@ -12,31 +12,31 @@ app.config(function ($stateProvider, $urlRouterProvider) {
         url: "/dashboard",
         templateUrl: "app/views/dashboard.html",
         controller: "dashboardCtrl",
-        access: ["admin", "user"]
+        access: ["0", "1"]
     })
     .state('seedbox.profile', {
         url: "/profile",
         templateUrl: "app/views/profile.html",
         controller: "profileCtrl",
-        access: ["admin", "user"],
+        access: ["0", "1"],
     })
     .state('seedbox.torrents', {
         url: "/torrents",
         templateUrl: "app/views/torrents.html",
         controller: "torrentsCtrl",
-        access: ["admin", "user"]
+        access: ["0", "1"]
     })
     .state('seedbox.file', {
         url: "/file/:file",
         templateUrl: "app/views/file.html",
         controller: "fileCtrl",
-        access: ["admin", "user"]
+        access: ["0", "1"]
     })
     .state('seedbox.files', {
         url: "/files",
         templateUrl: "app/views/files.html",
         controller: "filesCtrl",
-        access: ["admin", "user"]
+        access: ["0", "1"]
     })
 
 // ------------------------------------------- ADMIN SECTION ---------------------------------------------------------
@@ -44,18 +44,18 @@ app.config(function ($stateProvider, $urlRouterProvider) {
         url: "/admin/users",
         templateUrl: "app/views/adminUsers.html",
         controller: "usersCtrl",
-        access: ["admin"]
+        access: ["0"]
     })
     .state('seedbox.adminSettings', {
         url: "/admin/settings",
         templateUrl: "app/views/adminSettings.html",
         controller: "settingsCtrl",
-        access: ["admin"]
+        access: ["0"]
     })
     .state('seedbox.adminDirectory', {
         url: "/admin/directory",
         templateUrl: "app/views/adminDirectory.html",
         controller: "directoryCtrl",
-        access: ["admin"]
+        access: ["0"]
     });
 });
