@@ -8,7 +8,7 @@ app.controller('usersCtrl', function ($scope, $rootScope, RequestHandler, Upload
 		login: "test",
 		mail: "test@hotmail.fr",
 		password: "okok",
-		role: 1,
+		role: "user",
 	}
 
 	$scope.$on("fileSelected", function (event, args) {
