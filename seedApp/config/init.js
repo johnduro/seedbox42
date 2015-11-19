@@ -23,7 +23,11 @@ var getMongoConnex = function (mongoConfig) {
 var checkTransmissionSettings = function (t, tSettings) {
 	t.sessionGet(function (err, res) {
 		if (err)
-			configFileError("Could not retreive 'transmission' session infos");
+		{
+			console.log("Could not retreive 'transmission' session infos");
+			process.exit();
+		}
+			// configFileError("Could not retreive 'transmission' session infos");
 		else
 		{
 			var tMod = {};
@@ -41,7 +45,9 @@ var checkTransmissionSettings = function (t, tSettings) {
 					if (err)
 					{
 						console.log("session set error: ", err);
-						configFileError("Could not set session for transmission");
+						console.log("Could not set session for transmission");
+						process.exit();
+						// configFileError("Could not set session for transmission");
 					}
 				});
 			}
