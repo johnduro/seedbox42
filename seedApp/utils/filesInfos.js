@@ -61,7 +61,8 @@ var getFileRightsRecurs = function self (path, done) {
 						var filePath = path + '/' + file;
 						self(filePath, function (err, fInfos) {
 							if (err)
-								return done(err);
+								infos.rights.read = false;
+								// return done(err);
 							infos.rights.read = fInfos.rights.read ? infos.rights.read : fInfos.rights.read;
 							infos.rights.write = fInfos.rights.write ? infos.rights.write : fInfos.rights.write;
 							infos.size += fInfos.size;
