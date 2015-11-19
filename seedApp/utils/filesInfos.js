@@ -63,9 +63,12 @@ var getFileRightsRecurs = function self (path, done) {
 							if (err)
 								infos.rights.read = false;
 								// return done(err);
-							infos.rights.read = fInfos.rights.read ? infos.rights.read : fInfos.rights.read;
-							infos.rights.write = fInfos.rights.write ? infos.rights.write : fInfos.rights.write;
-							infos.size += fInfos.size;
+							else
+							{
+								infos.rights.read = fInfos.rights.read ? infos.rights.read : fInfos.rights.read;
+								infos.rights.write = fInfos.rights.write ? infos.rights.write : fInfos.rights.write;
+								infos.size += fInfos.size;
+							}
 							next();
 						});
 					})();
