@@ -1,6 +1,7 @@
 
 var mongoose = require('mongoose');
 var ft = require('../utils/ft');
+var format = require('../utils/format');
 var fs = require('fs');
 var rimraf = require('rimraf');
 var User = require('../models/User.js');
@@ -54,7 +55,7 @@ FileSchema.statics = {
 					if (err)
 						return cb(err);
 					retFile.creator = fileCreator;
-					ft.formatCommentList(file.comments, function (err, formatCom) {
+					format.commentList(file.comments, function (err, formatCom) {
 						if (err)
 							return cb(err);
 						retFile.comments = formatCom;
@@ -74,7 +75,7 @@ FileSchema.statics = {
 		query.exec(function (err, files) {
 			if (err)
 				return cb(err);
-			var formatFiles = ft.formatFileList(files, user);
+			var formatFiles = format.fileList(files, user);
 			return cb(null, formatFiles);
 		});
 	},
@@ -83,7 +84,7 @@ FileSchema.statics = {
 		this.findById(id, function (err, file) {
 			if (err)
 				return cb(err);
-			ft.formatCommentList(file.comments, function (err, comments) {
+			format.commentList(file.comments, function (err, comments) {
 				if (err)
 					return cb(err);
 				return cb(null, comments);
@@ -100,7 +101,7 @@ FileSchema.statics = {
 		query.exec(function (err, files) {
 			if (err)
 				return cb(err);
-			var formatFiles = ft.formatFileList(files, user);
+			var formatFiles = format.fileList(files, user);
 			return cb(null, formatFiles);
 		});
 	},

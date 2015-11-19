@@ -29,7 +29,7 @@ var rangeValidityError = function (key, value, rangeValues, arborescence, config
 };
 
 module.exports = {
-	checkConfigValidity: function self (config, defaultConfig, arborescence, configFileName) {
+	checkConfig: function self (config, defaultConfig, arborescence, configFileName) {
 		var errors = [];
 		for (var key in defaultConfig)
 		{
@@ -62,7 +62,7 @@ module.exports = {
 		return errors;
 	},
 
-	checkConfigValidityErrors: function (errors, configFileName) {
+	checkConfigErrors: function (errors, configFileName) {
 		if (errors.length > 0)
 		{
 			console.log(chalk.yellow(util.format("Error in config file: %s", configFileName)));
