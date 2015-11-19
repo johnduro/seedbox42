@@ -164,7 +164,7 @@ router.get('/user-locked/:id' ,function (req, res, next) {
 router.put('/:id', function (req, res, next) {
 	console.log(req.body);
 	//rajouter un check de config pour voir si tout le monde peut delete ???
-	if (req.user.role === "admin" || (req.body.privacy === 0 && req.user._id === req.body.creator))
+	if (req.user.role === 0 || (req.body.privacy === 0 && req.user._id === req.body.creator))
 	{
 		if ('path' in req.body)
 			delete req.body.path;
@@ -197,7 +197,7 @@ router.delete('/:id', function (req, res, next) {
 	File.findById(req.params.id, function (err, file) {
 		if (err)
 			return next(err);
-		if (req.user.role === "admin" || (file.privacy === 0 && req.user._id === file.creator))
+		if (req.user.role === 0 || (file.privacy === 0 && req.user._id === file.creator))
 		{
 			File.findById(file._id, function (err, file) {
 				if (err)

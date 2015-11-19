@@ -51,7 +51,7 @@ app.run(function ($rootScope, $location, $http, $state, $location) {
 
         if ("access" in toState){
             for (var key in toState.access){
-                if (toState.access[key] == $rootScope.user.role){
+                if (key == $rootScope.user.role){
                     return;
                 }
             }

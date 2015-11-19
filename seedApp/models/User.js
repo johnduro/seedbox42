@@ -6,7 +6,7 @@ var UserSchema = new mongoose.Schema({
 	password: String,
 	mail: String, //?? garder ??
 	avatar: String,
-	role: { type: String, default: 'user' },
+	role: { type: Number, default: 1 },
 	createdAt: { type: Date, default: Date.now }
 });
 
