@@ -6,6 +6,7 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 	//------------------------------------------------  VARIABLES -------------------------------------------------------
 	$scope.newTorrentUrl = "magnet:?xt=urn:btih:2b12ce09236526a728c6974c0d89d52860e82daa&dn=Major+Lazer+x+DJ+Snake+feat.+M%26Oslash%3B+-+Lean+On.mp3&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80&tr=udp%3A%2F%2Fopen.demonii.com%3A1337&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Fexodus.desync.com%3A6969";
 	$scope.torrents = {};
+	var itemSelected = [];
 
 	//------------------------------------------------  EVENTS SOCKETS -------------------------------------------------------
 	socket.emit('torrentRefresh');
@@ -81,7 +82,18 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 			if(aSize<def[i][0])
 				return (aSize/def[i-1][0]).toFixed(2)+' '+def[i-1][1];
 		}
-	}
+	};
+
+	$scope.checkboxSwitch = function(id){
+		var index = itemSelected.indexOf(id);
+		if (index >=0){
+			itemSelected.splice(index, 1);
+		}else{
+			itemSelected.push(id);
+		}
+
+		console.log(itemSelected);
+	};
 
 	//------------------------------------------------  DRAG & DROP-------------------------------------------------------
 
