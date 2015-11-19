@@ -180,7 +180,7 @@ router.get('/port-test', function (req, res, next) {
 });
 
 router.post('/session-shutdown', function (req, res, next) {
-	if (req.user.role === 0)
+	if (req.user.role === "admin")
 	{
 		req.app.locals.transmission.sessionClose(function (err, resp) {
 			if (err)
