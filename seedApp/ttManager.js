@@ -23,6 +23,7 @@ var tSettings = require('./config/transmission');
 var TransmissionNode = require('./transmission/transmissionNode');
 var File = require('./models/File');
 var ft = require('./utils/ft');
+var filesInfos = require('./utils/filesInfos');
 
 var miniOpt = {
 	string: ['add-directory'],
@@ -36,6 +37,18 @@ var argvParsed = mini(process.argv.slice(2), miniOpt);
 console.log('og> ', argvOg);
 console.log('1> ', argvParsed);
 
+
+var convertSize = function (aSize) {
+	if (aSize <= 0)
+		return "0 octets";
+	aSize = Math.abs(parseInt(aSize, 10));
+	var def = [[1, 'octets'], [1024, 'ko'], [1024 * 1024, 'Mo'], [1024 * 1024 * 1024, 'Go'], [1024 * 1024 * 1024 * 1024, 'To']];
+	for (var i = 0; i < def.length; i++)
+	{
+		if (aSize < def[i][0])
+			return (aSize / def[i - 1][0]).toFixed(2) + ' ' + def[i - 1][1];
+	}
+};
 
 var getConfigFile = function () {
 	try {
@@ -218,7 +231,7 @@ if (argvParsed['generate-conf'])
 }
 
 
-if (argvParsed['conf-to-transmission'] || argvParsed['transmission-to-conf'] || argvParsed['check-database'])
+if (argvParsed['conf-to-transmission'] || argvParsed['transmission-to-conf'] || argvParsed['check-database'] || (argvOg['add-directory'] && argvParsed['add-directory'] != ''))
 {
 	var config = getConfigFile();
 	var transmission = new TransmissionNode(config.transmission);
@@ -297,4 +310,53 @@ if (argvParsed['check-database'])
 				});
 		}
 	});
+}
+
+
+if (argvOg['add-directory'] && argvParsed['add-directory'] != '')
+{
+	var rows =  process.stdout.rows;
+	mongoose.connect("mongodb://" + config.mongodb.address + '/' + config.mongodb.name, function (err) { //faire un fichier mongo, dans config, de connexion >?
+		filesInfos.getDirInfos(argvParsed['add-directory'], function (err, data) {
+			if (err)
+			{
+				console.log(chalk.red(util.format('"%s" is an invalid directory, please choose another, error:')));
+				console.log(err);
+			}
+			else
+			{
+				ft.checkExistentFiles(data, function (err, result) {
+					if (err)
+						console.log(chalk.red('An error occured while accessing the database'));
+					else
+					{
+						var choices = [];
+						result.forEach(function (file) {
+							var name = convertSize(file.size) + ' - ' + file.path;
+							if (file.rights.write)
+								name += (' - ' + chalk.yellow("You may not have the right to write/delete this file"));
+							if (file.rights.read)
+								name += (' - ' + chalk.red("You may not have the right to read this file"));
+							choices.push({ name: name });
+						});
+						inquirer.prompt([
+							{
+								type: "checkbox",
+								message: "Select files you want to add to your database",
+								name: "files",
+								choices: choices
+							}
+						], function (answers) {
+							console.log("ANS > ", answers);
+							// enregistrer les resultats
+						});
+					}
+				});
+			}
+		});
+	});
+}
+else if (argvOg['add-directory'] && argvParsed['add-directory'] == '')
+{
+	console.log(util.format('Usage: "./ttManager --add-directory path/to/directory"'));
 }
