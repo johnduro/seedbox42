@@ -38,6 +38,8 @@ app.config(function ($stateProvider, $urlRouterProvider) {
         controller: "filesCtrl",
         access: ["0", "1"]
     })
+
+// ------------------------------------------- ADMIN SECTION ---------------------------------------------------------
     .state('seedbox.adminUsers', {
         url: "/admin/users",
         templateUrl: "app/views/adminUsers.html",

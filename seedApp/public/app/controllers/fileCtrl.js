@@ -1,4 +1,4 @@
-app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, RequestHandler){
+app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $modal, $http, RequestHandler, $sce){
 
     $scope.pathActualString = "";
     var pathActualArray = [];
@@ -92,5 +92,91 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, Re
             }
         }
     }
+
+// --------------------------------------------- CONTROLLER MODAL SEARCH MOVIE --------------------------------------------
+    $scope.openModal = {
+        searchMovie: function () {
+            var modalInstance = $modal.open({
+                templateUrl: "modal.html",
+                controller: function ($scope, $http, $modalInstance, RequestHandler) {
+
+                    $scope.query = 'inside out';
+                    $scope.result = "";
+                    $scope.itemSelected = "";
+
+                    $scope.search = function (){
+                        var base = 'http://api.themoviedb.org/3';
+                        var service = '/search/multi';
+                        var apiKey = '6ab855d7f609fe00d970fe5671360bf0';
+                        var callback = 'JSON_CALLBACK';
+                        var url = base + service + '?api_key=' + apiKey + '&query=' + $scope.query + '&page=1&callback=' + callback;
+
+                        $http.jsonp(url).then(function(data, status) {
+                          $scope.result = data.data.results;
+                        },function(data, status) {
+                          $scope.result = 'Maybe you missed your API key?\n\n' + JSON.stringify(data.data.results);
+                        });
+                    };
+
+                    $scope.select = function(item){
+                        $scope.itemSelected.selected = "";
+                        item.selected = "success";
+                        $scope.itemSelected = item;
+                    }
+
+                    $scope.ok = function () {
+                        $modalInstance.close($scope.itemSelected);
+                    };
+                    $scope.cancel = function () {
+                        $modalInstance.dismiss('cancel');
+                    };
+                }
+            });
+            modalInstance.result.then(function (itemSelected) {
+                $scope.torrent.tmdb = itemSelected;
+            });
+        },
+        streamMovie: function () {
+            var modalInstance = $modal.open({
+                templateUrl: "modalStream.html",
+                resolve: {
+                 torrent: function () {
+                   return $scope.torrent;
+                 }
+             },
+                controller: function ($scope, $http, $modalInstance, RequestHandler, torrent) {
+
+                    $scope.stream = {
+                        preload: "none",
+                        sources: [
+                            {src: $sce.trustAsResourceUrl("http://localhost:3000/file/download/5639e5ca4ef5032e04f0c91e/Lw==/RG9wZS4yMDE1LkZSRU5DSC5CRFJpcC5YdmlELUVYVFJFTUUud3d3LkNwYXNiaWVuLnB3LmF2aQ=="), type: torrent.fileType}
+                        ],
+                        tracks: [
+                            {
+                                src: "http://www.videogular.com/assets/subs/pale-blue-dot.vtt",
+                                kind: "subtitles",
+                                srclang: "en",
+                                label: "English",
+                                default: ""
+                            }
+                        ],
+                        theme: {
+                            url: "http://www.videogular.com/styles/themes/default/latest/videogular.css"
+                        }
+                    };
+
+                    $scope.ok = function () {
+                        $modalInstance.close($scope.itemSelected);
+                    };
+                    $scope.cancel = function () {
+                        $modalInstance.dismiss('cancel');
+                    };
+                }
+            });
+            modalInstance.result.then(function (itemSelected) {
+                $scope.torrent.tmdb = itemSelected;
+            });
+        }
+    };
 
 });

@@ -82,7 +82,7 @@
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle waves-effect waves-button waves-classic" data-toggle="dropdown">
                                         <span class="user-name">{{user.login}}<i class="fa fa-angle-down"></i></span>
-                                        <img class="img-circle avatar" src="assets/images/avatar1.png" width="40" height="40" alt="">
+                                        <img class="img-circle avatar" ng-src="/assets/avatar/{{user.avatar}}" err-SRC="/assets/avatar/default.png" width="40" height="40" alt="">
                                     </a>
                                     <ul class="dropdown-menu dropdown-list" role="menu">
                                         <li role="presentation"><a href="profile.html"><i class="fa fa-user"></i>Profile</a></li>
@@ -111,7 +111,7 @@
                         <div class="sidebar-profile">
                             <a href="javascript:void(0);" id="profile-menu-link">
                                 <div class="sidebar-profile-image">
-                                    <img src="assets/images/avatar1.png" class="img-circle img-responsive" alt="">
+                                    <img ng-src="/assets/avatar/{{user.avatar}}" err-SRC="/assets/avatar/default.png" class="img-circle img-responsive" alt="">
                                 </div>
                                 <div class="sidebar-profile-details">
                                     <span>{{user.login}}<br><small>Pour lé vré</small></span>
