@@ -1,4 +1,16 @@
-var app = angular.module('seedApp', ['ngRoute', 'ui.router', 'ngCookies', 'ngVideo', 'ngFileUpload', 'bootstrapLightbox', 'angular.morris-chart', 'luegg.directives', 'chart.js']);
+var app = angular.module('seedApp', [
+    'ngRoute',
+    'ngSanitize',
+    'ui.router',
+    'ngCookies',
+    'ngVideo',
+    'ngFileUpload',
+    'bootstrapLightbox',
+    'angular.morris-chart',
+    'luegg.directives',
+    'chart.js',
+    'com.2fdevs.videogular'
+]);
 
 // ---------------------- variable global -------------------------------
 var api = "";

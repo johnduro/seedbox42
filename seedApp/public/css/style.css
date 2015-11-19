@@ -255,3 +255,12 @@ ul.rating {
     width: 100%;
     display: inline-block;
 }
+
+.search-content-movie {
+    height: 400px;
+    overflow: auto;
+}
+
+.row-selected {
+    background-color: red;
+}
