@@ -26,7 +26,8 @@
                                     <td ng-click="editUser(user)">{{user.login}}</td>
                                     <td>{{user.mail}}</td>
                                     <td>{{user.password}}</td>
-                                    <td>{{user.role}}</td>
+                                    <td ng-if="user.role==1">User</td>
+                                    <td ng-if="user.role==0">Admin</td>
                                     <td ng-click="deleteUser(user._id)"><i class="fa fa-times"></i></td>
                                 </tr>
                             </tbody>
