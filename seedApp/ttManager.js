@@ -1,33 +1,36 @@
 
 /**
- * - ajout d'un dossier de film deja present (+ path)
- * - verification de la conformite de la bdd
+ * + verification de la conformite de la bdd
  * + verification de la conformite du fichier de config
  * + mise a jour du fichier de config depuis transmission
  * + mise a jour de transmission depuis le fichier de config
  * + generation du fichier de config
+ * - ajout d'un dossier de film deja present (+ path)
  * - ajout des torrents non suivis dans la db
  * ????
  *
  */
 
 var fs = require('fs');
+var mongoose = require('mongoose');
 var mini = require('minimist');
 var chalk = require('chalk');
 var inquirer = require('inquirer');
+var util = require('util');
 var validity = require('./config/validity');
 var generate = require('./config/generate');
 var tSettings = require('./config/transmission');
 var TransmissionNode = require('./transmission/transmissionNode');
+var File = require('./models/File');
 var ft = require('./utils/ft');
 
 var miniOpt = {
 	string: ['add-directory'],
-	boolean: ['check-database', 'check-conf-file', 'transmission-to-conf', 'conf-to-transmission', 'generate-conf']
+	boolean: ['check-database', 'check-conf-file', 'transmission-to-conf', 'conf-to-transmission', 'generate-conf', 'add-existing-torrents']
 };
 
-var configFileName = './config.json';
-// var configFileName = './toto.json';
+// var configFileName = './config.json';
+var configFileName = './toto.json';
 var argvOg = mini(process.argv.slice(2));
 var argvParsed = mini(process.argv.slice(2), miniOpt);
 console.log('og> ', argvOg);
@@ -215,14 +218,14 @@ if (argvParsed['generate-conf'])
 }
 
 
-if (argvParsed['conf-to-transmission'] || argvParsed['transmission-to-conf'])
+if (argvParsed['conf-to-transmission'] || argvParsed['transmission-to-conf'] || argvParsed['check-database'])
 {
 	var config = getConfigFile();
 	var transmission = new TransmissionNode(config.transmission);
 }
 
 /**
- * CONFIGURATION FILE TO TRANSMISSION SETTINGS
+ *  CONFIGURATION FILE TO TRANSMISSION SETTINGS
  */
 if (argvParsed['conf-to-transmission'])
 {
@@ -244,5 +247,54 @@ if (argvParsed['transmission-to-conf'])
 			process.exit();
 		config['transmission-settings'] = tConf;
 		writeToConfigFile(config, 'updated');
+	});
+}
+
+
+/**
+ *  CHECK DATABASE VALIDITY
+ */
+if (argvParsed['check-database'])
+{
+	mongoose.connect("mongodb://" + config.mongodb.address + '/' + config.mongodb.name, function (err) { //faire un fichier mongo, dans config, de connexion >?
+		if (err)
+			console.log(chalk.red("Could not connect to database"));
+		else
+		{
+			File.find({ isFinished: true })
+				.select('-name -size -creator -hashstring -isFinished -downloads -privacy -comments -locked -grades -createdAt -torrentAddedAt')
+				.exec(function (err, files) {
+					if (err)
+						console.log(chalk.red('An error occured while fetching the files from database:\n'), err);
+					else
+					{
+						console.log(chalk.green(util.format('Currently %d files are in the database', files.length)));
+						var errors = [];
+						files.forEach(function (file) {
+							try {
+								fs.accessSync(file.path, fs.F_OK | fs.R_OK | fs.W_OK);
+							} catch (e) {
+								var err  = { path: file.path };
+								if (e.code == 'ENOENT')
+									err.error = chalk.red("This file does not exist anymore:");
+								else if (e.code == 'EACCES')
+									err.error = chalk.yellow("You may not have the rights to access this file:");
+								errors.push(err);
+							}
+						});
+						if (errors.length <= 0)
+							console.log(chalk.green("No errors were found in the database"));
+						else
+						{
+							console.log(chalk.yellow(util.format('%d errors were found in the database:', errors.length)));
+							errors.forEach(function (err) {
+								console.log(' - ', err.error);
+								console.log('    ', err.path);
+							});
+						}
+					}
+					process.exit();
+				});
+		}
 	});
 }
