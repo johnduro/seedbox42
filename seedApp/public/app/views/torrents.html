@@ -44,6 +44,7 @@
                             <tbody ng-repeat="torrent in torrents">
                                 <tr>
                                     <td>
+                                        <div> <input type="checkbox" ng-model="Checkboxtorrent" ng-change="checkboxSwitch(torrent.id)"> </div>
                                         <div> {{torrent.name}} </div>
                                         <div>
                                             <i class="fa fa-arrow-down"></i> {{FileConvertSize(torrent.rateDownload)}}/s -
