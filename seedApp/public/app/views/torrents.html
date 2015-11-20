@@ -13,7 +13,10 @@
                     <form>
                         <div class="form-group">
                             <label for="exampleInputEmail1">URL</label>
-                            <input type="text" class="form-control" ng-model="newTorrentUrl" placeholder="Torrent Url">
+                            <!-- <input type="text" class="form-control" ng-model="newTorrentUrl" placeholder="Torrent Url"> -->
+                            <select style="width: 100px;" ng-model="newTorrentUrl">
+                              <option ng-repeat="option in torrentUrls" value="{{option}}">{{option}}</option>
+                            </select>
                         </div>
                         <button type="submit" ng-click="sendTorrentUrl()" class="btn btn-primary">Submit</button>
                     </form>
@@ -39,13 +42,24 @@
         <div class="col-md-12">
             <div class="panel panel-white">
                 <div class="panel-body">
+                    <input type="checkbox" ng-model="checkboxAll" ng-change="selectAll()">
+                    <i class="fa fa-pause" ng-click="torrentStop([])"></i>
+                    <i class="fa fa-play" ng-click="torrentStart([])"></i>
+                    <a href="" ng-click="torrentRemove([], true)"> <i class="fa fa-trash"></i> Delete local </a>
+                    <a href="" ng-click="torrentRemove([], false)"> <i class="fa fa-trash"></i> Delete torrent </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="panel panel-white">
+                <div class="panel-body">
                     <div class="table-responsive">
                         <table class="display table" style="width: 100%; cellspacing: 0;">
                             <tbody ng-repeat="torrent in torrents">
                                 <tr>
                                     <td>
-                                        <div> <input type="checkbox" ng-model="Checkboxtorrent" ng-change="checkboxSwitch(torrent.id)"> </div>
-                                        <div> {{torrent.name}} </div>
+                                        <div> <input type="checkbox" ng-model="torrent.checkbox" ng-change="checkboxSwitch(torrent.id)"> </div>
+                                        <div> <a href="#" editable-text="torrent.name">{{ torrent.name || 'empty' }}</a> </div>
                                         <div>
                                             <i class="fa fa-arrow-down"></i> {{FileConvertSize(torrent.rateDownload)}}/s -
                                             <i class="fa fa-arrow-up"></i> {{FileConvertSize(torrent.rateUpload)}}/s -
@@ -57,10 +71,10 @@
                                                 {{torrent.percentDone | number:2}} %
                                             </div>
                                         </div>
-                                        <i class="fa fa-pause" ng-click="torrentStop(torrent.id)"></i>
-                                        <i class="fa fa-play" ng-click="torrentStart(torrent.id)"></i>
-                                        <a href="" ng-click="torrentRemove(torrent.id, true)"> <i class="fa fa-trash"></i> Delete local </a>
-                                        <a href="" ng-click="torrentRemove(torrent.id, false)"> <i class="fa fa-trash"></i> Delete torrent </a>
+                                        <i class="fa fa-pause" ng-click="torrentStop([torrent.id])"></i>
+                                        <i class="fa fa-play" ng-click="torrentStart([torrent.id])"></i>
+                                        <a href="" ng-click="torrentRemove([torrent.id], true)"> <i class="fa fa-trash"></i> Delete local </a>
+                                        <a href="" ng-click="torrentRemove([torrent.id], false)"> <i class="fa fa-trash"></i> Delete torrent </a>
                                     </td>
                                 </tr>
                             </tbody>
