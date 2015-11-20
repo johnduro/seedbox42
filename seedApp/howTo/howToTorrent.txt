@@ -14,25 +14,24 @@ liste & explications des routes pour les torrent :
 	GET : /torrent/refresh/:id :
 		recupere les infos pour refresh le torrent d'id :id
 
-	DELETE : /torrent/:id (teste/marche):
-		supprime un torrent depuuis l'id
-		envoyer l'id du torrent dans :id et un champ removeLocalData avec 'true' ou 'false' suivant que l'on veuille ou non supprimer les fichiers du serveur
-		faire un id optionnnel pour faire un delete all ?? seulement admin ??
+	DELETE : /torrent/ ():
+		supprime un ou plusieurs torrents se trouvant dans un tableau
+		envoyer la/les ids du/des torrent dans un tableau dans le champ 'ids' et un champ removeLocalData avec 'true' ou 'false' suivant que l'on veuille ou non supprimer les fichiers du serveur
 
-	POST : /torrent/move/:direction/:id? (teste/marche):
-		bouge un torrent dans la queue
+	POST : /torrent/move/:direction ():
+		bouge un/des torrent(s) dans la queue
 		envoyer la direction dans :direction (top, up, down, bottom)
-		envoyer l'id dans :id ou alors ne rien envoyer pour que l'action s'applique a tous les torrents
+		envoyer la/les id(s) dans un array dans le champ 'ids' du body
 		directions :
 			top = au sommet de la queue
 			up = une place au dessus
 			down = une place en dessous
 			bottom = tout en bas de la queue
 
-	POST : /torrent/action/:action/:id? (teste/marche):
+	POST : /torrent/action/:action ():
 		demarre/demarre tout de suite/stop/verifie/demande de nouveau peer
 		envoyer la direction dans :direction (top, up, down, bottom)
-		envoyer l'id dans :id ou alors ne rien envoyer pour que l'action s'applique a tous les torrents
+		envoyer la/les id(s) dans un array dans le champ 'ids' du body
 		actions :
 			start = demarre un torrent
 			start-now = demarre tout de suite

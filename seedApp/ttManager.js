@@ -7,8 +7,8 @@
  * + generation du fichier de config
  * - ajout d'un dossier de film deja present (+ path)
  * - ajout des torrents non suivis dans la db
+ * - creation d'utilisateur
  * ????
- *
  */
 
 var fs = require('fs');
@@ -22,12 +22,13 @@ var generate = require('./config/generate');
 var tSettings = require('./config/transmission');
 var TransmissionNode = require('./transmission/transmissionNode');
 var File = require('./models/File');
+var User = require('./models/User');
 var ft = require('./utils/ft');
 var filesInfos = require('./utils/filesInfos');
 
 var miniOpt = {
 	string: ['add-directory'],
-	boolean: ['check-database', 'check-conf-file', 'transmission-to-conf', 'conf-to-transmission', 'generate-conf', 'add-existing-torrents']
+	boolean: ['check-database', 'check-conf-file', 'transmission-to-conf', 'conf-to-transmission', 'generate-conf', 'add-existing-torrents', 'create-user']
 };
 
 // var configFileName = './config.json';
@@ -271,7 +272,10 @@ if (argvParsed['check-database'])
 {
 	mongoose.connect("mongodb://" + config.mongodb.address + '/' + config.mongodb.name, function (err) { //faire un fichier mongo, dans config, de connexion >?
 		if (err)
-			console.log(chalk.red("Could not connect to database"));
+		{
+			console.log(chalk.red("Could not connect to database, please check your configuration file"));
+			process.exit();
+		}
 		else
 		{
 			File.find({ isFinished: true })
@@ -317,38 +321,68 @@ if (argvOg['add-directory'] && argvParsed['add-directory'] != '')
 {
 	var rows =  process.stdout.rows;
 	mongoose.connect("mongodb://" + config.mongodb.address + '/' + config.mongodb.name, function (err) { //faire un fichier mongo, dans config, de connexion >?
-		filesInfos.getDirInfos(argvParsed['add-directory'], function (err, data) {
+		User.findOne({ role: 0 }).sort({ createdAt: -1 }).exec( function (err, user) {
 			if (err)
 			{
-				console.log(chalk.red(util.format('"%s" is an invalid directory, please choose another, error:')));
-				console.log(err);
+				console.log(chalk.red("Could not connect to database, please check your configuration file"));
+				process.exit();
+			}
+			else if (user == null)
+			{
+				console.log(chalk.red('No admin in database, please create one using "--create-user" command'));
+				process.exit();
 			}
 			else
 			{
-				ft.checkExistentFiles(data, function (err, result) {
+				if (argvParsed['add-directory'].slice(-1) == '/')
+					argvParsed['add-directory'] = argvParsed['add-directory'].slice(0, -1);
+				filesInfos.getDirInfos(argvParsed['add-directory'], function (err, data) {
 					if (err)
-						console.log(chalk.red('An error occured while accessing the database'));
+					{
+						console.log(chalk.red(util.format('"%s" is an invalid directory, please choose another, error:')));
+						console.log(err);
+					}
 					else
 					{
-						var choices = [];
-						result.forEach(function (file) {
-							var name = convertSize(file.size) + ' - ' + file.path;
-							if (file.rights.write)
-								name += (' - ' + chalk.yellow("You may not have the right to write/delete this file"));
-							if (file.rights.read)
-								name += (' - ' + chalk.red("You may not have the right to read this file"));
-							choices.push({ name: name });
-						});
-						inquirer.prompt([
+						ft.checkExistentFiles(data, function (err, result) {
+							if (err)
+								console.log(chalk.red('An error occured while accessing the database'));
+							else
 							{
-								type: "checkbox",
-								message: "Select files you want to add to your database",
-								name: "files",
-								choices: choices
+								var choices = [];
+								var resObj = {};
+								result.forEach(function (file) {
+									var name = convertSize(file.size) + ' - ' + file.fileType + ' - ' + file.path;
+									if (file.rights.write)
+										name += (' - ' + chalk.yellow("You may not have the right to write/delete this file"));
+									if (file.rights.read)
+										name += (' - ' + chalk.red("You may not have the right to read this file"));
+									choices.push({ name: name });
+									resObj[name] = file;
+								});
+								inquirer.prompt([
+									{
+										type: "checkbox",
+										message: "Select files you want to add to your database",
+										name: "files",
+										choices: choices
+									}
+								], function (answers) {
+									var i = 0;
+									(function next () {
+										var file = answers.files[i++];
+										if (!file)
+											process.exit();
+										File.insertFile(resObj[file], user._id, function (err, fileAd) {
+											if (err)
+												console.log(chalk.red(util.format('An error occured while adding "%s" to the database', file.name)));
+											else
+												console.log(chalk.green(util.format('File "%s" was successfully added to the database', fileAd.name)));
+											next();
+										});
+									})();
+								});
 							}
-						], function (answers) {
-							console.log("ANS > ", answers);
-							// enregistrer les resultats
 						});
 					}
 				});
