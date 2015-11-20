@@ -1,10 +1,11 @@
-
-var mongoose = require('mongoose');
-var ft = require('../utils/ft');
-var format = require('../utils/format');
 var fs = require('fs');
+var pathS = require('path');
+var mongoose = require('mongoose');
+var btoa = require('btoa');
 var rimraf = require('rimraf');
 var User = require('../models/User.js');
+var ft = require('../utils/ft');
+var format = require('../utils/format');
 
 
 /**
@@ -139,6 +140,34 @@ FileSchema.statics = {
 				});
 				cb(null, files);
 			}
+		});
+	},
+
+	createFile: function (torrentAdded, userId, cb) {
+		this.create({ name: torrentAdded['name'], creator: userId, hashString: torrentAdded['hashString']}, function (err, file) {
+			if (err)
+				cb(err);
+			else
+				cb(null, file);
+		});
+	},
+
+	insertFile: function (file, userId, cb) {
+		var fileToInsert = {
+			name: pathS.basename(file.path),
+			path: file.path,
+			size: file.size,
+			creator:  mongoose.mongo.ObjectID(userId),
+			hashString: btoa(file.path),
+			isFinished: true,
+			fileType: file.fileType,
+			createdAt: Date.now()
+		};
+		this.create(fileToInsert, function (err, file) {
+			if (err)
+				cb(err);
+			else
+				cb(null, file);
 		});
 	}
 

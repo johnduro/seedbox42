@@ -1,4 +1,3 @@
-
 var User = require('../models/User');
 
 module.exports = {
@@ -52,5 +51,15 @@ module.exports = {
 				loop();
 			});
 		})();
+	},
+
+	torrentIds: function (ids) {
+		var ret = [];
+		if (typeof ids == 'string')
+			ids = [ids];
+		ids.forEach(function (id) {
+			ret.push(parseInt(id, 10));
+		});
+		return (ret);
 	}
 };

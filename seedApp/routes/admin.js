@@ -160,30 +160,40 @@ router.put('/new-directory', rightsMW.admin, function (req, res, next) {
 		if (!file)
 		{
 			if (error)
-				return res.json({ success: false, message: "An occured while adding files", data: result });
+				return res.json({ success: false, message: "An error occured while adding files", data: result });
 			else
 				return res.json({ success: true, message: "File(s) successfully added", data: result });
 		}
-		var fileToInsert = {
-			name: pathS.basename(file.path),
-			path: file.path,
-			size: file.size,
-			creator:  mongoose.mongo.ObjectID(req.user._id),
-			hashString: btoa(file.path),
-			isFinished: true,
-			fileType: file.fileType,
-			createdAt: Date.now()
-		};
-		File.create(fileToInsert, function (err, newFile) {
+		File.insertFile(file, req.user._id, function (err, newFile) {
 			if (err)
 			{
 				error = true;
-				result.push({ error: err, path: fileToInsert.path });
+				result.push({ error: err, path: file.path });
 			}
 			else
 				result.push(newFile);
 			loop();
 		});
+		// var fileToInsert = {
+		// 	name: pathS.basename(file.path),
+		// 	path: file.path,
+		// 	size: file.size,
+		// 	creator:  mongoose.mongo.ObjectID(req.user._id),
+		// 	hashString: btoa(file.path),
+		// 	isFinished: true,
+		// 	fileType: file.fileType,
+		// 	createdAt: Date.now()
+		// };
+		// File.create(fileToInsert, function (err, newFile) {
+		// 	if (err)
+		// 	{
+		// 		error = true;
+		// 		result.push({ error: err, path: fileToInsert.path });
+		// 	}
+		// 	else
+		// 		result.push(newFile);
+		// 	loop();
+		// });
 	})();
 });
 
