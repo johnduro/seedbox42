@@ -1,6 +1,7 @@
-var File = require('../models/File.js');
 var fs = require('fs');
 var mime = require('mime');
+var File = require('../models/File.js');
+var format = require('../utils/format');
 
 module.exports = function (socket, io, transmission) {
 
@@ -102,12 +103,12 @@ module.exports = function (socket, io, transmission) {
 	/**
 	 * Create File
 	 */
-	var createFile = function (torrentAdded, userId) {
-		File.create({ name: torrentAdded['name'], creator: userId, hashString: torrentAdded['hashString']}, function (err, file) {
-			if (err)
-				throw err;
-		});
-	};
+	// var createFile = function (torrentAdded, userId) {
+	// 	File.create({ name: torrentAdded['name'], creator: userId, hashString: torrentAdded['hashString']}, function (err, file) {
+	// 		if (err)
+	// 			throw err;
+	// 	});
+	// };
 
 
 
@@ -143,13 +144,15 @@ module.exports = function (socket, io, transmission) {
 	 */
 	socket.on('delete:torrent', function (data) {
 		var removeLocalData = data.removeLocalData;
-		var id = parseInt(data.id, 10);
-		transmission.torrentGet(['hashString', 'name'], id, function (err, respGet) {
+		// var id = parseInt(data.id, 10);
+		var ids = format.torrentsIds(data.ids);
+		transmission.torrentGet(['hashString', 'name'], ids, function (err, respGet) {
 			if (err)
-				console.log('Socket - On - delete:torrent: ', err);
+				socket.emit('delete:torrent', { success: false, message: 'Could not remove torrent', error: err });
+				// console.log('Socket - On - delete:torrent: ', err);
 			else
 			{
-				transmission.torrentRemove(id, removeLocalData, function (err, respRemove) {
+				transmission.torrentRemove(ids, removeLocalData, function (err, respRemove) {
 					if (err)
 						socket.emit('delete:torrent', { success: false, message: "Could not remove torrent" });
 					else
@@ -159,14 +162,24 @@ module.exports = function (socket, io, transmission) {
 						{
 							if (removeLocalData)
 							{
-								File.findOneAndRemove({ hashString: respGet['torrents'][0]['hashString'] }, function (err, file) {
+								var toFind = [];
+								respGet['torrents'].forEach(function (torrent) {
+									toFind.push(torrent.hashString);
+								});
+								// File.findOneAndRemove({ hashString: respGet['torrents'][0]['hashString'] }, function (err, file) {
+								File.remove({ hashString:  { $in: toFind } }, function (err, file) {
 									if (err)
 										console.log('Socket - On - delete:torrent: ', err);
 								});
 							}
-							var index = finishedTorrents.indexOf(respGet['torrents'][0]['name']);
-							if (index > 0)
-								finishedTorrents.splice(index, 1);
+							respGet['torrents'].forEach(function (torrent) {
+								var index = finishedTorrents.indexOf(torrent.name);
+								if (index > 0)
+									finishedTorrents.splice(index, 1);
+							});
+							// var index = finishedTorrents.indexOf(respGet['torrents'][0]['name']);
+							// if (index > 0)
+							// 	finishedTorrents.splice(index, 1);
 						}
 					}
 				});
@@ -190,8 +203,13 @@ module.exports = function (socket, io, transmission) {
 					socket.emit('post:torrent', { success: false, message: 'duplicate, torrent already present' });
 				else if ('torrent-added' in resp)
 				{
-					createFile(resp['torrent-added'], data.id);
-					io.sockets.emit('post:torrent', { success: true, message: 'torrent successfully added', id: resp['torrent-added']['id'], name: resp['torrent-added']['name'] });
+					// createFile(resp['torrent-added'], data.id);
+					File.createFile(resp['torrent-added'], data.id, function (err, file) {
+						if (err)
+							io.sockets.emit('post:torrent', { success: false, message: 'torrent successfully added but adding it in db failed', id: resp['torrent-added']['id'], name: resp['torrent-added']['name'], error: err });
+						else
+							io.sockets.emit('post:torrent', { success: true, message: 'torrent successfully added', id: resp['torrent-added']['id'], name: file.name });
+					});
 				}
 				else
 					socket.emit('post:torrent', { success: false, message: 'unexpected error' });
