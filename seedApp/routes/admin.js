@@ -164,7 +164,7 @@ router.put('/new-directory', rightsMW.admin, function (req, res, next) {
 			else
 				return res.json({ success: true, message: "File(s) successfully added", data: result });
 		}
-		File.insertFile(file, req.user._id, function (err, newFile) {
+		File.insertFile(file, req.user._id, btoa(file.path), function (err, newFile) {
 			if (err)
 			{
 				error = true;

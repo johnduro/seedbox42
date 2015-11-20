@@ -1,7 +1,6 @@
 var fs = require('fs');
 var pathS = require('path');
 var mongoose = require('mongoose');
-var btoa = require('btoa');
 var rimraf = require('rimraf');
 var User = require('../models/User.js');
 var ft = require('../utils/ft');
@@ -152,13 +151,15 @@ FileSchema.statics = {
 		});
 	},
 
-	insertFile: function (file, userId, cb) {
+	// insertFile: function (file, userId, cb) {
+	insertFile: function (file, userId, hashString, cb) {
 		var fileToInsert = {
 			name: pathS.basename(file.path),
 			path: file.path,
 			size: file.size,
 			creator:  mongoose.mongo.ObjectID(userId),
-			hashString: btoa(file.path),
+			// hashString: btoa(file.path),
+			hashString: hashString,
 			isFinished: true,
 			fileType: file.fileType,
 			createdAt: Date.now()

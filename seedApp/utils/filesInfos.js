@@ -160,7 +160,6 @@ module.exports = {
 		}
 	},
 
-
 	getDirInfos: function (path, done) {
 		var result = [];
 		fs.stat(path, function (err, fStat) {
@@ -198,6 +197,18 @@ module.exports = {
 				});
 			}
 		});
+	},
+
+	fileTypeSync: function (path) {
+		try {
+			var stat = fs.statSync(path);
+			if (stat.isDirectory())
+				return "folder";
+			else
+				return mime.lookup(path);
+		} catch (e) {
+			return 'error';
+		}
 	}
 
 };
