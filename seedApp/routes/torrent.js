@@ -160,7 +160,7 @@ router.post('/move/:direction', function (req, res, next) {
 // });
 
 router.post('/action/:action', function (req, res, next) {
-	var ids = format.torrentIds(req.body.ids);
+	var ids = format.torrentsIds(req.body.ids);
 	req.app.locals.transmission.torrentActionRequest('torrent-' + req.params.action, ids, function (err, resp) {
 		if (err)
 			res.json({ success: false, message: "Action: " + req.params.action + " failed" });

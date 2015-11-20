@@ -73,6 +73,37 @@ app.service('Tools', function ($rootScope, RequestHandler, $timeout, $modal) {
     };
 
     /**
+    * Retourne le nombre d'item possedent la valeur recherché pour un element donné
+    * @param {array} arrayItems - Tableau avec les differents rootscope a verifier.
+    * @param {string} column - champ sur lequel la recheche sera effectuée.
+    * @param {array} value - Valeur recherchée.
+    */
+    var getCountValue = function (arrayItems, column, value) {
+        var count = 0;
+        for (var key in arrayItems) {
+            if (arrayItems[key][column] == value)
+                count++;
+        }
+        return count;
+    };
+
+    /**
+    * Retourne un tableau d'items contenant la valeur du champ souhaité pour
+    * chaque item matchant avec la cle valeur passee en parametre
+    * @param {array} arrayItems - Tableau avec les differents rootscope a verifier.
+    * @param {string} column - champ sur lequel la recheche sera effectuée.
+    * @param {array} value - Valeur recherchée.
+    */
+    var getElementForMatchValue = function (arrayItems, columnReturn, columnSearch, valueSearch) {
+        var items = [];
+        for (var key in arrayItems) {
+            if (arrayItems[key][columnSearch] == valueSearch)
+                items.push(arrayItems[key][columnReturn]);
+        }
+        return items;
+    };
+
+    /**
     * Lance le loading jusau'au moment ou toutes les variables sont setter.
     * @param {array} array - Tableau avec les differents rootscope a verifier.
     */
@@ -173,6 +204,16 @@ app.service('Tools', function ($rootScope, RequestHandler, $timeout, $modal) {
         });
     };
 
+    var FileConvertSize = function (aSize){
+        if (aSize < 1)
+            return "0 octets";
+		aSize = Math.abs(parseInt(aSize, 10));
+		var def = [[1, 'octets'], [1024, 'ko'], [1024*1024, 'Mo'], [1024*1024*1024, 'Go'], [1024*1024*1024*1024, 'To']];
+		for(var i=0; i<def.length; i++){
+			if(aSize<def[i][0])
+				return (aSize/def[i-1][0]).toFixed(2)+' '+def[i-1][1];
+		}
+	}
 
     return {
         phpjs: phpjs,
@@ -185,6 +226,9 @@ app.service('Tools', function ($rootScope, RequestHandler, $timeout, $modal) {
         setItemInRootScope: setItemInRootScope,
         loading: loading,
         popMessage: popMessage,
-        modalConfirm: modalConfirm
+        modalConfirm: modalConfirm,
+        FileConvertSize: FileConvertSize,
+        getCountValue: getCountValue,
+        getElementForMatchValue: getElementForMatchValue
     };
 });

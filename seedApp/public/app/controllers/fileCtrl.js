@@ -1,4 +1,4 @@
-app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $modal, $http, RequestHandler, $sce){
+app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $modal, $http, RequestHandler, $sce, Tools){
 
     $scope.pathActualString = "";
     var pathActualArray = [];
@@ -6,20 +6,11 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
     console.log($rootScope.states);
 
 // --------------------------------------------- FUNCTION PRIVATE --------------------------------------------
-    function FileConvertSize(aSize){
-		aSize = Math.abs(parseInt(aSize, 10));
-		var def = [[1, 'octets'], [1024, 'ko'], [1024*1024, 'Mo'], [1024*1024*1024, 'Go'], [1024*1024*1024*1024, 'To']];
-		for(var i=0; i<def.length; i++){
-			if(aSize<def[i][0])
-				return (aSize/def[i-1][0]).toFixed(2)+' '+def[i-1][1];
-		}
-	}
-
     function addType(list){
 		angular.forEach(list, function(value, key){
 			res = value.fileType.split("/");
 			value.type = res[0];
-			value.sizeConvert = FileConvertSize(value.size);
+			value.sizeConvert = Tools.FileConvertSize(value.size);
 		});
 	};
 
@@ -36,7 +27,7 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
         RequestHandler.get(api + "file/show/" + $stateParams.file)
             .then(function(result){
                 $scope.torrent = result.data.file;
-                $scope.torrent.sizeConvert = FileConvertSize($scope.torrent.size);
+                $scope.torrent.sizeConvert = Tools.FileConvertSize($scope.torrent.size);
                 console.log("TORRENT : ", $scope.torrent);
 
                 if (result.data.data.fileList.length){

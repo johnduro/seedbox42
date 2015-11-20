@@ -157,7 +157,7 @@ module.exports = function (socket, io, transmission) {
 						socket.emit('delete:torrent', { success: false, message: "Could not remove torrent" });
 					else
 					{
-						io.sockets.emit('delete:torrent', { success: true, id: id, message: 'Torrent removed' });
+						io.sockets.emit('delete:torrent', { success: true, ids: ids, message: 'Torrent removed' });
 						if (respGet['torrents'].length > 0)
 						{
 							if (removeLocalData)

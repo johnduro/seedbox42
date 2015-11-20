@@ -55,7 +55,7 @@ module.exports = {
 		})();
 	},
 
-	torrentIds: function (ids) {
+	torrentsIds: function (ids) {
 		var ret = [];
 		if (typeof ids == 'string')
 			ids = [ids];
