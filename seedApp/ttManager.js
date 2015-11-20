@@ -5,7 +5,7 @@
  * + mise a jour du fichier de config depuis transmission
  * + mise a jour de transmission depuis le fichier de config
  * + generation du fichier de config
- * - ajout d'un dossier de film deja present (+ path)
+ * + ajout d'un dossier de film deja present (+ path)
  * - ajout des torrents non suivis dans la db
  * - creation d'utilisateur
  * ????
@@ -24,6 +24,7 @@ var TransmissionNode = require('./transmission/transmissionNode');
 var File = require('./models/File');
 var User = require('./models/User');
 var ft = require('./utils/ft');
+var format = require('./utils/format');
 var filesInfos = require('./utils/filesInfos');
 
 var miniOpt = {
@@ -38,18 +39,6 @@ var argvParsed = mini(process.argv.slice(2), miniOpt);
 console.log('og> ', argvOg);
 console.log('1> ', argvParsed);
 
-
-var convertSize = function (aSize) {
-	if (aSize <= 0)
-		return "0 octets";
-	aSize = Math.abs(parseInt(aSize, 10));
-	var def = [[1, 'octets'], [1024, 'ko'], [1024 * 1024, 'Mo'], [1024 * 1024 * 1024, 'Go'], [1024 * 1024 * 1024 * 1024, 'To']];
-	for (var i = 0; i < def.length; i++)
-	{
-		if (aSize < def[i][0])
-			return (aSize / def[i - 1][0]).toFixed(2) + ' ' + def[i - 1][1];
-	}
-};
 
 var getConfigFile = function () {
 	try {
@@ -319,7 +308,6 @@ if (argvParsed['check-database'])
 
 if (argvOg['add-directory'] && argvParsed['add-directory'] != '')
 {
-	var rows =  process.stdout.rows;
 	mongoose.connect("mongodb://" + config.mongodb.address + '/' + config.mongodb.name, function (err) { //faire un fichier mongo, dans config, de connexion >?
 		User.findOne({ role: 0 }).sort({ createdAt: -1 }).exec( function (err, user) {
 			if (err)
@@ -349,23 +337,13 @@ if (argvOg['add-directory'] && argvParsed['add-directory'] != '')
 								console.log(chalk.red('An error occured while accessing the database'));
 							else
 							{
-								var choices = [];
-								var resObj = {};
-								result.forEach(function (file) {
-									var name = convertSize(file.size) + ' - ' + file.fileType + ' - ' + file.path;
-									if (file.rights.write)
-										name += (' - ' + chalk.yellow("You may not have the right to write/delete this file"));
-									if (file.rights.read)
-										name += (' - ' + chalk.red("You may not have the right to read this file"));
-									choices.push({ name: name });
-									resObj[name] = file;
-								});
+								var formated = format.managerAddDirectory(result);
 								inquirer.prompt([
 									{
 										type: "checkbox",
 										message: "Select files you want to add to your database",
 										name: "files",
-										choices: choices
+										choices: formated.choices
 									}
 								], function (answers) {
 									var i = 0;
@@ -373,7 +351,7 @@ if (argvOg['add-directory'] && argvParsed['add-directory'] != '')
 										var file = answers.files[i++];
 										if (!file)
 											process.exit();
-										File.insertFile(resObj[file], user._id, function (err, fileAd) {
+										File.insertFile(formated.filesObj[file], user._id, function (err, fileAd) {
 											if (err)
 												console.log(chalk.red(util.format('An error occured while adding "%s" to the database', file.name)));
 											else
