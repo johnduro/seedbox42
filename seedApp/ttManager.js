@@ -6,8 +6,8 @@
  * + mise a jour de transmission depuis le fichier de config
  * + generation du fichier de config
  * + ajout d'un dossier de film deja present (+ path)
- * - ajout des torrents non suivis dans la db
- * - creation d'utilisateur
+ * + ajout des torrents non suivis dans la db
+ * + creation d'utilisateur
  * ????
  */
 
@@ -17,6 +17,8 @@ var mini = require('minimist');
 var chalk = require('chalk');
 var inquirer = require('inquirer');
 var util = require('util');
+var btoa = require('btoa');
+var mime = require('mime');
 var validity = require('./config/validity');
 var generate = require('./config/generate');
 var tSettings = require('./config/transmission');
@@ -36,8 +38,8 @@ var miniOpt = {
 var configFileName = './toto.json';
 var argvOg = mini(process.argv.slice(2));
 var argvParsed = mini(process.argv.slice(2), miniOpt);
-console.log('og> ', argvOg);
-console.log('1> ', argvParsed);
+// console.log('og> ', argvOg);
+// console.log('1> ', argvParsed);
 
 
 var getConfigFile = function () {
@@ -221,7 +223,7 @@ if (argvParsed['generate-conf'])
 }
 
 
-if (argvParsed['conf-to-transmission'] || argvParsed['transmission-to-conf'] || argvParsed['check-database'] || (argvOg['add-directory'] && argvParsed['add-directory'] != ''))
+if (argvParsed['conf-to-transmission'] || argvParsed['transmission-to-conf'] || argvParsed['check-database'] || (argvOg['add-directory'] && argvParsed['add-directory'] != '') || argvParsed['add-existing-torrents'] || argvParsed['create-user'])
 {
 	var config = getConfigFile();
 	var transmission = new TransmissionNode(config.transmission);
@@ -351,7 +353,7 @@ if (argvOg['add-directory'] && argvParsed['add-directory'] != '')
 										var file = answers.files[i++];
 										if (!file)
 											process.exit();
-										File.insertFile(formated.filesObj[file], user._id, function (err, fileAd) {
+										File.insertFile(formated.filesObj[file], user._id, btoa(formated.filesObj[file].path),function (err, fileAd) {
 											if (err)
 												console.log(chalk.red(util.format('An error occured while adding "%s" to the database', file.name)));
 											else
@@ -371,4 +373,154 @@ if (argvOg['add-directory'] && argvParsed['add-directory'] != '')
 else if (argvOg['add-directory'] && argvParsed['add-directory'] == '')
 {
 	console.log(util.format('Usage: "./ttManager --add-directory path/to/directory"'));
+}
+
+
+if (argvParsed['add-existing-torrents'])
+{
+	mongoose.connect("mongodb://" + config.mongodb.address + '/' + config.mongodb.name, function (err) { //faire un fichier mongo, dans config, de connexion >?
+		User.findOne({ role: 0 }).sort({ createdAt: -1 }).exec( function (err, user) {
+			if (err)
+			{
+				console.log(chalk.red("Could not connect to database, please check your configuration file"));
+				process.exit();
+			}
+			else if (user == null)
+			{
+				console.log(chalk.red('No admin in database, please create one using "--create-user" command'));
+				process.exit();
+			}
+			else
+			{
+				transmission.torrentGet(['hashString', 'name', 'downloadDir', 'totalSize', "status", "leftUntilDone", "percentDone"], {}, function (err, resp) {
+					if (err)
+						console.log(chalk.red("An error occured while retreiving torrents from transmission, check your configuration, error : "), err);
+					else
+					{
+						console.log(chalk.green(util.format("%d torrent(s) found in transmission", resp.torrents.length)));
+						var i = 0;
+						var counter = 0;
+						(function next() {
+							var torrent = resp.torrents[i++];
+							if (!torrent)
+							{
+								console.log(chalk.green(util.format("%d torrent(s) were added to the database", counter)));
+								process.exit();
+							}
+							var path = torrent.downloadDir + '/' + torrent.name;
+							File.findOne({ $or: [ { hashString: torrent.hashString }, { path: path } ] }, function (err, file) {
+								if (err)
+								{
+									console.log(chalk.red("There was an issue with the database, error: "), err);
+									process.exit();
+								}
+								else if (file == null)
+								{
+									if (torrent['leftUntilDone'] === 0 && torrent["percentDone"] === 1.0 && (torrent["status"] > 4 || torrent['status'] == 0))
+									{
+										var fileToInsert = {
+											path: path,
+											size: torrent.totalSize,
+											fileType: filesInfos.fileTypeSync(path)
+										};
+										File.insertFile(fileToInsert, user._id, torrent.hashString, function (err, file) {
+											if (err)
+												console.log(chalk.red(util.format("There was an issue inserting %s to the database, error: ", torrent.name)), err);
+											else
+											{
+												console.log(chalk.green(util.format("%s successfully added to the database", file.name)));
+												counter++;
+											}
+											next();
+										});
+									}
+									else
+									{
+										File.createFile(torrent, user._id, function (err, file) {
+											if (err)
+												console.log(chalk.red(util.format("There was an issue inserting %s to the database, error: ", torrent.name)), err);
+											else
+											{
+												console.log(chalk.green(util.format("%s successfully added to the database", file.name)));
+												counter++;
+											}
+											next();
+										});
+									}
+								}
+								else
+									next();
+							});
+						})();
+					}
+				});
+			}
+		});
+	});
+}
+
+
+if (argvParsed['create-user'])
+{
+	mongoose.connect("mongodb://" + config.mongodb.address + '/' + config.mongodb.name, function (err) { //faire un fichier mongo, dans config, de connexion >?
+		if (err)
+			console.log(chalk.red('Could not connect to database, please check your configuration'));
+		else
+		{
+			var questions = [
+				{
+					type: 'input',
+					name: "login",
+					message: "Choose a login for this user:\n > ",
+					validate: function (value) {
+						if (value === '')
+							return chalk.red('Please enter a login');
+						else
+							return true;
+					}
+				},
+				{
+					type: 'password',
+					name: 'password',
+					message: "Choose a password:\n > ",
+					validate: function (value) {
+						if (value === '')
+							return chalk.red('Please enter a password');
+						else
+							return true;
+					}
+				},
+				{
+					type: 'input',
+					name: "mail",
+					message: "Enter this user email:\n > ",
+					validate: function (value) {
+						if (value === '')
+							return chalk.red('Please enter a valid email');
+						else
+							return true;
+					}
+				},
+				{
+					type: 'list',
+					name: 'role',
+					message: 'Choose the rights of this user:',
+					choices: ['admin', 'user'],
+					filter: function (value) {
+						return ((value === 'admin') ? 0 : 1);
+					}
+				}
+
+			];
+			inquirer.prompt(questions, function (answers) {
+				User.create(answers, function (err, newUser) {
+					if (err)
+						console.log(chalk.red("An error occured while creating the user"));
+					else
+						console.log(chalk.green("User successfully created"));
+					process.exit();
+				});
+			});
+		}
+	});
 }
