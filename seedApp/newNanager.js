@@ -4,25 +4,14 @@ var mini = require('minimist');
 var chalk = require('chalk');
 var TransmissionNode = require('./transmission/transmissionNode');
 var User = require('./models/User');
+var commands = require('./manager/commands');
 
-
-var configFileName = './config.json';
-// var configFileName = './toto.json';
+// var configFileName = './config.json';
+var configFileName = './toto.json';
 
 var scriptArguments = {
 	string: ['user'],
 	boolean: []
-};
-
-var commands = {
-	'add-directory': { type: 'string', functionArg: { config: null, mongo: null, user: null } },
-	'check-database': { type: 'boolean', functionArg: { config: null, mongo: null } },
-	'check-conf-file': { type: 'boolean', functionArg: { config: null } },
-	'transmission-to-conf': { type: 'boolean', functionArg: { config: null, transmission: null } },
-	'conf-to-transmission': { type: 'boolean', functionArg: { config: null, transmission: null } },
-	'generate-conf': { type: 'boolean', functionArg: {} },
-	'add-existing-torrents': { type: 'boolean', functionArg: { config: null, mongo: null, transmission: null, user: null } },
-	'create-user': { type: 'boolean', functionArg: { config: null, mongo: null } }
 };
 
 var functionArgs = {
@@ -172,18 +161,17 @@ var getFunctionArg = function (arg, done) {
 		done(functionArgs[arg]);
 };
 
-var callCommand = function (name, command, arg) {
-	console.log('CMD > ', command);
-	console.log('ARG > ', arg);
+var callCommand = function (name, command, commandLineArg) {
 	var fnArgs = Object.keys(command.functionArg);
-	// console.log('KEY > ', fnArg);
 	var i = 0;
 	(function loop() {
 		var arg = fnArgs[i++];
 		if (!arg)
 		{
 			console.log('calling : ', name);
-			require('./manager/' + name)(configFileName, command.functionArg, arg);
+			console.log('with: ', command.functionArg);
+			console.log('arg: ', arg);
+			require('./manager/' + name)(configFileName, command.functionArg, commandLineArg);
 			return ;
 		}
 		getFunctionArg(arg, function (ret) {
@@ -195,8 +183,10 @@ var callCommand = function (name, command, arg) {
 
 for (var name in commands)
 {
-	if (commands[name].type == 'string' && argvOg[name] && argvParsed[name] != '')
+	if (commands[name].type == 'string' && argvOg[name] && (argvParsed[name] != '' || commands[command].mandatoryStr == false ))
 		callCommand(name, commands[name], argvParsed[name]);
+	else if (commands[name].type == 'string' && argvOg[name] && argvParsed[name] == '')
+		console.log('Usage: ' + commands[name].usage);
 		//ajouter message erreur si pas d'arg
 	else if (commands[name].type == 'boolean' && argvParsed[name] == true)
 		callCommand(name, commands[name]);
