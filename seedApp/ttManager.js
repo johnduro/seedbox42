@@ -8,6 +8,7 @@
  * + ajout d'un dossier de film deja present (+ path)
  * + ajout des torrents non suivis dans la db
  * + creation d'utilisateur
+ * - modification d'utilisateur
  * ????
  */
 
