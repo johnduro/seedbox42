@@ -41,7 +41,7 @@ app.set('config', configInfos.config);
 app.locals.ttConfig = configInfos.config; //IMPLEMENTER DANS TOUTE L APP !!!!!!!!!!!
 app.locals.ttConfigDefault = configInfos.configDefault;
 app.locals.ttConfigFileName = configInfos.configFileName;
-app.locals.ttConfigDefaultName = configInfos.configDefaultName;
+// app.locals.ttConfigDefaultName = configInfos.configDefaultName;
 app.locals.connexionDb = configInfos.connexionDb;
 app.locals.transmission = configInfos.transmission;
 // ************************************

@@ -1,4 +1,4 @@
-{
+module.exports = {
 	"appPort": { "type": "number", "default": 3000, "switch": false, "range": true, "rangeValues": { "min": 1024, "max": 65535 } },
 	"secret": { "type": "string", "default": "", "switch": false, "range": false },
 	"mongodb": {
