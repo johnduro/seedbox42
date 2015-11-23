@@ -16,9 +16,13 @@ var app = angular.module('seedApp', [
 // ---------------------- variable global -------------------------------
 var api = "";
 
-app.run(function ($rootScope, $location, $http, $state, $timeout, Tools) {
+app.run(function ($rootScope, $location, $http, $state, $timeout, Tools, editableOptions, editableThemes) {
 
     api = "/";
+
+    editableThemes.bs3.inputClass = 'input-sm xeditable-input';
+    editableThemes.bs3.buttonsClass = 'btn-sm';
+    editableOptions.theme = 'bs3';
 
     $rootScope.tools = {
         convertFields: function(list){

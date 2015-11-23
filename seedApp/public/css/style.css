@@ -264,3 +264,7 @@ ul.rating {
 .row-selected {
     background-color: red;
 }
+
+.xeditable-input {
+    width: 500px;
+}
