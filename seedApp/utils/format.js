@@ -57,7 +57,7 @@ module.exports = {
 
 	torrentsIds: function (ids) {
 		var ret = [];
-		if (typeof ids == 'string')
+		if (typeof ids == 'string' || typeof ids == 'number')
 			ids = [ids];
 		ids.forEach(function (id) {
 			ret.push(parseInt(id, 10));

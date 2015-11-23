@@ -331,6 +331,12 @@ FileSchema.methods = {
 			if (err)
 				console.log("Download increment error: ", err);
 		});
+	},
+
+	renamePath: function (path, name, cb) {
+		this.path = path;
+		this.name = name;
+		this.save(cb);
 	}
 };
 
