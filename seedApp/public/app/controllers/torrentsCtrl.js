@@ -16,6 +16,11 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 	//------------------------------------------------  EVENTS SOCKETS -------------------------------------------------------
 	socket.emit('torrentRefresh');
 
+	socket.on("put:torrent:rename", function(data){
+		console.log("NEWNAME", data);
+		$scope.torrents[data.id].name = data.newName;
+	});
+
 	socket.on('delete:torrent', function(data){
 		for (var key in data.ids){
 			var index = $scope.itemSelected.indexOf(data.ids[key]);
@@ -61,6 +66,14 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 			arrayId = Tools.getElementForMatchValue($scope.torrents, "id", "checkbox", true);
 		}
 		socket.emit('delete:torrent', {"ids": arrayId, "removeLocalData": local});
+	};
+
+	$scope.torrentRename = function(data, id){
+		RequestHandler.put(api + "torrent/rename/" + id, {'newName': data})
+			.then(function(result){
+
+			});
+		console.log(id);
 	};
 
 	$scope.sendTorrentUrl = function(){
