@@ -53,7 +53,7 @@ router.post('/add-torrents', upload.torrent.array('torrent', 10), function(req, 
 				{
 					File.createFile(resp['torrent-added'], req.user._id, function (err, fileAd) {
 						if (err)
-							resAll.push({ success: false, message: 'Torrent was successfully added but there was an issuewhen adding it to the database', error: err, id: resp['torrent-added']['id'], name: resp['torrent-added']['name'] });
+							resAll.push({ success: false, message: 'Torrent was successfully added but there was an issue when adding it to the database', error: err, id: resp['torrent-added']['id'], name: resp['torrent-added']['name'] });
 						else
 							resAll.push({ success: true, message: 'Torrent successfully added', torrent: fileAd.filename });
 						req.app.io.sockets.emit('post:torrent', { success: true, message: 'torrent successfully added', id: resp['torrent-added']['id'], name: fileAd.filename });
@@ -108,33 +108,6 @@ router.delete('/', function (req, res, next) {
 			res.json({ success: true, message: 'Torrent(s) successfuly removed' });
 	});
 });
-// router.delete('/:id', function (req, res, next) {
-// 	var removeLocalData = (req.body.removeLocalData === "true");
-// 	var id = parseInt(req.params.id, 10);
-// 	if (removeLocalData)
-// 	{
-// 		req.app.locals.transmission.torrentGet(['hashString'], id, function (err, resp) {
-// 			if (err)
-// 				throw err;
-// 			else
-// 			{
-// 				if (resp['torrents'].length > 0)
-// 				{
-// 					File.findOneAndRemove({ hashString: resp['torrents'][0]['hashString'] }, function (err, file) {
-// 						if (err)
-// 							return next(err);
-// 					});
-// 				}
-// 			}
-// 		});
-// 	}
-// 	req.app.locals.transmission.torrentRemove(id, removeLocalData, function (err, resp) {
-// 		if (err)
-// 			res.json({ success: false, message: "Could not remove torrent" });
-// 		else
-// 			res.json({ success: true, message: 'Torrent successfuly removed' });
-// 	});
-// });
 
 router.post('/move/:direction', function (req, res, next) {
 	var ids = format.torrentIds(req.body.ids);
@@ -145,19 +118,6 @@ router.post('/move/:direction', function (req, res, next) {
 			res.json({ success: true, message: 'Torrent(s) successfuly moved ' + req.params.direction });
 	});
 });
-// router.post('/move/:direction/:id?', function (req, res, next) {
-// 	var ids;
-// 	if (!(req.params.id))
-// 		ids = {};
-// 	else
-// 		ids = parseInt(req.params.id, 10);
-// 	req.app.locals.transmission.queueMovementRequest('queue-move-' + req.params.direction, ids, function (err, resp) {
-// 		if (err)
-// 			res.json({ success: false, message: "Could not move torrent " + req.params.direction });
-// 		else
-// 			res.json({ success: true, message: 'Torrent successfuly moved ' + req.params.direction });
-// 	});
-// });
 
 router.post('/action/:action', function (req, res, next) {
 	var ids = format.torrentsIds(req.body.ids);
@@ -168,19 +128,46 @@ router.post('/action/:action', function (req, res, next) {
 			res.json({ success: true, message: "Action: " + req.params.action + " was a success" });
 	});
 });
-// router.post('/action/:action/:id?', function (req, res, next) {
-// 	var ids;
-// 	if (!(req.params.id))
-// 		ids = {};
-// 	else
-// 		ids = parseInt(req.params.id, 10);
-// 	req.app.locals.transmission.torrentActionRequest('torrent-' + req.params.action, ids, function (err, resp) {
-// 		if (err)
-// 			res.json({ success: false, message: "Action: " + req.params.action + " failed" });
-// 		else
-// 			res.json({ success: true, message: "Action: " + req.params.action + " was a success" });
-// 	});
-// });
+
+router.put('/rename/:id', function (req, res , next) {
+	var newName = req.body.newName;
+	var id = format.torrentsIds(req.params.id);
+	var transmission = req.app.locals.transmission;
+	transmission.torrentGet(['hashString', 'downloadDir'], id, function (err, respGet) {
+		if (respGet.torrents.length > 0)
+		{
+			File.findOne({ hashString: respGet.torrents[0].hashString }, { path: 1, name: 1 }, function (err, file) {
+				if (err)
+					res.json({ success: false, message: 'Database error', error: err });
+				else if (file == null)
+					res.json({ success: false, message: 'Could not find file' });
+				else
+				{
+					console.log('id: ', id);
+					console.log('path: ', file.path);
+					console.log('newName: ', (respGet.torrents[0].downloadDir + '/' +newName));
+					transmission.torrentRenamePath(id, file.name,  newName, function (err, resp) {
+						if (err)
+							res.json({ success: false, message: 'An error occured while renaming the file', error: err });
+						else
+						{
+							file.renamePath(respGet.torrents[0].downloadDir + '/' + resp.name, resp.name, function (err) {
+								if (err)
+									res.json({ success: false, message: 'Transmission succesfully changed torrent name but update in database failed' });
+								else
+								{
+									res.json({ success: true, message: 'Torrent successfully renamed', data: resp });
+									req.app.io.sockets.emit('put:torrent:rename', { success: true, message: 'A torrent was renamed', id: req.params.id, newName: newName });
+								}
+							});
+						}
+					});
+				}
+			});
+		}
+	});
+});
+
 
 router.get('/session-stats', function (req, res, next) {
 	req.app.locals.transmission.sessionStats(function (err, resp) {

@@ -197,6 +197,7 @@ for (var name in commands)
 {
 	if (commands[name].type == 'string' && argvOg[name] && argvParsed[name] != '')
 		callCommand(name, commands[name], argvParsed[name]);
+		//ajouter message erreur si pas d'arg
 	else if (commands[name].type == 'boolean' && argvParsed[name] == true)
 		callCommand(name, commands[name]);
 }
