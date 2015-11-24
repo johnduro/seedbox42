@@ -1,6 +1,6 @@
 //Handler qui gere les appels ajax
-app.factory('RequestHandler', ['$http', '$q', '$log', '$rootScope',
-    function ($http, $q, $log, $rootScope) {
+app.factory('RequestHandler', ['$http', '$q', '$log', '$rootScope', '$location',
+    function ($http, $q, $log, $rootScope, $location) {
 
         $rootScope.transaction = {};
 
@@ -27,6 +27,10 @@ app.factory('RequestHandler', ['$http', '$q', '$log', '$rootScope',
                         $rootScope.transaction.msg = data.detail;
                         $log.debug(data.detail);
                     }
+                    if (status == 403){
+                        localStorage.clear();
+                        $location.url('connexion');
+                    }
                     promise.resolve({"data": data, "status": status});
 
                 });
@@ -44,6 +48,10 @@ app.factory('RequestHandler', ['$http', '$q', '$log', '$rootScope',
                             if (data.status == 422 && typeof data.detail != "undefined") {
                                 $rootScope.transaction.msg = data.detail;
                                 $log.debug(data.detail);
+                            }
+                            if (status == 403){
+                                localStorage.clear();
+                                $location.url('connexion');
                             }
                             promise.resolve({"data": data, "status": status});
                         });
@@ -70,6 +78,10 @@ app.factory('RequestHandler', ['$http', '$q', '$log', '$rootScope',
                     if (data.status == 422 && typeof data.detail != "undefined") {
                         $rootScope.transaction.msg = data.detail;
                         $log.debug(data.detail);
+                    }
+                    if (status == 403){
+                        localStorage.clear();
+                        $location.url('connexion');
                     }
                     $log.error(status);
                     promise.resolve({"data": data, "status": status});
@@ -98,6 +110,10 @@ app.factory('RequestHandler', ['$http', '$q', '$log', '$rootScope',
                     if (data.status == 422 && typeof data.detail != "undefined") {
                         $rootScope.transaction.msg = data.detail;
                         $log.debug(data.detail);
+                    }
+                    if (status == 403){
+                        localStorage.clear();
+                        $location.url('connexion');
                     }
                     $log.error(status);
                     promise.resolve({"data": data, "status": status});
