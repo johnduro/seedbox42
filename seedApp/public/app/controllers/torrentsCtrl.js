@@ -12,6 +12,7 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 	$scope.newTorrentUrl = "";
 	$scope.torrents = {};
 	$scope.checkboxAll = false;
+	$scope.itemSelected = [];
 
 	//------------------------------------------------  EVENTS SOCKETS -------------------------------------------------------
 	socket.emit('torrentRefresh');
@@ -117,6 +118,16 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 			Tools.setAllItems($scope.torrents, "checkbox", false);
 		}
 	};
+
+	//------------------------------------------------  CLICK RIGHT -------------------------------------------------------
+	$scope.menuOptions = [
+	    ['Delete local', function ($itemScope) {
+			$scope.torrentRemove([$itemScope.torrent.id], true);
+	    }],
+	    ['Delete torrent', function ($itemScope) {
+	        $scope.torrentRemove([$itemScope.torrent.id], false)
+	    }]
+	];
 
 	//------------------------------------------------  DRAG & DROP-------------------------------------------------------
 
