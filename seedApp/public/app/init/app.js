@@ -10,7 +10,8 @@ var app = angular.module('seedApp', [
     'luegg.directives',
     'chart.js',
     'com.2fdevs.videogular',
-    'xeditable'
+    'xeditable',
+    'ui.bootstrap.contextMenu'
 ]);
 
 // ---------------------- variable global -------------------------------

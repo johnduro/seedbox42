@@ -10,6 +10,12 @@ app.controller('dashboardCtrl', function ($scope, $rootScope, $timeout, $locatio
 		$location.url('seedbox/file/' + file._id);
 	};
 
+
+	$scope.content = [
+    {"name" : "recent-user-file", "enabled" : "all", "type" : "files-list", "title": "recent-user-file", "order": 0},
+    {"name" : "recent-file", "enabled" : "all", "type" : "files-list", "title": "recent-file", "order": 0},
+];
+
 	RequestHandler.get(api + "dashboard/disk-space")
 		.then(function(result){
 			if (result.data.success){
