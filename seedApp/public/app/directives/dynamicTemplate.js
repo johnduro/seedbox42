@@ -7,7 +7,6 @@ app.directive('contentItem', function ($compile, RequestHandler, $rootScope, $lo
         RequestHandler.get("/app/views/partials/" + scope.content.template + ".html")
             .then(function(resultTemplate){
                 if (scope.content.name == "minichat"){
-                    
                     socket.emit("chat:get:message", null, function(data){
                 		scope.messages = data.message;
                         element.html(resultTemplate.data).show();
