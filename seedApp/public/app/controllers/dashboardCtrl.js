@@ -1,15 +1,14 @@
 
-app.controller('dashboardCtrl', function ($scope, $rootScope, $timeout, $location, RequestHandler, socket) {
+app.controller('dashboardCtrl', function ($scope, $rootScope, $timeout, $location, RequestHandler, socket, Tools) {
 
 	console.log("dashboardCtrl");
 
 	$scope.newMessage = "";
 
-	$scope.content = [
-	    {"name" : "recent-user-file", "enabled" : "all", "template" : "files-list", "title": "recent-user-file", "order": 3},
-	    {"name" : "recent-file", "enabled" : "all", "template" : "files-list", "title": "recent-file", "order": 1},
-		{"name" : "chat", "enabled" : "all", "template" : "dashboardChat", "title": "Mini chat", "order": 0}
-	];
+	Tools.getConfig().then(function(result){
+		$scope.content = result.dashboard.panels;
+		console.log($scope.content);
+	});
 
 	RequestHandler.get(api + "dashboard/disk-space")
 		.then(function(result){

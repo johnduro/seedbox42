@@ -18,6 +18,13 @@ app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http, $loca
 		}
 	}
 
+	RequestHandler.get(api + "admin/settings")
+        .then(function(result){
+            if (result.data.success){
+                $rootScope.config = result.data.data;
+            }
+        });
+
 	//Gestion des onglets du menu
 	$scope.isActive = function (viewLocation) {
         return viewLocation === $location.path();
