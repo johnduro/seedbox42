@@ -85,5 +85,14 @@ module.exports =
 			functionArg: {},
 			usage: ' --help',
 			help: 'Display this help'
+		},
+		'update-db': {
+			type: 'boolean',
+			functionArg: {
+				config: null,
+				mongo: null
+			},
+			usage: ' --update-db',
+			help: 'updatedb'
 		}
 	};

@@ -22,6 +22,7 @@ var FileSchema = new mongoose.Schema({
 	downloads: { type: Number, default: 0 },
 	privacy : { type: Number, default: 1 },
 	// torrent: String, //utile ?
+	commentsNbr: { type: Number, default: 0 },
 	comments: [{
 		text: { type: String, default: '' },
 		user: { type: mongoose.Schema.ObjectId, ref: 'User' },
@@ -31,6 +32,7 @@ var FileSchema = new mongoose.Schema({
 		user: { type: mongoose.Schema.ObjectId, ref: 'User' },
 		createdAt: { type: Date, default: Date.now }
 	}],
+	averageGrade: { type: Number, default: 0 },
 	grades: [{
 		user: { type: mongoose.Schema.ObjectId, ref: 'User' },
 		grade: Number
@@ -57,12 +59,11 @@ FileSchema.statics = {
 	},
 
 	getFileList: function (match, sort, limit, user, cb) {
+		var populateSelect = 'login role avatar';
 		match.isFinished = true;
 		var query = this.find(match);
-		// query.select('-path -creator -hashString -isFinished -privacy -torrentAddedAt');
 		query.select('-path -hashString -isFinished -privacy -torrentAddedAt');
-		// query.populate('creator');
-		query.populate({ path: 'creator', select: 'login role avatar' });
+		query.populate([{ path: 'creator', select: populateSelect }, { path: 'comments.user', select: populateSelect }, { path: 'locked.user', select: populateSelect }, { path: 'grades.user', select: populateSelect }]);
 		query.sort(sort);
 		if (limit > 0)
 			query.limit(limit);

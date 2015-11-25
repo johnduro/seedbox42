@@ -88,12 +88,18 @@ var panels = {
 	'oldest-user-locked-file': function (req, done) {
 		var dashConf = req.app.locals.ttConfig.dashboard;
 		var user = req.user;
-		File.getUserLockedFiles(user, 1, dashConf['file-number-exhibit'], function (err, files) {
+		File.getFileList({ "locked.user": user._id }, { "locked.createdAt": 1 }, dashConf['file-number-exhibit'], user, function (err, files) {
 			if (err)
 				done({ success: false, message: err });
 			else
 				done({ success: true, data: files });
 		});
+		// File.getUserLockedFiles(user, 1, dashConf['file-number-exhibit'], function (err, files) {
+		// 	if (err)
+		// 		done({ success: false, message: err });
+		// 	else
+		// 		done({ success: true, data: files });
+		// });
 	},
 	'oldest-locked-file': function (req, done) {
 		var dashConf = req.app.locals.ttConfig.dashboard;
