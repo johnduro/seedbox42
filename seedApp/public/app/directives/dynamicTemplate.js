@@ -15,7 +15,7 @@ app.directive('contentItem', function ($compile, RequestHandler, $rootScope, $lo
                 }else{
                     RequestHandler.get(api + "dashboard/" + scope.content.name)
                 		.then(function(result){
-                            if (result.status == 200){
+                            if (result.status == 200 && resultTemplate.status == 200){
                                 scope.files = result.data.data;
                     			$rootScope.tools.convertFields(scope.files);
                                 element.html(resultTemplate.data).show();
