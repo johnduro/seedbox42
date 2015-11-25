@@ -55,4 +55,54 @@ router.get('/disk-space', function (req, res, next) {
 	});
 });
 
+router.get('/:panel', function (req, res, next) {
+	panels[req.params.panel](req.user, req.app.locals.ttConfig.dashboard, function (ret) {
+		res.json(ret);
+	});
+});
+
+
+var panels = {
+	'recent-file': function (user, dashConf, done) {
+		File.getFileList({}, { createdAt: -1 }, dashConf['file-number-exhibit'], user, function (err, files) {
+			if (err)
+				done({ success: false, message: err });
+			else
+				done({ success: true, data: files });
+		});
+	},
+	'recent-user-file': function (user, dashConf, done) {
+		File.getFileList({ creator: user._id }, { createdAt: -1 }, dashConf['file-number-exhibit'], user, function (err, files) {
+			if (err)
+				done({ success: false, message: err });
+			else
+				done({ success: true, data: files });
+		});
+	},
+	'oldest-user-locked-file': function (user, dashConf, done) {
+		File.getUserLockedFiles(user, 1, dashConf['file-number-exhibit'], function (err, files) {
+			if (err)
+				done({ success: false, message: err });
+			else
+				done({ success: true, data: files });
+		});
+	},
+	'oldest-locked-file': function (user, dashConf, done) {
+		File.getFileList({ 'locked': { $exists: true, $not: { $size: 0 } } }, { "locked.createdAt": -1 }, dashConf['file-number-exhibit'], user, function (err, files) {
+			if (err)
+				done({ success: false, message: err });
+			else
+				done({ success: true, data: files });
+		});
+	},
+	'disk-space': function (user, dashConf, done) {
+		getTotalDiskSpace(req.app.locals.ttConfig["transmission-settings"]["download-dir"], function (err, diskInfos) {
+			if (err)
+				done({ success: false, message: err });
+			else
+				done({ success: true, data: diskInfos });
+		});
+	}
+};
+
 module.exports = router;

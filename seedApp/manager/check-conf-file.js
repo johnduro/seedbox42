@@ -1,5 +1,5 @@
 var configDefault = require('../config/default-config');
-var validity = require('./config/validity');
+var validity = require('../config/validity');
 
 module.exports = function (configFileName, args) {
 	var valErr = validity.checkConfig(args.config, configDefault, '', configFileName);

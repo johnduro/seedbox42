@@ -6,8 +6,8 @@ var TransmissionNode = require('./transmission/transmissionNode');
 var User = require('./models/User');
 var commands = require('./manager/commands');
 
-// var configFileName = './config.json';
-var configFileName = './toto.json';
+var configFileName = './config.json';
+// var configFileName = './toto.json';
 
 var scriptArguments = {
 	string: ['user'],

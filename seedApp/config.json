@@ -70,13 +70,71 @@
         "auto-delete": 30
     },
     "dashboard": {
+        "panels": [
+            {
+                "name": "recent-file",
+                "enabled": "all",
+                "type": "file-list",
+                "title": "latest upload files",
+                "order": 0
+            },
+            {
+                "name": "recent-user-file",
+                "enabled": "all",
+                "type": "file-list",
+                "title": "your latest upload files",
+                "order": 1
+            },
+            {
+                "name": "oldest-user-locked-file",
+                "enabled": "all",
+                "type": "file-list",
+                "title": "your oldest locked files",
+                "order": 2
+            },
+            {
+                "name": "oldest-locked-file",
+                "enabled": "all",
+                "type": "file-list",
+                "title": "oldest locked files",
+                "order": 3
+            },
+            {
+                "name": "best-rated-file",
+                "enabled": "all",
+                "type": "file-list",
+                "title": "best rated file",
+                "order": 4
+            },
+            {
+                "name": "most-commented-file",
+                "enabled": "all",
+                "type": "file-list",
+                "title": "most commented file",
+                "order": 5
+            },
+            {
+                "name": "disk-space",
+                "enabled": "all",
+                "type": "graph",
+                "title": "disk space",
+                "order": 6
+            },
+            {
+                "name": "minichat",
+                "enabled": "all",
+                "type": "chat",
+                "title": "minichat",
+                "order": 7
+            }
+        ],
+        "file-number-exhibit": 5,
+        "mini-chat-message-limit": 100,
         "recent-file-enabled": "all",
         "recent-user-file-enabled": "all",
         "recent-user-locked-file-enabled": "all",
-        "file-number-exhibit": 5,
         "disk-space-enabled": "all",
-        "mini-chat-enabled": "all",
-        "mini-chat-message-limit": 100
+        "mini-chat-enabled": "all"
     },
     "users": {
         "default-avatar": "default.png"
