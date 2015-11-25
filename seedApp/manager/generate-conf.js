@@ -108,7 +108,6 @@ var generateConfigurationFile = function (configFileName) {
 
 
 module.exports = function (configFileName, args) {
-	var genConf = true;
 	try {
 		fs.accessSync(configFileName, fs.F_OK | fs.W_OK);
 		inquirer.prompt([

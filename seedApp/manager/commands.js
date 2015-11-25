@@ -72,6 +72,14 @@ module.exports =
 			usage: ' --create-user',
 			help: 'Create a user, admin or simple user'
 		},
+		'update-conf': {
+			type: 'boolean',
+			functionArg: {
+				config: null
+			},
+			usage: ' --update-conf',
+			help: 'Update current configuration file with the default configuration and set the missing keys to the default values'
+		},
 		'help': {
 			type: 'boolean',
 			functionArg: {},

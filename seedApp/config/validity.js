@@ -1,12 +1,12 @@
 var util = require('util');
 var chalk = require('chalk');
 
-var configFileError = function (message) {
-	return (chalk.red(message));
+var keyValidityError = function (key, arborescence, configFileName) {
+	return (chalk.red(util.format('%s configuration file has no property %s', configFileName, arborescence) + chalk.underline(key)));
 };
 
 var errorMessage = function (key, value, arborescence, configFileName) {
-	var error = chalk.red(util.format("Value '%s' for key: %s%s is wrong", value, arborescence, key));
+	var error = chalk.red(util.format("Value '%s' for key: %s%s is wrong", value, arborescence, chalk.underline(key)));
 	return (error + "\n");
 };
 
@@ -28,8 +28,34 @@ var rangeValidityError = function (key, value, rangeValues, arborescence, config
 	return ret;
 };
 
+var checkArrayError = function checkArrayError(toMatch, arr, arborescence, configFileName) {
+	var errors = [];
+	for (var item in arr)
+	{
+		for (var key in toMatch)
+		{
+			if (toMatch[key].hasOwnProperty('type') && item.hasOwnProperty(key))
+			{
+				if (toMatch[key].type != typeof item[key])
+					errors.push(typeValidityError(key, item[key], toMatch[key].type, arborescence, configFileName));
+				else if (toMatch[key].switch == true)
+				{
+					if (toMatch[key].values.indexOf(item[key]) == -1)
+						errors.push(switchValidityError(key, item[key], toMatch[key].values, arborescence, configFileName));
+				}
+				if (toMatch[key].type == "number" && toMatch[key].range == true)
+				{
+					if (item[key] < toMatch[key].rangeValues.min || item[key] > toMatch[key].rangeValues.max)
+						errors.push(rangeValidityError(key, item[key], toMatch[key].rangeValues, arborescence, configFileName));
+				}
+			}
+		}
+	}
+	return errors;
+};
+
 module.exports = {
-	checkConfig: function self (config, defaultConfig, arborescence, configFileName) {
+	checkConfig: function checkConfig (config, defaultConfig, arborescence, configFileName) {
 		var errors = [];
 		for (var key in defaultConfig)
 		{
@@ -37,8 +63,14 @@ module.exports = {
 			{
 				if (defaultConfig[key].hasOwnProperty('type') && config.hasOwnProperty(key))
 				{
-					if (defaultConfig[key].type != typeof config[key])
+					if (defaultConfig[key].type != typeof config[key] && defaultConfig[key].type != 'array')
 						errors.push(typeValidityError(key, config[key], defaultConfig[key].type, arborescence, configFileName));
+					else if (defaultConfig[key].type == 'array' && Array.isArray(config[key]))
+					{
+						var arrayError = checkArrayError(defaultConfig[key].match, config[key], arborescence, configFileName);
+						if (arrayError.length > 0)
+							errors = errors.concat(arrayError);
+					}
 					else
 					{
 						if (defaultConfig[key].switch == true)
@@ -54,9 +86,9 @@ module.exports = {
 					}
 				}
 				else if (config.hasOwnProperty(key) && typeof config[key] == 'object')
-					errors = errors.concat(self(config[key], defaultConfig[key], arborescence + key + " -> ", configFileName));
+					errors = errors.concat(checkConfig(config[key], defaultConfig[key], arborescence + key + " -> ", configFileName));
 				else
-					configFileError("Config file has no property: " + key);
+					errors.push(keyValidityError(key, arborescence, configFileName));
 			}
 		}
 		return errors;
