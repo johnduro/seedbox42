@@ -45,30 +45,24 @@ var FileSchema = new mongoose.Schema({
  */
 FileSchema.statics = {
 	getFileById: function (id, cb) {
+		var populateSelect = 'login role avatar';
 		this.findOne({ _id: id, isFinished: true })
-			.select('-isFinished -path -hashString -torrentAddedAt')
+			.select('-isFinished -hashString -torrentAddedAt')
+			.populate([{ path: 'creator', select: populateSelect }, { path: 'comments.user', select: populateSelect }, { path: 'locked.user', select: populateSelect }, { path: 'grades.user', select: populateSelect }])
 			.exec(function (err, file) {
 				if (err)
 					return cb(err);
-				var retFile = file.toObject();
-				User.getByIdFormatShow(file.creator, function (err, fileCreator) {
-					if (err)
-						return cb(err);
-					retFile.creator = fileCreator;
-					format.commentList(file.comments, function (err, formatCom) {
-						if (err)
-							return cb(err);
-						retFile.comments = formatCom;
-						return cb(null, retFile);
-					});
-				});
+				return cb(null, file);
 			});
 	},
 
 	getFileList: function (match, sort, limit, user, cb) {
 		match.isFinished = true;
 		var query = this.find(match);
-		query.select('-path -creator -hashString -isFinished -privacy -torrentAddedAt');
+		// query.select('-path -creator -hashString -isFinished -privacy -torrentAddedAt');
+		query.select('-path -hashString -isFinished -privacy -torrentAddedAt');
+		// query.populate('creator');
+		query.populate({ path: 'creator', select: 'login role avatar' });
 		query.sort(sort);
 		if (limit > 0)
 			query.limit(limit);
@@ -197,7 +191,6 @@ FileSchema.statics = {
 
 FileSchema.methods = {
 	deleteFile: function (transmission, cb) {
-		// console.log("YOLO DELETE !! > ", this.name);
 		var self = this;
 		transmission.torrentRemove(self.hashString, false, function (err, resp) {
 			if (err)
@@ -245,6 +238,7 @@ FileSchema.methods = {
 
 	addGrade: function (user, grade, cb) {
 		var index = ft.indexOfByIdKey(this.grades, 'user', user._id);
+		// var index = ft.indexOfByUserId(this.grades, user._id);
 		if (index === -1)
 			this.grades.push({ user: user._id, grade: grade });
 		else
@@ -254,6 +248,7 @@ FileSchema.methods = {
 
 	modGrade: function (user, newGrade, cb) {
 		var index = ft.indexOfByIdKey(this.grades, 'user', user._id);
+		// var index = ft.indexOfByUserId(this.grades, user._id);
 		if (index > -1)
 			this.grades[index].grade = newGrade;
 		else
@@ -263,6 +258,7 @@ FileSchema.methods = {
 
 	removeGrade: function (user, cb) {
 		var index = ft.indexOfByIdKey(this.grades, 'user', user._id);
+		// var index = ft.indexOfByUserId(this.grades, user._id);
 		if (index > -1)
 			this.grades.splice(index, 1);
 		else
@@ -282,6 +278,7 @@ FileSchema.methods = {
 
 	addLock: function (user, cb) {
 		var index = ft.indexOfByIdKey(this.locked, 'user', user._id);
+		// var index = ft.indexOfByUserId(this.locked, user._id);
 		if (index === -1)
 			this.locked.push({ user: user._id });
 		else
@@ -319,7 +316,8 @@ FileSchema.methods = {
 	},
 
 	getIsLockedByUser: function (user) {
-		var index = ft.indexOfByIdKey(this.locked, 'user', user._id);
+		// var index = ft.indexOfByIdKey(this.locked, 'user', user._id);
+		var index = ft.indexOfByUserId(this.locked, user._id);
 		if (index > -1)
 			return true;
 		return false;

@@ -28,8 +28,11 @@ router.get('/:id', function (req, res, next) {
 		if (err)
 			res.json({ success: false, message: err });
 		else
-			res.json({ success: true, data: file });
-
+		{
+			var fileRaw = file.toObject();
+			delete fileRaw.path;
+			res.json({ success: true, data: fileRaw });
+		}
 	});
 });
 
@@ -216,24 +219,47 @@ router.delete('/:id', function (req, res, next) {
 });
 
 router.get('/show/:id', function (req, res, next) {
-	var query = File.findById(req.params.id);// faire une methode pour recuperer ces infos !
-	query.select('-hashString -isFinished -privacy -torrentAddedAt');
-	query.exec(function (err, file) {
+	File.getFileById(req.params.id, function (err, file) {
 		if (err)
-			return next(err);
-		fileInfos.getFileInfosRecurs(file.path, file.name, function (err, data) {
-			var rawFile = file.toObject();
-			rawFile.commentsNbr = file.countComments();
-			rawFile.isLocked = file.getIsLocked();
-			rawFile.isLockedByUser = file.getIsLockedByUser(req.user);
-			rawFile.averageGrade = file.getAverageGrade();
-			delete rawFile.path;
-			if (err)
-				res.json({ success: false, error: err, file: rawFile });
-			else
-				res.json({ success: true, data: data, file: rawFile });
-		});
+			res.json({ success: false, error: err, message: 'Could not get infos from database' });
+		else
+		{
+			fileInfos.getFileInfosRecurs(file.path, file.name, function (err, data) {
+				if (err)
+					res.json({ success: false, error: err, file: rawFile });
+				else
+				{
+					var rawFile = file.toObject();
+					rawFile.commentsNbr = file.countComments();
+					rawFile.isLocked = file.getIsLocked();
+					rawFile.isLockedByUser = file.getIsLockedByUser(req.user);
+					rawFile.averageGrade = file.getAverageGrade();
+					delete rawFile.path;
+					res.json({ success: true, data: data, file: rawFile });
+				}
+			});
+		}
 	});
+	// var populateSelect = 'login role avatar';
+	// var query = File.findById(req.params.id);// faire une methode pour recuperer ces infos !
+	// query.select('-hashString -isFinished -privacy -torrentAddedAt');
+	// query.populate([{ path: 'creator', select: populateSelect }, { path: 'comments.user', select: populateSelect }, { path: 'locked.user', select: populateSelect }, { path: 'grades.user', select: populateSelect }]);
+	// query.exec(function (err, file) {
+	// 	if (err)
+	// 		return next(err);
+	// 	fileInfos.getFileInfosRecurs(file.path, file.name, function (err, data) {
+	// 		var rawFile = file.toObject();
+	// 		rawFile.commentsNbr = file.countComments();
+	// 		rawFile.isLocked = file.getIsLocked();
+	// 		rawFile.isLockedByUser = file.getIsLockedByUser(req.user);
+	// 		rawFile.averageGrade = file.getAverageGrade();
+	// 		delete rawFile.path;
+	// 		if (err)
+	// 			res.json({ success: false, error: err, file: rawFile });
+	// 		else
+	// 			res.json({ success: true, data: data, file: rawFile });
+	// 	});
+	// });
 });
 
 

@@ -15,6 +15,16 @@ module.exports = {
 		return -1;
 	},
 
+	indexOfByUserId: function (arr, userId) {
+		var arrayLength = arr.length;
+		for (var i = 0; i < arrayLength; i++)
+		{
+			if (arr[i].user._id.toString() == userId)
+				return (i);
+		}
+		return (-1);
+	},
+
 	updateSettings: function (newSettings, oldSettings) {
 		console.log("BEFORE > ", oldSettings);
 		for (var key in newSettings)
