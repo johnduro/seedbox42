@@ -21,7 +21,8 @@ router.get('/settings', function (req, res, next) {
 		"torrents": config.torrents,
 		"files": config.files,
 		"dashboard": config.dashboard,
-		"users": config.users
+		"users": config.users,
+		"panel": config.dashboard.panel
 	};
 	res.json({ success: true, data: ret });
 });

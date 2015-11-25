@@ -1,6 +1,6 @@
 
 //Librairie personnel de manipulation de datas
-app.service('Tools', function ($rootScope, RequestHandler, $timeout, $modal) {
+app.service('Tools', function ($rootScope, RequestHandler, $timeout, $modal, $q) {
 
     /**
     * Librairie php disponible avec js
@@ -213,7 +213,21 @@ app.service('Tools', function ($rootScope, RequestHandler, $timeout, $modal) {
 			if(aSize<def[i][0])
 				return (aSize/def[i-1][0]).toFixed(2)+' '+def[i-1][1];
 		}
-	}
+	};
+
+    var getConfig = function (){
+        var defer = $q.defer();
+        if ("config" in $rootScope){
+            defer.resolve($rootScope.config);
+        }else{
+            RequestHandler.get(api + "admin/settings")
+                .then(function(result){
+                    $rootScope.config = result.data.data;
+                    defer.resolve($rootScope.config);
+                });
+        }
+        return defer.promise;
+    };
 
     return {
         phpjs: phpjs,
@@ -229,6 +243,7 @@ app.service('Tools', function ($rootScope, RequestHandler, $timeout, $modal) {
         modalConfirm: modalConfirm,
         FileConvertSize: FileConvertSize,
         getCountValue: getCountValue,
-        getElementForMatchValue: getElementForMatchValue
+        getElementForMatchValue: getElementForMatchValue,
+        getConfig: getConfig
     };
 });

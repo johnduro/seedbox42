@@ -57,6 +57,31 @@ app.factory('RequestHandler', ['$http', '$q', '$log', '$rootScope', '$location',
                         });
                 return promise.promise;
             },
+            getConfig: function () {
+                var promise = $q.defer();
+                if ("config" in $rootScope){
+                    return $rootScope.config;
+                }
+                $http.get("/admin/settings").
+                        success(function (data, status, headers, config) {
+                            console.log(data);
+                            $rootScope.config = data.data;
+                            promise.resolve(data.data);
+                        }).
+                        error(function (data, status, headers, config) {
+                            //Gestion des retours en erreur
+                            if (data.status == 422 && typeof data.detail != "undefined") {
+                                $rootScope.transaction.msg = data.detail;
+                                $log.debug(data.detail);
+                            }
+                            if (status == 403){
+                                localStorage.clear();
+                                $location.url('connexion');
+                            }
+                            promise.resolve({"data": data, "status": status});
+                        });
+                return promise.promise;
+            },
             put: function (url, data, transform, config) {
                 transform = (transform == false ? false : true);
                 config = (config == false ? {} : config);

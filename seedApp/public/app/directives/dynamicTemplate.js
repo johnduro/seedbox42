@@ -6,20 +6,23 @@ app.directive('contentItem', function ($compile, RequestHandler, $rootScope, $lo
 
         RequestHandler.get("/app/views/partials/" + scope.content.template + ".html")
             .then(function(resultTemplate){
-                if (scope.content.name == "chat"){
+                if (scope.content.name == "minichat"){
                     socket.emit("chat:get:message", null, function(data){
                 		scope.messages = data.message;
+                        element.html(resultTemplate.data).show();
+                        $compile(element.contents())(scope);
                 	});
                 }else{
                     RequestHandler.get(api + "dashboard/" + scope.content.name)
                 		.then(function(result){
-                			scope.files = result.data.data;
-                			$rootScope.tools.convertFields(scope.files);
+                            if (result.status == 200){
+                                scope.files = result.data.data;
+                    			$rootScope.tools.convertFields(scope.files);
+                                element.html(resultTemplate.data).show();
+                                $compile(element.contents())(scope);
+                            }
                 		});
                 }
-
-                element.html(resultTemplate.data).show();
-                $compile(element.contents())(scope);
             });
 
 
