@@ -85,6 +85,7 @@ module.exports =
 			functionArg: {},
 			usage: ' --help',
 			help: 'Display this help'
+<<<<<<< HEAD
 		},
 		'update-db': {
 			type: 'boolean',
@@ -94,5 +95,7 @@ module.exports =
 			},
 			usage: ' --update-db',
 			help: 'updatedb'
+=======
+>>>>>>> 014e25d145755986ceda2251183c0b690dbb6e0b
 		}
 	};
