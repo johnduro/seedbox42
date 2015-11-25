@@ -7,10 +7,10 @@ module.exports = {
 		var result = [];
 		files.forEach(function (file) {
 			var infos = file.toObject();
-			infos.commentsNbr = file.countComments();
+			// infos.commentsNbr = file.countComments();
 			infos.isLocked = file.getIsLocked();
 			infos.isLockedByUser = file.getIsLockedByUser(user);
-			infos.averageGrade = file.getAverageGrade();
+			// infos.averageGrade = file.getAverageGrade();
 			delete infos.comments;
 			delete infos.locked;
 			delete infos.grades;

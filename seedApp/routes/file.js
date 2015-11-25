@@ -219,7 +219,6 @@ router.delete('/:id', function (req, res, next) {
 });
 
 router.get('/show/:id', function (req, res, next) {
-<<<<<<< HEAD
 	File.getFileById(req.params.id, function (err, file) {
 		if (err)
 			res.json({ success: false, error: err, message: 'Could not get infos from database' });
@@ -261,26 +260,6 @@ router.get('/show/:id', function (req, res, next) {
 	// 			res.json({ success: true, data: data, file: rawFile });
 	// 	});
 	// });
-=======
-	var query = File.findById(req.params.id);// faire une methode pour recuperer ces infos !
-	query.select('-hashString -isFinished -privacy -torrentAddedAt');
-	query.exec(function (err, file) {
-		if (err)
-			return next(err);
-		fileInfos.getFileInfosRecurs(file.path, file.name, function (err, data) {
-			var rawFile = file.toObject();
-			rawFile.commentsNbr = file.countComments();
-			rawFile.isLocked = file.getIsLocked();
-			rawFile.isLockedByUser = file.getIsLockedByUser(req.user);
-			rawFile.averageGrade = file.getAverageGrade();
-			delete rawFile.path;
-			if (err)
-				res.json({ success: false, error: err, file: rawFile });
-			else
-				res.json({ success: true, data: data, file: rawFile });
-		});
-	});
->>>>>>> 014e25d145755986ceda2251183c0b690dbb6e0b
 });
 
 

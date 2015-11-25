@@ -22,10 +22,7 @@ var FileSchema = new mongoose.Schema({
 	downloads: { type: Number, default: 0 },
 	privacy : { type: Number, default: 1 },
 	// torrent: String, //utile ?
-<<<<<<< HEAD
 	commentsNbr: { type: Number, default: 0 },
-=======
->>>>>>> 014e25d145755986ceda2251183c0b690dbb6e0b
 	comments: [{
 		text: { type: String, default: '' },
 		user: { type: mongoose.Schema.ObjectId, ref: 'User' },
@@ -35,10 +32,7 @@ var FileSchema = new mongoose.Schema({
 		user: { type: mongoose.Schema.ObjectId, ref: 'User' },
 		createdAt: { type: Date, default: Date.now }
 	}],
-<<<<<<< HEAD
 	averageGrade: { type: Number, default: 0 },
-=======
->>>>>>> 014e25d145755986ceda2251183c0b690dbb6e0b
 	grades: [{
 		user: { type: mongoose.Schema.ObjectId, ref: 'User' },
 		grade: Number
@@ -53,7 +47,6 @@ var FileSchema = new mongoose.Schema({
  */
 FileSchema.statics = {
 	getFileById: function (id, cb) {
-<<<<<<< HEAD
 		var populateSelect = 'login role avatar';
 		this.findOne({ _id: id, isFinished: true })
 			.select('-isFinished -hashString -torrentAddedAt')
@@ -62,40 +55,15 @@ FileSchema.statics = {
 				if (err)
 					return cb(err);
 				return cb(null, file);
-=======
-		this.findOne({ _id: id, isFinished: true })
-			.select('-isFinished -path -hashString -torrentAddedAt')
-			.exec(function (err, file) {
-				if (err)
-					return cb(err);
-				var retFile = file.toObject();
-				User.getByIdFormatShow(file.creator, function (err, fileCreator) {
-					if (err)
-						return cb(err);
-					retFile.creator = fileCreator;
-					format.commentList(file.comments, function (err, formatCom) {
-						if (err)
-							return cb(err);
-						retFile.comments = formatCom;
-						return cb(null, retFile);
-					});
-				});
->>>>>>> 014e25d145755986ceda2251183c0b690dbb6e0b
 			});
 	},
 
 	getFileList: function (match, sort, limit, user, cb) {
-<<<<<<< HEAD
 		var populateSelect = 'login role avatar';
 		match.isFinished = true;
 		var query = this.find(match);
 		query.select('-path -hashString -isFinished -privacy -torrentAddedAt');
 		query.populate([{ path: 'creator', select: populateSelect }, { path: 'comments.user', select: populateSelect }, { path: 'locked.user', select: populateSelect }, { path: 'grades.user', select: populateSelect }]);
-=======
-		match.isFinished = true;
-		var query = this.find(match);
-		query.select('-path -creator -hashString -isFinished -privacy -torrentAddedAt');
->>>>>>> 014e25d145755986ceda2251183c0b690dbb6e0b
 		query.sort(sort);
 		if (limit > 0)
 			query.limit(limit);
@@ -224,10 +192,6 @@ FileSchema.statics = {
 
 FileSchema.methods = {
 	deleteFile: function (transmission, cb) {
-<<<<<<< HEAD
-=======
-		// console.log("YOLO DELETE !! > ", this.name);
->>>>>>> 014e25d145755986ceda2251183c0b690dbb6e0b
 		var self = this;
 		transmission.torrentRemove(self.hashString, false, function (err, resp) {
 			if (err)
@@ -248,6 +212,7 @@ FileSchema.methods = {
 
 	addComment: function (user, comment, cb) {
 		this.comments.push({ text: comment, user: user._id });
+		this.commentsNbr++;
 		this.save(cb);
 	},
 
@@ -263,7 +228,10 @@ FileSchema.methods = {
 	removeComment: function (commentId, cb) {
 		var index = ft.indexOfByIdKey(this.comments, '_id', commentId);
 		if (index > -1)
+		{
 			this.comments.splice(index, 1);
+			this.commentsNbr--;
+		}
 		else
 			return cb('comment not found');
 		this.save(cb);
@@ -275,12 +243,12 @@ FileSchema.methods = {
 
 	addGrade: function (user, grade, cb) {
 		var index = ft.indexOfByIdKey(this.grades, 'user', user._id);
-<<<<<<< HEAD
 		// var index = ft.indexOfByUserId(this.grades, user._id);
-=======
->>>>>>> 014e25d145755986ceda2251183c0b690dbb6e0b
 		if (index === -1)
+		{
 			this.grades.push({ user: user._id, grade: grade });
+			this.averageGrade = this.getAverageGrade();
+		}
 		else
 			return cb('already graded');
 		this.save(cb);
@@ -288,31 +256,27 @@ FileSchema.methods = {
 
 	modGrade: function (user, newGrade, cb) {
 		var index = ft.indexOfByIdKey(this.grades, 'user', user._id);
-<<<<<<< HEAD
 		// var index = ft.indexOfByUserId(this.grades, user._id);
-=======
->>>>>>> 014e25d145755986ceda2251183c0b690dbb6e0b
 		if (index > -1)
 			this.grades[index].grade = newGrade;
 		else
 			return cb('this user have not graded this file yet');
+		this.averageGrade = this.getAverageGrade();
 		this.save(cb);
 	},
 
 	removeGrade: function (user, cb) {
 		var index = ft.indexOfByIdKey(this.grades, 'user', user._id);
-<<<<<<< HEAD
 		// var index = ft.indexOfByUserId(this.grades, user._id);
-=======
->>>>>>> 014e25d145755986ceda2251183c0b690dbb6e0b
 		if (index > -1)
 			this.grades.splice(index, 1);
 		else
 			return cb('grade not found');
+		this.averageGrade = this.getAverageGrade();
 		this.save(cb);
 	},
 
-	getAverageGrade: function () {
+	getAverageGrade: function getAverageGrade () {
 		var total = 0;
 		if (this.grades.length === 0)
 			return (0);
@@ -324,10 +288,7 @@ FileSchema.methods = {
 
 	addLock: function (user, cb) {
 		var index = ft.indexOfByIdKey(this.locked, 'user', user._id);
-<<<<<<< HEAD
 		// var index = ft.indexOfByUserId(this.locked, user._id);
-=======
->>>>>>> 014e25d145755986ceda2251183c0b690dbb6e0b
 		if (index === -1)
 			this.locked.push({ user: user._id });
 		else
@@ -365,12 +326,8 @@ FileSchema.methods = {
 	},
 
 	getIsLockedByUser: function (user) {
-<<<<<<< HEAD
 		// var index = ft.indexOfByIdKey(this.locked, 'user', user._id);
 		var index = ft.indexOfByUserId(this.locked, user._id);
-=======
-		var index = ft.indexOfByIdKey(this.locked, 'user', user._id);
->>>>>>> 014e25d145755986ceda2251183c0b690dbb6e0b
 		if (index > -1)
 			return true;
 		return false;
