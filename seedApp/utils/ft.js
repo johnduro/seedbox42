@@ -17,9 +17,11 @@ module.exports = {
 
 	indexOfByUserId: function (arr, userId) {
 		var arrayLength = arr.length;
+		console.log('ARR > ', arr);
 		for (var i = 0; i < arrayLength; i++)
 		{
-			if (arr[i].user._id.toString() == userId)
+			// console.log('THERE > ', arr[i].user._id.toString());
+			if (arr[i].user != null && arr[i].user._id.toString() == userId)
 				return (i);
 		}
 		return (-1);
