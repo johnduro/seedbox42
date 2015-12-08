@@ -1,12 +1,11 @@
 var fs = require('fs');
 var inquirer = require('inquirer');
 var chalk = require('chalk');
-var generate = require('../config/generate');
-var configDefault = require('../config/default-config');
-var ft = require('../utils/ft');
+var generate = require('../../config/generate');
+var configDefault = require('../../config/default-config');
+var ft = require('../../utils/ft');
 
-var generateConfigurationFile = function (configFileName) {
-	// var configDefault = JSON.parse(fs.readFileSync('./config/default-config.json', 'utf8'));
+var generateConfigurationFile = function (configFileName, done) {
 	var newConfig = generate.configFromDefault(configDefault);
 
 	var questions = [
@@ -102,12 +101,13 @@ var generateConfigurationFile = function (configFileName) {
 				console.log(chalk.red('Could not write to configuration file: "' + configFileName + '"'));
 			else
 				console.log(chalk.green('Configuration file: "' + configFileName + '" was successfully created'));
+			return done();
 		});
 	});
 };
 
 
-module.exports = function (configFileName, args) {
+module.exports = function (configFileName, args, commandLineArg, done) {
 	try {
 		fs.accessSync(configFileName, fs.F_OK | fs.W_OK);
 		inquirer.prompt([
@@ -116,13 +116,18 @@ module.exports = function (configFileName, args) {
 			 	message: configFileName + ' already exist, do you want to overwrite it ?'
 			}], function (answers) {
 				if (answers.overwrite)
-					generateConfigurationFile(configFileName);
+					generateConfigurationFile(configFileName, done);
+				else
+					return done();
 			 });
 	}
 	catch (e) {
 		if (e.code == 'EACCES')
+		{
 			console.log(chalk.red('File already exist and you have no rights to access it, please change rights of "' + configFileName + '" to perform this action'));
+			return done();
+		}
 		else
-			generateConfigurationFile(configFileName);
+			generateConfigurationFile(configFileName, done);
 	}
 };
