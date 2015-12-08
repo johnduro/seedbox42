@@ -8,7 +8,9 @@
                 <thead>
                     <tr>
                         <th class="">Type</t>
-                        <th class="col-md-12">Name</t>
+                        <th class="">Name</t>
+                        <th class="">Createur</t>
+                        <th class="">Date creation</t>
                         <th class="">Taille</t>
                     </tr>
                 </thead>
@@ -23,6 +25,8 @@
                             </div>
                         </td>
                         <td>{{item.name}}</td>
+                        <td>{{item.creator.login}}</td>
+                        <td>{{item.createdAt | date:'MM/dd/yyyy' }}</td>
                         <td>{{item.sizeConvert}}</td>
                     </tr>
                 </tbody>
