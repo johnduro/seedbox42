@@ -1,7 +1,7 @@
-var File = require('../models/File');
+var File = require('../../models/File');
 var chalk = require('chalk');
 
-module.exports = function (configFileName, args) {
+module.exports = function (configFileName, args, commandLineArg, done) {
 	File.find({}, function (err, files) {
 		if (err)
 			console.log(chalk.red('Error gettting data from db'));
@@ -13,5 +13,6 @@ module.exports = function (configFileName, args) {
 				file.save();
 			});
 		}
+		return done();
 	});
 };

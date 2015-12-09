@@ -1,8 +1,8 @@
 var inquirer = require('inquirer');
 var chalk = require('chalk');
-var User = require('../models/User');
+var User = require('../../models/User');
 
-module.exports = function (configFileName, args) {
+module.exports = function (configFileName, args, commandLineArg, done) {
 	var questions = [
 		{
 			type: 'input',
@@ -51,10 +51,10 @@ module.exports = function (configFileName, args) {
 	inquirer.prompt(questions, function (answers) {
 		User.create(answers, function (err, newUser) {
 			if (err)
-				console.log(chalk.red("An error occured while creating the user"));
+				console.log(chalk.red("An error occured while creating the user : "), err);
 			else
 				console.log(chalk.green("User successfully created"));
-			// process.exit();
+			return done();
 		});
 	});
 };

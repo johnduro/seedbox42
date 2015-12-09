@@ -1,10 +1,10 @@
 var fs = require('fs');
 var util = require('util');
 var chalk = require('chalk');
-var File = require('../models/File');
+var File = require('../../models/File');
 
 
-module.exports = function (configFileName, args) {
+module.exports = function (configFileName, args, commandLineArg, done) {
 	File.find({ isFinished: true })
 		.select('-name -size -creator -hashstring -isFinished -downloads -privacy -comments -locked -grades -createdAt -torrentAddedAt')
 		.exec(function (err, files) {
@@ -37,7 +37,6 @@ module.exports = function (configFileName, args) {
 					});
 				}
 			}
-			return ;
-			// process.exit();
+			return done();
 		});
 };

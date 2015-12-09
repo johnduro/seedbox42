@@ -1,4 +1,5 @@
 
+var fs = require('fs');
 var express = require('express');
 var router = express.Router();
 var File = require('../models/File.js');
@@ -88,7 +89,7 @@ var panels = {
 	'oldest-user-locked-file': function (req, done) {
 		var dashConf = req.app.locals.ttConfig.dashboard;
 		var user = req.user;
-		File.getFileList({ "locked.user": user._id }, { "locked.createdAt": 1 }, dashConf['file-number-exhibit'], user, function (err, files) {
+		File.getFileList({ "locked.user": user._id }, { "locked.createdAt": -1 }, dashConf['file-number-exhibit'], user, function (err, files) {
 			if (err)
 				done({ success: false, message: err });
 			else
@@ -107,11 +108,18 @@ var panels = {
 	},
 	'disk-space': function (req, done) {
 		var downloadDir = req.app.locals.ttConfig["transmission-settings"]["download-dir"];
-		getTotalDiskSpace(downloadDir, function (err, diskInfos) {
-			if (err)
-				done({ success: false, message: err });
+		fs.access(downloadDir, fs.F_OK, function (errAccess) {
+			if (errAccess)
+				done({ success: false, message: 'download-dir in transmission-settings is not a valid path' });
 			else
-				done({ success: true, data: diskInfos });
+			{
+				getTotalDiskSpace(downloadDir, function (err, diskInfos) {
+					if (err)
+						done({ success: false, message: err });
+					else
+						done({ success: true, data: diskInfos });
+				});
+			}
 		});
 	},
 	'best-rated-file': function (req, done) {

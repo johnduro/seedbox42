@@ -1,7 +1,7 @@
 var fs = require('fs');
 var chalk = require('chalk');
-var configDefault = require('../config/default-config');
-var ft = require('../utils/ft');
+var configDefault = require('../../config/default-config');
+var ft = require('../../utils/ft');
 
 var addExtra = function (config, newConf) {
 	for (var key in config)
@@ -24,7 +24,7 @@ var updateConfigFile = function updateConfigFile (config, defaultConf) {
 	return (addExtra(config, newConf));
 };
 
-module.exports = function (configFileName, args) {
+module.exports = function (configFileName, args, commandLineArg, done) {
 	try {
 		fs.accessSync(configFileName, fs.F_OK | fs.W_OK);
 		var newConfig = updateConfigFile(args.config, configDefault);
@@ -33,10 +33,11 @@ module.exports = function (configFileName, args) {
 				console.log(chalk.red('Could not write to configuration file: "' + configFileName + '"'));
 			else
 				console.log(chalk.green('Configuration file: "' + configFileName + '" was successfully updated'));
-
+			return done();
 		});
 	} catch (e) {
 		if (e.code == 'EACCES')
 			console.log(chalk.red('You have no rights to write on ' + configFileName + ', please change rights of the file before updating it'));
+		return done();
 	}
 };

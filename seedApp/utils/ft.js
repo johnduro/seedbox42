@@ -17,10 +17,8 @@ module.exports = {
 
 	indexOfByUserId: function (arr, userId) {
 		var arrayLength = arr.length;
-		console.log('ARR > ', arr);
 		for (var i = 0; i < arrayLength; i++)
 		{
-			// console.log('THERE > ', arr[i].user._id.toString());
 			if (arr[i].user != null && arr[i].user._id.toString() == userId)
 				return (i);
 		}
@@ -28,13 +26,13 @@ module.exports = {
 	},
 
 	updateSettings: function (newSettings, oldSettings) {
-		console.log("BEFORE > ", oldSettings);
+		// console.log("BEFORE > ", oldSettings);
 		for (var key in newSettings)
 		{
 			if (oldSettings.hasOwnProperty(key) && oldSettings[key] != newSettings[key])
 				oldSettings[key] = newSettings[key];
 		}
-		console.log("AFTER > ", oldSettings);
+		// console.log("AFTER > ", oldSettings);
 		return oldSettings;
 	},
 

@@ -1,11 +1,14 @@
 var chalk = require('chalk');
 var util = require('util');
-var File = require('../models/File');
+var File = require('../../models/File');
 
-module.exports = function (configFileName, args) {
+module.exports = function (configFileName, args, commandLineArg, done) {
 	args.transmission.torrentGet(['hashString', 'name', 'downloadDir', 'totalSize', "status", "leftUntilDone", "percentDone"], {}, function (err, resp) {
 		if (err)
+		{
 			console.log(chalk.red("An error occured while retreiving torrents from transmission, check your configuration, error : "), err);
+			return done();
+		}
 		else
 		{
 			console.log(chalk.green(util.format("%d torrent(s) found in transmission", resp.torrents.length)));
@@ -16,15 +19,14 @@ module.exports = function (configFileName, args) {
 				if (!torrent)
 				{
 					console.log(chalk.green(util.format("%d torrent(s) were added to the database", counter)));
-					return ; //ok ?
-					// process.exit();
+					return done();
 				}
 				var path = torrent.downloadDir + '/' + torrent.name;
 				File.findOne({ $or: [ { hashString: torrent.hashString }, { path: path } ] }, function (err, file) {
 					if (err)
 					{
 						console.log(chalk.red("There was an issue with the database, error: "), err);
-						process.exit();
+						return done();
 					}
 					else if (file == null)
 					{
@@ -37,7 +39,10 @@ module.exports = function (configFileName, args) {
 							};
 							File.insertFile(fileToInsert, args.user._id, torrent.hashString, function (err, file) {
 								if (err)
+								{
 									console.log(chalk.red(util.format("There was an issue inserting %s to the database, error: ", torrent.name)), err);
+									return done();
+								}
 								else
 								{
 									console.log(chalk.green(util.format("%s successfully added to the database", file.name)));
@@ -50,7 +55,10 @@ module.exports = function (configFileName, args) {
 						{
 							File.createFile(torrent, args.user._id, function (err, file) {
 								if (err)
+								{
 									console.log(chalk.red(util.format("There was an issue inserting %s to the database, error: ", torrent.name)), err);
+									return done();
+								}
 								else
 								{
 									console.log(chalk.green(util.format("%s successfully added to the database", file.name)));

@@ -94,5 +94,13 @@ module.exports =
 			},
 			usage: ' --update-db',
 			help: 'updatedb'
+		},
+		'modify-user': {
+			type: 'string',
+			functionArg: {
+				mongo: null
+			},
+			usage: ' --modify-user nameoftheuser',
+			help: 'Modify the infos of the user in parameter'
 		}
 	};
