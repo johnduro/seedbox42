@@ -7,9 +7,24 @@ var format = require('../utils/format');
  */
 
 var WallMessageSchema = new mongoose.Schema({
-	message: String,
-	user: { type: mongoose.Schema.ObjectId, ref: 'User' },
-	createdAt: { type: Date, default: Date.now }
+	message: {
+		type: String,
+		required: true,
+		validate: [
+			function (message) {
+				if (message.length > 0)
+					true;
+			}
+		]
+	},
+	user: {
+		type: mongoose.Schema.ObjectId,
+		ref: 'User'
+	},
+	createdAt: {
+		type: Date,
+		default: Date.now
+	}
 });
 
 

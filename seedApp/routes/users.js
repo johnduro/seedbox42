@@ -51,6 +51,8 @@ router.get('/:id', function (req, res, next) {
 router.put('/:id', rights.adminOrUserParam, upload.avatar.single('avatar'), function (req, res, next) {
 	if ("file" in req && 'filename' in req.file)
 		req.body.avatar = req.file.filename;
+	if ('_id' in req.body)
+		delete req.body._id;
 	User.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true }, function (err, post) {
 		if (err)
 			res.json({ success: false, message: err });

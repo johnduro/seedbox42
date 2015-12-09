@@ -12,17 +12,48 @@ var format = require('../utils/format');
  */
 
 var FileSchema = new mongoose.Schema({
-	name: String,
-	path: { type: String, default: "" },
-	size: { type: Number, default: 0 },
-	creator: { type: mongoose.Schema.ObjectId, ref: 'User' },
-	hashString: { type: String, unique: true },
-	isFinished: { type: Boolean, default: false },
-	fileType: { type: String, default: '' },
-	downloads: { type: Number, default: 0 },
-	privacy : { type: Number, default: 1 },
+	name: {
+		type: String,
+		required: true
+	},
+	path: {
+		type: String,
+		default: ""
+	},
+	size: {
+		type: Number,
+		default: 0
+	},
+	creator: {
+		type: mongoose.Schema.ObjectId,
+		ref: 'User'
+	},
+	hashString: {
+		type: String,
+		unique: true,
+		required: true
+	},
+	isFinished: {
+		type: Boolean,
+		default: false
+	},
+	fileType: {
+		type: String,
+		default: ''
+	},
+	downloads: {
+		type: Number,
+		default: 0
+	},
+	privacy : {
+		type: Number,
+		default: 1
+	},
 	// torrent: String, //utile ?
-	commentsNbr: { type: Number, default: 0 },
+	commentsNbr: {
+		type: Number,
+		default: 0
+	},
 	comments: [{
 		text: { type: String, default: '' },
 		user: { type: mongoose.Schema.ObjectId, ref: 'User' },
@@ -32,13 +63,19 @@ var FileSchema = new mongoose.Schema({
 		user: { type: mongoose.Schema.ObjectId, ref: 'User' },
 		createdAt: { type: Date, default: Date.now }
 	}],
-	averageGrade: { type: Number, default: 0 },
+	averageGrade: {
+		type: Number,
+		default: 0
+	},
 	grades: [{
 		user: { type: mongoose.Schema.ObjectId, ref: 'User' },
 		grade: Number
 	}],
 	createdAt : Date,
-	torrentAddedAt : { type: Date, default: Date.now }
+	torrentAddedAt : {
+		type: Date,
+		default: Date.now
+	}
 });
 
 

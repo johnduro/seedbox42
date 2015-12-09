@@ -2,12 +2,32 @@
 var mongoose = require('mongoose');
 
 var UserSchema = new mongoose.Schema({
-	login: { type: String, unique: true },
-	password: String,
-	mail: String, //?? garder ??
-	avatar: String,
-	role: { type: Number, default: 1 },
-	createdAt: { type: Date, default: Date.now }
+	login: {
+		type: String,
+		unique: true,
+		required: true,
+		minlength: 2
+	},
+	password: {
+		type: String,
+		required: true,
+		minlength: 5
+	},
+	mail: {
+		type: String,
+		match: /[^\s@]+@[^\s@]+\.[^\s@]+/
+	},
+	avatar: {
+		type: String
+	},
+	role: {
+		type: Number,
+		default: 1
+	},
+	createdAt: {
+		type: Date,
+		default: Date.now
+	}
 });
 
 
