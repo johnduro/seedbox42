@@ -3,22 +3,83 @@
 <head>
     <title>Seedbox</title>
 
+    <link rel='stylesheet' href='css/bootstrap-3.3.6/css/bootstrap.min.css'/>
+    <link rel='stylesheet' href='css/font-awesome-4.5.0/css/font-awesome.min.css'/>
     <link rel='stylesheet' href='css/base/base.css'/>
+    <link rel='stylesheet' href='css/layout/global.css'/>
     <link rel='stylesheet' href='css/layout/header.css'/>
     <link rel='stylesheet' href='css/layout/main.css'/>
     <link rel='stylesheet' href='css/layout/footer.css'/>
+
+    <script src="js/jquery-2.1.4.min.js"></script>
+    <script src="css/bootstrap-3.3.6/js/bootstrap.min.js"></script>
 </head>
 
 <body>
-    <header class="l-header">
-        <div class="l-block l-menu">dashboard</div>
-        <div class="l-block l-logo">TeurpiTorrent</div>
-        <div class="l-block l-account">Alexis</div>
-     </header>
-    <div class="l-main"> content </div>
-    <footer class="l-footer">
-         <div class="l-footer-text">2015 SeedBox42 by Students42</div>
-     </footer>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">Dashboard</a></li>
+                    <li><a href="#about">Torrents</a></li>
+                    <li><a href="#contact">Files</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Action</a></li>
+                            <li><a href="#">Another action</a></li>
+                            <li><a href="#">Something else here</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li class="dropdown-header">Nav header</li>
+                            <li><a href="#">Separated link</a></li>
+                            <li><a href="#">One more separated link</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="../navbar/"><i class="fa fa-comment-o"></i></a></li>
+                    <li><a href="../navbar-static-top/"><i class="fa fa-download"></i></a></li>
+                    <li><a href="../navbar-static-top/"><i class="fa fa-inbox"></i></a></li>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                            <div class="profile-img"></div>
+                            User Name <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="#">Settings</a>
+                            </li>
+                            <li role="separator" class="divider"></li>
+                            <li>
+                                <a href="#">Log out</a>
+                            </li>
+                        </ul>
+                    </li>            
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Start container -->
+    <div class="container">
+        <div class="jumbotron">
+            <h1>Navbar example</h1>
+            <p>This example is a quick exercise to illustrate how the default, static and fixed to top navbar work. It includes the responsive CSS and HTML, so it also adapts to your viewport and device.</p>
+            <p>To see the difference between static and fixed top navbars, just scroll.</p>
+            <p>
+                <a class="btn btn-lg btn-primary" href="../../components/#navbar" role="button">View navbar docs »</a>
+            </p>
+        </div>
+    </div>
+    <!-- /container -->
+
+    <footer class="footer">
+        <div class="container">
+            <p class="text-muted">2015 Teurpitorrent By Student42</p>
+        </div>
+    </footer>  
+
 </body>
 
 </html>

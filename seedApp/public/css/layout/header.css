@@ -1,13 +1,40 @@
 .l-header{
     background-color: black;
     color: white;
-    width: 100%;
-    height: 3.6em;
-    padding-left: 50px;
-    padding-right: 50px;
+    line-height: 50px;
+    height: 50px;
+    display: block;
+}
+
+.l-header-color {
+	
 }
 
 .l-block {
     height: 100%;
     display: inline-block;
+    vertical-align: middle;
+}
+
+.l-menu {
+	width: 30%;
+	float: left;
+}
+
+.l-logo {
+
+}
+
+.l-account {
+}
+
+.profile-img{
+    margin-top: -5px;
+    margin-right: 5px;
+    float: left;
+    background: url(http://jeanbaptiste.bayle.free.fr/AVATAR/grey_81618-default-avatar-200x200.jpg) 50% 50% no-repeat; /* 50% 50% centers image in div */
+    /*background-size: auto 100%; /* Interchange this value depending on prefering width vs. height */
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
 }
