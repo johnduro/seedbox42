@@ -11,74 +11,69 @@
     <link rel='stylesheet' href='css/layout/main.css'/>
     <link rel='stylesheet' href='css/layout/footer.css'/>
 
-    <script src="js/jquery-2.1.4.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="css/bootstrap-3.3.6/js/bootstrap.min.js"></script>
+
 </head>
 
 <body>
 
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div id="navbar" class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">Dashboard</a></li>
-                    <li><a href="#about">Torrents</a></li>
-                    <li><a href="#contact">Files</a></li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#">Action</a></li>
-                            <li><a href="#">Another action</a></li>
-                            <li><a href="#">Something else here</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li class="dropdown-header">Nav header</li>
-                            <li><a href="#">Separated link</a></li>
-                            <li><a href="#">One more separated link</a></li>
-                        </ul>
-                    </li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="../navbar/"><i class="fa fa-comment-o"></i></a></li>
-                    <li><a href="../navbar-static-top/"><i class="fa fa-download"></i></a></li>
-                    <li><a href="../navbar-static-top/"><i class="fa fa-inbox"></i></a></li>
-                    <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                            <div class="profile-img"></div>
-                            User Name <span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="#">Settings</a>
-                            </li>
-                            <li role="separator" class="divider"></li>
-                            <li>
-                                <a href="#">Log out</a>
-                            </li>
-                        </ul>
-                    </li>            
-                </ul>
-            </div>
+    <nav id="myNavbar" class="navbar navbar-default navbar-inverse navbar-fixed-top" role="navigation">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbarCollapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Tutorial Republic</a>
         </div>
-    </nav>
-
-    <!-- Start container -->
-    <div class="container">
-        <div class="jumbotron">
-            <h1>Navbar example</h1>
-            <p>This example is a quick exercise to illustrate how the default, static and fixed to top navbar work. It includes the responsive CSS and HTML, so it also adapts to your viewport and device.</p>
-            <p>To see the difference between static and fixed top navbars, just scroll.</p>
-            <p>
-                <a class="btn btn-lg btn-primary" href="../../components/#navbar" role="button">View navbar docs »</a>
-            </p>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="http://www.tutorialrepublic.com" target="_blank">Home</a></li>
+                <li><a href="http://www.tutorialrepublic.com/about-us.php" target="_blank">About</a></li>
+                <li><a href="http://www.tutorialrepublic.com/contact-us.php" target="_blank">Contact</a></li>
+            </ul>
         </div>
     </div>
-    <!-- /container -->
-
-    <footer class="footer">
-        <div class="container">
-            <p class="text-muted">2015 Teurpitorrent By Student42</p>
+</nav>
+<div class="jumbotron">
+    <div class="container-fluid">
+        <h1>Learn to Create Websites</h1>
+        <p>In today's world internet is the most popular way of connecting with the people. At <a href="http://www.tutorialrepublic.com" target="_blank">tutorialrepublic.com</a> you will learn the essential of web development technologies along with real life practice example, so that you can create your own website to connect with the people around the world.</p>
+        <p><a href="http://www.tutorialrepublic.com" target="_blank" class="btn btn-success btn-lg">Get started today</a></p>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-4">
+            <h2>HTML</h2>
+            <p>HTML is a markup language that is used for creating web pages. The HTML tutorial section will help you understand the basics of HTML, so that you can create your own web pages or website.</p>
+            <p><a href="http://www.tutorialrepublic.com/html-tutorial/" target="_blank" class="btn btn-success">Learn More &raquo;</a></p>
         </div>
-    </footer>  
+        <div class="col-xs-4">
+            <h2>CSS</h2>
+            <p>CSS is used for describing the presentation of web pages. The CSS tutorial section will help you learn the essentials of CSS, so that you can fine control the style and layout of your HTML document.</p>
+            <p><a href="http://www.tutorialrepublic.com/css-tutorial/" target="_blank" class="btn btn-success">Learn More &raquo;</a></p>
+        </div>
+        <div class="col-xs-4">
+            <h2>Bootstrap</h2>
+            <p>Bootstrap is a powerful front-end framework for faster and easier web development. The Bootstrap tutorial section will help you learn the techniques of Bootstrap so that you can create web your own website.</p>
+            <p><a href="http://www.tutorialrepublic.com/twitter-bootstrap-tutorial/" target="_blank" class="btn btn-success">Learn More &raquo;</a></p>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-xs-12">
+            <footer>
+                <p>&copy; Copyright 2013 Tutorial Republic</p>
+            </footer>
+        </div>
+    </div>
+</div>
 
 </body>
 
