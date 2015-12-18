@@ -64,6 +64,13 @@ module.exports = {
 			"template": "dashboard-chat",
 			"title": "minichat",
 			"order": 7
+		},
+		{
+			"name": "most-downloaded-file",
+			"enabled": "all",
+			"template": "dashboard-fileList",
+			"title": "most downloaded file",
+			"order": 8
 		}
 	]
 };

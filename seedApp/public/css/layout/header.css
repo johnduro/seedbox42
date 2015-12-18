@@ -7,7 +7,7 @@
 }
 
 .l-header-color {
-	
+
 }
 
 .l-block {
@@ -37,4 +37,17 @@
     width: 30px;
     height: 30px;
     border-radius: 50%;
+}
+
+.navbar-center {
+	position: absolute;
+	width: 100%;
+	left: 0;
+	text-align: center;
+	margin: auto;
+}
+
+.ft-active {
+	border-bottom: 1px solid #fff;
+	padding-bottom: 5px;
 }

@@ -126,7 +126,14 @@
                 "template": "dashboard-chat",
                 "title": "minichat",
                 "order": 7
-            }
+            },
+			{
+				"name": "most-downloaded-file",
+                "enabled": "all",
+                "template": "dashboard-fileList",
+                "title": "most downloaded file",
+                "order": 8
+			}
         ],
         "file-number-exhibit": 5,
         "mini-chat-message-limit": 100,

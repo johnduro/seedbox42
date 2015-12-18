@@ -97,15 +97,20 @@ router.get("/comments/:id", function (req, res, next) {
 });
 
 router.post('/add-comment/:id', function (req, res, next) {
-	File.findById(req.params.id, function (err, file) {
-		if (err)
-			return next(err);
-		file.addComment(req.user, req.body.text, function (err) {
+	if (req.body.text != null && req.body.text != '')
+	{
+		File.findById(req.params.id, function (err, file) {
 			if (err)
 				return next(err);
-			res.json({ success: true, message: 'comment successfully added' });
+			file.addComment(req.user, req.body.text, function (err) {
+				if (err)
+					return next(err);
+				res.json({ success: true, message: 'comment successfully added' });
+			});
 		});
-	});
+	}
+	else
+		res.json({ success: false, message: 'could not add empty comment' });
 });
 
 router.delete('/remove-comment/:id', function (req, res, next) {

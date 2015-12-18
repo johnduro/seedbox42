@@ -65,7 +65,6 @@ router.get('/:panel', function (req, res, next) {
 
 
 var panels = {
-	// 'recent-file': function (user, dashConf, done) {
 	'recent-file': function (req, done) {
 		var dashConf = req.app.locals.ttConfig.dashboard;
 		var user = req.user;
@@ -89,7 +88,7 @@ var panels = {
 	'oldest-user-locked-file': function (req, done) {
 		var dashConf = req.app.locals.ttConfig.dashboard;
 		var user = req.user;
-		File.getFileList({ "locked.user": user._id }, { "locked.createdAt": -1 }, dashConf['file-number-exhibit'], user, function (err, files) {
+		File.getFileList({ "locked.user": user._id }, { "locked.createdAt": 1 }, dashConf['file-number-exhibit'], user, function (err, files) {
 			if (err)
 				done({ success: false, message: err });
 			else
@@ -99,7 +98,7 @@ var panels = {
 	'oldest-locked-file': function (req, done) {
 		var dashConf = req.app.locals.ttConfig.dashboard;
 		var user = req.user;
-		File.getFileList({ 'locked': { $exists: true, $not: { $size: 0 } } }, { "locked.createdAt": -1 }, dashConf['file-number-exhibit'], user, function (err, files) {
+		File.getFileList({ 'locked': { $exists: true, $not: { $size: 0 } } }, { "locked.createdAt": 1 }, dashConf['file-number-exhibit'], user, function (err, files) {
 			if (err)
 				done({ success: false, message: err });
 			else
@@ -136,6 +135,16 @@ var panels = {
 		var dashConf = req.app.locals.ttConfig.dashboard;
 		var user = req.user;
 		File.getFileList({}, { commentsNbr: -1 }, dashConf['file-number-exhibit'], user, function (err, files) {
+			if (err)
+				done({ success: false, message: err });
+			else
+				done({ success: true, data: files });
+		});
+	},
+	'most-downloaded-file': function (req, done) {
+		var dashConf = req.app.locals.ttConfig.dashboard;
+		var user = req.user;
+		File.getFileList({}, { downloads: -1 }, dashConf['file-number-exhibit'], user, function (err, files) {
 			if (err)
 				done({ success: false, message: err });
 			else
