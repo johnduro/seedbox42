@@ -34,20 +34,8 @@
         <nav class="navbar navbar-default navbar-inverse" role="navigation">
           <div class="container col-sm-12 col-md-10 col-centered">
 
-			<!-- <li class="dropdown"> -->
-			<!--   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a> -->
-			<!--   <ul class="dropdown-menu"> -->
-			<!-- 	<li><a href="#">Action</a></li> -->
-			<!-- 	<li><a href="#">Another action</a></li> -->
-			<!-- 	<li><a href="#">Something else here</a></li> -->
-			<!-- 	<li role="separator" class="divider"></li> -->
-			<!-- 	<li><a href="#">Separated link</a></li> -->
-			<!-- 	<li role="separator" class="divider"></li> -->
-			<!-- 	<li><a href="#">One more separated link</a></li> -->
-			<!--   </ul> -->
-			<!-- </li> -->
-
 			<div class="navbar-header">
+			  <a href="#" id="ttTitleToggle">Teurpi Torrent</a>
 			  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-1">
 				<span class="sr-only">Toggle navigation</span>
 				<span class="icon-bar"></span>
@@ -55,68 +43,44 @@
 				<span class="icon-bar"></span>
 			  </button>
 			</div>
-				<a href="#" class="navbar-center navbar-brand">TEURPITORRENT</a>
+				<a href="#" class="navbar-center navbar-brand" id="ttTitle">Teurpi Torrent</a>
 				<!-- <a href="#" class="navbar-center">TEURPITORRENT</a> -->
                 <div id="navbar-1" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
                         <li>
                             <a ui-sref="seedbox.dashboard" class="waves-effect waves-button">
                                 <!-- <span class="menu-icon glyphicon glyphicon-home"></span> -->
-                                <span ng-class="{'ft-active': isActive('/seedbox/dashboard')}">Dashboard</span>
+                                <span ng-class="{'ft-active': isActive('/seedbox/dashboard')}" class="custom-navcolor custom-navCat">Dashboard</span>
                             </a>
                         </li>
 
                         <li>
                             <a ui-sref="seedbox.torrents" class="waves-effect waves-button">
                                 <!-- <span class="menu-icon glyphicon glyphicon-magnet"></span> -->
-                                <span ng-class="{'ft-active': isActive('/seedbox/torrents')}">Torrents</span>
+                                <span ng-class="{'ft-active': isActive('/seedbox/torrents')}" class="custom-navcolor custom-navCat">Torrents</span>
                             </a>
                         </li>
 
                         <li>
                             <a ui-sref="seedbox.files" class="waves-effect waves-button">
                                 <!-- <span class="menu-icon glyphicon glyphicon-folder-open"></span> -->
-                                <span ng-class="{'ft-active': isActive('/seedbox/files')}">Files</span>
+                                <span ng-class="{'ft-active': isActive('/seedbox/files')}" class="custom-navcolor custom-navCat">Files</span>
                             </a>
                         </li>
 
-                        <!-- <li ng-if="user.role == 0" class="dropdown"> -->
-                        <!--     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a> -->
-                        <!--     <ul class="dropdown-menu"> -->
-
-                        <!--         <li ng-if="user.role == 0" ng-class="{active: isActive('/seedbox/admin/users')}"> -->
-                        <!--             <a ui-sref="seedbox.adminUsers" class="waves-effect waves-button"> -->
-                        <!--                 <span class="menu-icon glyphicon fa fa-users"></span> -->
-                        <!--                 Les comptes -->
-                        <!--             </a> -->
-                        <!--         </li> -->
-
-                        <!--         <li ng-if="user.role == 0" ng-class="{active: isActive('/seedbox/admin/settings')}"> -->
-                        <!--             <a ui-sref="seedbox.adminSettings" class="waves-effect waves-button"> -->
-                        <!--                 <span class="menu-icon glyphicon fa fa-wrench"></span> -->
-                        <!--                 Configuration -->
-                        <!--             </a> -->
-                        <!--         </li> -->
-
-                        <!--         <li ng-if="user.role == 0" ng-class="{active: isActive('/seedbox/admin/directory')}"> -->
-                        <!--             <a ui-sref="seedbox.adminDirectory" class="waves-effect waves-button"> -->
-                        <!--                 <span class="menu-icon glyphicon fa fa-sitemap"></span> -->
-                        <!--                 Ajout de dossier -->
-                        <!--             </a> -->
-                        <!--         </li> -->
-                        <!--     </ul> -->
-                        <!-- </li> -->
                     </ul>
 					<!-- <ul class="nav navbar-nav navbar-center"><li><a href="#">TEURPITORRENT</a></li></ul> -->
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a href="../navbar/"><i class="fa fa-comment-o"></i></a></li>
-                        <li><a href="../navbar-static-top/"><i class="fa fa-download"></i></a></li>
-                        <li><a href="../navbar-static-top/"><i class="fa fa-inbox"></i></a></li>
+						<li><a href="../navbar/"><img src="assets/images/tt-chat-icon.png" class="tt-icon-navbar"></img></a></li>
+                        <li><a href="../navbar-static-top/"><img src="assets/images/tt-download-icon.png" class="tt-icon-navbar"></img></a></li>
+                        <!-- <li><a href="../navbar/"><i class="fa fa-comment-o"></i></a></li> -->
+                        <!-- <li><a href="../navbar-static-top/"><i class="fa fa-download"></i></a></li> -->
+                        <!-- <li><a href="../navbar-static-top/"><i class="fa fa-inbox"></i></a></li> -->
 
 
                         <li class="dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                                <div class="profile-img"></div> {{user.login}} <span class="caret"></span>
+                                <div class="profile-img"></div> <span class="custom-navcolor">{{user.login}} <span class="caret"></span></span>
                             </a>
                             <ul class="dropdown-menu">
                                 <li>

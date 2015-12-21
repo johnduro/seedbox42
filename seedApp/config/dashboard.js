@@ -41,14 +41,14 @@ module.exports = {
 			"name": "best-rated-file",
 			"enabled": "all",
 			"template": "dashboard-fileList",
-			"title": "best rated file",
+			"title": "best rated files",
 			"order": 4
 		},
 		{
 			"name": "most-commented-file",
 			"enabled": "all",
 			"template": "dashboard-fileList",
-			"title": "most commented file",
+			"title": "most commented files",
 			"order": 5
 		},
 		{
@@ -69,7 +69,7 @@ module.exports = {
 			"name": "most-downloaded-file",
 			"enabled": "all",
 			"template": "dashboard-fileList",
-			"title": "most downloaded file",
+			"title": "most downloaded files",
 			"order": 8
 		}
 	]

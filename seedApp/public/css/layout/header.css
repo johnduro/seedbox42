@@ -29,14 +29,23 @@
 }
 
 .profile-img{
-    margin-top: -5px;
+    margin-top: -12px;
     margin-right: 5px;
     float: left;
     background: url(http://jeanbaptiste.bayle.free.fr/AVATAR/grey_81618-default-avatar-200x200.jpg) 50% 50% no-repeat; /* 50% 50% centers image in div */
     /*background-size: auto 100%; /* Interchange this value depending on prefering width vs. height */
-    width: 30px;
-    height: 30px;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
+}
+
+
+.custom-navcolor {
+	color: #ffffff;
+}
+
+.custom-navCat {
+	font-size:1.1em;
 }
 
 .navbar-center {
@@ -47,7 +56,64 @@
 	margin: auto;
 }
 
+.navbar-nav {
+	margin-top:10px;
+	height:70px;
+	vertical-align:middle;
+}
+
 .ft-active {
 	border-bottom: 1px solid #fff;
 	padding-bottom: 5px;
+}
+
+@font-face {
+	font-family: XtreemMedium;
+	src: url('../../font/XtreemThin_Demo.ttf');
+	/*src: url('../../font/XtreemMedium_Demo.ttf');*/
+}
+
+#ttTitle, #ttTitleToggle {
+	font-family: XtreemMedium;
+	color: white;
+}
+
+#ttTitleToggle {
+	display:none;
+	font-size:1.8em;
+	margin-top:12px;
+	text-decoration: none;
+}
+
+@media screen and (min-width:1060px) {
+	#ttTitle {
+		font-size: 3.5em;
+		margin-top:23px;
+	}
+}
+
+@media screen and (min-width:768px) and (max-width:1060px) {
+	#ttTitle {
+		font-size:2em;
+		margin-top:19px;
+	}
+}
+
+@media screen and (max-width:768px) {
+	#ttTitle {
+		display:none;
+	}
+}
+
+@media screen and (min-width:245px) and (max-width:768px) {
+	#ttTitleToggle {
+		display:inline-block;
+	}
+}
+
+.tt-icon-navbar {
+	vertical-align:middle;
+	height: 27px;
+	width: auto;
+	margin:-5px -15px;
 }
