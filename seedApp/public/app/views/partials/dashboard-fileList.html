@@ -1,10 +1,11 @@
 <div class="col-md-6">
     <div class="panel panel-white">
         <div class="panel-heading">
-            <h3 class="panel-title">{{content.title | uppercase}}</h3>
+			<h3 class="panel-title d-title">{{content.title | uppercase}}</h3>
+		  	<a href="#" class="d-view-all">+ view all</a> <!-- modifier le plus avec une icone -->
         </div>
         <div class="panel-body">
-            <table class="table table-striped" style="width: 100%; cellspacing: 0;">
+            <table class="table d-table" style="width: 100%; cellspacing: 0;">
                 <!-- <thead> -->
                 <!--     <tr> -->
                 <!--         <th class="">Type</t> -->
@@ -14,7 +15,7 @@
                 <!--         <th class="">Taille</t> -->
                 <!--     </tr> -->
                 <!-- </thead> -->
-                <tbody ng-repeat="item in files">
+                <tbody ng-repeat="item in files" ng-class-odd="'d-odd'" ng-class-even="'d-even'">
                     <tr ng-dblclick="openFile(item)">
                         <td>
                             <div ng-switch="item.type">
@@ -24,10 +25,10 @@
                                 <div ng-switch-default ><i class="fa fa-question-circle fa-4"></i></div>
                             </div>
                         </td>
-                        <td>{{item.name}}</td>
+                        <td><span class="d-td-fontsize">{{item.name}}</span></td>
                         <!-- <td>{{item.creator.login}}</td> -->
                         <!-- <td>{{item.createdAt | date:'MM/dd/yyyy' }}</td> -->
-                        <td>{{item.sizeConvert}}</td>
+                        <td><span class="d-td-fontsize">{{item.sizeConvert}}</span></td>
                     </tr>
                 </tbody>
             </table>

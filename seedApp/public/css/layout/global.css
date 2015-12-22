@@ -3,3 +3,33 @@
 	padding-left: 100px;
 	padding-right: 100px;
 }
+
+/* DASHBOARD */
+
+.d-title {
+	float: left;
+	color: #315078;
+	font-weight: bold;
+}
+
+.d-view-all {
+	float: right;
+}
+
+.d-table {
+
+}
+
+.d-td-fontsize {
+	font-size: 0.9em;
+	font-weight: bold;
+}
+
+.d-odd {
+	background-color: #fff;
+}
+
+.d-even {
+	/* background-color: #fff; */
+	background-color: #E9EDF0;
+}
