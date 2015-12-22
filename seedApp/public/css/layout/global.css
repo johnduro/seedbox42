@@ -4,7 +4,65 @@
 	padding-right: 100px;
 }
 
+/* FONTS */
+
+@font-face {
+	font-family: 'MuseoSans-100';
+	src: url('MuseoSans-100.eot?') format('eot'),
+	url('MuseoSans-100.otf')  format('opentype'),
+	url('MuseoSans-100.woff') format('woff'),
+	url('MuseoSans-100.ttf')  format('truetype'),
+	url('MuseoSans-100.svg#MuseoSans-100') format('svg');
+}
+
+@font-face {
+	font-family: 'MuseoSans-300';
+	src: url('MuseoSans-300.eot?') format('eot'),
+	url('MuseoSans-300.otf')  format('opentype'),
+	url('MuseoSans-300.woff') format('woff'),
+	url('MuseoSans-300.ttf')  format('truetype'),
+	url('MuseoSans-300.svg#MuseoSans-300') format('svg');
+}
+
+@font-face {
+	font-family: 'MuseoSans-500';
+	src: url('MuseoSans-500.eot?') format('eot'),
+	url('MuseoSans-500.otf')  format('opentype'),
+	url('MuseoSans-500.woff') format('woff'),
+	url('MuseoSans-500.ttf')  format('truetype'),
+	url('MuseoSans-500.svg#MuseoSans-500') format('svg');
+}
+
+@font-face {
+	font-family: 'MuseoSans-700';
+	src: url('MuseoSans-700.eot?') format('eot'),
+	url('MuseoSans-700.otf')  format('opentype'),
+	url('MuseoSans-700.woff') format('woff'),
+	url('MuseoSans-700.ttf')  format('truetype'),
+	url('MuseoSans-700.svg#MuseoSans-700') format('svg');
+}
+
+/* * { */
+/* 	font-family:MuseoSans-700; */
+/* } */
+
+
 /* DASHBOARD */
+
+.d-plus-icon {
+	height: 10px;
+	width: 10px;
+}
+
+.d-body {
+	margin-top: -30px;
+}
+
+.d-hr {
+	color: #315078;
+	background-color: #E9EDF0;
+	height: 2px;
+}
 
 .d-title {
 	float: left;
@@ -17,12 +75,17 @@
 }
 
 .d-table {
+	width: 100%; /* ALEXIS */
+	/* cellspacing: 0; /\* ALEXIS *\/ */
+}
 
+.d-table tr th, .d-table tr td, .d-table tr {
+ 	border-style: none !important;
 }
 
 .d-td-fontsize {
 	font-size: 0.9em;
-	font-weight: bold;
+	/* font-weight: bold; */
 }
 
 .d-odd {
@@ -30,6 +93,5 @@
 }
 
 .d-even {
-	/* background-color: #fff; */
 	background-color: #E9EDF0;
 }
