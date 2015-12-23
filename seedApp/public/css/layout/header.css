@@ -28,16 +28,25 @@
 .l-account {
 }
 
-.profile-img{
+.profile-img {
     margin-top: -12px;
     margin-right: 5px;
-    float: left;
-    background: url(http://jeanbaptiste.bayle.free.fr/AVATAR/grey_81618-default-avatar-200x200.jpg) 50% 50% no-repeat; /* 50% 50% centers image in div */
-    /*background-size: auto 100%; /* Interchange this value depending on prefering width vs. height */
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
+    width: 46px;
+    height: 46px;
+    border-radius: 23px;
+	-webkit-border-radius: 23px;
+	-moz-border-radius: 23px;
 }
+/* .profile-img{ */
+/*     margin-top: -12px; */
+/*     margin-right: 5px; */
+/*     float: left; */
+/*     background: url(http://jeanbaptiste.bayle.free.fr/AVATAR/grey_81618-default-avatar-200x200.jpg) 50% 50% no-repeat; /\* 50% 50% centers image in div *\/ */
+/*     /\*background-size: auto 100%; /\* Interchange this value depending on prefering width vs. height *\/ */
+/*     width: 45px; */
+/*     height: 45px; */
+/*     border-radius: 50%; */
+/* } */
 
 
 .custom-navcolor {
@@ -46,6 +55,7 @@
 
 .custom-navCat {
 	font-size:1.1em;
+	font-family:MuseoSans-500;
 }
 
 .navbar-center {

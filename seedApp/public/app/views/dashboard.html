@@ -5,10 +5,10 @@
 <div id="main-wrapper">
     <div class="row">
         <div class="col-md-12">
-            <div class="panel panel-white">
+            <div class="panel panel-white d-header">
                 <div class="panel-body">
                     <!-- <p class="no-s">Il y a actuellement {{connectedUsers}} personnes de connectées</p> -->
-                    <p class="no-s">{{connectedUsers}} user<ng-pluralize count="connectedUsers" when="{ 1: ' is ', 'other': 's are '}"></ng-pluralize>connected</p>
+                    <p class="no-s d-nbusers">{{connectedUsers}} user<ng-pluralize count="connectedUsers" when="{ 1: ' is ', 'other': 's are '}"></ng-pluralize>connected</p>
                 </div>
             </div>
         </div>

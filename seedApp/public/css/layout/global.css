@@ -8,38 +8,67 @@
 
 @font-face {
 	font-family: 'MuseoSans-100';
-	src: url('MuseoSans-100.eot?') format('eot'),
-	url('MuseoSans-100.otf')  format('opentype'),
-	url('MuseoSans-100.woff') format('woff'),
-	url('MuseoSans-100.ttf')  format('truetype'),
-	url('MuseoSans-100.svg#MuseoSans-100') format('svg');
+	src: url('../../font/MuseoSans-100.eot?') format('eot'),
+	url('../../font/MuseoSans-100.otf')  format('opentype'),
+	url('../../font/MuseoSans-100.woff') format('woff'),
+	url('../../font/MuseoSans-100.ttf')  format('truetype'),
+	url('../../font/MuseoSans-100.svg#MuseoSans-100') format('svg');
 }
 
 @font-face {
 	font-family: 'MuseoSans-300';
-	src: url('MuseoSans-300.eot?') format('eot'),
-	url('MuseoSans-300.otf')  format('opentype'),
-	url('MuseoSans-300.woff') format('woff'),
-	url('MuseoSans-300.ttf')  format('truetype'),
-	url('MuseoSans-300.svg#MuseoSans-300') format('svg');
+	src: url('../../font/MuseoSans-300.eot?') format('eot'),
+	url('../../font/MuseoSans-300.otf')  format('opentype'),
+	url('../../font/MuseoSans-300.woff') format('woff'),
+	url('../../font/MuseoSans-300.ttf')  format('truetype'),
+	url('../../font/MuseoSans-300.svg#MuseoSans-300') format('svg');
 }
 
 @font-face {
 	font-family: 'MuseoSans-500';
-	src: url('MuseoSans-500.eot?') format('eot'),
-	url('MuseoSans-500.otf')  format('opentype'),
-	url('MuseoSans-500.woff') format('woff'),
-	url('MuseoSans-500.ttf')  format('truetype'),
-	url('MuseoSans-500.svg#MuseoSans-500') format('svg');
+	src: url('../../font/MuseoSans-500.eot?') format('eot'),
+	url('../../font/MuseoSans-500.otf')  format('opentype'),
+	url('../../font/MuseoSans-500.woff') format('woff'),
+	url('../../font/MuseoSans-500.ttf')  format('truetype'),
+	url('../../font/MuseoSans-500.svg#MuseoSans-500') format('svg');
 }
 
 @font-face {
 	font-family: 'MuseoSans-700';
-	src: url('MuseoSans-700.eot?') format('eot'),
-	url('MuseoSans-700.otf')  format('opentype'),
-	url('MuseoSans-700.woff') format('woff'),
-	url('MuseoSans-700.ttf')  format('truetype'),
-	url('MuseoSans-700.svg#MuseoSans-700') format('svg');
+	src: url('../../font/MuseoSans-700.eot?') format('eot'),
+	url('../../font/MuseoSans-700.otf')  format('opentype'),
+	url('../../font/MuseoSans-700.woff') format('woff'),
+	url('../../font/MuseoSans-700.ttf')  format('truetype'),
+	url('../../font/MuseoSans-700.svg#MuseoSans-700') format('svg');
+}
+
+.tt-font-museo500 {
+	font-family: 'MuseoSans-500';
+}
+
+.tt-font-museo300 {
+	font-family: 'MuseoSans-300';
+}
+
+textarea {
+	font-family: 'MuseoSans-100';
+	font-style: italic;
+}
+::-webkit-input-placeholder {
+	font-family: 'MuseoSans-100';
+	font-style: italic;
+}
+:-moz-placeholder {
+	font-family: 'MuseoSans-100';
+	font-style: italic;
+}
+::-moz-placeholder {
+	font-family: 'MuseoSans-100';
+	font-style: italic;
+}
+:-ms-input-placeholder {
+	font-family: 'MuseoSans-100';
+	font-style: italic;
 }
 
 /* * { */
@@ -48,6 +77,15 @@
 
 
 /* DASHBOARD */
+
+.d-header {
+	border: none;
+}
+
+.d-nbusers {
+	font-family: 'MuseoSans-100';
+	color: #325064;
+}
 
 .d-plus-icon {
 	height: 10px;
@@ -66,16 +104,20 @@
 
 .d-title {
 	float: left;
-	color: #315078;
-	font-weight: bold;
+	color: #325064;
+	/* font-weight: bold; */
+	font-family:MuseoSans-700;
 }
 
 .d-view-all {
 	float: right;
+	color: #325064;
+	font-family: 'MuseoSans-300';
 }
 
 .d-table {
 	width: 100%; /* ALEXIS */
+	font-family:MuseoSans-300;
 	/* cellspacing: 0; /\* ALEXIS *\/ */
 }
 
