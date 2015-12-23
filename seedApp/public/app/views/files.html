@@ -1,15 +1,19 @@
-<div class="page-title">
-    <h3>Les fichiers</h3>
-</div>
+<!-- <div class="page-title"> -->
+<!--     <h3>Les fichiers</h3> -->
+<!-- </div> -->
 
 <div id="main-wrapper">
     <div class="row">
         <div class="col-md-12">
-            <div class="panel panel-white">
-                <div class="panel-body">
-                    <input type="text" placeholder="Search" ng-model="search"> <button type="button" class="btn btn-primary">Search <i class="fa fa-search"></i></button>
-                </div>
-            </div>
+        <!-- <div class="col-md-10"> -->
+            <!-- <div class="panel panel-white"> -->
+            <!--   <div class="panel-body"> -->
+				<div class="fls-search-div col-md-3 col-xs-6">
+				  <input class="fls-search-input col-md-10 col-xs-10" placeholder="Search files" ng-model="search"> <button type="button" class="fls-search-button">|<i class="fa fa-search fls-search-icon"></i></button>
+				</div>
+                    <!-- <input type="text" placeholder="Search" ng-model="search"> <button type="button" class="btn btn-primary">Search <i class="fa fa-search"></i></button> -->
+            <!--     </div> -->
+            <!-- </div> -->
         </div>
     </div>
 
@@ -18,36 +22,56 @@
             <table ng-if="!treeSelected" class="display table" style="width: 100%; cellspacing: 0;">
                 <thead>
                     <tr>
-                        <th class="">Type</th>
-                        <th class="col-md-10">Name</th>
-                        <th class="col-md-2">Nb commentaires <i class="fa fa-sort"></i></th>
-                        <th class="col-md-2">Nb telechargements <i class="fa fa-sort"></i></th>
-                        <th class="">Lock</th>
-                        <th class="">Size  <i class="fa fa-sort"></i></th>
+                        <th class="">TYPE</th>
+                        <th class="col-md-5">NAME</th>
+                        <th class="">SIZE  <i class="fa fa-sort"></i></th>
                         <th class=""></th>
-                        <th class=""></th>
+                        <th class=""><i class="fa fa-heart"></i></th>
+						<th class="">DATE</th>
+                        <!-- <th class="col-md-2">DL <i class="fa fa-sort"></i></th> -->
+                        <th class="">DL <i class="fa fa-sort"></i></th>
+						<th class=""><i class="fa fa-user"></i></th>
+						<th class"">RATE</th>
+                        <th class=""><i class="fa fa-comments"></i><i class="fa fa-sort"></i></th>
+                        <!-- <th class="col-md-2"><i class="fa fa-comments"></i><i class="fa fa-sort"></i></th> -->
+                        <!-- <th class=""></th> -->
                     </tr>
                 </thead>
-                <tbody ng-repeat="(key, item) in elementsActual | filter : search">
-                    <tr>
+                <tbody>
+                    <tr ng-repeat="(key, item) in elementsActual | filter : search">
                         <td>
                             <div ng-switch="item.type">
-                                <div ng-switch-when="folder" ><i class="fa fa-folder fa-4"></i> {{item.type}}</div>
-                                <div ng-switch-when="audio" ><i class="fa fa-file-audio-o fa-4"></i> {{item.type}}</div>
-                                <div ng-switch-when="video" ><i class="fa fa-file-video-o fa-4"></i> {{item.type}}</div>
-                                <div ng-switch-default ><i class="fa fa-question-circle fa-4"></i> {{item.type}}</div>
+                                <!-- <div ng-switch-when="folder" ><i class="icon-folder"></i></div> A MODIFIER ! -->
+                                <div ng-switch-when="folder" ><i class="glyphicon glyphicon-folder-close"></i></div>
+                                <div ng-switch-when="audio" ><i class="fa fa-music fa-4"></i></div>
+                                <div ng-switch-when="video" ><i class="fa fa-film fa-4"></i></div>
+                                <!-- <div ng-switch-when="image" ><i class="icon-picture"></i></div> A TESTER ET A MODIFIER ! -->
+                                <div ng-switch-when="image" ><i class="glyphicon glyphicon-picture"></i></div>
+                                <div ng-switch-default ><i class="fa fa-file-text-o fa-4"></i></div>
+                                <!-- <div ng-switch-when="folder" ><i class="fa fa-folder fa-4"></i> {{item.type}}</div> -->
+                                <!-- <div ng-switch-when="audio" ><i class="fa fa-file-audio-o fa-4"></i> {{item.type}}</div> -->
+                                <!-- <div ng-switch-when="video" ><i class="fa fa-file-video-o fa-4"></i> {{item.type}}</div> -->
+                                <!-- <div ng-switch-default ><i class="fa fa-question-circle fa-4"></i> {{item.type}}</div> -->
                             </div>
                         </td>
                         <td ng-dblclick="openFile(item)">{{item.name}}</td>
-                        <td>{{item.commentsNbr}}</td>
-                        <td>{{item.downloads}}</td>
-                        <td>
-                            <i ng-if="item.isLockedByUser == 1" class="fa fa-lock" ng-click="unlockFile(item)"></i>
-                            <i ng-if="item.isLockedByUser == 0" class="fa fa-unlock-alt" ng-click="lockFile(item)"></i>
-                        </td>
                         <td>{{item.sizeConvert}}</td>
-                        <td ng-click="showInfo(item)"><i class="fa fa-info-circle"></i></td>
-                        <td> <i ng-click="download(item._id, item.name)" class="fa fa-download"></i> </td>
+                        <!-- <td> <i ng-click="download(item._id, item.name)" class="fa fa-download"></i> </td> -->
+                        <td> <i ng-click="download(item._id, item.name)" class="icon-down-circled"></i> </td>
+                        <td>
+                            <i ng-if="item.isLockedByUser == 1" class="fa fa-heart fls-locked-user" ng-click="unlockFile(item)"></i>
+                            <i ng-if="(item.isLocked == 1 && item.isLockedByUser == 0)" class="fa fa-heart fls-locked-other" ng-click="lockFile(item)"></i>
+                            <i ng-if="item.isLocked == 0" class="fa fa-heart fls-locked-no" ng-click="lockFile(item)"></i>
+                            <!-- <i ng-if="item.isLockedByUser == 1" class="fa fa-lock" ng-click="unlockFile(item)"></i> -->
+                            <!-- <i ng-if="item.isLockedByUser == 0" class="fa fa-unlock-alt" ng-click="lockFile(item)"></i> -->
+                        </td>
+						<td>{{item.createdAt | date:'MM/dd/yy'}}</td>
+                        <td>{{item.downloads}}</td>
+						<!-- <td>{{item.creator.login}}</td> -->
+						<td><img ng-src="/assets/avatar/{{item.creator.avatar}}" err-SRC="/assets/avatar/default.png" title="{{item.creator.login}}" alt="{{item.creator.login}}" class="fls-avatar"></img></td>
+						<td>{{item.averageGrade}}</td>
+                        <td>{{item.commentsNbr}}</td>
+                        <!-- <td ng-click="showInfo(item)"><i class="fa fa-info-circle"></i></td> -->
                     </tr>
                 </tbody>
             </table>

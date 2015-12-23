@@ -83,49 +83,49 @@
                 "enabled": "all",
                 "template": "dashboard-fileList",
                 "title": "your latest upload files",
-                "order": 1
+                "order": 2
             },
             {
                 "name": "oldest-user-locked-file",
                 "enabled": "all",
                 "template": "dashboard-fileList",
                 "title": "your oldest locked files",
-                "order": 2
+                "order": 3
             },
             {
                 "name": "oldest-locked-file",
                 "enabled": "all",
                 "template": "dashboard-fileList",
                 "title": "oldest locked files",
-                "order": 3
+                "order": 4
             },
             {
                 "name": "best-rated-file",
                 "enabled": "all",
                 "template": "dashboard-fileList",
                 "title": "best rated file",
-                "order": 4
+                "order": 5
             },
             {
                 "name": "most-commented-file",
                 "enabled": "all",
                 "template": "dashboard-fileList",
                 "title": "most commented file",
-                "order": 5
+                "order": 6
             },
             {
                 "name": "disk-space",
                 "enabled": "all",
                 "template": "graph",
                 "title": "disk space",
-                "order": 6
+                "order": 7
             },
             {
                 "name": "minichat",
                 "enabled": "all",
                 "template": "dashboard-chat",
                 "title": "minichat",
-                "order": 7
+                "order": 1
             },
 			{
 				"name": "most-downloaded-file",

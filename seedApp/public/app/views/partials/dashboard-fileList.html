@@ -2,7 +2,8 @@
     <div class="panel panel-white">
         <div class="panel-heading">
 			<h3 class="panel-title d-title">{{content.title | uppercase}}</h3>
-		  	<a href="#" class="d-view-all"><img src="assets/images/tt-plus-icon.png" class="d-plus-icon"></img> <span class="tt-font-museo300">view all</span></a> <!-- modifier le plus avec une icone -->
+		  	<!-- <a href="#" class="d-view-all"><img src="assets/images/tt-plus-icon.png" class="d-plus-icon"></img> <span class="tt-font-museo300">view all</span></a> <\!-- modifier le plus avec une icone -\-> -->
+		  	<a href="#" class="d-view-all"><span class="icon-plus"></span> <span class="tt-font-museo300">view all</span></a>
         </div>
 		<hr class="d-hr"/>
         <div class="panel-body d-body">
@@ -10,12 +11,19 @@
                 <!-- <tbody ng-repeat="item in files" ng-class-odd="'d-odd'" ng-class-even="'d-even'"> -->
 				<tbody>
                     <tr ng-dblclick="openFile(item)" ng-repeat="item in files" ng-class-odd="'d-odd'" ng-class-even="'d-even'">
-                        <td>
+                        <td class="d-file-icon">
                             <div ng-switch="item.type">
-	                            <div ng-switch-when="folder" ><img src="assets/images/tt-folder-icon.png"></img></div>
-                                <div ng-switch-when="audio" ><img src="assets/images/tt-audio-icon.png"></img></div>
-                                <div ng-switch-when="video" ><img src="assets/images/tt-video-icon.png"></img></div>
-                                <div ng-switch-default ><img src="assets/images/tt-file-icon.png"></img></div>
+                                <!-- <div ng-switch-when="folder" ><i class="icon-folder"></i></div> A MODIFIER ! -->
+                                <div ng-switch-when="folder" ><i class="glyphicon glyphicon-folder-close"></i></div>
+                                <div ng-switch-when="audio" ><i class="fa fa-music fa-4"></i></div>
+                                <div ng-switch-when="video" ><i class="fa fa-film fa-4"></i></div>
+                                <!-- <div ng-switch-when="image" ><i class="icon-picture"></i></div> A TESTER ET A MODIFIER ! -->
+                                <div ng-switch-when="image" ><i class="glyphicon glyphicon-picture"></i></div>
+                                <div ng-switch-default ><i class="fa fa-file-text-o fa-4"></i></div>
+	                            <!-- <div ng-switch-when="folder" ><img src="assets/images/tt-folder-icon.png"></img></div> -->
+                                <!-- <div ng-switch-when="audio" ><img src="assets/images/tt-audio-icon.png"></img></div> -->
+                                <!-- <div ng-switch-when="video" ><img src="assets/images/tt-video-icon.png"></img></div> -->
+                                <!-- <div ng-switch-default ><img src="assets/images/tt-file-icon.png"></img></div> -->
                             </div>
                         </td>
                         <td><span class="d-td-fontsize">{{item.name}}</span></td>

@@ -84,6 +84,7 @@ textarea {
 
 .d-nbusers {
 	font-family: 'MuseoSans-100';
+	font-style: italic;
 	color: #325064;
 }
 
@@ -100,6 +101,10 @@ textarea {
 	color: #315078;
 	background-color: #E9EDF0;
 	height: 2px;
+}
+
+.d-file-icon {
+	color: #325064;
 }
 
 .d-title {
@@ -136,4 +141,60 @@ textarea {
 
 .d-even {
 	background-color: #E9EDF0;
+}
+
+/* FILES */
+
+
+.fls-search-div {
+	border-radius: 0px;
+	border-color: #9ba8b1;
+	border-style: solid;
+	border-width: 1px;
+	height: 38px;
+}
+
+.fls-search-input {
+	height: 100%;
+	border: none;
+}
+::-webkit-input-placeholder { text-align:right; }
+::-moz-placeholder { text-align:right; }
+
+.fls-search-input:hover, .fls-search-input:active, .fls-search-input:focus  {
+	outline:0px !important;
+	-webkit-appearance:none;
+}
+.fls-search-button {
+	border: none;
+	background-color: #fff;
+	display: inline-block;
+	line-height: 31px;
+	float: right;
+	vertical-align: middle;
+}
+
+.fls-search-icon {
+	margin-left: 5px;
+}
+
+
+.fls-avatar {
+	height:32;
+	width:32;
+    border-radius: 16px;
+	-webkit-border-radius: 16px;
+	-moz-border-radius: 16px;
+}
+
+.fls-locked-no {
+	color: #B4BEC6;
+}
+
+.fls-locked-other {
+	color: #253E51;
+}
+
+.fls-locked-user {
+	color: #FA000A;
 }
