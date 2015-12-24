@@ -143,6 +143,35 @@ textarea {
 	background-color: #E9EDF0;
 }
 
+/* STARS */
+
+span.stars, span.stars span {
+	display: block;
+	/* background: url('../../assets/images/glyphicons-star.png') 0 -16px repeat-x; */
+	background: url('../../assets/images/tt-stars.png') 0 -16px repeat-x;
+	width: 80px;
+	height: 16px;
+}
+
+span.stars span {
+	background-position: 0 0;
+}
+
+/* span.stars, span.stars>* { */
+/* /\* span.stars>* { *\/ */
+/* 	display: inline-block; */
+/* 	/\* background: url(http://i.imgur.com/YsyS5y8.png) 0 -16px repeat-x; *\/ */
+/* 	/\* background: url('../../assets/images/glyphicons-star.png') 0 -16px repeat-x; *\/ */
+/* 	background: url('../../assets/images/tt-stars.png') 0 -16px repeat-x; */
+/* 	/\* background: url('../../assets/images/glyphicons-star.png') 0 0 repeat-x; *\/ */
+/* 	width: 80px; */
+/* 	height: 16px; */
+/* } */
+/* span.stars>*{ */
+/* 	max-width:80px; */
+/* 	background-position: 0 0; */
+/* } */
+
 /* FILES */
 
 
