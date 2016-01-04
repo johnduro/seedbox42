@@ -1,42 +1,68 @@
-app.directive('starRating',
-function() {
-return {
-restrict : 'A',
-template : '<ul class="rating">'
-   + ' <li ng-repeat="star in stars" ng-class="star" ng-click="toggle($index)">'
-   + '  <i class="fa fa-star-o"></i>'
-   + ' </li>'
-   + '</ul>',
-scope : {
- ratingValue : '=',
- max : '=',
- onRatingSelected : '&'
-},
-link : function(scope, elem, attrs) {
- var updateStars = function() {
-  scope.stars = [];
-  for ( var i = 0; i < scope.max; i++) {
-   scope.stars.push({
-    filled : i < scope.ratingValue
-   });
-  }
- };
+app.directive("starrating", function(RequestHandler, $rootScope) {
+    var directive = { };
+    directive.restrict = 'AE';
 
- scope.toggle = function(index) {
-  scope.ratingValue = index + 1;
-  scope.onRatingSelected({
-   rating : index + 1
-  });
- };
+    directive.scope = {
+        score: '=score',
+        max: '=max'
+    };
 
- scope.$watch('ratingValue',
-  function(oldVal, newVal) {
-   if (newVal) {
-    updateStars();
-   }
-  }
- );
-}
-};
-}
-);
+    directive.templateUrl = "app/directives/templates/rating.html";
+
+    directive.link = function(scope, elements, attr) {
+
+        scope.updateStars = function() {
+            var idx = 0;
+            scope.stars = [ ];
+            for (idx = 0; idx < scope.max; idx += 1) {
+                scope.stars.push({
+                    full: scope.score > idx
+                });
+            }
+        };
+
+        scope.hover = function(/** Integer */ idx) {
+            scope.hoverIdx = idx;
+        };
+
+        scope.stopHover = function() {
+            scope.hoverIdx = -1;
+        };
+
+        scope.starColor = function(/** Integer */ idx) {
+            var starClass = 'rating-normal';
+            if (idx <= scope.hoverIdx) {
+                starClass = 'rating-highlight';
+            }
+            return starClass;
+        };
+
+        scope.starClass = function(/** Star */ star, /** Integer */ idx) {
+            var starClass = 'fa-star-o';
+            if (star.full || idx <= scope.hoverIdx) {
+                starClass = 'fa-star';
+            }
+            return starClass;
+        };
+
+        scope.setRating = function(idx) {
+            RequestHandler.post(api + "file/add-grade/" + $rootScope.torrentActual._id, {grade: idx+1})
+                .then(function(result){
+                    if (result.status != 500 && result.data.success){
+                        scope.score = idx + 1;
+                        scope.stopHover();
+                    }
+                    console.log(result);
+                });
+
+        };
+
+        scope.$watch('score', function(newValue, oldValue) {
+            if (newValue !== null && newValue !== undefined) {
+                scope.updateStars();
+            }
+        });
+    };
+
+    return directive;
+});

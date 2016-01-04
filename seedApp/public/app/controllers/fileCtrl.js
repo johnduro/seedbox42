@@ -27,7 +27,9 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
         RequestHandler.get(api + "file/show/" + $stateParams.file)
             .then(function(result){
                 $scope.torrent = result.data.file;
+                $rootScope.torrentActual = result.data.file;
                 $scope.torrent.sizeConvert = Tools.FileConvertSize($scope.torrent.size);
+                $scope.torrent.gradeByUser = 4;
                 console.log("TORRENT : ", $scope.torrent);
 
                 if (result.data.data.fileList.length){
@@ -83,6 +85,54 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
             }
         }
     }
+
+// --------------------------------------------- FUNCTION DOWNLOAD --------------------------------------------
+    function generatePathDownload(id, name){
+		var save = false;
+		var newPath = "";
+		for(var key in pathActualArray){
+			if (save){
+				newPath = newPath + "/" + pathActualArray[key]
+				break;
+			}
+			if (pathActualArray[key] == $scope.treeSelected.name)
+				save = true;
+		}
+		if (save){
+			newPath += "/" + name;
+		}else{
+			newPath = "/";
+		}
+
+		pathEncode = btoa(newPath);
+		nameEncode = btoa(name);
+		return(api + "file/download/" + id + "/" + pathEncode + "/" + nameEncode);
+	};
+
+    $scope.download = function (id, name){
+		path = generatePathDownload(id, name);
+		window.location.href = path;
+	};
+
+// --------------------------------------------- FUNCTION LOCK FILE --------------------------------------------
+    $scope.lockFile = function(item){
+		RequestHandler.post(api + "file/add-lock/" + item._id)
+			.then(function(result){
+				if (result.data.success)
+					item.isLockedByUser = true;
+				console.log(item);
+			});
+	};
+
+	$scope.unlockFile = function(item){
+		RequestHandler.delete(api + "file/remove-lock/" + item._id, {})
+			.then(function(result){
+				if (result.data.success)
+					item.isLockedByUser = false;
+				console.log(result);
+			});
+	};
+
 
 // --------------------------------------------- CONTROLLER MODAL SEARCH MOVIE --------------------------------------------
     $scope.openModal = {

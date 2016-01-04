@@ -13,7 +13,7 @@
                                         <i ng-if="torrent.isLockedByUser == 0" class="fa fa-unlock-alt" ng-click="lockFile(torrent)"></i>
                         </div>
                         <div>
-                            Note <div class="star-rating" star-rating rating-value="5" data-max="5"></div>
+                            Note <div class="rating" starrating score="torrent.gradeByUser" max="5"></div>
                         </div>
                         <div>
                             Taille du dossier: {{torrent.sizeConvert}}
@@ -22,16 +22,16 @@
                             Nombre de telechargement: {{torrent.downloads}}
                         </div>
                         <div>
-                            Telecharger le dossier: <i ng-clicks="download(item._id, item.name)" class="fa fa-download"></i>
+                            Telecharger le dossier: <i ng-click="download(torrent._id, torrent.name)" class="fa fa-download"></i>
                         </div>
-                        <div ng-if="torrent.tmdb">
+                        <!-- <div ng-if="torrent.tmdb">
                             <img ng-src="http://image.tmdb.org/t/p/w45{{torrent.tmdb.poster_path}}">
                             <button type="button" ng-click="openModal.searchMovie()" class="btn btn-primary">Modifier la fiche du film </button>
                         </div>
                         <div ng-if="!torrent.tmdb">
                             <button type="button" ng-click="openModal.searchMovie()" class="btn btn-primary">Ajouter la fiche du film </button>
                         </div>
-                        <button type="button" ng-click="openModal.streamMovie()" class="btn btn-primary"> Voir le film </button>
+                        <button type="button" ng-click="openModal.streamMovie()" class="btn btn-primary"> Voir le film </button> -->
                     </div>
                 </div>
             </div>
