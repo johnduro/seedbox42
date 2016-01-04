@@ -279,7 +279,7 @@ FileSchema.methods = {
 	},
 
 	addGrade: function (user, grade, cb) {
-		var index = ft.indexOfByIdKey(this.grades, 'user', user._id);
+		var index = ft.indexOfByIdKey(this.grades, 'user', user._id.toString());
 		// var index = ft.indexOfByUserId(this.grades, user._id);
 		if (index === -1)
 		{
@@ -292,7 +292,7 @@ FileSchema.methods = {
 	},
 
 	modGrade: function (user, newGrade, cb) {
-		var index = ft.indexOfByIdKey(this.grades, 'user', user._id);
+		var index = ft.indexOfByIdKey(this.grades, 'user', user._id.toString());
 		// var index = ft.indexOfByUserId(this.grades, user._id);
 		if (index > -1)
 			this.grades[index].grade = newGrade;
@@ -303,7 +303,7 @@ FileSchema.methods = {
 	},
 
 	removeGrade: function (user, cb) {
-		var index = ft.indexOfByIdKey(this.grades, 'user', user._id);
+		var index = ft.indexOfByIdKey(this.grades, 'user', user._id.toString());
 		// var index = ft.indexOfByUserId(this.grades, user._id);
 		if (index > -1)
 			this.grades.splice(index, 1);
@@ -324,8 +324,7 @@ FileSchema.methods = {
 	},
 
 	addLock: function (user, cb) {
-		var index = ft.indexOfByIdKey(this.locked, 'user', user._id);
-		// var index = ft.indexOfByUserId(this.locked, user._id);
+		var index = ft.indexOfByIdKey(this.locked, 'user', user._id.toString());
 		if (index === -1)
 			this.locked.push({ user: user._id });
 		else
@@ -334,7 +333,7 @@ FileSchema.methods = {
 	},
 
 	removeLock: function (user, cb) {
-		var index = ft.indexOfByIdKey(this.locked, 'user', user._id);
+		var index = ft.indexOfByIdKey(this.locked, 'user', user._id.toString());
 		if (index > -1 )
 			this.locked.splice(index, 1);
 		else

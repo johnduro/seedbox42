@@ -26,13 +26,11 @@ module.exports = {
 	},
 
 	updateSettings: function (newSettings, oldSettings) {
-		// console.log("BEFORE > ", oldSettings);
 		for (var key in newSettings)
 		{
 			if (oldSettings.hasOwnProperty(key) && oldSettings[key] != newSettings[key])
 				oldSettings[key] = newSettings[key];
 		}
-		// console.log("AFTER > ", oldSettings);
 		return oldSettings;
 	},
 

@@ -78,12 +78,18 @@ router.post('/add-lock/:id', function (req, res, next) {
 router.delete('/remove-lock/:id', function (req, res, next) {
 	File.findById(req.params.id, function (err, file) {
 		if (err)
-			return next(err);
-		file.removeLock(req.user, function (err) {
-			if (err)
-				return next(err);
-			res.json({ success: true, message: 'file successfully unlocked' });
-		});
+			res.json({ success: false, message: err });
+		else if (file != null)
+		{
+			file.removeLock(req.user, function (err) {
+				if (err)
+					res.json({ success: false, message: err });
+				else
+					res.json({ success: true, message: 'file successfully unlocked' });
+			});
+		}
+		else
+			res.json({ success: false, message: 'Could not find the file asked for' });
 	});
 });
 
