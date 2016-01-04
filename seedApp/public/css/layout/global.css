@@ -71,6 +71,44 @@ textarea {
 	font-style: italic;
 }
 
+
+.tt-title {
+	color: #325064;
+	font-family: 'MuseoSans-700';
+}
+
+.tt-darkblue {
+	color: #325064;
+}
+
+.tt-text {
+	font-family: 'MuseoSans-300';
+}
+
+.tt-table-odd {
+	background-color: #fff;
+}
+
+.tt-table-even {
+	background-color: #E9EDF0;
+}
+
+.tt-table {
+	/* border-color: red; */
+	/* border-color: #315078; */
+	/* border-color: #E9EDF0; */
+	/* background-color: #E9EDF0; */
+}
+
+.tt-table > thead > tr > th {
+	/* border-color: #315078; */
+	border-bottom: 1px solid #325064;
+}
+
+/* .tt-table tr th, .tt-table tr td, .tt-table tr { */
+.tt-table tr, .tt-table tr td, .tt-table tr {
+ 	border-style: none !important;
+}
 /* * { */
 /* 	font-family:MuseoSans-700; */
 /* } */
@@ -111,7 +149,7 @@ textarea {
 	float: left;
 	color: #325064;
 	/* font-weight: bold; */
-	font-family:MuseoSans-700;
+	font-family: 'MuseoSans-700';
 }
 
 .d-view-all {
@@ -121,8 +159,8 @@ textarea {
 }
 
 .d-table {
-	width: 100%; /* ALEXIS */
-	font-family:MuseoSans-300;
+	/* width: 100%; /\* ALEXIS VERIFIER SI UTILE !!!!!!!!!!!!!!!!!!!! *\/ */
+	/* font-family: MuseoSans-300; */
 	/* cellspacing: 0; /\* ALEXIS *\/ */
 }
 
@@ -135,13 +173,13 @@ textarea {
 	/* font-weight: bold; */
 }
 
-.d-odd {
-	background-color: #fff;
-}
+/* .d-odd { */
+/* 	background-color: #fff; */
+/* } */
 
-.d-even {
-	background-color: #E9EDF0;
-}
+/* .d-even { */
+/* 	background-color: #E9EDF0; */
+/* } */
 
 /* STARS */
 
@@ -172,10 +210,10 @@ span.stars span {
 /* 	background-position: 0 0; */
 /* } */
 
-/* FILES */
 
+/* SEARCH INPUT */
 
-.fls-search-div {
+.tt-search-div {
 	border-radius: 0px;
 	border-color: #9ba8b1;
 	border-style: solid;
@@ -183,28 +221,40 @@ span.stars span {
 	height: 38px;
 }
 
-.fls-search-input {
+.tt-search-input {
 	height: 100%;
 	border: none;
 }
 ::-webkit-input-placeholder { text-align:right; }
 ::-moz-placeholder { text-align:right; }
 
-.fls-search-input:hover, .fls-search-input:active, .fls-search-input:focus  {
+.tt-search-input:hover, .tt-search-input:active, .tt-search-input:focus  {
 	outline:0px !important;
 	-webkit-appearance:none;
 }
-.fls-search-button {
+.tt-search-button {
 	border: none;
 	background-color: #fff;
-	display: inline-block;
+	/* display: inline-block; */
 	line-height: 31px;
-	float: right;
+	/* float: right; */
 	vertical-align: middle;
+	position: absolute;
+	right: 17px;
 }
 
-.fls-search-icon {
+.tt-search-icon {
 	margin-left: 5px;
+}
+
+
+
+/* FILES */
+
+
+.fls-search {
+	margin-top: 10px;
+	margin-bottom: 25px;
 }
 
 

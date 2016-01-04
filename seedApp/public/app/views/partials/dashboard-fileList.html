@@ -7,10 +7,11 @@
         </div>
 		<hr class="d-hr"/>
         <div class="panel-body d-body">
-            <table class="table d-table">
+            <table class="table d-table tt-text">
                 <!-- <tbody ng-repeat="item in files" ng-class-odd="'d-odd'" ng-class-even="'d-even'"> -->
 				<tbody>
-                    <tr ng-dblclick="openFile(item)" ng-repeat="item in files" ng-class-odd="'d-odd'" ng-class-even="'d-even'">
+                    <!-- <tr ng-dblclick="openFile(item)" ng-repeat="item in files" ng-class-odd="'d-odd'" ng-class-even="'d-even'"> -->
+                    <tr ng-dblclick="openFile(item)" ng-repeat="item in files" ng-class-odd="'tt-table-odd'" ng-class-even="'tt-table-even'">
                         <td class="d-file-icon">
                             <div ng-switch="item.type">
                                 <!-- <div ng-switch-when="folder" ><i class="icon-folder"></i></div> A MODIFIER ! -->
