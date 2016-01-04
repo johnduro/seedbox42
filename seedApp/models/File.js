@@ -287,11 +287,16 @@ FileSchema.methods = {
 			this.averageGrade = this.getAverageGrade();
 		}
 		else
-			return cb('already graded');
+		{
+			this.grades.splice(index, 1);
+			this.grades.push({ user: user._id, grade: grade });
+			this.averageGrade = this.getAverageGrade();
+			// return cb('already graded');
+		}
 		this.save(cb);
 	},
 
-	modGrade: function (user, newGrade, cb) {
+	modGrade: function (user, newGrade, cb) { //SUPPRIMER !!!!!!!!??
 		var index = ft.indexOfByIdKey(this.grades, 'user', user._id.toString());
 		// var index = ft.indexOfByUserId(this.grades, user._id);
 		if (index > -1)
@@ -367,6 +372,14 @@ FileSchema.methods = {
 		if (index > -1)
 			return true;
 		return false;
+	},
+
+	getUserGrade: function (user) {
+		var index = ft.indexOfByUserId(this.grades, user._id);
+		if (index < 0)
+			return (0);
+		else
+			return (this.grades[index].grade);
 	},
 
 	incDownloads: function () {

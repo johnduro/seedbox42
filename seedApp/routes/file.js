@@ -40,12 +40,18 @@ router.get('/:id', function (req, res, next) {
 router.post('/add-grade/:id', function (req, res, next) {
 	File.findById(req.params.id, function (err, file) {
 		if (err)
-			return next(err);
-		file.addGrade(req.user, req.body.grade, function (err) {
-			if (err)
-				return next(err);
-			res.json({ success: true, message: 'grade added' });
-		});
+			// return next(err);
+			res.json({ success: false, message: err });
+		else
+		{
+			file.addGrade(req.user, req.body.grade, function (err) {
+				if (err)
+					// return next(err);
+					res.json({ success: false, message: err });
+				else
+					res.json({ success: true, message: 'grade added' });
+			});
+		}
 	});
 });
 
@@ -245,6 +251,7 @@ router.get('/show/:id', function (req, res, next) {
 					rawFile.isLocked = file.getIsLocked();
 					rawFile.isLockedByUser = file.getIsLockedByUser(req.user);
 					rawFile.averageGrade = file.getAverageGrade();
+					rawFile.rateByUser = file.getUserGrade(req.user);
 					delete rawFile.path;
 					res.json({ success: true, data: data, file: rawFile });
 				}
