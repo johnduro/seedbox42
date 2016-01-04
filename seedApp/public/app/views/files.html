@@ -61,7 +61,7 @@
                         <td>
                             <i ng-if="item.isLockedByUser == 1" class="fa fa-heart fls-locked-user" ng-click="unlockFile(item)"></i>
                             <i ng-if="(item.isLocked == 1 && item.isLockedByUser == 0)" class="fa fa-heart fls-locked-other" ng-click="lockFile(item)"></i>
-                            <i ng-if="item.isLocked == 0" class="fa fa-heart fls-locked-no" ng-click="lockFile(item)"></i>
+                            <i ng-if="(item.isLocked == 0 && item.isLockedByUser == 0)" class="fa fa-heart fls-locked-no" ng-click="lockFile(item)"></i>
                             <!-- <i ng-if="item.isLockedByUser == 1" class="fa fa-lock" ng-click="unlockFile(item)"></i> -->
                             <!-- <i ng-if="item.isLockedByUser == 0" class="fa fa-unlock-alt" ng-click="lockFile(item)"></i> -->
                         </td>
