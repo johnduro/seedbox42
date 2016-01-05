@@ -95,7 +95,7 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
 				newPath = newPath + "/" + pathActualArray[key]
 				break;
 			}
-			if (pathActualArray[key] == $scope.treeSelected.name)
+			if (pathActualArray[key] == $scope.treeActual.name)
 				save = true;
 		}
 		if (save){
