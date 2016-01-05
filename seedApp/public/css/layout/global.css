@@ -116,6 +116,16 @@ textarea {
 
 /* DASHBOARD */
 
+.d-icon {
+	font-size: 11pt;
+	margin-left: 3px;
+}
+
+.d-tt-icon {
+	font-size: 15pt;
+	margin-left: 7px;
+}
+
 .d-header {
 	border: none;
 }
