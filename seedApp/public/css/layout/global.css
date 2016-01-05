@@ -183,17 +183,32 @@ textarea {
 
 /* STARS */
 
-span.stars, span.stars span {
-	display: block;
-	/* background: url('../../assets/images/glyphicons-star.png') 0 -16px repeat-x; */
-	background: url('../../assets/images/tt-stars.png') 0 -16px repeat-x;
-	width: 80px;
+
+/* B4 */
+/* span.stars, span.stars span { */
+/* 	display: block; */
+/* 	/\* background: url('../../assets/images/glyphicons-star.png') 0 -16px repeat-x; *\/ */
+/* 	background: url('../../assets/images/tt-stars.png') 0 -16px repeat-x; */
+/* 	width: 80px; */
+/* 	height: 16px; */
+/* } */
+
+/* span.stars span { */
+/* 	background-position: 0 0; */
+/* } */
+/* B4 */
+
+.stars {
 	height: 16px;
+	width: 79px;
+	background: url('../../assets/images/tt-five-stars.png');
+	/* color: #325064; */
 }
 
-span.stars span {
-	background-position: 0 0;
-}
+
+
+
+
 
 /* span.stars, span.stars>* { */
 /* /\* span.stars>* { *\/ */

@@ -32,7 +32,7 @@ app.controller('filesCtrl', function ($scope, $rootScope, $state, $location, $st
 
 	$scope.$on('filesLoaded', function () { //ajout
 		$timeout(function () {
-			console.log('onononononononon');
+			// console.log('onononononononon');
 			$('.stars').stars();
 		}, 0, false);
 	});
