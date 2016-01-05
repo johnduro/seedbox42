@@ -17,7 +17,7 @@ var app = angular.module('seedApp', [
 // ---------------------- variable global -------------------------------
 var api = "";
 
-app.run(function ($rootScope, $location, $http, $state, $timeout, Tools, editableOptions, editableThemes) {
+app.run(function ($rootScope, $location, $http, $state, $timeout, Tools, socket, editableOptions, editableThemes) {
 
     api = "/";
 
@@ -46,6 +46,9 @@ app.run(function ($rootScope, $location, $http, $state, $timeout, Tools, editabl
             to: toState,
             from: fromState
         };
+
+        if (fromState.controller == "torrentsCtrl")
+            socket.emit('torrentStopRefresh');
 
         function wait (){
             if ("user" in $rootScope && "role" in $rootScope.user){

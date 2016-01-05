@@ -13,17 +13,22 @@ app.controller('usersCtrl', function ($scope, $rootScope, RequestHandler, Upload
 
 	$scope.$on("fileSelected", function (event, args) {
         $scope.myFile = args.file;
+		$scope.myFileEdit = args.file;
     });
 
-	RequestHandler.get(api + "users")
-		.then(function(result){
-			for (var key in result.data){
-				if (!("avatar" in result.data[key])){
-					result.data[key].avatar = "undefined";
+	function getUsers(){
+		RequestHandler.get(api + "users")
+			.then(function(result){
+				for (var key in result.data){
+					if (!("avatar" in result.data[key])){
+						result.data[key].avatar = "undefined";
+					}
 				}
-			}
-			$scope.users = result.data;
-	});
+				$scope.users = result.data;
+		});
+	}
+	getUsers();
+
 
 	$scope.changeView = function(view){
 		$scope.view = view;
@@ -69,15 +74,30 @@ app.controller('usersCtrl', function ($scope, $rootScope, RequestHandler, Upload
 
 	$scope.editUser = function (user){
 		$scope.changeView("edit");
-		$scope.selectUser = user;
+		$scope.selectUserId = user._id;
+		$scope.selectUser = {};
+		$scope.selectUser.login = user.login;
+		$scope.selectUser.password = user.password;
+		$scope.selectUser.mail = user.mail;
+		$scope.selectUser.role = user.role;
 	};
 
 	$scope.updateUser = function(){
 
 		var callbackConfirm = function(){
-			RequestHandler.put(api + "users/" + $scope.selectUser._id, $scope.selectUser)
+			$scope.selectUser.avatar = $scope.myFileEdit;
+			var fd = new FormData();
+			for (var key in $scope.selectUser){
+				fd.append(key, $scope.selectUser[key]);
+			}
+			RequestHandler.put(api + "users/" + $scope.selectUserId, fd, false, {transformRequest: angular.identity, headers: {'Content-Type': undefined}})
 				.then(function(result){
-					console.log(result);
+					result.data = JSON.parse(result.data);
+					if (result.data.success){
+						getUsers();
+					}else{
+						console.log("error");
+					}
 				});
 		};
 
