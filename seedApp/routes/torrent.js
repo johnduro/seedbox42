@@ -35,7 +35,7 @@ router.post('/add-torrents', upload.torrent.array('torrent', 10), function(req, 
 	(function next() {
 		var file = req.files[i++];
 		if (!file)
-			res.json(resAll);
+			return res.json(resAll);
 		req.app.locals.transmission.torrentAdd({ filename: process.cwd() + '/' + file.path }, function (err, resp) {
 			if (err)
 			{
