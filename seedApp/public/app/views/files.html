@@ -41,13 +41,17 @@
                     <tr ng-repeat="(key, item) in elementsActual | filter : search"  ng-class-odd="'tt-table-odd'" ng-class-even="'tt-table-even'">
                         <td class="tt-darkblue">
                             <div ng-switch="item.type">
-                                <!-- <div ng-switch-when="folder" ><i class="icon-folder"></i></div> A MODIFIER ! -->
-                                <div ng-switch-when="folder" ><i class="glyphicon glyphicon-folder-close"></i></div>
-                                <div ng-switch-when="audio" ><i class="fa fa-music fa-4"></i></div>
-                                <div ng-switch-when="video" ><i class="fa fa-film fa-4"></i></div>
-                                <!-- <div ng-switch-when="image" ><i class="icon-picture"></i></div> A TESTER ET A MODIFIER ! -->
-                                <div ng-switch-when="image" ><i class="glyphicon glyphicon-picture"></i></div>
-                                <div ng-switch-default ><i class="fa fa-file-text-o fa-4"></i></div>
+                                <div ng-switch-when="folder" ><i class="icon-folder fls-icon"></i></div> <!-- A MODIFIER ! -->
+                                <!-- <div ng-switch-when="folder" ><i class="glyphicon glyphicon-folder-close"></i></div> -->
+                                <!-- <div ng-switch-when="audio" ><i class="fa fa-music fa-4"></i></div> -->
+                                <div ng-switch-when="audio" ><i class="tt-icon-music fls-tt-icon"></i></div>
+                                <!-- <div ng-switch-when="video" ><i class="fa fa-film fa-4"></i></div> -->
+                                <div ng-switch-when="video" ><i class="tt-icon-film fls-tt-icon"></i></div>
+                                <div ng-switch-when="image" ><i class="icon-picture fls-icon"></i></div> <!-- A TESTER ET A MODIFIER ! -->
+                                <!-- <div ng-switch-when="image" ><i class="glyphicon glyphicon-picture"></i></div> -->
+                                <div ng-switch-when="text" ><i class="tt-icon-file-text2 fls-tt-icon"></i></div>
+                                <!-- <div ng-switch-default ><i class="fa fa-file-text-o fa-4"></i></div> -->
+                                <div ng-switch-default ><i class="tt-icon-file-empty fls-tt-icon"></i></div>
                                 <!-- <div ng-switch-when="folder" ><i class="fa fa-folder fa-4"></i> {{item.type}}</div> -->
                                 <!-- <div ng-switch-when="audio" ><i class="fa fa-file-audio-o fa-4"></i> {{item.type}}</div> -->
                                 <!-- <div ng-switch-when="video" ><i class="fa fa-file-video-o fa-4"></i> {{item.type}}</div> -->
@@ -57,7 +61,7 @@
                         <td ng-dblclick="openFile(item)">{{item.name}}</td>
                         <td>{{item.sizeConvert}}</td>
                         <!-- <td> <i ng-click="download(item._id, item.name)" class="fa fa-download"></i> </td> -->
-                        <td class="tt-darkblue"> <i ng-click="download(item._id, item.name)" class="icon-down-circled"></i> </td>
+                        <td class="tt-darkblue"> <i ng-click="download(item._id, item.name)" class="icon-down-circled fls-download"></i> </td>
                         <td>
                             <i ng-if="item.isLockedByUser == 1" class="fa fa-heart fls-locked-user" ng-click="unlockFile(item)"></i>
                             <i ng-if="(item.isLocked == 1 && item.isLockedByUser == 0)" class="fa fa-heart fls-locked-other" ng-click="lockFile(item)"></i>
