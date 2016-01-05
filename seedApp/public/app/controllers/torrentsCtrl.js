@@ -54,11 +54,10 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 
 	socket.on("torrentFirstRefresh", function(data){
 		for(var key in data.torrents.torrents){
-			$scope.torrents[data.torrents.torrents[key].id] = data.torrents.torrents[key];
+			$scope.torrents[data.torrents.torrents[key].id] = angular.copy(data.torrents.torrents[key]);
 			$scope.torrents[data.torrents.torrents[key].id].percentDone = $scope.torrents[data.torrents.torrents[key].id].percentDone * 100;
 			$scope.torrents[data.torrents.torrents[key].id].checkbox = false;
 		}
-		console.log($scope.torrents);
 	});
 
 	//------------------------------------------------  FUNCTIONS SCOPE -------------------------------------------------------

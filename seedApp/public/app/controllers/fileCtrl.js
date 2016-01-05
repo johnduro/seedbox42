@@ -1,9 +1,8 @@
 app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $modal, $http, RequestHandler, $sce, Tools){
 
     $scope.pathActualString = "";
+    $scope.folderActual = '';
     var pathActualArray = [];
-
-    console.log($rootScope.states);
 
 // --------------------------------------------- FUNCTION PRIVATE --------------------------------------------
     function addType(list){
@@ -14,10 +13,13 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
 		});
 	};
 
-    function generatePath(ArrayPath){
+    function generatePath(ArrayPath, type){
 		var newPath = "";
 		for(var key in ArrayPath){
-			newPath = newPath + ArrayPath[key] +" / ";
+            if (type == "view")
+			    newPath = newPath + ArrayPath[key] +" / ";
+            else
+                newPath = newPath + ArrayPath[key] +"/";
 		}
         return newPath;
 	};
@@ -29,13 +31,13 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
                 $scope.torrent = result.data.file;
                 $rootScope.torrentActual = result.data.file;
                 $scope.torrent.sizeConvert = Tools.FileConvertSize($scope.torrent.size);
-                $scope.torrent.gradeByUser = 4;
                 console.log("TORRENT : ", $scope.torrent);
 
                 if (result.data.data.fileList.length){
                     addType(result.data.data.fileList);
                     $scope.treeActual = result.data.data;
                     $scope.treeBase = result.data.data;
+                    $scope.folderActual = result.data.file.name;
                 }
                 else{
                     $scope.tree = null;
@@ -49,10 +51,11 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
     $scope.openFolder = function(item){
 
 		if (item.isDirectory){
+            $scope.folderActual = item["name"];
             pathActualArray.push(item["name"]);
 			$scope.treeActual = item;
 			addType($scope.treeActual.fileList);
-			$scope.pathActualString = generatePath(pathActualArray);
+			$scope.pathActualString = generatePath(pathActualArray, "view");
 		}else if (item.type == "video"){
 			//video.addSource(value.type, generatePathDownload($scope.treeSelected.id, value.name));
 			//$scope.typeStreaming = value.fileType;
@@ -71,7 +74,8 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
         else{
             if(folder == $scope.treeActual){
                 $scope.treeActual = folderBack;
-                $scope.pathActualString = generatePath(ArrayPath);
+                $scope.folderActual = folderBack.name;
+                $scope.pathActualString = generatePath(ArrayPath, "view");
                 pathActualArray = ArrayPath;
             }else{
                 for (var key in folder.fileList){
@@ -88,22 +92,8 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
 
 // --------------------------------------------- FUNCTION DOWNLOAD --------------------------------------------
     function generatePathDownload(id, name){
-		var save = false;
 		var newPath = "";
-		for(var key in pathActualArray){
-			if (save){
-				newPath = newPath + "/" + pathActualArray[key]
-				break;
-			}
-			if (pathActualArray[key] == $scope.treeActual.name)
-				save = true;
-		}
-		if (save){
-			newPath += "/" + name;
-		}else{
-			newPath = "/";
-		}
-
+        newPath += "/" + generatePath(pathActualArray, "") + name;
 		pathEncode = btoa(newPath);
 		nameEncode = btoa(name);
 		return(api + "file/download/" + id + "/" + pathEncode + "/" + nameEncode);
@@ -132,6 +122,33 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
 				console.log(result);
 			});
 	};
+
+// --------------------------------------------- FUNCTION COMMENT --------------------------------------------
+    $scope.addComment = function(){
+		if ($scope.newComment == "")
+			return;
+		RequestHandler.post(api + "file/add-comment/" + $scope.torrent._id, {text: $scope.newComment})
+			.then(function(result){
+				if (result.data.success){
+					RequestHandler.get(api + "file/comments/" + $scope.torrent._id, {text: $scope.newComment})
+						.then(function(result){
+							$scope.torrent.comments = result.data.data;
+						});
+					$scope.newComment = "";
+				}else{
+					console.log("Error add comment...");
+				}
+			});
+	};
+
+    $scope.getGradeByUser = function(id){
+        var tmp = 0;
+        angular.forEach($scope.torrent.grades, function(value, key){
+            if (value.user["_id"] === id)
+                tmp = value.grade;
+        });
+        return tmp;
+    };
 
 
 // --------------------------------------------- CONTROLLER MODAL SEARCH MOVIE --------------------------------------------

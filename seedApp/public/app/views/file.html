@@ -13,7 +13,7 @@
                                         <i ng-if="torrent.isLockedByUser == 0" class="fa fa-unlock-alt" ng-click="lockFile(torrent)"></i>
                         </div>
                         <div>
-                            Note <div class="rating" starrating score="torrent.gradeByUser" max="5"></div>
+                            Note <div class="rating" starrating score="torrent.rateByUser" max="5"></div>
                         </div>
                         <div>
                             Taille du dossier: {{torrent.sizeConvert}}
@@ -44,9 +44,21 @@
                 </div>
                 <div class="panel-body">
                     <div ng-if="torrent">
-                        <div ng-repeat="comment in torrent.comments">
-                            {{comment.user.login}} :{{comment.text}}
-                        </div>
+                        <table class="display table">
+                            <tbody ng-repeat="comment in torrent.comments">
+                                <tr>
+                                    <td>
+                                        <div class="name"><img ng-src="/assets/avatar/{{comment.user.avatar}}" err-SRC="/assets/avatar/default.png" alt="Smiley face" class="message-avatar"></div>
+                                    </td>
+                                    <td>
+                                        {{getGradeByUser(comment.user._id)}}
+                                    </td>
+                                    <td>
+                                        {{comment.user.login}} :{{comment.text}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
 
                         <textarea ng-model="$parent.newComment"> </textarea>
                         <button ng-click="addComment()">Ajouter</button>
@@ -64,6 +76,7 @@
                 </div>
             </div>
         </div>
+        <i class="fa fa-folder fa-4"></i> {{folderActual}}
 
         <table class="display table" style="width: 100%; cellspacing: 0;">
             <thead>
@@ -87,7 +100,7 @@
                     </td>
                     <td ng-dblclick="openFolder(item)">{{item.name}}</td>
                     <td>{{item.sizeConvert}}</td>
-                    <td> <i ng-click="download(treeSelected.id, item.name)" class="fa fa-download" ></i> </td>
+                    <td> <i ng-click="download(torrent._id, item.name)" class="fa fa-download" ></i> </td>
                 </tr>
             </tbody>
         </table>
