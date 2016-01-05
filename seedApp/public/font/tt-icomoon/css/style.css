@@ -1,0 +1,38 @@
+@font-face {
+    font-family: 'tt-icomoon';
+    src:    url('../tt-icomoon.eot?94bfja');
+    src:    url('../tt-icomoon.eot?94bfja#iefix') format('embedded-opentype'),
+        url('../tt-icomoon.ttf?94bfja') format('truetype'),
+        url('../tt-icomoon.woff?94bfja') format('woff'),
+        url('../tt-icomoon.svg?94bfja#tt-icomoon') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+[class^="tt-icon-"], [class*=" tt-icon-"] {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'tt-icomoon' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.tt-icon-music:before {
+    content: "\e900";
+}
+.tt-icon-film:before {
+    content: "\e901";
+}
+.tt-icon-file-empty:before {
+    content: "\e902";
+}
+.tt-icon-file-text2:before {
+    content: "\e903";
+}
