@@ -1,5 +1,7 @@
 var multer = require('multer');
 var btoa = require('btoa');
+var atob = require('atob');
+var File = require("../models/File.js");
 
 var avatarStorage = multer.diskStorage({
 	destination: function (req, file, cb) {
@@ -24,8 +26,17 @@ var torrentStorage = multer.diskStorage({
 
 var fileStorage = multer.diskStorage({
 	destination: function (req, file, cb) {
-		// cb(null, './files/torrents');
-		cb(null, './public/assets/torrents');
+		var query = File.findById(req.params.id);
+		query.select('path');
+		query.exec(function (err, dbFile) {
+			if (err)
+				return cb(err);
+			else if (dbFile == null)
+				return cb('Could not find file in db');
+			var pathDecode = atob(req.params.path);
+			var filePath = dbFile.path + pathDecode;
+			cb(null, filePath);
+		});
 	},
 	filename: function (req, file, cb) {
 		cb(null, file.originalname);
@@ -61,7 +72,7 @@ module.exports = {
 	/**
 	 * File upload
 	 */
-	torrent: multer({
+	file: multer({
 		storage: fileStorage,
 		limits: {
 			files: 10,

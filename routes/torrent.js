@@ -29,7 +29,7 @@ router.post('/add-url', function (req, res, next) {
 	});
 });
 
-router.post('/add-torrents', upload.torrent.array('torrent', 10), function(req, res, next) {
+router.post('/add-torrents', upload.torrent.array('torrent', 10), function (req, res, next) {
 	var resAll = [];
 	var i = 0;
 	(function next() {

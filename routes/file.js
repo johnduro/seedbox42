@@ -8,6 +8,7 @@ var mime = require('mime');
 var mongoose = require('mongoose');
 var fileInfos = require('../utils/filesInfos');
 var zipstream = require('../utils/zipstream/zipstream');
+var upload = require("../middlewares/upload");
 var ft = require('../utils/ft');
 
 /**
@@ -280,6 +281,35 @@ router.get('/show/:id', function (req, res, next) {
 	// });
 });
 
+router.post('/upload/:id/:path', upload.file.array('files', 10), function (req, res, next) {
+	var fileList = [];
+	var size = 0;
+	var i = 0;
+	File.findById(req.params.id, function (err, dbFile) {
+		if (err)
+			return res.json({ success: false, err: err });
+		else if (dbFile == null)
+			return res.json({ success: false, err: 'Could not find the file' });
+		(function next () {
+			var file = req.files[i++];
+			if (!file)
+			{
+				dbFile.addSize(size);
+				return res.json({ success: true, data: fileList, size: dbFile.size });
+			}
+			fileList.push({
+				fileList: [],
+				fileType: file.mimetype,
+				isDirectory: false,
+				name: file.filename,
+				path: file.path,
+				size: file.size
+			});
+			size += file.size;
+			next();
+		})();
+	});
+});
 
 router.get('/download/:id/:path/:name', function (req, res, next) {
 	var query = File.findById(req.params.id);
@@ -287,6 +317,8 @@ router.get('/download/:id/:path/:name', function (req, res, next) {
 	query.exec(function (err, file) {
 		if (err)
 			return next(err);
+		else if (file == null)
+			return next('Could not find file');
 		var pathDecode = atob(req.params.path);
 		var fileName = atob(req.params.name);
 		var filePath = file.path + pathDecode;

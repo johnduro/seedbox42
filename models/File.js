@@ -394,6 +394,11 @@ FileSchema.methods = {
 		this.path = path;
 		this.name = name;
 		this.save(cb);
+	},
+
+	addSize: function (size) {
+		this.size += size;
+		this.save();
 	}
 };
 
