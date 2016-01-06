@@ -248,10 +248,8 @@ router.get('/show/:id', function (req, res, next) {
 				else
 				{
 					var rawFile = file.toObject();
-					rawFile.commentsNbr = file.countComments();
 					rawFile.isLocked = file.getIsLocked();
 					rawFile.isLockedByUser = file.getIsLockedByUser(req.user);
-					rawFile.averageGrade = file.getAverageGrade();
 					rawFile.rateByUser = file.getUserGrade(req.user);
 					delete rawFile.path;
 					res.json({ success: true, data: data, file: rawFile });
@@ -259,26 +257,6 @@ router.get('/show/:id', function (req, res, next) {
 			});
 		}
 	});
-	// var populateSelect = 'login role avatar';
-	// var query = File.findById(req.params.id);// faire une methode pour recuperer ces infos !
-	// query.select('-hashString -isFinished -privacy -torrentAddedAt');
-	// query.populate([{ path: 'creator', select: populateSelect }, { path: 'comments.user', select: populateSelect }, { path: 'locked.user', select: populateSelect }, { path: 'grades.user', select: populateSelect }]);
-	// query.exec(function (err, file) {
-	// 	if (err)
-	// 		return next(err);
-	// 	fileInfos.getFileInfosRecurs(file.path, file.name, function (err, data) {
-	// 		var rawFile = file.toObject();
-	// 		rawFile.commentsNbr = file.countComments();
-	// 		rawFile.isLocked = file.getIsLocked();
-	// 		rawFile.isLockedByUser = file.getIsLockedByUser(req.user);
-	// 		rawFile.averageGrade = file.getAverageGrade();
-	// 		delete rawFile.path;
-	// 		if (err)
-	// 			res.json({ success: false, error: err, file: rawFile });
-	// 		else
-	// 			res.json({ success: true, data: data, file: rawFile });
-	// 	});
-	// });
 });
 
 router.post('/upload/:id/:path', upload.file.array('files', 10), function (req, res, next) {

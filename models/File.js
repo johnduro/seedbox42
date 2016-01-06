@@ -103,6 +103,11 @@ FileSchema.statics = {
 			.exec(function (err, file) {
 				if (err)
 					return cb(err);
+				for (var i = 0; i < file.comments.length; i++)
+				{
+					if (file.comments[i].user == null)
+						file.comments[i].user = { login: "unknown user", avatar: "undefined", role: 1 };
+				}
 				return cb(null, file);
 			});
 	},
