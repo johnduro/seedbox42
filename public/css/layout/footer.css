@@ -1,0 +1,36 @@
+.l-footer{
+    height: 50px;
+    text-align: center;
+    border-top-style: solid;
+    border-width: 1px;
+    padding-top: 10px;
+    margin: auto;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 30px;
+    color: #777;
+}
+
+.footer .container {
+  border-top: 1px solid #e5e5e5;
+  padding-top: 5px;
+  text-align: center;
+}
+
+/* Responsive: Portrait tablets and up */
+@media screen and (min-width: 768px) {
+  .footer {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
+
+footer {
+	text-align: center;
+	border-top: 1px solid #000;
+	padding-top: 10px;
+}

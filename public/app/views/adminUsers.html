@@ -1,0 +1,104 @@
+<div class="page-title">
+    <h3>Les comptes</h3>
+</div>
+
+<div id="main-wrapper">
+    <div class="row">
+        <div ng-if="view == 'list'" class="col-md-12">
+            <div class="panel panel-white">
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <a href="" ng-click="changeView('form')">Ajouter un compte</a>
+                        <table id="example" class="display table" style="width: 100%; cellspacing: 0;">
+                            <thead>
+                                <tr>
+                                    <th>Avatar</th>
+                                    <th>Login</th>
+                                    <th>Mail</th>
+                                    <th>Password</th>
+                                    <th>Role</th>
+                                    <th>Supprimer</th>
+                                </tr>
+                            </thead>
+                            <tbody ng-repeat="user in users">
+                                <tr>
+                                    <td><img ng-src="assets/avatar/{{user.avatar}}" err-SRC="assets/avatar/default.png" alt="Smiley face" height="42" width="42"></td>
+                                    <td ng-click="editUser(user)">{{user.login}}</td>
+                                    <td>{{user.mail}}</td>
+                                    <td>{{user.password}}</td>
+                                    <td ng-if="user.role==1">User</td>
+                                    <td ng-if="user.role==0">Admin</td>
+                                    <td ng-click="deleteUser(user._id)"><i class="fa fa-times"></i></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div ng-if="view == 'form'" class="col-md-12">
+            <div class="panel panel-white">
+                <div class="col-md-6 center">
+                    <div class="panel-heading clearfix">
+                        <a ng-click="changeView('list')">Voir la liste</a>
+                    </div>
+                    <div class="panel-body">
+                        <form ng-submit="addUser()" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="exampleInputLogin">Login</label>
+                                <input ng-model="newUser.login" type="text" class="form-control" id="exampleInputEmail1" placeholder="Entrer un login">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Email address</label>
+                                <input ng-model="newUser.mail" type="email" class="form-control" id="exampleInputEmail1" placeholder="Entrer une adresse mail">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputPassword1">Password</label>
+                                <input ng-model="newUser.password" type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" ng-model="newUser.role" ng-true-value="0" ng-false-value="1"> Admin
+                                </label>
+                            </div>
+                            <input type="file" file-model="myFile"/>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div ng-if="view == 'edit'" class="col-md-12">
+            <div class="panel panel-white">
+                <div class="col-md-6 center">
+                    <div class="panel-heading clearfix">
+                        <a ng-click="changeView('list')">Voir la liste</a>
+                    </div>
+                    <div class="panel-body">
+                        <form ng-submit="updateUser()" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="exampleInputLogin">Login</label>
+                                <input ng-model="selectUser.login" type="text" class="form-control" id="exampleInputEmail1" placeholder="Entrer un login">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Email address</label>
+                                <input ng-model="selectUser.mail" type="email" class="form-control" id="exampleInputEmail1" placeholder="Entrer une adresse mail">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputPassword1">Password</label>
+                                <input ng-model="selectUser.password" type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" ng-model="selectUser.role" ng-true-value="0" ng-false-value="1"> Admin
+                                </label>
+                            </div>
+                            <input type="file" file-model="myFileEdit"/>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

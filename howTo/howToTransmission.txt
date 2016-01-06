@@ -1,0 +1,27 @@
+
+
+
+-- modifs effectuees sur "/etc/transmission-daemon/settings.json" :
+
+download-dir
+incomplete-dir
+rpc-authentication-required		(de true a false, voir si c'est ok)
+rpc-whitelist-enabled			(de true a false, remettre a true dans la version finale)
+
+
+-- pour recuperer les infos, taper sur "37.187.111.179:9091/transmission/rpc"
+
+dans le header de la requete, envoyer le X-Transmission-Session-Id : il est possible de le recuperer a la premiere requete dans le corps du message renvoye
+
+dans le body, les requetes doivent prendre la forme suivante :
+
+{
+	"arguments": {},
+	"method": "",
+	"tag": 1
+}
+
+
+exemple de nom de method : "session-stats"
+
+voir pour l'utilisation du tag

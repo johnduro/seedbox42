@@ -1,0 +1,36 @@
+<!-- <div class="page-title"> -->
+<!--     <h3>Dashboard</h3> -->
+<!-- </div> -->
+
+<div id="main-wrapper">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-white d-header">
+                <div class="panel-body">
+                  <!-- <p class="no-s">Il y a actuellement {{connectedUsers}} personnes de connectées</p> -->
+                    <p class="no-s d-nbusers">{{connectedUsers}} user<ng-pluralize count="connectedUsers" when="{ 1: ' is ', 'other': 's are '}"></ng-pluralize>connected</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <content-item ng-repeat="item in content | orderBy:'order'" content="item"></content-item>
+    </div>
+
+    <!-- <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-white">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Espace disque dur utilisé</h3>
+                </div>
+                <div class="panel-body">
+                    <div> -->
+                        <!-- <canvas id="polar-area" class="chart chart-polar-area" chart-data="data" chart-labels="labels"> </canvas> -->
+                        <!--<div donut-chart donut-data='chartData' donut-colors='["#31C0BE","#c7254e","#98a0d3"]' donut-formatter='myFormatter'> </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>-->
+</div>
