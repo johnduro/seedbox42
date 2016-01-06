@@ -39,6 +39,23 @@
 
         <div class="col-md-6">
             <div class="panel panel-white">
+                <div class="panel-heading clearfix">
+                    <h4 class="panel-title"> ADD LOCAL FILE : </h4>
+                </div>
+                <div class="panel-body">
+                    <form>
+                        <div ngf-drop ngf-select ng-model="files" class="drop-box"
+                            ngf-drag-over-class="dragover" ngf-multiple="true" ngf-allow-dir="true"
+                            accept="*"
+                            ngf-pattern="'*'" style="height: 104px;border-style: dashed;">Drop pdfs or images here or click to upload</div>
+                        <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="panel panel-white">
                 <div class="panel-heading">
                     <h3 class="panel-title">Les commentaires</h3>
                 </div>

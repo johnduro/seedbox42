@@ -5,7 +5,9 @@ private.properties
 private.xml
 seedApp/*
 seedApp/save*
-save
+public/assets/torrents/*
+files/*
+
 
 # Logs
 logs

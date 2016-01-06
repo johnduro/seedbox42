@@ -1,8 +1,10 @@
-app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $modal, $http, RequestHandler, $sce, Tools){
+app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $modal, $http, RequestHandler, $sce, Tools, Upload){
 
     $scope.pathActualString = "";
     $scope.folderActual = '';
     var pathActualArray = [];
+
+    console.log($rootScope);
 
 // --------------------------------------------- FUNCTION PRIVATE --------------------------------------------
     function addType(list){
@@ -148,6 +150,52 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
                 tmp = value.grade;
         });
         return tmp;
+    };
+
+//------------------------------------------------  DRAG & DROP-------------------------------------------------------
+
+    function generatePathUpload(){
+        var newPath = "";
+        newPath += "/" + generatePath(pathActualArray, "");
+        pathEncode = btoa(newPath);
+        return(api + "file/upload/" + $scope.torrent._id + "/" + pathEncode);
+    };
+
+	$scope.$watch('files', function () {
+        $scope.upload($scope.files);
+    });
+    $scope.$watch('file', function () {
+        if ($scope.file != null) {
+            $scope.files = [$scope.file];
+        }
+    });
+    $scope.log = '';
+
+    $scope.upload = function (files) {
+        if (files && files.length) {
+            for (var i = 0; i < files.length; i++) {
+              var file = files[i];
+              if (!file.$error) {
+                Upload.upload({
+                    url: generatePathUpload(),
+                    data: {
+                      user: $rootScope.user._id,
+                      files: file
+                    }
+                }).progress(function (evt) {
+                    var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                    console.log(progressPercentage);
+                    //$scope.log = 'progress: ' + progressPercentage + '% ' + evt.config.data.file.name + '\n' + $scope.log;
+                }).success(function (data, status, headers, config) {
+					if (!data[0].success){
+						$rootScope.msgInfo("Error !", "L'ajout du nouveau torrent a echoue...");
+					}
+                }).error(function (data, status, headers, config) {
+					$rootScope.msgInfo("Error !", "L'ajout du nouveau torrent a echoue...");
+				});
+              }
+            }
+        }
     };
 
 
