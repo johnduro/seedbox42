@@ -110,7 +110,7 @@ router.delete('/', function (req, res, next) {
 });
 
 router.post('/move/:direction', function (req, res, next) {
-	var ids = format.torrentIds(req.body.ids);
+	var ids = format.torrentsIds(req.body.ids);
 	req.app.locals.transmission.queueMovementRequest('queue-move-' + req.params.direction, ids, function (err, resp) {
 		if (err)
 			res.json({ success: false, message: "Could not move torrent(s) " + req.params.direction });

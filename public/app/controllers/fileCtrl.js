@@ -187,9 +187,12 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
                     console.log(progressPercentage);
                     //$scope.log = 'progress: ' + progressPercentage + '% ' + evt.config.data.file.name + '\n' + $scope.log;
                 }).success(function (data, status, headers, config) {
-					if (!data[0].success){
+					if (!data.success){
 						$rootScope.msgInfo("Error !", "L'ajout du nouveau torrent a echoue...");
-					}
+					}else{
+                        $scope.treeActual.fileList.push(data.data[0]);
+                        Tools.popMessage("Succes", "L'ajout du fichier a ete effectue");
+                    }
                 }).error(function (data, status, headers, config) {
 					$rootScope.msgInfo("Error !", "L'ajout du nouveau torrent a echoue...");
 				});

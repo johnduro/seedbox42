@@ -87,6 +87,13 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 		RequestHandler.post(api + "torrent/action/stop", {ids: arrayId});
 	};
 
+	$scope.torrentMove = function(arrayId, direction){
+		if (!arrayId.length){
+			arrayId = Tools.getElementForMatchValue($scope.torrents, "id", "checkbox", true);
+		}
+		RequestHandler.post(api + "torrent/move/" + direction, {ids: arrayId});
+	}
+
 	$scope.torrentStart = function(arrayId){
 		if (!arrayId.length){
 			arrayId = Tools.getElementForMatchValue($scope.torrents, "id", "checkbox", true);
@@ -120,12 +127,36 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 
 	//------------------------------------------------  CLICK RIGHT -------------------------------------------------------
 	$scope.menuOptions = [
+		['Move top', function ($itemScope) {
+	        $scope.torrentMove([$itemScope.torrent.id], "top");
+	    }],
+		['Move up', function ($itemScope) {
+	        $scope.torrentMove([$itemScope.torrent.id], "up");
+	    }],
+		['Move down', function ($itemScope) {
+	        $scope.torrentMove([$itemScope.torrent.id], "down");
+	    }],
+		['Move bottom', function ($itemScope) {
+	        $scope.torrentMove([$itemScope.torrent.id], "bottom");
+	    }],
 	    ['Delete local', function ($itemScope) {
 			$scope.torrentRemove([$itemScope.torrent.id], true);
 	    }],
 	    ['Delete torrent', function ($itemScope) {
-	        $scope.torrentRemove([$itemScope.torrent.id], false)
-	    }]
+	        $scope.torrentRemove([$itemScope.torrent.id], false);
+	    }],
+		['Resume', function ($itemScope) {
+	        $scope.torrentStart([$itemScope.torrent.id]);
+	    }],
+		['Stop', function ($itemScope) {
+	        $scope.torrentStop([$itemScope.torrent.id]);
+	    }],
+		['Verifier les donnees', function ($itemScope) {
+	        $scope.torrentRemove([$itemScope.torrent.id], false);
+	    }],
+		['Ask trackers for more peers', function ($itemScope) {
+	        $scope.torrentRemove([$itemScope.torrent.id], false);
+	    }],
 	];
 
 	//------------------------------------------------  DRAG & DROP-------------------------------------------------------

@@ -8,6 +8,8 @@ seedApp/save*
 public/assets/torrents/*
 files/*
 
+config.json
+
 
 # Logs
 logs
