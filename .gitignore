@@ -3,8 +3,8 @@ project.properties
 project.xml
 private.properties
 private.xml
+seedApp/*
 seedApp/save*
-seedApp/
 
 # Logs
 logs
