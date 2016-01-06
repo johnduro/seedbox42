@@ -13,12 +13,12 @@ var auth = function (req, res, next) {
 		console.log("token:  ", token);
 		jwt.verify(token, req.app.locals.ttConfig.secret, function (err, decoded) {
 			if (err)
-				return res.status(403).json({ success: false, message: 'Failed to authenticate token.' });
+				return res.status(403).json({ success: false, message: 'Failed to authenticate token.', err: err });
 			else
 			{
-				User.findById(decoded._id, function (err, user) {
+				User.findById(decoded._doc._id, function (err, user) {
 					if (err || user == null)
-						return res.status(403).json({ success: false, message: 'Failed to authenticate token.' });
+						return res.status(403).json({ success: false, message: 'Failed to authenticate token.', err: err });
 					req.user = user.toObject();
 					next();
 				});

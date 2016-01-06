@@ -13,7 +13,19 @@ var avatarStorage = multer.diskStorage({
 
 var torrentStorage = multer.diskStorage({
 	destination: function (req, file, cb) {
-		cb(null, './files/torrents');
+		// cb(null, './files/torrents');
+		cb(null, './public/assets/torrents');
+	},
+	filename: function (req, file, cb) {
+		cb(null, file.originalname);
+	}
+});
+
+
+var fileStorage = multer.diskStorage({
+	destination: function (req, file, cb) {
+		// cb(null, './files/torrents');
+		cb(null, './public/assets/torrents');
 	},
 	filename: function (req, file, cb) {
 		cb(null, file.originalname);
@@ -43,6 +55,17 @@ module.exports = {
 		limits: {
 			files: 10,
 			fileSize: 3 * 1000 * 1000 //3 MB
+		}
+	}),
+
+	/**
+	 * File upload
+	 */
+	torrent: multer({
+		storage: fileStorage,
+		limits: {
+			files: 10,
+			fileSize: 100 * 1000 * 1000 //100 MB
 		}
 	})
 };
