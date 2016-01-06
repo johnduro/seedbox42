@@ -1,4 +1,4 @@
-app.directive('contentItem', function ($compile, RequestHandler, $rootScope, $location, socket) {
+app.directive('contentItem', function ($compile, RequestHandler, $rootScope, $location, socket, $state) {
 
     var linker = function (scope, element, attrs) {
 
@@ -36,6 +36,11 @@ app.directive('contentItem', function ($compile, RequestHandler, $rootScope, $lo
         socket.on("chat:post:message", function(data){
     		scope.messages.push(data.newmessage);
     	});
+        scope.viewAll = function(column, reverse){
+            $rootScope.sortColumn = column;
+    		$rootScope.reverse = reverse;
+    		$state.go("seedbox.files");
+    	};
     };
 
     return {

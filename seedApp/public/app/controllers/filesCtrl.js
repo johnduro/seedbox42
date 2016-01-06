@@ -93,36 +93,33 @@ app.controller('filesCtrl', function ($scope, $rootScope, $state, $location, $st
 		window.location.href = path;
 	};
 
-	$scope.showInfo = function(item){
-		if (item._id == $scope.itemSelected._id){
-			$scope.itemSelected = "";
-			return;
+// --------------------------------------------- FUNCTION SORT --------------------------------------------
+	if ($rootScope.paramSort){
+		$scope.sortColumn = $rootScope.paramSort.sortColumn;
+		$scope.reverse = $rootScope.paramSort.reverse;
+		setClassSort();
+		delete $rootScope.paramSort;
+	}else{
+		$scope.sortColumn = 'createdAt';
+		$scope.reverse = true;
+		setClassSort();
+	}
+
+	function setClassSort (){
+		if ($scope.reverse){
+			$scope.classSort = "fa fa-sort-asc";
+		}else{
+			$scope.classSort = "fa fa-sort-desc";
 		}
-		RequestHandler.get(api + "file/" + item._id)
-			.then(function(result){
-				console.log(result);
-				console.log(result.data.data);
-				$scope.itemSelected = result.data.data;
-			});
-	};
+	}
 
-	$scope.addComment = function(){
-		if ($scope.newComment == "")
-			return;
-		RequestHandler.post(api + "file/add-comment/" + $scope.itemSelected._id, {text: $scope.newComment})
-			.then(function(result){
-				if (result.data.success){
-					RequestHandler.get(api + "file/comments/" + $scope.itemSelected._id, {text: $scope.newComment})
-						.then(function(result){
-							$scope.itemSelected.comments = result.data.data;
-						});
-					$scope.newComment = "";
-				}else{
-					console.log("Error add comment...");
-				}
-			});
-	};
+	$scope.order = function(item){
+		$scope.reverse = ($scope.sortColumn === item) ? !$scope.reverse : false;
+		setClassSort();
+		$scope.sortColumn = item;
+	}
 
+// --------------------------------------------- FUNCTION LOCK --------------------------------------------
 	$scope.lockFile = function(item){
 		RequestHandler.post(api + "file/add-lock/" + item._id)
 			.then(function(result){
