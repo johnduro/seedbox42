@@ -54,11 +54,23 @@ var FileSchema = new mongoose.Schema({
 		type: Number,
 		default: 0
 	},
+	lastupdatedComment : {
+		type: Date,
+		default: null
+	},
 	comments: [{
 		text: { type: String, default: '' },
 		user: { type: mongoose.Schema.ObjectId, ref: 'User' },
 		createdAt: { type: Date, default: Date.now }
 	}],
+	lastupdatedLocked : {
+		type: Date,
+		default: null
+	},
+	oldestLocked : {
+		type: Date,
+		default: null
+	},
 	locked: [{
 		user: { type: mongoose.Schema.ObjectId, ref: 'User' },
 		createdAt: { type: Date, default: Date.now }
@@ -250,6 +262,7 @@ FileSchema.methods = {
 	addComment: function (user, comment, cb) {
 		this.comments.push({ text: comment, user: user._id });
 		this.commentsNbr++;
+		this.lastupdatedComment = Date.now();
 		this.save(cb);
 	},
 
@@ -331,7 +344,12 @@ FileSchema.methods = {
 	addLock: function (user, cb) {
 		var index = ft.indexOfByIdKey(this.locked, 'user', user._id.toString());
 		if (index === -1)
+		{
 			this.locked.push({ user: user._id });
+			this.lastupdatedLocked = Date.now();
+			if (this.oldestLocked == null)
+				this.oldestLocked = this.lastupdatedLocked;
+		}
 		else
 			return cb('already locked by this user');
 		this.save(cb);
@@ -340,7 +358,29 @@ FileSchema.methods = {
 	removeLock: function (user, cb) {
 		var index = ft.indexOfByIdKey(this.locked, 'user', user._id.toString());
 		if (index > -1 )
-			this.locked.splice(index, 1);
+		{
+			var removed = this.locked.splice(index, 1);
+			var lockedLenght = this.locked.length;
+			if (lockedLenght == 0)
+			{
+				this.lastupdatedLocked = null;
+				this.oldestLocked = null;
+			}
+			else if ((removed.createdAt == this.lastupdatedLocked) || (removed.createdAt == this.oldestLocked))
+			{
+				var newest = Date(0);
+				var oldest = Date.now();
+				for (var i = 0; i < lockedLenght; i++)
+				{
+					if (this.locked[i].createdAt > newest)
+						newest = this.locked[i].createdAt;
+					if (this.locked[i].createdAt < oldest)
+						oldest = this.locked[i].createdAt;
+				}
+				this.lastupdatedLocked = newest;
+				this.oldestLocked = oldest;
+			}
+		}
 		else
 			return cb('this file is not locked by this user');
 		this.save(cb);
