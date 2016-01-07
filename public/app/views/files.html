@@ -69,7 +69,7 @@
                                 <div ng-switch-default ><i class="tt-icon-file-empty fls-tt-icon"></i></div>
                             </div>
                         </td>
-                        <td ng-dblclick="openFile(item)">{{item.name}}</td>
+                        <td ng-click="openFile(item)">{{item.name}}</td>
                         <td>{{item.sizeConvert}}</td>
                         <td class="tt-darkblue"> <i ng-click="download(item._id, item.name)" class="icon-down-circled fls-download"></i> </td>
                         <td>
