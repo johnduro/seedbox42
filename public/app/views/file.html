@@ -1,12 +1,121 @@
-<div class="page-title">
-    <h3><i ng-if="states.from.name" ng-click="tools.backPage()" class="fa fa-chevron-left fa-2"></i> {{torrent.name}}</h3>
-</div>
+<!-- <div class="page-title"> -->
+<!--     <h3><i ng-if="states.from.name" ng-click="tools.backPage()" class="fa fa-chevron-left fa-2"></i> {{torrent.name}}</h3> -->
+<!-- </div> -->
+
+<!-- ligne 120 -->
 
 <div id="main-wrapper">
-    <div class="row">
+	<div class="row">
+		<div class="col-md-12 fl-path">
+            <span ng-click="backFolder(treeBase, []);">< Go back </span>/<a ui-sref="seedbox.files"> files  </a> / <span>{{torrent.name}} /</span> {{pathActualString}}
+		</div>
+		<div class="col-md-12">
+			<div class="col-md-8">
+				<div class="col-md-12 fl-arbo">
+					<table class="table fl-table">
+						<thead>
+							<th class="col-md-1"></th>
+							<th class="col-md-1"></th>
+							<th class="col-md-6"></th>
+							<th class="col-md-2"></th>
+							<th class="col-md-2"></th>
+						</thead>
+						<tbody>
+							<tr>
+								<td class="col-md-1"><i class="icon-folder"></i></td>
+								<td class="col-md-7" colspan="2">{{folderActual}}</td>
+								<td class="col-md-2">{{torrent.sizeConvert}}</td>
+		                        <td class="col-md-2 tt-darkblue"> <i class="icon-down-circled" ng-click="downloadDirActual()"></i> </td>
+							</tr>
+                        	<tr ng-repeat="item in treeActual.fileList">
+								<td class="col-md-1"></td>
+                        	    <td class="col-md-1">
+		                            <div ng-switch="item.type">
+		                                <div ng-switch-when="folder" ><i class="icon-folder fls-icon"></i></div>
+		                                <div ng-switch-when="audio" ><i class="tt-icon-music fls-tt-icon"></i></div>
+		                                <div ng-switch-when="video" ><i class="tt-icon-film fls-tt-icon"></i></div>
+		                                <div ng-switch-when="image" ><i class="icon-picture fls-icon"></i></div>
+		                                <div ng-switch-when="text" ><i class="tt-icon-file-text2 fls-tt-icon"></i></div>
+		                                <div ng-switch-default ><i class="tt-icon-file-empty fls-tt-icon"></i></div>
+		                            </div>
+		                        </td>
+                        	    <td class="col-md-6" ng-click="openFolder(item)">{{item.name}}</td>
+                        	    <td class="col-md-2">{{item.sizeConvert}}</td>
+                        	    <td class="col-md-2 tt-darkblue"> <i ng-click="download(torrent._id, item.name)" class="icon-down-circled" ></i> </td>
+                        	</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="col-md-12 fl-comments">
+					<h3 class="fl-title">RATES & COMMENTS</h3>
+					<hr class="d-hr"/> <!-- MODIFIER HR GLOBAL ?? -->
+					<table>
+						<tbody>
+                            <tr ng-repeat="comment in torrent.comments">
+                                <td class="col-md-1">
+                                    <img ng-src="/assets/avatar/{{comment.user.avatar}}" err-SRC="/assets/avatar/default.png" alt="Smiley face" class="message-avatar"><!-- CHANGER LA CLASS -->
+                                </td>
+                                <td class="col-md-2">
+                                    <span class="stars">{{getGradeByUser(comment.user._id)}}</span>
+                                </td>
+                                <td class="col-md-9">
+                                    <span class="">{{comment.user.login}} -</span> {{comment.text}}
+                                </td>
+                            </tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="col-md-12 fl-infos">
+					<div> Download : {{torrent.createdAt | date:'MM/dd/yy'}}</div>
+					<div>
+						Wishlist :
+                        <i ng-if="torrent.isLockedByUser == 1" class="fa fa-heart fls-locked-user" ng-click="unlockFile(torrent)"></i>
+                        <i ng-if="(torrent.isLocked == 1 && torrent.isLockedByUser == 0)" class="fa fa-heart fls-locked-other" ng-click="lockFile(torrent)"></i>
+                        <i ng-if="(torrent.isLocked == 0 && torrent.isLockedByUser == 0)" class="fa fa-heart fls-locked-no" ng-click="lockFile(torrent)"></i>
+					</div>
+					<div> Downloaded : {{torrent.downloads}} times</div>
+				</div>
+				<div class="col-md-12 fl-add-file">
+					<h4 class="fl-title">ADD LOCAL FILE:</h4>
+                    <form>
+                        <div ngf-drop ngf-select ng-model="files" class="drop-box tt-dottedborder"
+                            ngf-drag-over-class="dragover" ngf-multiple="true" ngf-allow-dir="true"
+                            accept="*"
+                            ngf-pattern="'*'" style="height: 104px;">Drop files here or click to upload</div>
+                        <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
+                    </form>
+				</div>
+				<div class="col-md-12 fl-rate-info">
+					<div>Average rating : <span class="stars">{{torrent.averageGrade}}</span></div>
+					<div>Number of comments : {{torrent.commentsNbr}}</div>
+					<div>Rate it : <div class="rating" starrating score="torrent.rateByUser" max="5"></div></div>
+				</div>
+				<div class="col-md-12 fl-add-comment">
+				</div>
+			</div>
+		</div>
+
+
+
+	<br/>
+	<br/>
+	<br/>
+	<br/>
+	<br/>
+	<br/>
+	<br/>
+	<br/>
+	<br/>
+	<br/>
+	<br/>
+
+
+
         <div class="col-md-6">
-            <div class="panel panel-white">
-                <div class="panel-body">
+            <!-- <div class="panel panel-white"> -->
+            <!--     <div class="panel-body"> -->
                     <div ng-if="torrent">
                         <div>
                             Lock file : <i ng-if="torrent.isLockedByUser == 1" class="fa fa-lock" ng-click="unlockFile(torrent)"></i>
@@ -33,8 +142,8 @@
                         </div>
                         <button type="button" ng-click="openModal.streamMovie()" class="btn btn-primary"> Voir le film </button> -->
                     </div>
-                </div>
-            </div>
+            <!--     </div> -->
+            <!-- </div> -->
         </div>
 
         <div class="col-md-6" ng-show="torrent.fileType == 'folder'">
