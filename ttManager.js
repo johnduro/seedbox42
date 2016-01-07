@@ -33,7 +33,9 @@ var callCommand = function (name, command, commandLineArg, done) {
 			return ;
 		}
 		if (functionArgs === null)
+		{
 			functionArgs = new Arguments(configFileName, argvOg, argvParsed);
+		}
 		functionArgs.getArgument(arg, function (ret) {
 			command.functionArg[arg] = ret;
 			loop();

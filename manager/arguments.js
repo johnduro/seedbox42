@@ -1,4 +1,3 @@
-
 var fs = require('fs');
 var mongoose = require('mongoose');
 var chalk = require('chalk');
@@ -70,7 +69,7 @@ var Arguments = module.exports = function (configFileName, argvOg, argvParsed) {
 			}
 			else
 			{
-				transmission = new TransmissionNode(this.args.config.transmission);
+				transmission = new TransmissionNode(self.args.config.transmission);
 				return done(transmission);
 			}
 		},
@@ -118,13 +117,15 @@ var Arguments = module.exports = function (configFileName, argvOg, argvParsed) {
 
 Arguments.prototype.getArgument = function (arg, done) {
 	var self = this;
-	if (this.args[arg] === null)
+	if (self.args[arg] === null)
 	{
-		this.initArguments[arg](function (ret) {
+		self.initArguments[arg](function (ret) {
 			self.args[arg] = ret;
 			return done(self.args[arg]);
 		});
 	}
 	else
-		return done(this.args[arg]);
+	{
+		return done(self.args[arg]);
+	}
 };

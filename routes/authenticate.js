@@ -21,7 +21,7 @@ router.post('/', function(req, res, next) {
 			else
 			{
 				user.password = "";
-				var token = jwt.sign(user, req.app.locals.ttConfig.secret, {
+				var token = jwt.sign(user.toObject(), req.app.locals.ttConfig.secret, {
 					expiresIn: 3600 //marche ??
 				});
 				res.json({

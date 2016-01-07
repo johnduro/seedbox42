@@ -16,8 +16,7 @@ var auth = function (req, res, next) {
 				return res.status(403).json({ success: false, message: 'Failed to authenticate token.', err: err });
 			else
 			{
-				console.log('DECODED :: ', decoded);
-				User.findById(decoded._doc._id, function (err, user) {
+				User.findById(decoded._id, function (err, user) {
 				// User.findById(decoded._id, function (err, user) {
 					if (err || user == null)
 						return res.status(403).json({ success: false, message: 'Failed to authenticate token.', err: err });

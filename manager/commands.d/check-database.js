@@ -5,14 +5,51 @@ var File = require('../../models/File');
 
 
 module.exports = function (configFileName, args, commandLineArg, done) {
+	var checkUnfinishedFiles = function () {
+		var unfinishedErrors = [];
+		File.find({ isFinished: false })
+			.select('-size -creator -isFinished -downloads -privacy -comments -locked -grades -createdAt -torrentAddedAt')
+			.exec(function (err, files) {
+				if (err)
+					console.log(chalk.red('An error occured while fetching the files from database:\n'), err);
+				else
+				{
+					console.log(chalk.green(util.format('Currently %d files are incomplete in the database', files.length)));
+					var i = 0;
+					var filesLength = files.length;
+					(function loop () {
+						var file = files[i++];
+						if (!file)
+						{
+							if (unfinishedErrors.length <= 0)
+								console.log(chalk.green("No errors were found in the database"));
+							else
+							{
+								console.log(chalk.yellow(util.format('%d unfinished files were found in the database and not in transmission:', unfinishedErrors.length)));
+								unfinishedErrors.forEach(function (err) {
+									console.log('    ', err);
+								});
+							}
+							return done();
+						}
+						args.transmission.torrentGet(['name'], file.hashString, function (err, infos) {
+							if (infos.torrents.length == 0)
+								unfinishedErrors.push(file.name);
+							loop();
+						});
+					})();
+				}
+			});
+	};
+
 	File.find({ isFinished: true })
-		.select('-name -size -creator -hashstring -isFinished -downloads -privacy -comments -locked -grades -createdAt -torrentAddedAt')
+		.select('-name -size -creator -hashString -isFinished -downloads -privacy -comments -locked -grades -createdAt -torrentAddedAt')
 		.exec(function (err, files) {
 			if (err)
 				console.log(chalk.red('An error occured while fetching the files from database:\n'), err);
 			else
 			{
-				console.log(chalk.green(util.format('Currently %d files are in the database', files.length)));
+				console.log(chalk.green(util.format('Currently %d files are complete in the database', files.length)));
 				var errors = [];
 				files.forEach(function (file) {
 					try {
@@ -37,6 +74,7 @@ module.exports = function (configFileName, args, commandLineArg, done) {
 					});
 				}
 			}
-			return done();
+			checkUnfinishedFiles();
+			// return done();
 		});
 };

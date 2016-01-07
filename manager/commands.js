@@ -15,7 +15,8 @@ module.exports =
 			type: 'boolean',
 			functionArg: {
 				config: null,
-				mongo: null
+				mongo: null,
+				transmission: null
 			},
 			usage: ' --check-database',
 			help: 'Check the database for errors: missing files and rights issue'
