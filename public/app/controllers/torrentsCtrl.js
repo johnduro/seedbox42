@@ -10,9 +10,10 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 		"https://torcache.net/torrent/8C0AC56C38391A50EC542220F7E83D9544292BCA.torrent?title=[kat.cr]fansub.resistance.naruto.shippuuden.438.1280x720.mp4"
 	]
 	$scope.newTorrentUrl = "";
-	$scope.torrents = {};
+	$scope.torrents = [];
 	$scope.checkboxAll = false;
 	$scope.itemSelected = [];
+	$scope.search = "";
 
 	//------------------------------------------------  EVENTS SOCKETS -------------------------------------------------------
 	socket.emit('torrentRefresh');
@@ -33,6 +34,7 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 
 	socket.on('post:torrent', function(data){
 		if (data.success){
+			$scope.newTorrentUrl = "";
 			RequestHandler.get(api + "torrent/refresh/" + data.id)
 				.then(function(resultRefresh){
 					$scope.torrents[data.id] = resultRefresh.data.data.torrents[0];
@@ -53,6 +55,7 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 	});
 
 	socket.on("torrentFirstRefresh", function(data){
+		console.log(data.torrents.torrents);
 		for(var key in data.torrents.torrents){
 			$scope.torrents[data.torrents.torrents[key].id] = angular.copy(data.torrents.torrents[key]);
 			$scope.torrents[data.torrents.torrents[key].id].percentDone = $scope.torrents[data.torrents.torrents[key].id].percentDone * 100;
@@ -99,6 +102,13 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 			arrayId = Tools.getElementForMatchValue($scope.torrents, "id", "checkbox", true);
 		}
 		RequestHandler.post(api + "torrent/action/start", {ids: arrayId});
+	};
+
+	$scope.torrentAction = function(arrayId, action){
+		if (!arrayId.length){
+			arrayId = Tools.getElementForMatchValue($scope.torrents, "id", "checkbox", true);
+		}
+		RequestHandler.post(api + "torrent/action/" + action, {ids: arrayId});
 	};
 
 	$scope.FileConvertSize = function (aSize){
@@ -148,14 +158,14 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 		['Resume', function ($itemScope) {
 	        $scope.torrentStart([$itemScope.torrent.id]);
 	    }],
-		['Stop', function ($itemScope) {
+		['Pause', function ($itemScope) {
 	        $scope.torrentStop([$itemScope.torrent.id]);
 	    }],
 		['Verifier les donnees', function ($itemScope) {
-	        $scope.torrentRemove([$itemScope.torrent.id], false);
+	        $scope.torrentAction([$itemScope.torrent.id], "verify");
 	    }],
 		['Ask trackers for more peers', function ($itemScope) {
-	        $scope.torrentRemove([$itemScope.torrent.id], false);
+	        $scope.torrentAction([$itemScope.torrent.id], "reannounce");
 	    }],
 	];
 

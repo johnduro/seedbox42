@@ -3,78 +3,59 @@
 </div>
 
 <div id="main-wrapper">
-    <div class="row">
-        <div class="col-md-6">
-            <div class="panel panel-white">
-                <div class="panel-heading clearfix">
-                    <h4 class="panel-title">Ajouter une url</h4>
-                </div>
-                <div class="panel-body">
-                    <form>
-                        <div class="form-group">
-                            <label for="exampleInputEmail1">URL</label>
-                            <!-- <input type="text" class="form-control" ng-model="newTorrentUrl" placeholder="Torrent Url"> -->
-                            <select style="width: 100px;" ng-model="newTorrentUrl">
-                              <option ng-repeat="option in torrentUrls" value="{{option}}">{{option}}</option>
-                            </select>
-                        </div>
-                        <button type="submit" ng-click="sendTorrentUrl()" class="btn btn-primary">Submit</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="panel panel-white">
-                <div class="panel-heading clearfix">
-                    <h4 class="panel-title">Drag&Drop OR Click choose file </h4>
-                </div>
-                <div class="panel-body">
-                    <form>
-                        <div ngf-drop ngf-select ng-model="files" class="drop-box"
-                            ngf-drag-over-class="dragover" ngf-multiple="true" ngf-allow-dir="true"
-                            accept="*"
-                            ngf-pattern="'*'" style="height: 104px;border-style: dashed;">Drop pdfs or images here or click to upload</div>
-                        <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
-                    </form>
-                </div>
-            </div>
-        </div>
+
+    <!-- ************************* SEARCH *************************  -->
+    <div class="row fls-search">
         <div class="col-md-12">
+			<div class="tt-search-div col-md-3 col-xs-6">
+			  <input class="tt-search-input col-md-10 col-xs-10" placeholder="Search torrent" ng-model="search"> <button type="button" class="tt-search-button">|<i class="fa fa-search tt-search-icon"></i></button>
+			</div>
+        </div>
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-8">
             <div class="panel panel-white">
                 <div class="panel-body">
-                    <input type="checkbox" ng-model="checkboxAll" ng-change="selectAll()">
-                    <i class="fa fa-pause" ng-click="torrentStop([])"></i>
-                    <i class="fa fa-play" ng-click="torrentStart([])"></i>
+                    <input type="checkbox" ng-model="checkboxAll" ng-change="selectAll()"> Select All
+                    <a href="" ng-click="torrentStop([])"> <i class="fa fa-pause"></i> Pause </a>
+                    <a href="" ng-click="torrentStart([])"> <i class="fa fa-play"></i> Resume </a>
                     <a href="" ng-click="torrentRemove([], true)"> <i class="fa fa-trash"></i> Delete local </a>
                     <a href="" ng-click="torrentRemove([], false)"> <i class="fa fa-trash"></i> Delete torrent </a>
                 </div>
             </div>
         </div>
-        <div class="col-md-12">
+        <div class="col-md-8 wrapper">
             <div class="panel panel-white">
                 <div class="panel-body">
                     <div class="table-responsive">
                         <table class="display table" style="width: 100%; cellspacing: 0;">
-                            <tbody ng-repeat="torrent in torrents" context-menu="menuOptions">
-                                <tr>
+                            <tbody>
+                                <tr ng-repeat="torrent in torrents | filter : search" context-menu="menuOptions">
                                     <td>
-                                        <div> <input type="checkbox" ng-model="torrent.checkbox" ng-change="checkboxSwitch(torrent.id)"> </div>
+                                        <!-- ************************* TORRENT NAME *************************  -->
                                         <div>
+                                            <input type="checkbox" ng-model="torrent.checkbox" ng-change="checkboxSwitch(torrent.id)">
                                             <span editable-text="torrent.name" onbeforesave="torrentRename($data, torrent.id)" e-form="textBtnForm">{{ torrent.name || 'empty' }}</span>
                                         </div>
+
+                                        <!-- ************************* PROGRESS BAR *************************  -->
+                                        <div class="progress progress-md">
+                                            <div class="progress-bar progress-bar-striped progress-bar-success active" role="progressbar" aria-valuenow="{{torrent.percentDone}}" aria-valuemin="0" aria-valuemax="100" style="width: {{torrent.percentDone}}%">
+                                                {{torrent.percentDone | number:2}} %
+                                            </div>
+                                        </div>
+
+                                        <!-- ************************* INFOS TORRENT *************************  -->
                                         <div>
                                             <i class="fa fa-arrow-down"></i> {{FileConvertSize(torrent.rateDownload)}}/s -
                                             <i class="fa fa-arrow-up"></i> {{FileConvertSize(torrent.rateUpload)}}/s -
                                             <i class="fa fa-upload"></i> {{FileConvertSize(torrent.uploadedEver)}} (Ratio {{torrent.uploadRatio | number:2}})
                                         </div>
 
-                                        <div class="progress progress-md">
-                                            <div class="progress-bar progress-bar-striped progress-bar-success active" role="progressbar" aria-valuenow="{{torrent.percentDone}}" aria-valuemin="0" aria-valuemax="100" style="width: {{torrent.percentDone}}%">
-                                                {{torrent.percentDone | number:2}} %
-                                            </div>
-                                        </div>
-                                        <i class="fa fa-pause" ng-click="torrentStop([torrent.id])"></i>
-                                        <i class="fa fa-play" ng-click="torrentStart([torrent.id])"></i>
+                                        <!-- <i class="fa fa-pause" ng-click="torrentStop([torrent.id])"></i>
+                                        <i class="fa fa-play" ng-click="torrentStart([torrent.id])"></i> -->
                                     </td>
                                 </tr>
                             </tbody>
@@ -83,5 +64,48 @@
                 </div>
             </div>
         </div>
+
+        <div class="col-md-4">
+            Add torrent
+    		<div class="tt-search-div col-md-12">
+                <input class="tt-search-input col-md-10 col-xs-10" placeholder="Add torrent" ng-model="newTorrentUrl"> <button type="button" class="tt-search-button" ng-click="sendTorrentUrl()">|<i class="fa fa-search tt-search-icon"></i></button>
+    		</div>
+
+            <!-- <div class="panel panel-white">
+                <div class="panel-heading clearfix">
+                    <h4 class="panel-title">Ajouter une url</h4>
+                </div>
+                <div class="panel-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">URL</label>
+                            <select style="width: 100px;" ng-model="newTorrentUrl">
+                              <option ng-repeat="option in torrentUrls" value="{{option}}">{{option}}</option>
+                            </select>
+                        </div>
+                        <button type="submit" ng-click="sendTorrentUrl()" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div> -->
+        </div>
+
+        <div class="col-md-4">
+            Add local file
+            <div class="panel panel-white">
+                <!-- <div class="panel-heading clearfix">
+                    <h4 class="panel-title">Drag&Drop OR Click choose file </h4>
+                </div> -->
+                <div class="panel-body">
+                    <form>
+                        <div ngf-drop ngf-select ng-model="files" class="drop-box"
+                            ngf-drag-over-class="dragover" ngf-multiple="true" ngf-allow-dir="true"
+                            accept="*"
+                            ngf-pattern="'*'" style="height: 70px;border-style: dotted; border-width: 2px;"> Drop torrent file here or click to upload </div>
+                        <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
