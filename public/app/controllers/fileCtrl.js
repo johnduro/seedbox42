@@ -106,6 +106,15 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
 		window.location.href = path;
 	};
 
+    $scope.downloadDirActual = function (){
+        var newPath = "";
+        newPath += "/" + generatePath(pathActualArray, "");
+        pathEncode = btoa(newPath);
+		nameEncode = btoa($scope.treeActual.name);
+        var path = api + "file/download/" + $scope.torrent._id + "/" + pathEncode + "/" + nameEncode;
+        window.location.href = path;
+    }
+
 // --------------------------------------------- FUNCTION LOCK FILE --------------------------------------------
     $scope.lockFile = function(item){
 		RequestHandler.post(api + "file/add-lock/" + item._id)
