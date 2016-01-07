@@ -39,6 +39,13 @@ app.run(function ($rootScope, $location, $http, $state, $timeout, Tools, socket,
         }
     };
 
+    $rootScope.$on('filesLoaded', function () { //ajout
+        $timeout(function () {
+            // console.log('onononononononon');
+            $('.stars').stars();
+        }, 0, false);
+    });
+
     // gestion des droits d'access aux url
     $rootScope.$on("$stateChangeStart", function (event, toState, toParams, fromState, fromParams) {
 

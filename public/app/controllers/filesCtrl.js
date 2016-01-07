@@ -27,15 +27,9 @@ app.controller('filesCtrl', function ($scope, $rootScope, $state, $location, $st
 			$scope.treeBase = $scope.elementsActual = result.data.data;
 			console.log($scope.treeBase);
 			addType($scope.elementsActual);
-			$scope.$broadcast('filesLoaded');//ajout
+			$rootScope.$broadcast('filesLoaded');
 		});
 
-	$scope.$on('filesLoaded', function () { //ajout
-		$timeout(function () {
-			// console.log('onononononononon');
-			$('.stars').stars();
-		}, 0, false);
-	});
 
 	function addType(list){
 		angular.forEach(list, function(value, key){

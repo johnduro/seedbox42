@@ -18,7 +18,7 @@
         <div class="col-md-8">
             <div class="panel panel-white">
                 <div class="panel-body">
-                    <input type="checkbox" ng-model="checkboxAll" ng-change="selectAll()"> Select All
+                    <input type="checkbox" ng-model="checkboxAll" ng-change="selectAll()"> {{ itemSelected.length}} selected
                     <a href="" ng-click="torrentStop([])"> <i class="fa fa-pause"></i> Pause </a>
                     <a href="" ng-click="torrentStart([])"> <i class="fa fa-play"></i> Resume </a>
                     <a href="" ng-click="torrentRemove([], true)"> <i class="fa fa-trash"></i> Delete local </a>
