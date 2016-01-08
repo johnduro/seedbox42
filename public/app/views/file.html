@@ -6,13 +6,13 @@
 
 <div id="main-wrapper">
 	<div class="row">
-		<div class="col-md-12 fl-path">
+		<div class="col-md-12 fl-path tt-text">
             <span ng-click="backFolder(treeBase, []);">< Go back </span>/<a ui-sref="seedbox.files"> files  </a> / <span>{{torrent.name}} /</span> {{pathActualString}}
 		</div>
-		<div class="col-md-12">
+		<div class="col-md-12 fl-body">
 			<div class="col-md-8">
 				<div class="col-md-12 fl-arbo">
-					<table class="table fl-table">
+					<table class="table fl-table tt-text">
 						<thead>
 							<th class="col-md-1"></th>
 							<th class="col-md-1"></th>
@@ -21,7 +21,7 @@
 							<th class="col-md-2"></th>
 						</thead>
 						<tbody>
-							<tr>
+							<tr class="first-tr">
 								<td class="col-md-1"><i class="icon-folder"></i></td>
 								<td class="col-md-7" colspan="2">{{folderActual}}</td>
 								<td class="col-md-2">{{torrent.sizeConvert}}</td>
@@ -47,16 +47,16 @@
 					</table>
 				</div>
 				<div class="col-md-12 fl-comments">
-					<h3 class="fl-title">RATES & COMMENTS</h3>
+					<h3 class="fl-title tt-title">RATES & COMMENTS</h3>
 					<hr class="d-hr"/> <!-- MODIFIER HR GLOBAL ?? -->
-					<table>
+					<table class="tt-table">
 						<tbody>
-                            <tr ng-repeat="comment in torrent.comments">
+                            <tr ng-repeat="comment in torrent.comments" ng-class-odd="'tt-table-odd'" ng-class-even="'tt-table-even'">
                                 <td class="col-md-1">
                                     <img ng-src="/assets/avatar/{{comment.user.avatar}}" err-SRC="/assets/avatar/default.png" alt="Smiley face" class="message-avatar"><!-- CHANGER LA CLASS -->
                                 </td>
                                 <td class="col-md-2">
-                                    <span class="stars">{{getGradeByUser(comment.user._id)}}</span>
+                                    <div class="stars">{{getGradeByUser(comment.user._id)}}</div>
                                 </td>
                                 <td class="col-md-9">
                                     <span class="">{{comment.user.login}} -</span> {{comment.text}}
@@ -66,8 +66,8 @@
 					</table>
 				</div>
 			</div>
-			<div class="col-md-4">
-				<div class="col-md-12 fl-infos">
+			<div class="col-md-4 fl-right-col">
+				<div class="col-md-12 fl-infos tt-text">
 					<div> Download : {{torrent.createdAt | date:'MM/dd/yy'}}</div>
 					<div>
 						Wishlist :
@@ -78,7 +78,7 @@
 					<div> Downloaded : {{torrent.downloads}} times</div>
 				</div>
 				<div class="col-md-12 fl-add-file">
-					<h4 class="fl-title">ADD LOCAL FILE:</h4>
+					<h4 class="fl-title tt-title">ADD LOCAL FILE:</h4>
                     <form>
                         <div ngf-drop ngf-select ng-model="files" class="drop-box tt-dottedborder"
                             ngf-drag-over-class="dragover" ngf-multiple="true" ngf-allow-dir="true"
@@ -87,13 +87,13 @@
                         <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
                     </form>
 				</div>
-				<div class="col-md-12 fl-rate-info">
-					<div>Average rating : <span class="stars">{{torrent.averageGrade}}</span></div>
+				<div class="col-md-12 fl-rate-info tt-text">
+					<div>Average rating : <div class="stars fl-average">{{torrent.averageGrade}}</div></div>
 					<div>Number of comments : {{torrent.commentsNbr}}</div>
 					<div>Rate it : <div class="rating" starrating score="torrent.rateByUser" max="5"></div></div>
 				</div>
 				<div class="col-md-12 fl-add-comment">
-					<h4>LEAVE A COMMENT:</h4>
+					<h4 class="fl-title tt-title">LEAVE A COMMENT:</h4>
 					<div class="form-message">
                         <textarea ng-model="$parent.newComment"> </textarea>
                         <button ng-click="addComment()" class="btn btn-default">Submit <i class="fa fa-check tt-inputcheck"></i></button>

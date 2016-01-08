@@ -44,6 +44,8 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
                 else{
                     $scope.tree = null;
                 }
+
+				$rootScope.$broadcast('filesLoaded');
             });
     }else{
         $state.go('seedbox.files');

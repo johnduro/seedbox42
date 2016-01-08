@@ -353,6 +353,15 @@ textarea {
 /* FILE */
 
 .fl-path {
+	margin-top: 5px;
+}
+
+.fl-body {
+	margin-top: 25px;
+}
+
+.fl-right-col {
+	margin-top: 14px;
 }
 
 .fl-arbo {
@@ -376,5 +385,20 @@ textarea {
 .fl-table {
 }
 
+.fl-table th, .fl-table tr td, .fl-table tr {
+ 	border-style: none !important;
+}
+
+.first-tr {
+	background-color: #E5FFFE;
+}
+
 .fl-title {
+	font-size: 15px;
+}
+
+.fl-average {
+	display: inline-block;
+	font-size: 12pt;
+	vertical-align: middle;
 }
