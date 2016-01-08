@@ -14,6 +14,11 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 	$scope.checkboxAll = false;
 	$scope.itemSelected = [];
 	$scope.search = "";
+	$scope.filters = {
+		isFinished: "",
+		status: ""
+	};
+	$scope.selected = "all";
 
 	//------------------------------------------------  EVENTS SOCKETS -------------------------------------------------------
 	socket.emit('torrentRefresh');
@@ -135,6 +140,19 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 			$scope.itemSelected = [];
 		}
 	};
+
+	$scope.selectStatus = function (status){
+		$scope.filters.isFinished = "";
+		$scope.filters.status = "";
+
+		if (status == "all"){
+			console.log("All");
+		}else if (status == "finished"){
+			$scope.filters.isFinished = true;
+		}else{
+			$scope.filters.status = status;
+		}
+	}
 
 	//------------------------------------------------  CLICK RIGHT -------------------------------------------------------
 	$scope.menuOptions = [

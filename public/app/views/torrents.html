@@ -12,12 +12,12 @@
 			</div>
 
             <div class="col-md-3 col-xs-6">
-                <select>
+                <select ng-model="selected" ng-change="selectStatus(selected)">
     				<option value="all">All</option>
     				<option value="active">Active</option>
-    				<option value="downloading">Downloading</option>
-    				<option value="seeding">Seeding</option>
-    				<option value="paused">Paused</option>
+    				<option value="4">Downloading</option>
+    				<option value="6">Seeding</option>
+    				<option value="0">Paused</option>
     				<option value="finished">Finished</option>
     			</select>
             </div>
@@ -43,7 +43,7 @@
                     <div class="table-responsive">
                         <table class="display table" style="width: 100%; cellspacing: 0;">
                             <tbody>
-                                <tr ng-repeat="torrent in torrents | filter : search" context-menu="menuOptions">
+                                <tr ng-repeat="torrent in torrents | filter : search | filter : filters" context-menu="menuOptions">
                                     <td>
                                         <!-- ************************* TORRENT NAME *************************  -->
                                         <div>
