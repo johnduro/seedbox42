@@ -70,7 +70,7 @@ WallMessageSchema.statics = {
 	},
 
 	getMessages: function (cb) {
-		this.find({}, function (err, messages) {
+		this.find({}, null, { sort: { createdAt: 1 } }, function (err, messages) {
 			if (err)
 				return cb(err);
 			else

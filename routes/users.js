@@ -37,7 +37,7 @@ router.post('/', rights.admin, upload.avatar.single('avatar'), function (req, re
 });
 
 router.get('/profile', function (req, res, next) {
-	User.findById(req.user._id, function (err, post) {
+	User.findById(req.user._id, { password: 0 }, function (err, post) {
 		if (err)
 			res.json({ success: false, message: err });
 		else
