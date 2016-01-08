@@ -8,6 +8,7 @@
   "dependencies": {
     "async": "^1.5.0",
     "atob": "^1.1.2",
+    "bcrypt": "^0.8.5",
     "body-parser": "~1.13.2",
     "btoa": "^1.1.2",
     "chalk": "^1.1.1",

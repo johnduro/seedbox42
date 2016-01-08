@@ -1,6 +1,7 @@
 var inquirer = require('inquirer');
 var chalk = require('chalk');
 var User = require('../../models/User');
+var ft = require('../../utils/ft');
 
 module.exports = function (configFileName, args, commandLineArg, done) {
 	User.findOne({ login: commandLineArg }, function (err, user) {
@@ -63,13 +64,15 @@ module.exports = function (configFileName, args, commandLineArg, done) {
 			console.log(chalk.yellow('Enter new values for this user detail or press enter to keep the olds one: '));
 			inquirer.prompt(questions, function (answers) {
 				user.login = answers.login;
-				user.password = answers.password;
 				user.mail = answers.mail;
 				user.role = answers.role;
-				user.save(function (err) {
-					if (err)
-						console.log(chalk.red("An error happened wile saving the user"));
-					return done();
+				ft.getUserPwHash(answers.password, function (err, hash) {
+					user.password = hash;
+					user.save(function (err) {
+						if (err)
+							console.log(chalk.red("An error happened wile saving the user"));
+						return done();
+					});
 				});
 			});
 		}

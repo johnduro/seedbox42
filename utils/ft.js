@@ -1,5 +1,6 @@
 // var File = require('../models/File.js');
 var mongoose = require('mongoose');
+var bcrypt = require('bcrypt');
 // var File = mongoose.model('File');
 var User = require('../models/User.js');
 var fs = require('fs');
@@ -71,6 +72,19 @@ module.exports = {
 			if (aSize < def[i][0])
 				return (aSize / def[i - 1][0]).toFixed(2) + ' ' + def[i - 1][1];
 		}
+	},
+
+	getUserPwHash: function (password, done) {
+		bcrypt.genSalt(10, function(err, salt) {
+			if (err)
+				return done('An error occured while generating salt');
+			bcrypt.hash(password, salt, function(err, hash) {
+				if (err)
+					return done('An error occured while generating hash');
+				else
+					return done(null, hash);
+			});
+		});
 	}
 
 };

@@ -11,7 +11,7 @@ var upload = require('../middlewares/upload');
 /* GET users listing. */
 router.get('/', function (req, res, next) {
 	// check role si besoin
-	User.find(function (err, users) {
+	User.find({}, { password: 0 }, function (err, users) {
 		if (err)
 			return next(err);
 		res.json(users);
@@ -23,11 +23,16 @@ router.post('/', rights.admin, upload.avatar.single('avatar'), function (req, re
 		req.body.avatar = req.file.filename;
 	else
 		req.body.avatar = req.app.locals.ttConfig.users["default-avatar"];
-	User.create(req.body, function (err, post) {
+	// User.create(req.body, function (err, post) {
+	User.createNew(req.body, function (err, post) {
 		if (err)
 			res.json({ success: false, message: err });
 		else
-			res.json({ success: true, message: 'user successfully created', data: post });
+		{
+			var rawUser = post.toObject();
+			rawUser.password = "";
+			res.json({ success: true, message: 'user successfully created', data: rawUser });
+		}
 	});
 });
 
@@ -41,7 +46,7 @@ router.get('/profile', function (req, res, next) {
 });
 
 router.get('/:id', function (req, res, next) {
-	User.findById(req.params.id, function (err, post) {
+	User.findById(req.params.id, { password: 0 },function (err, post) {
 		if (err)
 			return next(err);
 		res.json(post);
@@ -53,7 +58,8 @@ router.put('/:id', rights.adminOrUserParam, upload.avatar.single('avatar'), func
 		req.body.avatar = req.file.filename;
 	if ('_id' in req.body)
 		delete req.body._id;
-	User.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true }, function (err, post) {
+	// User.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true }, function (err, post) {
+	User.updateUserById(req.params.id, req.body, function (err, post) {
 		if (err)
 			res.json({ success: false, message: err });
 		else

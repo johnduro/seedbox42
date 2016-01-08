@@ -1,5 +1,5 @@
-
 var mongoose = require('mongoose');
+var ft = require('../utils/ft');
 
 var UserSchema = new mongoose.Schema({
 	login: {
@@ -47,6 +47,48 @@ UserSchema.statics = {
 				else
 					return cb(null, user.toObject());
 			});
+	},
+
+	createNew: function (infos, cb) {
+		var self = this;
+		if (infos.password.length < 5)
+			return cb('The password must 5 characters at least');
+		ft.getUserPwHash(infos.password, function (err, hash) {
+				self.create(infos, function (err, post) {
+					if (err)
+						return cb(err);
+					else
+						return cb(null, post);
+				});
+		});
+	},
+
+	updateUserById: function (id, infos, cb) {
+		var self = this;
+		if (infos.password === "")
+		{
+			delete infos.password;
+			self.findByIdAndUpdate(id, { $set: infos }, { new: true }, function (err, post) {
+				if (err)
+					return cb(err);
+				else
+					return cb(null, post);
+			});
+		}
+		else
+		{
+			ft.getUserPwHash(infos.password, function (err, hash) {
+				if (err)
+					return cb(err);
+				infos.password = hash;
+				self.findByIdAndUpdate(id, { $set: infos }, { new: true }, function (err, post) {
+					if (err)
+						return cb(err);
+					else
+						return cb(null, post);
+				});
+			});
+		}
 	}
 };
 
