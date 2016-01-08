@@ -10,6 +10,17 @@
 			<div class="tt-search-div col-md-3 col-xs-6">
 			  <input class="tt-search-input col-md-10 col-xs-10" placeholder="Search torrent" ng-model="search"> <button type="button" class="tt-search-button">|<i class="fa fa-search tt-search-icon"></i></button>
 			</div>
+
+            <div class="col-md-3 col-xs-6">
+                <select ng-model="selected" ng-change="selectStatus(selected)">
+    				<option value="all">All</option>
+    				<option value="active">Active</option>
+    				<option value="4">Downloading</option>
+    				<option value="6">Seeding</option>
+    				<option value="0">Paused</option>
+    				<option value="finished">Finished</option>
+    			</select>
+            </div>
         </div>
     </div>
 
@@ -18,7 +29,7 @@
         <div class="col-md-8">
             <div class="panel panel-white">
                 <div class="panel-body">
-                    <input type="checkbox" ng-model="checkboxAll" ng-change="selectAll()"> {{ itemSelected.length}} selected
+                    <input type="checkbox" ng-model="checkboxAll" ng-change="selectAll()"> {{ itemSelected.length }} selected
                     <a href="" ng-click="torrentStop([])"> <i class="fa fa-pause"></i> Pause </a>
                     <a href="" ng-click="torrentStart([])"> <i class="fa fa-play"></i> Resume </a>
                     <a href="" ng-click="torrentRemove([], true)"> <i class="fa fa-trash"></i> Delete local </a>
@@ -32,7 +43,7 @@
                     <div class="table-responsive">
                         <table class="display table" style="width: 100%; cellspacing: 0;">
                             <tbody>
-                                <tr ng-repeat="torrent in torrents | filter : search" context-menu="menuOptions">
+                                <tr ng-repeat="torrent in torrents | filter : search | filter : filters" context-menu="menuOptions">
                                     <td>
                                         <!-- ************************* TORRENT NAME *************************  -->
                                         <div>

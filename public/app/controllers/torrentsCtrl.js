@@ -14,6 +14,11 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 	$scope.checkboxAll = false;
 	$scope.itemSelected = [];
 	$scope.search = "";
+	$scope.filters = {
+		isFinished: "",
+		status: ""
+	};
+	$scope.selected = "all";
 
 	//------------------------------------------------  EVENTS SOCKETS -------------------------------------------------------
 	socket.emit('torrentRefresh');
@@ -127,41 +132,58 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 	};
 
 	$scope.selectAll = function(){
-		console.log($scope.checkboxAll);
 		if ($scope.checkboxAll){
 			Tools.setAllItems($scope.torrents, "checkbox", true);
+			$scope.itemSelected = Tools.getElementForMatchValue($scope.torrents, "id", "checkbox", true);
 		}else{
 			Tools.setAllItems($scope.torrents, "checkbox", false);
+			$scope.itemSelected = [];
 		}
 	};
 
+	$scope.selectStatus = function (status){
+		$scope.filters.isFinished = "";
+		$scope.filters.status = "";
+
+		if (status == "all"){
+			console.log("All");
+		}else if (status == "finished"){
+			$scope.filters.isFinished = true;
+		}else{
+			$scope.filters.status = status;
+		}
+	}
+
 	//------------------------------------------------  CLICK RIGHT -------------------------------------------------------
 	$scope.menuOptions = [
-		['Move top', function ($itemScope) {
-	        $scope.torrentMove([$itemScope.torrent.id], "top");
-	    }],
-		['Move up', function ($itemScope) {
-	        $scope.torrentMove([$itemScope.torrent.id], "up");
-	    }],
-		['Move down', function ($itemScope) {
-	        $scope.torrentMove([$itemScope.torrent.id], "down");
-	    }],
-		['Move bottom', function ($itemScope) {
-	        $scope.torrentMove([$itemScope.torrent.id], "bottom");
-	    }],
-	    ['Delete local', function ($itemScope) {
-			$scope.torrentRemove([$itemScope.torrent.id], true);
-	    }],
-	    ['Delete torrent', function ($itemScope) {
-	        $scope.torrentRemove([$itemScope.torrent.id], false);
+		['Pause', function ($itemScope) {
+	        $scope.torrentStop([$itemScope.torrent.id]);
 	    }],
 		['Resume', function ($itemScope) {
 	        $scope.torrentStart([$itemScope.torrent.id]);
 	    }],
-		['Pause', function ($itemScope) {
-	        $scope.torrentStop([$itemScope.torrent.id]);
+		null,
+		['Move to Top', function ($itemScope) {
+	        $scope.torrentMove([$itemScope.torrent.id], "top");
 	    }],
-		['Verifier les donnees', function ($itemScope) {
+		['Move Up', function ($itemScope) {
+	        $scope.torrentMove([$itemScope.torrent.id], "up");
+	    }],
+		['Move Down', function ($itemScope) {
+	        $scope.torrentMove([$itemScope.torrent.id], "down");
+	    }],
+		['Move to Bottom', function ($itemScope) {
+	        $scope.torrentMove([$itemScope.torrent.id], "bottom");
+	    }],
+		null,
+	    ['Remove From List', function ($itemScope) {
+			$scope.torrentRemove([$itemScope.torrent.id], true);
+	    }],
+	    ['Trash Data And Remove From List', function ($itemScope) {
+	        $scope.torrentRemove([$itemScope.torrent.id], false);
+	    }],
+		null,
+		['Verify Local Data', function ($itemScope) {
 	        $scope.torrentAction([$itemScope.torrent.id], "verify");
 	    }],
 		['Ask trackers for more peers', function ($itemScope) {
