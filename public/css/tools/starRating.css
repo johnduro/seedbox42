@@ -1,6 +1,10 @@
 .rating {
-  font-size: 175%;
-  padding: 0 0.5em;
+	/* font-size: 175%; */
+	font-size: 12pt;
+	/* padding: 0 0.5em; */
+	color: #325064;
+	display: inline;
+	vertical-align: middle;
 }
 
 .rating > a {
@@ -8,9 +12,11 @@
 }
 
 .rating .rating-highlight, .rating.rating-highlight:hover {
-  color: #F4914E;
+  /* color: #F4914E; */
+	color: #B4BEC6;
 }
 
 .rating .rating-normal, .rating.rating-normal:hover {
-  color: #3C3C3C;
+	color: #325064;
+  /* color: #3C3C3C; */
 }

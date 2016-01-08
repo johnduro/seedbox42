@@ -354,6 +354,11 @@ textarea {
 
 .fl-path {
 	margin-top: 5px;
+	color: #337ab7;
+}
+
+.fl-path span:hover {
+	text-decoration: underline;
 }
 
 .fl-body {
@@ -367,19 +372,56 @@ textarea {
 .fl-arbo {
 }
 
+.fl-icon {
+	font-size: 13pt;
+	margin-left: 3px;
+}
+
+.fl-tt-icon {
+	font-size: 17pt;
+	margin-left: 7px;
+}
+
+.fl-downloadico {
+	font-size: 17pt;
+}
+
 .fl-comments {
+}
+
+.fl-table-comment {
+	border-top: 1px solid #325064;
+}
+
+.fl-table-comment tr td {
+	padding-top: 5px;
+	padding-bottom: 5px;
+	vertical-align: top;
+}
+
+.fl-comment-name {
+	font-size: 13px;
+	color: #99A8B2;
+	font-family: MuseoSans-500;
+}
+
+.fl-comment-stars {
+	margin-top: 12px;
 }
 
 .fl-infos {
 }
 
 .fl-add-file {
+	margin-top: 25px;
 }
 
 .fl-rate-info {
+	margin-top: 45px;
 }
 
 .fl-add-comment {
+	margin-top: 25px;
 }
 
 .fl-table {
