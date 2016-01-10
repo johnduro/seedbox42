@@ -32,7 +32,7 @@
 		                        <div ng-switch="item.type">
 		                            <div ng-switch-when="folder" ><i class="icon-folder fl-icon"></i></div>
 		                            <div ng-switch-when="audio" ><i class="tt-icon-music fl-tt-icon"></i></div>
-		                            <div ng-switch-when="video" ><i class="tt-icon-film fl-tt-icon"></i></div>
+		                            <div ng-switch-when="video" ng-click="openModal.streamMovie(torrent._id, item)"><i class="tt-icon-film fl-tt-icon"></i></div>
 		                            <div ng-switch-when="image" ><i class="icon-picture fl-icon"></i></div>
 		                            <div ng-switch-when="text" ><i class="tt-icon-file-text2 fl-tt-icon"></i></div>
 		                            <div ng-switch-default ><i class="tt-icon-file-empty fl-tt-icon"></i></div>
@@ -145,7 +145,6 @@
     <div class="modal-body">
         <videogular vg-theme="stream.theme.url">
             <vg-media   vg-src="stream.sources"
-                        vg-tracks="stream.tracks"
                         vg-native-controls="true"></vg-media>
         </videogular>
     </div>

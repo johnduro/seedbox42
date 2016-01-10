@@ -256,7 +256,7 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
                 $scope.torrent.tmdb = itemSelected;
             });
         },
-        streamMovie: function () {
+        streamMovie: function (id, item) {
             var modalInstance = $modal.open({
                 templateUrl: "modalStream.html",
                 resolve: {
@@ -266,24 +266,21 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
              },
                 controller: function ($scope, $http, $modalInstance, RequestHandler, torrent) {
 
+                    var path = 'http://localhost:3000' + generatePathDownload(id, item.name);
+
+                    console.log(path);
+
                     $scope.stream = {
                         preload: "none",
                         sources: [
-                            {src: $sce.trustAsResourceUrl("http://localhost:3000/file/download/5639e5ca4ef5032e04f0c91e/Lw==/RG9wZS4yMDE1LkZSRU5DSC5CRFJpcC5YdmlELUVYVFJFTUUud3d3LkNwYXNiaWVuLnB3LmF2aQ=="), type: torrent.fileType}
-                        ],
-                        tracks: [
-                            {
-                                src: "http://www.videogular.com/assets/subs/pale-blue-dot.vtt",
-                                kind: "subtitles",
-                                srclang: "en",
-                                label: "English",
-                                default: ""
-                            }
+                            {src: $sce.trustAsResourceUrl(path), type: item.fileType}
                         ],
                         theme: {
                             url: "http://www.videogular.com/styles/themes/default/latest/videogular.css"
                         }
                     };
+
+                    console.log($scope.stream);
 
                     $scope.ok = function () {
                         $modalInstance.close($scope.itemSelected);

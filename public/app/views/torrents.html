@@ -21,6 +21,12 @@
     				<option value="finished">Finished</option>
     			</select>
             </div>
+
+            <div class="col-md-3 col-xs-6">
+                <select ng-model="selected2" ng-change="selectStatus(selected)">
+                    <option ng-repeat="option in data.availableOptions" value="{{option.id}}">{{option.name}}</option>
+    			</select>
+            </div>
         </div>
     </div>
 

@@ -332,7 +332,7 @@ router.get('/download/:id/:path/:name', function (req, res, next) {
 				res.setHeader('Content-disposition', 'attachment; filename=' + fileName);
 				res.setHeader('Content-type', mimeType);
 				res.setHeader('Content-Length', fileSize);
-				res.setHeader('Accept-Ranges', "bytes");
+				//res.setHeader('Accept-Ranges', "bytes");
 				var fileStream = fs.createReadStream(filePath);
 				fileStream.pipe(res);
 			}
