@@ -1,8 +1,9 @@
-app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $modal, $http, RequestHandler, $sce, Tools, Upload){
+app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $modal, $http, RequestHandler, $sce, Tools, Upload, Lightbox){
 
     $scope.pathActualString = "";
     $scope.folderActual = '';
     var pathActualArray = [];
+    Lightbox.templateUrl = 'app/views/partials/imagesTemplate.html';
 
     console.log($rootScope);
 
@@ -33,15 +34,18 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
                 $scope.torrent = result.data.file;
                 $rootScope.torrentActual = result.data.file;
                 $scope.torrent.sizeConvert = Tools.FileConvertSize($scope.torrent.size);
+                $scope.folderActual = result.data.file.name;
+                $scope.treeActual = result.data.data;
+                addType([$scope.treeActual]);
+                console.log("RESULT : ", result.data);
                 console.log("TORRENT : ", $scope.torrent);
-
+                console.log("TREEACTUAL", $scope.treeActual);
                 if (result.data.data.fileList.length){
                     addType(result.data.data.fileList);
-                    $scope.treeActual = result.data.data;
+                    //$scope.treeActual = result.data.data;
+
                     $scope.treeBase = result.data.data;
-                    $scope.folderActual = result.data.file.name;
-                }
-                else{
+                }else{
                     $scope.tree = null;
                 }
 
@@ -63,10 +67,11 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
 		}else if (item.type == "video"){
 			//video.addSource(value.type, generatePathDownload($scope.treeSelected.id, value.name));
 			//$scope.typeStreaming = value.fileType;
-			//Lightbox.openModal([{url:generatePathDownload($scope.treeSelected.id, value.name)}], 0);
+			//Lightbox.openMourl:generatePathDownload($scope.treeSelected.id, value.name)}], 0);
+
 			$scope.pathStreaming = generatePathDownload($scope.treeSelected.id, item.name);
 		}else if (item.type == "image"){
-			Lightbox.openModal([{url:generatePathDownload($scope.treeSelected.id, item.name)}], 0);
+			Lightbox.openModal([{url:generatePathDownload($scope.torrent._id, item.name)}], 0);
 		}
 	};
 
@@ -97,14 +102,20 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
 // --------------------------------------------- FUNCTION DOWNLOAD --------------------------------------------
     function generatePathDownload(id, name){
 		var newPath = "";
+
         newPath += "/" + generatePath(pathActualArray, "") + name;
+        if (name == "")
+            name = "base";
+        console.log("generatePathDownload : newPath", newPath);
 		pathEncode = btoa(newPath);
 		nameEncode = btoa(name);
 		return(api + "file/download/" + id + "/" + pathEncode + "/" + nameEncode);
 	};
 
     $scope.download = function (id, name){
+        console.log("download");
 		path = generatePathDownload(id, name);
+        console.log("download : path -> ", path);
 		window.location.href = path;
 	};
 
@@ -114,6 +125,7 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
         pathEncode = btoa(newPath);
 		nameEncode = btoa($scope.treeActual.name);
         var path = api + "file/download/" + $scope.torrent._id + "/" + pathEncode + "/" + nameEncode;
+        console.log("downloadDirActual -> ", path);
         window.location.href = path;
     }
 
@@ -279,6 +291,7 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
                 controller: function ($scope, $http, $modalInstance, RequestHandler, torrent) {
 
                     var path = generatePathDownload(id, item.name);
+                    $scope.source = generatePathDownload(id, item.name);
 
                     console.log(path);
 

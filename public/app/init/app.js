@@ -17,7 +17,7 @@ var app = angular.module('seedApp', [
 // ---------------------- variable global -------------------------------
 var api = "";
 
-app.run(function ($rootScope, $location, $http, $state, $timeout, Tools, socket, editableOptions, editableThemes) {
+app.run(function ($rootScope, $location, $http, $state, $timeout, Tools, editableOptions, editableThemes) {
 
     api = "/";
 
@@ -45,6 +45,7 @@ app.run(function ($rootScope, $location, $http, $state, $timeout, Tools, socket,
             $('.stars').stars();
         }, 0, false);
     });
+
 
     // gestion des droits d'access aux url
     $rootScope.$on("$stateChangeStart", function (event, toState, toParams, fromState, fromParams) {

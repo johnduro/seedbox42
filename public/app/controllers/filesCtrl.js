@@ -7,10 +7,7 @@ app.controller('filesCtrl', function ($scope, $rootScope, $state, $location, $st
 	$scope.elementsActual = '';
 	var pathActualArray = [];
 	$scope.pathActual = " / ";
-	$scope.pathStreaming = "";
-	$scope.typeStreaming = "";
 	$scope.itemSelected = false;
-	Lightbox.templateUrl = 'app/views/partials/imagesTemplate.html';
 	$scope.newComment = "";
 	console.log($stateParams);
 
