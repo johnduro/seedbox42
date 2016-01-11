@@ -129,12 +129,19 @@ router.post('/add-comment/:id', function (req, res, next) {
 router.delete('/remove-comment/:id', function (req, res, next) {
 	File.findById(req.params.id, function (err, file) {
 		if (err)
-			return next(err);
-		file.removeComment(req.body.commentId, function (err) {
-			if (err)
-				return next(err);
-			res.json({ success: true, message: 'comment successfully removed' });
-		});
+			res.json({ success: false, message: err });
+		else if (file == null)
+			res.json({ success: false, message: "file not found" });
+		else
+		{
+			file.removeComment(req.body.commentId, function (err) {
+				if (err)
+					return next(err);
+				res.json({ success: true, message: 'comment successfully removed' });
+			});
+		}
+		// if (err)
+		// 	return next(err);
 	});
 });
 
