@@ -114,6 +114,18 @@ textarea {
 /* } */
 
 
+.tt-dottedbottom {
+	background-image:
+	linear-gradient(to right, #333 10%, rgba(255, 255, 255, 0) 0%);
+	background-position:
+	bottom;
+	background-size:
+	6px 1px;
+	background-repeat:
+	repeat-x;
+	padding: 2px;
+}
+
 .tt-dottedborder {
 	background-image:
 	linear-gradient(to right, #333 10%, rgba(255, 255, 255, 0) 0%),
@@ -136,6 +148,18 @@ textarea {
 	repeat-y,
 	repeat-y;
 	padding: 2px;
+}
+
+.tt-dragndrop {
+	height: 80px;
+	line-height: 80px;
+	vertical-align: middle;
+	text-align: center;
+	font-family: 'MuseoSans-100';
+	font-style: italic;
+}
+
+.tt-dottedplaceholder {
 }
 
 .tt-inputcheck {
@@ -274,7 +298,8 @@ textarea {
 	border-color: #9ba8b1;
 	border-style: solid;
 	border-width: 1px;
-	height: 38px;
+	/* height: 38px; */
+	height: 40px;
 }
 
 .tt-search-input {
@@ -303,6 +328,24 @@ textarea {
 	margin-left: 5px;
 }
 
+/* SELECT */
+
+.tt-select-div {
+	border-radius: 0px;
+	border-color: #9ba8b1;
+	border-style: solid;
+	border-width: 1px;
+	height: 40px;
+}
+
+.tt-select {
+	border: none;
+	background-color: white;
+}
+
+.tt-select:hover, .tt-select:active, .tt-select:focus  {
+	outline:0px !important;
+}
 
 
 /* FILES */
@@ -443,4 +486,121 @@ textarea {
 	display: inline-block;
 	font-size: 12pt;
 	vertical-align: middle;
+}
+
+
+/* TORRENTS */
+
+
+
+.ts-search {
+	margin-top: 15px;
+}
+
+
+.ts-select {
+	margin-top: 10px;
+	/* padding-left: 0px; */
+}
+
+.ts-left-select {
+	margin-left: 5px;
+}
+
+.ts-body {
+	margin-top: 30px;
+}
+
+.ts-torrents {
+}
+
+.ts-nb-select {
+	font-size: 13px;
+	color: #99A8B2;
+	font-family: MuseoSans-500;
+}
+
+.ts-infos {
+	font-size: 13px;
+	color: #99A8B2;
+	font-family: MuseoSans-500;
+}
+
+.ts-checkbox {
+	max-width: 30px;
+	font-size: 16px;
+	margin-left: 8px;
+	/* vertical-align: middle; */
+}
+
+.ts-checkbox-tr {
+	max-width: 30px;
+	/* vertical-align: middle; */
+}
+
+.ts-all-actions {
+	padding-left: 22px;
+}
+
+/* .ts-action.a { */
+/* 	text-decoration: none; */
+/* 	color: #9ba8b1; */
+/* } */
+
+.ts-action {
+	text-decoration: underline;
+	margin-left: 10px;
+	color: #325064;
+}
+
+.ts-torrents-head {
+	border-bottom: solid 1px #325064;
+	padding-bottom: 10px;
+}
+
+.ts-torrents-body {
+	/* border-top: solid 1px #325064; */
+	margin-top: 15px;
+	height: 90%;
+	overflow-y: scroll;
+}
+
+.ts-progress {
+	margin-bottom: 0px;
+	/* color: black; */
+}
+
+.ts-progressbar-active {
+	background-color: #2DFEFE;
+	color: black;
+}
+
+.ts-progressbar-inactive {
+	background-color: #C1FFFF;
+	color: black;
+}
+
+.ts-torrent-row {
+	/* height: 122px; */
+}
+
+.ts-add-torrents {
+	margin-top: -10px;
+}
+
+.ts-add-url {
+}
+
+.ts-addcheck {
+	padding-left: 8px;
+	font-size: 22px;
+	vertical-align: middle;
+}
+
+.ts-add-file {
+	margin-top: 20px;
+}
+
+.ts-title {
+	font-size: 15px;
 }

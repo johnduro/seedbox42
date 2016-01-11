@@ -154,7 +154,14 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 		}else{
 			$scope.filters.status = status;
 		}
-	}
+	};
+
+	$scope.renderProgressBar = function (torrent) {
+		if (torrent.isFinished || torrent.isStalled || torrent.status == 0 || torrent.status == 1 || torrent.status == 3 || torrent.status == 5)
+			return 'ts-progressbar-inactive';
+		else
+			return 'ts-progressbar-active';
+	};
 
 	//------------------------------------------------  CLICK RIGHT -------------------------------------------------------
 	$scope.menuOptions = [

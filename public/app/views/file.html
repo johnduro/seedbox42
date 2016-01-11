@@ -67,13 +67,13 @@
 					</div>
 					<div> Downloaded : {{torrent.downloads}} times</div>
 				</div>
-				<div class="col-md-12 fl-add-file">
+				<div class="col-md-12 fl-add-file" ng-if="treeActual.type == 'folder'">
 					<h4 class="fl-title tt-title">ADD LOCAL FILE:</h4>
                     <form>
-                        <div ngf-drop ngf-select ng-model="files" class="drop-box tt-dottedborder"
+                        <div ngf-drop ngf-select ng-model="files" class="drop-box tt-dottedborder tt-dragndrop"
                             ngf-drag-over-class="dragover" ngf-multiple="true" ngf-allow-dir="true"
                             accept="*"
-                            ngf-pattern="'*'" style="height: 104px;">Drop files here or click to upload</div>
+                            ngf-pattern="'*'">Drop files here or click to upload</div>
                         <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
                     </form>
 				</div>
