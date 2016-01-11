@@ -74,7 +74,7 @@
 				<!-- <hr class="d-hr"/> <\!-- MODIFIER HR GLOBAL ?? -\-> -->
 				<table class="tt-table fl-table-comment tt-text">
 					<tbody>
-                        <tr ng-repeat="comment in torrent.comments" ng-class-odd="'tt-table-odd'" ng-class-even="'tt-table-even'">
+                        <tr ng-repeat="(index, comment) in torrent.comments" ng-class-odd="'tt-table-odd'" ng-class-even="'tt-table-even'">
                             <td class="col-md-1">
                                 <img ng-src="/assets/avatar/{{comment.user.avatar}}" err-SRC="/assets/avatar/default.png" alt="Smiley face" class="message-avatar"><!-- CHANGER LA CLASS -->
                             </td>
@@ -83,6 +83,9 @@
                             </td>
                             <td class="col-md-9">
                                 <span class="fl-comment-name">{{comment.user.login}} -</span> {{comment.text}}
+                            </td>
+							<td class="col-md-2" ng-if="user.role == 0">
+                                <i class="fa fa-times" ng-click="deleteComment(index, comment._id)"></i>
                             </td>
                         </tr>
 					</tbody>

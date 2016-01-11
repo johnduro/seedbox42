@@ -155,6 +155,17 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
 			});
 	};
 
+    $scope.deleteComment = function(index, id){
+        RequestHandler.delete(api + "file/remove-comment/" + $scope.torrent._id, {commentId: id})
+            .then(function(result){
+                if (result.data.success){
+                    $scope.torrent.comments.splice(index, 1);
+                }else{
+                    console.log("Error delete comment...");
+                }
+            });
+    }
+
     $scope.getGradeByUser = function(id){
         var tmp = 0;
         angular.forEach($scope.torrent.grades, function(value, key){
