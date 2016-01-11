@@ -333,7 +333,7 @@ router.get('/download/:id/:path/:name', function (req, res, next) {
 				res.setHeader('Content-type', mimeType);
 				res.setHeader('Content-Length', fileSize);
 				//res.setHeader('Accept-Ranges', "bytes");
-				var fileStream = fs.createReadStream(filePath);
+				var fileStream = fs.createReadStream(filePath, {start: 0, end: fileSize});
 				fileStream.pipe(res);
 			}
 		});
