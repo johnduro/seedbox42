@@ -84,7 +84,7 @@
                             <td class="col-md-9">
                                 <span class="fl-comment-name">{{comment.user.login}} -</span> {{comment.text}}
                             </td>
-							<td class="col-md-2" ng-if="user.role == 0">
+							<td class="col-md-2" ng-if="user.role == 0 || comment.user._id == user._id">
                                 <i class="fa fa-times" ng-click="deleteComment(index, comment._id)"></i>
                             </td>
                         </tr>
