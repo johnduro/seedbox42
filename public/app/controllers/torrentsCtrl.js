@@ -1,5 +1,5 @@
 
-app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout, socket, RequestHandler, Upload, Tools) {
+app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout, socket, RequestHandler, Upload, Tools, $filter) {
 
 	console.log("torrentsCtrl");
 
@@ -133,8 +133,10 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 
 	$scope.selectAll = function(){
 		if ($scope.checkboxAll){
-			Tools.setAllItems($scope.torrents, "checkbox", true);
-			$scope.itemSelected = Tools.getElementForMatchValue($scope.torrents, "id", "checkbox", true);
+			var itemsFilter = $filter('filter')($scope.torrents, $scope.filters);
+			console.log(itemsFilter);
+			Tools.setAllItems(itemsFilter, "checkbox", true);
+			$scope.itemSelected = Tools.getElementForMatchValue(itemsFilter, "id", "checkbox", true);
 		}else{
 			Tools.setAllItems($scope.torrents, "checkbox", false);
 			$scope.itemSelected = [];
