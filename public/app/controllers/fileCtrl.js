@@ -146,6 +146,7 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
 					RequestHandler.get(api + "file/comments/" + $scope.torrent._id, {text: $scope.newComment})
 						.then(function(result){
 							$scope.torrent.comments = result.data.data;
+                            $rootScope.$broadcast('filesLoaded');
 						});
 					$scope.newComment = "";
 				}else{
