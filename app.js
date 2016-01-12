@@ -25,6 +25,7 @@ var auth = require('./middlewares/auth.js');
 // var TransmissionNode = require('./utils/transmissionNode');
 // var configInit = require('./utils/configInit');
 var configInit = require('./config/init');
+var ttCron = require('./utils/cron');
 // ************************************
 
 // ====================================
@@ -45,6 +46,12 @@ app.locals.ttConfigFileName = configInfos.configFileName;
 app.locals.connexionDb = configInfos.connexionDb;
 app.locals.transmission = configInfos.transmission;
 // ************************************
+
+// ====================================
+// CRON
+// ====================================
+ttCron(app.locals.ttConfig, app.locals.transmission);
+
 
 // ====================================
 // ROUTES REQUIRE

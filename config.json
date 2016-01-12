@@ -55,7 +55,7 @@
         "utp-enabled": true
     },
     "torrents": {
-        "add-torrent-enabled": true,
+        "add-torrent-enabled": false,
         "delete-torrent-enabled": false,
         "settings-access-enabled": true
     },
@@ -127,13 +127,13 @@
                 "title": "minichat",
                 "order": 1
             },
-			{
-				"name": "most-downloaded-file",
+            {
+                "name": "most-downloaded-file",
                 "enabled": "all",
                 "template": "dashboard-fileList",
                 "title": "most downloaded file",
                 "order": 8
-			}
+            }
         ],
         "file-number-exhibit": 5,
         "mini-chat-message-limit": 100,

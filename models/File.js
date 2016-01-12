@@ -2,6 +2,7 @@ var fs = require('fs');
 var pathS = require('path');
 var mongoose = require('mongoose');
 var rimraf = require('rimraf');
+var mime = require('mime');
 var User = require('../models/User.js');
 var ft = require('../utils/ft');
 var format = require('../utils/format');
@@ -218,6 +219,49 @@ FileSchema.statics = {
 				cb(err);
 			else
 				cb(null, file);
+		});
+	},
+
+	insertTorrent: function (torrentId, name, transmission, done) {
+		var self = this;
+		transmission.torrentGet(transmission.requestFormat.infosFinished, torrentId, function (err, resp) {
+			console.log("ajout in DB");
+			if (err)
+				done(err);
+				// console.log("add finish torrent error: ", err);
+				// throw err;
+			else
+			{
+				console.log(resp['torrents'].length);
+				if (resp['torrents'].length > 0)
+				{
+					var torrent = resp['torrents'][0];
+					var path = torrent['downloadDir'] + '/' + name;
+					fs.stat(path, function (err, stat) {
+						var fileType = '';
+						if (stat.isDirectory())
+							fileType = 'folder';
+						else
+							fileType = mime.lookup(path);
+						self.findOneAndUpdate(
+							{ hashString: torrent['hashString'], isFinished: false },
+							{ $set: { name: name, path: path, size: torrent['totalSize'], isFinished: true, fileType: fileType, createdAt: Date.now() } },
+							{ new: true },
+							function (err, newFile) {
+								if (err)
+									done(err);
+									// console.log("add finish torrent error: ", err);
+								else
+									done(null, newFile);
+								// {
+								// 	if (newFile != null)
+								// 		io.sockets.emit("newFile", { name: torrent["name"], data: newFile });
+								// }
+							}
+						);
+					});
+				}
+			}
 		});
 	}
 

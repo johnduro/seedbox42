@@ -21,45 +21,50 @@ module.exports = function (socket, io, transmission) {
 	 * Ajout en db le nouveau fichier telecharger et fini
 	 * Envois un event a tout les utilisateurs avec les nouvelles donnees des torrents actifs
 	 */
-	var addFinishedTorrentToDB = function (id, name) {
-		transmission.torrentGet(infosFinished, id, function (err, resp) {
-			console.log("ajout in DB");
-			if (err)
-				console.log("add finish torrent error: ", err);
-				// throw err;
-			else
-			{
-				console.log(resp['torrents'].length);
-				if (resp['torrents'].length > 0)
-				{
-					var torrent = resp['torrents'][0];
-					var path = torrent['downloadDir'] + '/' + name;
-					fs.stat(path, function (err, stat) {
-						var fileType = '';
-						if (stat.isDirectory())
-							fileType = 'folder';
-						else
-							fileType = mime.lookup(path);
-						File.findOneAndUpdate(
-							{ hashString: torrent['hashString'], isFinished: false },
-							{ $set: { name: name, path: path, size: torrent['totalSize'], isFinished: true, fileType: fileType, createdAt: Date.now() } },
-							{ new: true },
-							function (err, newFile) {
-								if (err)
-									console.log("add finish torrent error: ", err);
-								else
-								{
-									if (newFile != null)
-										io.sockets.emit("newFile", { name: torrent["name"], data: newFile });
-								}
-							}
-						);
-					});
-				}
-			}
-		});
-	};
+	// var addFinishedTorrentToDB = function (id, name) {
+	// 	transmission.torrentGet(infosFinished, id, function (err, resp) {
+	// 		console.log("ajout in DB");
+	// 		if (err)
+	// 			console.log("add finish torrent error: ", err);
+	// 			// throw err;
+	// 		else
+	// 		{
+	// 			console.log(resp['torrents'].length);
+	// 			if (resp['torrents'].length > 0)
+	// 			{
+	// 				var torrent = resp['torrents'][0];
+	// 				var path = torrent['downloadDir'] + '/' + name;
+	// 				fs.stat(path, function (err, stat) {
+	// 					var fileType = '';
+	// 					if (stat.isDirectory())
+	// 						fileType = 'folder';
+	// 					else
+	// 						fileType = mime.lookup(path);
+	// 					File.findOneAndUpdate(
+	// 						{ hashString: torrent['hashString'], isFinished: false },
+	// 						{ $set: { name: name, path: path, size: torrent['totalSize'], isFinished: true, fileType: fileType, createdAt: Date.now() } },
+	// 						{ new: true },
+	// 						function (err, newFile) {
+	// 							if (err)
+	// 								console.log("add finish torrent error: ", err);
+	// 							else
+	// 							{
+	// 								if (newFile != null)
+	// 									io.sockets.emit("newFile", { name: torrent["name"], data: newFile });
+	// 							}
+	// 						}
+	// 					);
+	// 				});
+	// 			}
+	// 		}
+	// 	});
+	// };
 
+	/**
+	 * Socket - Emit - torrentRefreshRes
+	 * Ajout en db le nouveau fichier telecharger et fini
+	 * Envois un event a tout les utilisateurs avec les nouvelles donnees des torrents actifs
+	 */
 	/**
 	 * Mets a jour le tableau finishedTorrents si il y a des torrents fini et met a jour la DB
 	 */
@@ -75,11 +80,15 @@ module.exports = function (socket, io, transmission) {
 				res["torrents"].forEach(function (torrent) {
 					if (finishedTorrents.indexOf(torrent['name']) < 0)
 					{
-						if (torrent['leftUntilDone'] === 0 && torrent["percentDone"] === 1.0 && torrent["status"] > 4)
+						if (torrent['leftUntilDone'] === 0 && torrent["percentDone"] === 1.0)// && torrent["status"] > 4)
 						{
 							console.log("Un nouveau fichier est telecharge : ", torrent["name"]);
 							finishedTorrents.push(torrent["name"]);
-							addFinishedTorrentToDB(torrent['id'], torrent['name']);
+							// addFinishedTorrentToDB(torrent['id'], torrent['name']);
+							File.insertTorrent(torrent['id'], torrent['name'], transmission, function (err, newFile) {
+								if (newFile != null)
+									io.sockets.emit("newFile", { name: torrent["name"], data: newFile });
+							});
 						}
 					}
 				});
