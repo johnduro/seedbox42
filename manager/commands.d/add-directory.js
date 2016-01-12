@@ -28,26 +28,42 @@ module.exports = function (configFileName, args, commandLineArg, done) {
 				else
 				{
 					var formated = format.managerAddDirectory(result);
+					var allFilesChoice = ('ALL FILES - ' + chalk.yellow('/!\\ add all files but selected /!\\'));
+					formated.choices.unshift({ name: allFilesChoice });
 					inquirer.prompt([
 						{
 							type: "checkbox",
-							message: "Select files you want to add to your database",
+							message: "Select files you want to add to your database or 'ALL FILES' to add all files but selected",
 							name: "files",
 							choices: formated.choices
 						}
 					], function (answers) {
+						var allFiles = false;
+						var filesToAdd = [];
 						var i = 0;
+						if (answers.files[0] === allFilesChoice)
+						{
+							allFiles = true;
+							filesToAdd = Object.keys(formated.filesObj);
+						}
+						else
+							filesToAdd = answers.files;
 						(function next () {
-							var file = answers.files[i++];
+							var file = filesToAdd[i++];
 							if (!file)
 								return done();
-							File.insertFile(formated.filesObj[file], args.user._id, btoa(formated.filesObj[file].path), function (err, fileAd) {
-								if (err)
-									console.log(chalk.red(util.format('An error occured while adding "%s" to the database', file.name)));
-								else
-									console.log(chalk.green(util.format('File "%s" was successfully added to the database', fileAd.name)));
+							if (allFiles && answers.files.indexOf(file) > -1)
 								next();
-							});
+							else
+							{
+								File.insertFile(formated.filesObj[file], args.user._id, btoa(formated.filesObj[file].path), function (err, fileAd) {
+									if (err)
+										console.log(chalk.red(util.format('An error occured while adding "%s" to the database', file.name)));
+									else
+										console.log(chalk.green(util.format('File "%s" was successfully added to the database', fileAd.name)));
+									next();
+								});
+							}
 						})();
 					});
 				}

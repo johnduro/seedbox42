@@ -1,6 +1,7 @@
 var chalk = require('chalk');
 var util = require('util');
 var File = require('../../models/File');
+var filesInfos = require('../../utils/filesInfos');
 
 module.exports = function (configFileName, args, commandLineArg, done) {
 	args.transmission.torrentGet(['hashString', 'name', 'downloadDir', 'totalSize', "status", "leftUntilDone", "percentDone"], {}, function (err, resp) {
