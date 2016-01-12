@@ -337,16 +337,13 @@ router.get('/download/:id/:path/:name', function (req, res, next) {
 			{
 				var mimeType = mime.lookup(filePath);
 				var range = ft.getRange(fileSize, req.header("range"));
-				//res.setHeader('Content-disposition', 'attachment; filename=' + fileName);
 				res.setHeader('Content-type', mimeType);
 				res.setHeader("Content-Range", "bytes " + range[0].start + "-" + range[0].end + "/" + fileSize);
 				res.setHeader('Accept-Ranges', "bytes");
 				res.setHeader('Content-Length', (range[0].end - range[0].start)+1);
-				//console.log('FS :: ', fileSize);
-				console.log('::::::::', ft.getRange(fileSize, req.header("range")));
-				//console.log('::::::::', ft.getRange(fileSize, "fddthf"));
-				//var range = ft.getRange(fileSize, req.header("range"));
 				var fileStream = fs.createReadStream(filePath, { start: range[0].start, end: range[0].end });
+				res.openedFile = fileStream;
+				res.status(206);
 				fileStream.pipe(res);
 			}
 			else

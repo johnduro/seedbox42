@@ -119,6 +119,15 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
 		window.location.href = path;
 	};
 
+    function generateDownloadDirActual(){
+        var newPath = "";
+        newPath += "/" + generatePath(pathActualArray, "");
+        pathEncode = btoa(newPath);
+		nameEncode = btoa($scope.treeActual.name);
+        var path = api + "file/download/" + $scope.torrent._id + "/" + pathEncode + "/" + nameEncode;
+        return path;
+    };
+
     $scope.downloadDirActual = function (){
         var newPath = "";
         newPath += "/" + generatePath(pathActualArray, "");
@@ -289,9 +298,15 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
                  }
              },
                 controller: function ($scope, $http, $modalInstance, RequestHandler, torrent) {
+                    var path = "";
 
-                    var path = generatePathDownload(id, item.name);
-                    $scope.source = generatePathDownload(id, item.name);
+                    if (torrent.fileType != "folder"){
+                        path = generateDownloadDirActual();
+                        console.log("not folder");
+                    }else{
+                        path = generatePathDownload(id, item.name);
+                    }
+
 
                     console.log(path);
 
