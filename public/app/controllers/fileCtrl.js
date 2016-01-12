@@ -307,8 +307,13 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
                         path = generatePathDownload(id, item.name);
                     }
 
-
-                    console.log(path);
+                    $scope.getClass = function(){
+                        if (item.type == "audio"){
+                            return "videogular-container audio";
+                        }else{
+                            return "videogular-container";
+                        }
+                    };
 
                     $scope.stream = {
                         preload: "none",
