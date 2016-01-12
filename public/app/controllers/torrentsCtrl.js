@@ -54,7 +54,8 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 				for (var key in newTorrent){
 					$scope.torrents[newTorrent.id][key] = newTorrent[key];
 				};
-				$scope.torrents[newTorrent.id].percentDone = $scope.torrents[newTorrent.id].percentDone * 100;
+				$scope.torrents[newTorrent.id].percentDone2 = $scope.torrents[newTorrent.id].percentDone * 100;
+				$scope.torrents[newTorrent.id].time = timeInterval($scope.torrents[newTorrent.id].eta);
 			}
 		});
 	});
@@ -63,7 +64,8 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 		console.log(data.torrents.torrents);
 		for(var key in data.torrents.torrents){
 			$scope.torrents[data.torrents.torrents[key].id] = angular.copy(data.torrents.torrents[key]);
-			$scope.torrents[data.torrents.torrents[key].id].percentDone = $scope.torrents[data.torrents.torrents[key].id].percentDone * 100;
+			$scope.torrents[data.torrents.torrents[key].id].percentDone2 = $scope.torrents[data.torrents.torrents[key].id].percentDone * 100;
+			$scope.torrents[data.torrents.torrents[key].id].time = timeInterval($scope.torrents[data.torrents.torrents[key].id]);
 			$scope.torrents[data.torrents.torrents[key].id].checkbox = false;
 		}
 	});
@@ -237,5 +239,34 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
             }
         }
     };
+
+	function timeInterval(seconds)
+	{
+		var days    = Math.floor (seconds / 86400),
+		    hours   = Math.floor ((seconds % 86400) / 3600),
+		    minutes = Math.floor ((seconds % 3600) / 60),
+		    seconds = Math.floor (seconds % 60),
+		    d = days    + ' ' + (days    > 1 ? 'days'    : 'day'),
+		    h = hours   + ' ' + (hours   > 1 ? 'hours'   : 'hour'),
+		    m = minutes + ' ' + (minutes > 1 ? 'minutes' : 'minute'),
+		    s = seconds + ' ' + (seconds > 1 ? 'seconds' : 'second');
+
+		if (days) {
+			if (days >= 4 || !hours)
+				return d;
+			return d + ', ' + h;
+		}
+		if (hours) {
+			if (hours >= 4 || !minutes)
+				return h;
+			return h + ', ' + m;
+		}
+		if (minutes) {
+			if (minutes >= 4 || !seconds)
+				return m;
+			return m + ', ' + s;
+		}
+		return s;
+	}
 
 });
