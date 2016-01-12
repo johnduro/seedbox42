@@ -267,6 +267,6 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 			return m + ', ' + s;
 		}
 		return s;
-	}
+	}	
 
 });

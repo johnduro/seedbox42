@@ -55,8 +55,8 @@
 									<div class="col-md-12">
 										<span class="ts-infos" ng-if="torrent.isFinished"> Seeding Completed </span>
 										<span class="ts-infos" ng-if="torrent.status == 0 && !torrent.isFinished"> Paused </span>
-										<span class="ts-infos" ng-if="torrent.status == 4"> Downloading to {{torrent.peersSendingToUs}} of {{torrent.peersConnected}} - <i class="fa fa-arrow-down tt-darkblue"></i> {{FileConvertSize(torrent.rateDownload)}}/s <i class="fa fa-arrow-up tt-darkblue"></i> {{FileConvertSize(torrent.rateUpload)}}/s </span>
-										<span class="ts-infos" ng-if="torrent.status == 6"> Seeding to {{torrent.peersSendingToUs}} of {{torrent.peersConnected}} - <i class="fa fa-arrow-up tt-darkblue"></i> {{FileConvertSize(torrent.rateUpload)}}/s </span>
+										<span class="ts-infos" ng-if="torrent.status == 4"> Downloading from {{torrent.peersSendingToUs}} of {{torrent.peersConnected}} - <i class="fa fa-arrow-down tt-darkblue"></i> {{FileConvertSize(torrent.rateDownload)}}/s <i class="fa fa-arrow-up tt-darkblue"></i> {{FileConvertSize(torrent.rateUpload)}}/s </span>
+										<span class="ts-infos" ng-if="torrent.status == 6"> Seeding from {{torrent.peersSendingToUs}} of {{torrent.peersConnected}} - <i class="fa fa-arrow-up tt-darkblue"></i> {{FileConvertSize(torrent.rateUpload)}}/s </span>
 									</div>
         	                        <!-- ************************* PROGRESS BAR *************************  -->
 									<div class="col-md-12">
@@ -71,7 +71,8 @@
 										<span class="ts-infos" ng-if="torrent.status == 0 && torrent.isFinished"> {{FileConvertSize(torrent.totalSize)}}, uploaded {{FileConvertSize(torrent.uploadedEver)}} (Ratio {{torrent.uploadRatio | number:2}})</span>
 										<span class="ts-infos" ng-if="torrent.status == 0 && !torrent.isFinished"> {{FileConvertSize(torrent.totalSize*torrent.percentDone)}} of {{FileConvertSize(torrent.totalSize)}}</span>
 										<span class="ts-infos" ng-if="torrent.status == 4"> {{FileConvertSize(torrent.totalSize*torrent.percentDone)}} of {{FileConvertSize(torrent.totalSize)}} ({{torrent.percentDone2 | number:2}}%) - {{torrent.time}} remaining</span>
-	                                    <!-- <i class="fa fa-arrow-down tt-darkblue"></i> {{FileConvertSize(torrent.rateDownload)}}/s -
+										<span class="ts-infos" ng-if="torrent.status == 6"> {{FileConvertSize(torrent.totalSize)}}, uploaded {{FileConvertSize(torrent.uploadedEver)}} (Ratio {{torrent.uploadRatio | number:2}}) </span>
+										<!-- <i class="fa fa-arrow-down tt-darkblue"></i> {{FileConvertSize(torrent.rateDownload)}}/s -
     	                                <i class="fa fa-arrow-up tt-darkblue"></i> {{FileConvertSize(torrent.rateUpload)}}/s -
         	                            <i class="fa fa-upload tt-darkblue"></i> {{FileConvertSize(torrent.uploadedEver)}} (Ratio {{torrent.uploadRatio | number:2}}) -->
 									</div>

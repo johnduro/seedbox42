@@ -7,6 +7,11 @@ app.service('Tools', function ($rootScope, RequestHandler, $timeout, $modal, $q)
     */
     var phpjs = new PHP_JS;
 
+    Number.prototype.toTruncFixed = function(place) {
+		var ret = Math.floor(this * Math.pow (10, place)) / Math.pow(10, place);
+		return ret.toFixed(place);
+	};
+
     /**
     * Convert string to int in array obecjts
     * @param {array} array - Array with datas.
@@ -204,15 +209,52 @@ app.service('Tools', function ($rootScope, RequestHandler, $timeout, $modal, $q)
         });
     };
 
-    var FileConvertSize = function (aSize){
-        if (aSize < 1)
+    var FileConvertSize = function (bytes){
+        var size_K = 1000;
+		var size_B_str =  'B';
+		var size_K_str = 'kB';
+		var size_M_str = 'MB';
+		var size_G_str = 'GB';
+		var size_T_str = 'TB';
+
+		if (bytes < size_K)
+			return [ bytes, size_B_str ].join(' ');
+
+		var convertedSize;
+		var unit;
+
+		if (bytes < Math.pow(size_K, 2))
+		{
+			convertedSize = bytes / size_K;
+			unit = size_K_str;
+		}
+		else if (bytes < Math.pow(size_K, 3))
+		{
+			convertedSize = bytes / Math.pow(size_K, 2);
+			unit = size_M_str;
+		}
+		else if (bytes < Math.pow(size_K, 4))
+		{
+			convertedSize = bytes / Math.pow(size_K, 3);
+			unit = size_G_str;
+		}
+		else
+		{
+			convertedSize = bytes / Math.pow(size_K, 4);
+			unit = size_T_str;
+		}
+
+		// try to have at least 3 digits and at least 1 decimal
+		return convertedSize <= 9.995 ? [ convertedSize.toTruncFixed(2), unit ].join(' ') : [ convertedSize.toTruncFixed(1), unit ].join(' ');
+
+        /*if (aSize < 1)
             return "0 octets";
 		aSize = Math.abs(parseInt(aSize, 10));
 		var def = [[1, 'octets'], [1024, 'ko'], [1024*1024, 'Mo'], [1024*1024*1024, 'Go'], [1024*1024*1024*1024, 'To']];
 		for(var i=0; i<def.length; i++){
 			if(aSize<def[i][0])
 				return (aSize/def[i-1][0]).toFixed(2)+' '+def[i-1][1];
-		}
+		}*/
 	};
 
     var getConfig = function (){
