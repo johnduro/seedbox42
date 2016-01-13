@@ -1,4 +1,4 @@
-app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http, $location, $timeout, $cookies, RequestHandler, socket) {
+app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http, $location, $timeout, $cookies, RequestHandler, socket, Tools) {
 
 	console.log("seedboxCtrl");
 
@@ -11,12 +11,7 @@ app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http, $loca
 		$cookies.put("token", $rootScope.token);
 		$http.defaults.headers.common['X-Access-Token'] = $rootScope.token;
 		socket.connection();
-		if (!$rootScope.user){
-			RequestHandler.get(api + "users/profile")
-				.then(function(result){
-					$rootScope.user = result.data.data;
-				});
-		}
+		Tools.getUser();
 	}
 
 	RequestHandler.get(api + "admin/settings")

@@ -271,6 +271,20 @@ app.service('Tools', function ($rootScope, RequestHandler, $timeout, $modal, $q)
         return defer.promise;
     };
 
+    var getUser = function (){
+        var defer = $q.defer();
+        if ("user" in $rootScope){
+            defer.resolve($rootScope.user);
+        }else{
+            RequestHandler.get(api + "users/profile")
+                .then(function(result){
+                    $rootScope.user = result.data.data;
+                    defer.resolve($rootScope.user);
+                });
+        }
+        return defer.promise;
+    };
+
     return {
         phpjs: phpjs,
         strToIntInArray: strToIntInArray,
@@ -286,6 +300,7 @@ app.service('Tools', function ($rootScope, RequestHandler, $timeout, $modal, $q)
         FileConvertSize: FileConvertSize,
         getCountValue: getCountValue,
         getElementForMatchValue: getElementForMatchValue,
-        getConfig: getConfig
+        getConfig: getConfig,
+        getUser: getUser
     };
 });
