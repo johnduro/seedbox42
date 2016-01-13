@@ -2,7 +2,7 @@ app.controller("directoryCtrl", function($rootScope, $scope, RequestHandler, Too
 
     console.log("directoryCtrl");
 
-    $scope.sendDir = "/Users/Alexis/Downloads";
+    $scope.sendDir = "";
     $scope.tree = "";
     var indexSelected = [];
 

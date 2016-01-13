@@ -1,3 +1,41 @@
+<div class="row">
+	<div class="col-md-12">
+	    <h3 class="tt-title">ADD DIRECTORY:</h3>
+	</div>
+	<div class="col-md-12">
+		<p class="tt-text">Enter below the full path of your directory <br/><span class="ad-warning"><i class="fa fa-exclamation-triangle"></i>WARNING : this can take a lot of time, don't enter a directory too deep<i class="fa fa-exclamation-triangle"></i></span></p>
+	</div>
+	<div class="col-md-12 tt-text">
+		<form ng-submit="searchDirectory()">
+			<div class="tt-search-div">
+				<input class="tt-search-input" placeholder="Enter directory path" ng-model="sendDir"> <button type="submit" class="tt-search-button">|<i class="fa fa-check au-addcheck"></i></button>
+		    </div>
+		</form>
+	</div>
+	<div class="col-md-12">
+		<table class="table tt-table">
+			<thead>
+				<tr>
+					<th></th>
+					<th>type</th>
+					<th>name</th>
+					<th>size</th>
+					<th>warnings</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="(index, element) in tree" ng-class-odd="'tt-table-odd'" ng-class-even="'tt-table-even'">
+					<td><input type="checkbox" ng-model="model" ng-change="selectItem(index)"></td>
+					<td>{{element.fileType}}</td>
+					<td>{{element.path}}</td>
+					<td>{{element.size}}</td>
+					<td>{{element.rights}}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
 <div class="page-title">
     <h3>Ajouter un dossier</h3>
 </div>
