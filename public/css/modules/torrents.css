@@ -2,3 +2,116 @@
     height: 90%;
     overflow-y: scroll;
 }
+
+
+.ts-search {
+	margin-top: 15px;
+}
+
+
+.ts-select {
+	margin-top: 10px;
+	/* padding-left: 0px; */
+}
+
+.ts-left-select {
+	margin-left: 5px;
+}
+
+.ts-body {
+	margin-top: 30px;
+}
+
+.ts-torrents {
+}
+
+.ts-nb-select {
+	font-size: 13px;
+	color: #99A8B2;
+	font-family: MuseoSans-500;
+}
+
+.ts-infos {
+	font-size: 13px;
+	color: #99A8B2;
+	font-family: MuseoSans-500;
+}
+
+.ts-checkbox {
+	max-width: 30px;
+	font-size: 16px;
+	margin-left: 8px;
+	/* vertical-align: middle; */
+}
+
+.ts-checkbox-tr {
+	max-width: 30px;
+	/* vertical-align: middle; */
+}
+
+.ts-all-actions {
+	padding-left: 22px;
+}
+
+
+
+
+
+
+.ts-action {
+	text-decoration: underline;
+	margin-left: 10px;
+	color: #325064;
+}
+
+.ts-torrents-head {
+	border-bottom: solid 1px #325064;
+	padding-bottom: 10px;
+}
+
+.ts-torrents-body {
+	/* border-top: solid 1px #325064; */
+	margin-top: 15px;
+	height: 90%;
+	overflow-y: scroll;
+}
+
+.ts-progress {
+	margin-bottom: 0px;
+	/* color: black; */
+}
+
+.ts-progressbar-active {
+	background-color: #2DFEFE;
+	color: black;
+}
+
+.ts-progressbar-inactive {
+	background-color: #C1FFFF;
+	color: black;
+}
+
+.ts-torrent-row {
+	/* height: 122px; */
+}
+
+.ts-add-torrents {
+	margin-top: -10px;
+}
+
+.ts-add-url {
+}
+
+.ts-addcheck {
+	padding-left: 8px;
+	font-size: 22px;
+	vertical-align: middle;
+}
+
+.ts-add-file {
+	margin-top: 20px;
+}
+
+.ts-title {
+	font-size: 15px;
+}
