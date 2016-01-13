@@ -29,10 +29,18 @@ app.controller("settingsCtrl", function($rootScope, $scope, RequestHandler){
     };
 
     RequestHandler.get(api + "admin/settings")
-        .then(function(result){
-            if (result.data.success){
-                $scope.settings = result.data.data;
-                sortSettings();
+        .then(function(result1){
+            if (result1.data.success){
+                RequestHandler.get(api + "admin/settings-default")
+                    .then(function(result2){
+                        $scope.settings = result1.data.data;
+                        $scope.settingsDefault = result2.data.data;
+                        console.log("SETTINGS", $scope.settings);
+                        console.log("SETTINGS-DEFAULT", $scope.settingsDefault);
+                        console.log("ROOTSCOPE", $rootScope);
+                        sortSettings();
+                    });
+
             }
         });
 
