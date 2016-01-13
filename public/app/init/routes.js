@@ -57,6 +57,12 @@ app.config(function ($stateProvider, $urlRouterProvider) {
         controller: "settingsCtrl",
         access: ["0"]
     })
+    .state('seedbox.adminManagerFiles', {
+        url: "/admin/managerFiles",
+        templateUrl: "app/views/adminManagerFiles.html",
+        controller: "managerFilesCtrl",
+        access: ["0"]
+    })
     .state('seedbox.adminDirectory', {
         url: "/admin/directory",
         templateUrl: "app/views/adminDirectory.html",

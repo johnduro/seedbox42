@@ -103,6 +103,13 @@
                                     </a>
                                 </li>
 
+                                <li ng-if="user.role == 0" ng-class="{active: isActive('/seedbox/admin/managerFiles')}">
+                                    <a ui-sref="seedbox.adminManagerFiles" class="waves-effect waves-button">
+                                        <span class="menu-icon glyphicon fa fa-wrench"></span>
+                                        Manager files
+                                    </a>
+                                </li>
+
                                 <li ng-if="user.role == 0" ng-class="{active: isActive('/seedbox/admin/settings')}">
                                     <a ui-sref="seedbox.adminSettings" class="waves-effect waves-button">
                                         <span class="menu-icon glyphicon fa fa-wrench"></span>
