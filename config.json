@@ -1,0 +1,149 @@
+{
+    "appPort": 3000,
+    "secret": "ilovesecret",
+    "mongodb": {
+        "address": "localhost",
+        "name": "seedapp"
+    },
+    "transmission": {
+        "address": "localhost",
+        "port": 9091,
+        "url": "/transmission/rpc"
+    },
+    "transmission-settings": {
+        "alt-speed-down": 50,
+        "alt-speed-enabled": true,
+        "alt-speed-time-begin": 540,
+        "alt-speed-time-day": 127,
+        "alt-speed-time-enabled": false,
+        "alt-speed-time-end": 1020,
+        "alt-speed-up": 50,
+        "blocklist-enabled": false,
+        "blocklist-url": "http://www.example.com/blocklist",
+        "cache-size-mb": 4,
+        "dht-enabled": true,
+        "download-dir": "/home/downloader",
+        "download-queue-enabled": true,
+        "download-queue-size": 5,
+        "encryption": "preferred",
+        "idle-seeding-limit": 30,
+        "idle-seeding-limit-enabled": false,
+        "incomplete-dir": "/home/downloader/incomplete",
+        "incomplete-dir-enabled": true,
+        "lpd-enabled": false,
+        "peer-limit-global": 200,
+        "peer-limit-per-torrent": 50,
+        "peer-port": 51413,
+        "peer-port-random-on-start": false,
+        "pex-enabled": true,
+        "port-forwarding-enabled": false,
+        "queue-stalled-enabled": true,
+        "queue-stalled-minutes": 30,
+        "rename-partial-files": true,
+        "script-torrent-done-enabled": false,
+        "script-torrent-done-filename": "",
+        "seed-queue-enabled": false,
+        "seed-queue-size": 10,
+        "seedRatioLimit": 2,
+        "seedRatioLimited": true,
+        "speed-limit-down": 100,
+        "speed-limit-down-enabled": false,
+        "speed-limit-up": 100,
+        "speed-limit-up-enabled": false,
+        "start-added-torrents": true,
+        "trash-original-torrent-files": false,
+        "utp-enabled": true
+    },
+    "torrents": {
+        "add-torrent-enabled": false,
+        "delete-torrent-enabled": false,
+        "settings-access-enabled": true
+    },
+    "files": {
+        "show-creator": "all",
+        "lock-enabled": "all",
+        "comments-enabled": "all",
+        "grades-enabled": "all",
+        "auto-remove-lock-enabled": false,
+        "auto-remove-lock": 300,
+        "auto-delete-enabled": false,
+        "auto-delete": 30
+    },
+    "dashboard": {
+        "panels": [
+            {
+                "name": "recent-file",
+                "enabled": "all",
+                "template": "dashboard-fileList",
+                "title": "latest upload files",
+                "order": 0
+            },
+            {
+                "name": "recent-user-file",
+                "enabled": "all",
+                "template": "dashboard-fileList",
+                "title": "your latest upload files",
+                "order": 2
+            },
+            {
+                "name": "oldest-user-locked-file",
+                "enabled": "all",
+                "template": "dashboard-fileList",
+                "title": "your oldest locked files",
+                "order": 3
+            },
+            {
+                "name": "oldest-locked-file",
+                "enabled": "all",
+                "template": "dashboard-fileList",
+                "title": "oldest locked files",
+                "order": 4
+            },
+            {
+                "name": "best-rated-file",
+                "enabled": "all",
+                "template": "dashboard-fileList",
+                "title": "best rated file",
+                "order": 5
+            },
+            {
+                "name": "most-commented-file",
+                "enabled": "all",
+                "template": "dashboard-fileList",
+                "title": "most commented file",
+                "order": 6
+            },
+            {
+                "name": "disk-space",
+                "enabled": "all",
+                "template": "graph",
+                "title": "disk space",
+                "order": 7
+            },
+            {
+                "name": "minichat",
+                "enabled": "all",
+                "template": "dashboard-chat",
+                "title": "minichat",
+                "order": 1
+            },
+            {
+                "name": "most-downloaded-file",
+                "enabled": "all",
+                "template": "dashboard-fileList",
+                "title": "most downloaded file",
+                "order": 8
+            }
+        ],
+        "file-number-exhibit": 5,
+        "mini-chat-message-limit": 100,
+        "recent-file-enabled": "all",
+        "recent-user-file-enabled": "all",
+        "recent-user-locked-file-enabled": "all",
+        "disk-space-enabled": "all",
+        "mini-chat-enabled": "all"
+    },
+    "users": {
+        "default-avatar": "default.png"
+    }
+}
