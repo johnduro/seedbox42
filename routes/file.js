@@ -100,6 +100,26 @@ router.delete('/remove-lock/:id', function (req, res, next) {
 	});
 });
 
+router.put('/remove-all-lock', function (req, res, next) {
+	File.find({ '_id': { $in: req.body.toUnlock } }, function (err, files) {
+		console.log('ALL LOCKED :: ', files);
+		if (err)
+			res.json({ success: false, message: err });
+		var i = 0;
+		var unlocked = [];
+		(function next () {
+			var file = files[i++];
+			if (!file)
+				return res.json({ success: true, message: 'files successfully unlocked', data: unlocked });
+			file.removeLock(req.user, function (err) {
+				if (!err)
+					unlocked.push(file._id);
+				next();
+			});
+		})();
+	});
+});
+
 router.get("/comments/:id", function (req, res, next) {
 	File.getCommentsById(req.params.id, function (err, comments) {
 		if (err)
@@ -165,28 +185,47 @@ router.get('/user-comment/:id', function (req, res, next) {
 				console.log("EROR ",err);
 				next(err);
 			}
-			res.json({ success: true, data: resp});
+			res.json({ success: true, data: resp });
 	});
 });
 
-router.get('/user-locked/:id' ,function (req, res, next) {
+router.get('/user-locked/:id', function (req, res, next) {
 	var id = mongoose.mongo.ObjectID(req.params.id);
-	File.aggregate(
-		[
-			{ "$match": { "locked.user": id } },
-		 	{ "$unwind": "$locked" },
-			{ "$match": { "locked.user": id } },
-			{ "$group": { "_id": "$_id" } }
-		],
-		function (err, resp) {
-			if (err)
-			{
-				console.log("EROR ",err);
-				next(err);
-			}
-			res.json({ success: true, data: resp});
+	User.findById(id, { password: 0 }, function (err, user) {
+		if (err)
+			res.json({ success: false, message: err });
+		if (user == null)
+			res.json({ success: false, message: 'Could not find user' });
+		else
+		{
+			File.getFileList({ "locked.user": id }, { "createdAt": -1 }, 0, user, function (err, files) {
+				if (err)
+					res.json({ success: false, message: err });
+				else
+					res.json({ success: true, data: files });
+			});
+		}
 	});
 });
+
+// router.get('/user-locked/:id' ,function (req, res, next) {
+// 	var id = mongoose.mongo.ObjectID(req.params.id);
+// 	File.aggregate(
+// 		[
+// 			{ "$match": { "locked.user": id } },
+// 		 	{ "$unwind": "$locked" },
+// 			{ "$match": { "locked.user": id } },
+// 			{ "$group": { "_id": "$_id" } }
+// 		],
+// 		function (err, resp) {
+// 			if (err)
+// 			{
+// 				console.log("EROR ",err);
+// 				next(err);
+// 			}
+// 			res.json({ success: true, data: resp});
+// 	});
+// });
 
 // method put , attention au path !
 router.put('/:id', function (req, res, next) {

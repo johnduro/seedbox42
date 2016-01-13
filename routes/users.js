@@ -46,7 +46,7 @@ router.get('/profile', function (req, res, next) {
 });
 
 router.get('/:id', function (req, res, next) {
-	User.findById(req.params.id, { password: 0 },function (err, post) {
+	User.findById(req.params.id, { password: 0 }, function (err, post) {
 		if (err)
 			return next(err);
 		res.json(post);

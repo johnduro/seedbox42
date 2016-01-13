@@ -1,4 +1,4 @@
-app.controller('usersCtrl', function ($scope, $rootScope, RequestHandler, Upload, Tools) {
+app.controller('usersCtrl', function ($scope, $rootScope, RequestHandler, Upload, Tools, clipboard) {
 
 	console.log("usersCtrl");
 
@@ -21,7 +21,7 @@ app.controller('usersCtrl', function ($scope, $rootScope, RequestHandler, Upload
 			.then(function(result){
 				for (var key in result.data){
 					if (!("avatar" in result.data[key])){
-						result.data[key].avatar = "undefined";
+						result.data[key].avatar = "default.png";
 					}
 				}
 				$scope.users = result.data;
@@ -29,6 +29,14 @@ app.controller('usersCtrl', function ($scope, $rootScope, RequestHandler, Upload
 	}
 	getUsers();
 
+	$scope.getMails = function () {
+		var mails = "";
+		$scope.users.forEach(function (user) {
+			if ($rootScope.user.mail != user.mail)
+				mails += (user.mail + ';');
+		});
+		clipboard.copyText(mails);
+	};
 
 	$scope.changeView = function(view){
 		$scope.view = view;
@@ -80,6 +88,7 @@ app.controller('usersCtrl', function ($scope, $rootScope, RequestHandler, Upload
 		$scope.selectUser.password = user.password;
 		$scope.selectUser.mail = user.mail;
 		$scope.selectUser.role = user.role;
+		$scope.selectUser.oldvatar = user.avatar;
 	};
 
 	$scope.updateUser = function(){

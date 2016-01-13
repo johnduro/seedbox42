@@ -11,7 +11,8 @@ var app = angular.module('seedApp', [
     'chart.js',
     'com.2fdevs.videogular',
     'xeditable',
-    'ui.bootstrap.contextMenu'
+    'ui.bootstrap.contextMenu',
+	'angular-clipboard'
 ]);
 
 // ---------------------- variable global -------------------------------
