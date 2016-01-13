@@ -1,0 +1,27 @@
+.ad-warning {
+	color: red;
+}
+
+.ad-button { /* doublon */
+	color: #fff;
+	font-family: 'MuseoSans-300';
+	background-color: #325064;
+	margin-top: 4px;
+	float: left;
+}
+
+.ad-button:hover { /* doublon */
+	color: #fff;
+	background-color: #99A8B2
+}
+
+.ad-submitcheck { /* doublon */
+	padding-left: 8px;
+}
+
+
+.au-addcheck { /* doublon */
+	padding-left: 8px;
+	font-size: 22px;
+	vertical-align: middle;
+}
