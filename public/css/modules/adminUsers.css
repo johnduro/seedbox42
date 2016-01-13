@@ -1,0 +1,32 @@
+.au-button { /* doublon */
+	color: #fff;
+	font-family: 'MuseoSans-300';
+	background-color: #325064;
+	margin-top: 4px;
+	float: left;
+}
+
+.au-button:hover { /* doublon */
+	color: #fff;
+	background-color: #99A8B2
+}
+
+.au-submitcheck { /* doublon */
+	padding-left: 8px;
+}
+
+.au-avatar {
+	height: 42;
+	width: 42;
+	border-radius: 21px;
+	-webkit-border-radius: 21px;
+	-moz-border-radius: 21px;
+}
+
+.au-edit {
+	margin-top: 20px;
+}
+
+.au-edit-form {
+	margin-top: 16px;
+}
