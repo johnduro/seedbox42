@@ -40,8 +40,8 @@ app.controller("settingsCtrl", function($rootScope, $scope, RequestHandler){
         console.log($scope.settings[part]);
         RequestHandler.put(api + "admin/settings/" + part, $scope.settings[part])
             .then(function(result){
-                if (result.data.success)
-                    $scope.settings[part] = result.data.data;
+                /*if (result.data.success)
+                    $scope.settings[part] = result.data.data;*/
                 console.log(result);
             });
     };
