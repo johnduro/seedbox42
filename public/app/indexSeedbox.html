@@ -29,6 +29,7 @@
         <link rel='stylesheet' href='css/modules/adminDirectory.css'/>
         <link rel='stylesheet' href='css/modules/dashboard.css'/>
         <link rel='stylesheet' href='css/tools/starRating.css'/>
+        <link rel='stylesheet' href='css/tools/toaster.css'/>
 
 
     </head>
@@ -141,6 +142,8 @@
                 </div>
             </div>
         </nav>
+
+        <toaster-container toaster-options="{'close-button': true, 'position-class': 'toast-bottom-right'}"></toaster-container>
 
             <div class="container-fluid col-md-10 col-centered">
                 <div class="row" ui-view></div>

@@ -4,10 +4,20 @@ app.controller('dashboardCtrl', function ($scope, $rootScope, $timeout, $locatio
 	console.log("dashboardCtrl");
 
 	$scope.newMessage = "";
+	$scope.content = {};
+	var roles = {
+		"user" : 1,
+		"admin": 0,
+	};
 
 	Tools.getConfig().then(function(result){
-		$scope.content = result.dashboard.panels;
-		console.log($scope.content);
+		Tools.getUser().then(function(user){
+			for (var key in result.dashboard.panels){
+				if (result.dashboard.panels[key].enabled != roles[user.role] && result.dashboard.panels[key].enabled != "all")
+					result.dashboard.panels.splice(key, 1);
+			}
+			$scope.content = result.dashboard.panels;
+		});
 	});
 
 	RequestHandler.get(api + "dashboard/disk-space")

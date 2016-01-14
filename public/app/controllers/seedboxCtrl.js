@@ -1,4 +1,4 @@
-app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http, $location, $timeout, $cookies, RequestHandler, socket, Tools) {
+app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http, $location, $timeout, $cookies, RequestHandler, socket, Tools, toaster) {
 
 	console.log("seedboxCtrl");
 
@@ -54,8 +54,7 @@ app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http, $loca
 
 	//Evenement quand un torrent est fini
 	socket.on("newFile", function(data){
-		$rootScope.msgInfo("Fin de telechargement", data.data.name);
-		console.log(data);
+		toaster.pop('success', "Fin de telechargement", data.data.name, 5000);
 	});
 
 });

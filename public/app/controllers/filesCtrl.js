@@ -1,32 +1,30 @@
-app.controller('filesCtrl', function ($scope, $rootScope, $state, $location, $stateParams, RequestHandler, socket, $timeout, $http, $cookies, Lightbox, Tools) {
+app.controller('filesCtrl', function ($scope, $rootScope, $state, $location, $stateParams, RequestHandler, socket, $timeout, $http, $cookies, Lightbox, Tools, toaster) {
 
 	console.log("filesCtrl");
 
-	$scope.treeBase = '';
 	$scope.treeSelected = '';
 	$scope.elementsActual = '';
 	var pathActualArray = [];
 	$scope.pathActual = " / ";
 	$scope.itemSelected = false;
-	$scope.newComment = "";
+	var requestApi = "file";
 	console.log($stateParams);
 
 	socket.on("newFile", function(data){
 		RequestHandler.get(api + "file/all")
 			.then(function(result){
-				$scope.treeBase = $scope.elementsActual = result.data.data;
+				//toaster.pop('success', "Nouveau fichier !", "Le nouveau fichier a ete ajoute a la liste.", 5000);
+				$scope.elementsActual = result.data.data;
 				addType($scope.elementsActual);
 		});
 	});
 
-	RequestHandler.get(api + "file/all")
+	RequestHandler.get(api + (!$stateParams.sort ? $stateParams.sort = "file" : $stateParams.sort) + "/all")
 		.then(function(result){
-			$scope.treeBase = $scope.elementsActual = result.data.data;
-			console.log($scope.treeBase);
+			$scope.elementsActual = result.data.data;
 			addType($scope.elementsActual);
 			$rootScope.$broadcast('filesLoaded');
 		});
-
 
 	function addType(list){
 		angular.forEach(list, function(value, key){
@@ -42,36 +40,12 @@ app.controller('filesCtrl', function ($scope, $rootScope, $state, $location, $st
 		for(var key in pathActualArray){
 			$scope.pathActual = $scope.pathActual + "/ " + pathActualArray[key] + " ";
 		}
-	}
-
-	function generatePathDownload(id, name){
-		var save = false;
-		var newPath = "";
-		for(var key in pathActualArray){
-			if (save){
-				newPath = newPath + "/" + pathActualArray[key]
-				break;
-			}
-			if (pathActualArray[key] == $scope.treeSelected.name)
-				save = true;
-		}
-		if (save){
-			newPath += "/" + name;
-		}else{
-			newPath = "/";
-		}
-
-		pathEncode = btoa(newPath);
-		nameEncode = btoa(name);
-		return(api + "file/download/" + id + "/" + pathEncode + "/" + nameEncode);
 	};
 
-	$scope.backPathActual = function(){
-		res = $scope.pathActual.trim().split(" / ");
-		res.splice(res.length - 1, 1);
-		for (var key in res){
-			$scope.pathActual = $scope.pathActual + res[key];
-		}
+	function generatePathDownload(id, name){
+		pathEncode = btoa("/");
+		nameEncode = btoa(name);
+		return(api + "file/download/" + id + "/" + pathEncode + "/" + nameEncode);
 	};
 
 	$scope.openFile = function(file){
@@ -85,12 +59,7 @@ app.controller('filesCtrl', function ($scope, $rootScope, $state, $location, $st
 	};
 
 // --------------------------------------------- FUNCTION SORT --------------------------------------------
-	if ($rootScope.paramSort){
-		$scope.sortColumn = $rootScope.paramSort.sortColumn;
-		$scope.reverse = $rootScope.paramSort.reverse;
-		setClassSort();
-		delete $rootScope.paramSort;
-	}else{
+	if ($stateParams.sort == 'file'){
 		$scope.sortColumn = 'createdAt';
 		$scope.reverse = true;
 		setClassSort();

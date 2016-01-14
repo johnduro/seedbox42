@@ -1,5 +1,5 @@
 
-app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout, socket, RequestHandler, Upload, Tools, $filter) {
+app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout, socket, RequestHandler, Upload, Tools, $filter, toaster) {
 
 	console.log("torrentsCtrl");
 
@@ -43,7 +43,7 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 			RequestHandler.get(api + "torrent/refresh/" + data.id)
 				.then(function(resultRefresh){
 					$scope.torrents[data.id] = resultRefresh.data.data.torrents[0];
-					$rootScope.msgInfo("Un nouveau torrent a ete ajoute", data.name);
+					toaster.pop('success', "Un nouveau torrent a ete ajoute", data.name, 10000);
 			});
 		}
 	});
@@ -61,7 +61,6 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 	});
 
 	socket.on("torrentFirstRefresh", function(data){
-		console.log(data.torrents.torrents);
 		for(var key in data.torrents.torrents){
 			$scope.torrents[data.torrents.torrents[key].id] = angular.copy(data.torrents.torrents[key]);
 			$scope.torrents[data.torrents.torrents[key].id].percentDone2 = $scope.torrents[data.torrents.torrents[key].id].percentDone * 100;
@@ -267,6 +266,6 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 			return m + ', ' + s;
 		}
 		return s;
-	}	
+	}
 
 });

@@ -16,7 +16,6 @@ app.directive('contentItem', function ($compile, RequestHandler, $rootScope, $lo
                     RequestHandler.get(api + "dashboard/" + scope.content.name)
                 		.then(function(result){
                             if (result.status == 200 && resultTemplate.status == 200){
-                                console.log(scope.content);
                                 scope.files = result.data.data;
                     			$rootScope.tools.convertFields(scope.files);
                                 element.html(resultTemplate.data).show();
@@ -37,10 +36,8 @@ app.directive('contentItem', function ($compile, RequestHandler, $rootScope, $lo
         socket.on("chat:post:message", function(data){
     		scope.messages.push(data.newmessage);
     	});
-        scope.viewAll = function(column, reverse){
-            $rootScope.sortColumn = column;
-    		$rootScope.reverse = reverse;
-    		$state.go("seedbox.files");
+        scope.viewAll = function(nameSort){
+    		$state.go("seedbox.files", {sort: nameSort});
     	};
     };
 

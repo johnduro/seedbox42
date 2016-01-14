@@ -12,7 +12,9 @@ var app = angular.module('seedApp', [
     'com.2fdevs.videogular',
     'xeditable',
     'ui.bootstrap.contextMenu',
-	'angular-clipboard'
+	'angular-clipboard',
+    'toaster',
+    'ngAnimate'
 ]);
 
 // ---------------------- variable global -------------------------------
