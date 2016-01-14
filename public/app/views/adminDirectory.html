@@ -2,78 +2,53 @@
 	<div class="col-md-12">
 	    <h3 class="tt-title">ADD DIRECTORY:</h3>
 	</div>
-	<div class="col-md-12">
-		<p class="tt-text">Enter below the full path of your directory <br/><span class="ad-warning"><i class="fa fa-exclamation-triangle"></i>WARNING : this can take a lot of time, don't enter a directory too deep<i class="fa fa-exclamation-triangle"></i></span></p>
+	<div class="col-md-12 ad-disclaimer">
+		<p class="tt-text">Enter below the full path of your directory <br/><span class="ad-warning"><i class="fa fa-exclamation-triangle"></i> WARNING : this can take a lot of time, don't enter a directory too deep <i class="fa fa-exclamation-triangle"></i></span></p>
 	</div>
-	<div class="col-md-12 tt-text">
+	<div class="col-md-4 tt-text ad-search">
 		<form ng-submit="searchDirectory()">
 			<div class="tt-search-div">
 				<input class="tt-search-input" placeholder="Enter directory path" ng-model="sendDir"> <button type="submit" class="tt-search-button">|<i class="fa fa-check au-addcheck"></i></button>
 		    </div>
 		</form>
 	</div>
-	<div class="col-md-12">
-		<table class="table tt-table">
-			<thead>
+	<div ng-if="tree.length > 0" class="col-md-12">
+		<div class="ad-add-files">
+			<button class="btn btn-default ad-button" ng-click="addDirectory()">Add selected files <i class="fa fa-check pr-submitcheck"></i></button>
+		</div>
+		<table class="table tt-table ad-table">
+			<thead class="tt-title">
 				<tr>
-					<th></th>
-					<th>type</th>
-					<th>name</th>
-					<th>size</th>
-					<th>warnings</th>
+					<th>
+						<input type="checkbox" ng-model="checkbox.all" ng-change="selectAll()">
+					</th>
+					<th>TYPE</th>
+					<th>NAME</th>
+					<th>SIZE</th>
+					<th>WARNINGS</th>
 				</tr>
 			</thead>
-			<tbody>
+			<tbody class="tt-text">
 				<tr ng-repeat="(index, element) in tree" ng-class-odd="'tt-table-odd'" ng-class-even="'tt-table-even'">
-					<td><input type="checkbox" ng-model="model" ng-change="selectItem(index)"></td>
-					<td>{{element.fileType}}</td>
+					<td><input type="checkbox" ng-model="element.checkbox" ng-change="selectItem(index)"></td>
+                    <td class="tt-darkblue">
+                        <div ng-switch="element.type">
+                            <div ng-switch-when="folder" ><i class="icon-folder fls-icon"></i></div>
+                            <div ng-switch-when="audio" ><i class="tt-icon-music fls-tt-icon"></i></div>
+                            <div ng-switch-when="video" ><i class="tt-icon-film fls-tt-icon"></i></div>
+                            <div ng-switch-when="image" ><i class="icon-picture fls-icon"></i></div>
+                            <div ng-switch-when="text" ><i class="tt-icon-file-text2 fls-tt-icon"></i></div>
+                            <div ng-switch-default ><i class="tt-icon-file-empty fls-tt-icon"></i></div>
+                        </div>
+                    </td>
 					<td>{{element.path}}</td>
-					<td>{{element.size}}</td>
-					<td>{{element.rights}}</td>
+					<td>{{element.sizeConvert}}</td>
+					<td>
+						<span ng-if="element.rights.read == false" class="ad-popover-read" data-content="You may not be able to read this file" data-trigger="hover" data-placement="top" mypopover><i class="fa fa-exclamation-triangle"></i></span>
+						<span ng-if="element.rights.write == false" class="ad-popover-write" data-content="You may not be able to write/delete this file" data-trigger="hover" data-placement="bottom" mypopover><i class="fa fa-pencil"></i></span>
+					</td>
 				</tr>
 			</tbody>
 		</table>
 	</div>
-</div>
-
-<div class="page-title">
-    <h3>Ajouter un dossier</h3>
-</div>
-
-<div id="main-wrapper">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-white">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Verifier path</h3>
-                </div>
-
-                <div class="panel-body">
-                    <form ng-submit="searchDirectory()">
-                        <div class="form-group">
-                            <label for="exampleInputEmail1">Path</label>
-                            <input type="text" class="form-control" ng-model="sendDir" placeholder="Your path">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-12">
-            <div class="panel panel-white">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Votre dossier contient</h3>
-                </div>
-
-                <div class="panel-body">
-                    <div ng-repeat="(index, element) in tree">
-                        <input type="checkbox" ng-model="model" ng-change="selectItem(index)">{{index}} {{element.path}} {{element.rights}} {{element.size}} {{element.fileType}}
-                    </div>
-
-                    <button class="btn btn-primary" ng-click="addDirectory()">Ajouter les elements selectionnés</button>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
