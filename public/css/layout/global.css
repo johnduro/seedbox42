@@ -234,3 +234,36 @@ textarea {
 .tt-select:hover, .tt-select:active, .tt-select:focus  {
 	outline:0px !important;
 }
+
+.tt-locked-user {
+	color: #FA000A;
+}
+
+.tt-locked-other {
+	color: #253E51;
+}
+
+.tt-locked-no {
+	color: #B4BEC6;
+}
+
+.tt-list-avatar {
+	height:32;
+	width:32;
+    border-radius: 16px;
+	-webkit-border-radius: 16px;
+	-moz-border-radius: 16px;
+}
+
+.tt-button {
+	color: #fff;
+	font-family: 'MuseoSans-300';
+	background-color: #325064;
+	margin-top: 4px;
+	/* float: left; */
+}
+
+.tt-button:hover {
+	color: #fff;
+	background-color: #99A8B2
+}

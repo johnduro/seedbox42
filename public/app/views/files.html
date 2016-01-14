@@ -63,13 +63,13 @@
                         <td>{{item.sizeConvert}}</td>
                         <td class="tt-darkblue"> <i ng-click="download(item._id, item.name)" class="icon-down-circled fls-download"></i> </td>
                         <td>
-                            <i ng-if="item.isLockedByUser == 1" class="fa fa-heart fls-locked-user" ng-click="unlockFile(item)"></i>
-                            <i ng-if="(item.isLocked == 1 && item.isLockedByUser == 0)" class="fa fa-heart fls-locked-other" ng-click="lockFile(item)"></i>
-                            <i ng-if="(item.isLocked == 0 && item.isLockedByUser == 0)" class="fa fa-heart fls-locked-no" ng-click="lockFile(item)"></i>
+                            <i ng-if="item.isLockedByUser == 1" class="fa fa-heart tt-locked-user" ng-click="unlockFile(item)"></i>
+                            <i ng-if="(item.isLocked == 1 && item.isLockedByUser == 0)" class="fa fa-heart tt-locked-other" ng-click="lockFile(item)"></i>
+                            <i ng-if="(item.isLocked == 0 && item.isLockedByUser == 0)" class="fa fa-heart tt-locked-no" ng-click="lockFile(item)"></i>
                         </td>
 						<td>{{item.createdAt | date:'MM/dd/yy'}}</td>
                         <td>{{item.downloads}}</td>
-						<td><img ng-src="/assets/avatar/{{item.creator.avatar}}" err-SRC="/assets/avatar/default.png" title="{{item.creator.login}}" alt="{{item.creator.login}}" class="fls-avatar"></img></td>
+						<td><img ng-src="/assets/avatar/{{item.creator.avatar}}" err-SRC="/assets/avatar/default.png" title="{{item.creator.login}}" alt="{{item.creator.login}}" class="tt-list-avatar"></img></td>
 						<td><div class="stars">{{item.averageGrade}}</div></td>
                         <td>{{item.commentsNbr}}</td>
                     </tr>
@@ -78,5 +78,3 @@
         </div>
     </div>
 </div>
-<!-- <script src="js/stars-rating.js"></script> -->
-<!-- <video controls src="{{pathStreaming}}" type="video/avi">Ici la description alternative</video> -->

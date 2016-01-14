@@ -25,6 +25,7 @@
         <link rel='stylesheet' href='css/modules/file.css'/>
         <link rel='stylesheet' href='css/modules/profile.css'/>
         <link rel='stylesheet' href='css/modules/adminUsers.css'/>
+        <link rel='stylesheet' href='css/modules/adminFilesManager.css'/>
         <link rel='stylesheet' href='css/modules/adminDirectory.css'/>
         <link rel='stylesheet' href='css/modules/dashboard.css'/>
         <link rel='stylesheet' href='css/tools/starRating.css'/>
@@ -100,14 +101,14 @@
                                 <li ng-if="user.role == 0" ng-class="{active: isActive('/seedbox/admin/users')}">
                                     <a ui-sref="seedbox.adminUsers" class="waves-effect waves-button">
                                         <span class="menu-icon glyphicon fa fa-users"></span>
-                                        Les comptes
+                                        Users accounts
                                     </a>
                                 </li>
 
                                 <li ng-if="user.role == 0" ng-class="{active: isActive('/seedbox/admin/managerFiles')}">
                                     <a ui-sref="seedbox.adminManagerFiles" class="waves-effect waves-button">
                                         <span class="menu-icon glyphicon fa fa-wrench"></span>
-                                        Manager files
+                                        Files manager
                                     </a>
                                 </li>
 
@@ -121,7 +122,7 @@
                                 <li ng-if="user.role == 0" ng-class="{active: isActive('/seedbox/admin/directory')}">
                                     <a ui-sref="seedbox.adminDirectory" class="waves-effect waves-button">
                                         <span class="menu-icon glyphicon fa fa-sitemap"></span>
-                                        Ajout de dossier
+                                        Add directory
                                     </a>
                                 </li>
 
