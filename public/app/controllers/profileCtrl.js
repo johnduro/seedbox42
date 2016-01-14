@@ -61,7 +61,7 @@ app.controller("profileCtrl", function($scope, $rootScope, $filter, Tools, Uploa
 	$scope.unlockSelected = function () {
 		if ($scope.itemSelected.length > 0)
 		{
-			RequestHandler.put(api + "file/remove-all-lock/", { toUnlock: $scope.itemSelected })
+			RequestHandler.put(api + "file/remove-all-user-lock/", { toUnlock: $scope.itemSelected })
 				.then(function (result) {
 					if (result.data.success)
 					{

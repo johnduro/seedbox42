@@ -9,6 +9,7 @@ var mongoose = require('mongoose');
 var fileInfos = require('../utils/filesInfos');
 var zipstream = require('../utils/zipstream/zipstream');
 var upload = require("../middlewares/upload");
+var rights = require('../middlewares/rights');
 var ft = require('../utils/ft');
 
 /**
@@ -16,7 +17,7 @@ var ft = require('../utils/ft');
  */
 
 router.get('/all', function (req, res, next) {
-	File.getFileList({}, {}, 0, req.user, function (err, files) {
+	File.getFileList({}, { createdAt: -1 }, 0, req.user, function (err, files) {
 		if (err)
 			res.json({ success: false, message: err });
 		else
@@ -100,7 +101,7 @@ router.delete('/remove-lock/:id', function (req, res, next) {
 	});
 });
 
-router.put('/remove-all-lock', function (req, res, next) {
+router.put('/remove-all-user-lock', function (req, res, next) {
 	File.find({ '_id': { $in: req.body.toUnlock } }, function (err, files) {
 		console.log('ALL LOCKED :: ', files);
 		if (err)
@@ -112,6 +113,34 @@ router.put('/remove-all-lock', function (req, res, next) {
 			if (!file)
 				return res.json({ success: true, message: 'files successfully unlocked', data: unlocked });
 			file.removeLock(req.user, function (err) {
+				if (!err)
+					unlocked.push(file._id);
+				next();
+			});
+		})();
+	});
+});
+
+
+router.put('/hard-remove-all-lock', function (req, res, next) {
+	File.find({ '_id': { $in: req.body.toUnlock } }, function (err, files) {
+		console.log('ALL HARD LOCKED :: ', files);
+		console.log('ERR :: ', err);
+		console.log('there1');
+		if (err)
+			res.json({ success: false, message: err });
+		console.log('there2');
+		var i = 0;
+		var unlocked = [];
+		(function next () {
+			var file = files[i++];
+			console.log('there3 :: ', file);
+			if (!file)
+				return res.json({ success: true, message: 'files successfully unlocked', data: unlocked });
+			console.log('there4 :: ');
+			file.removeAllLock(function (err) {
+				console.log('FILE :: ', file.name);
+				console.log('UNLOCK WERR : ', err);
 				if (!err)
 					unlocked.push(file._id);
 				next();
@@ -227,6 +256,27 @@ router.get('/user-locked/:id', function (req, res, next) {
 // 	});
 // });
 
+router.put('/delete-all', rights.admin, function (req, res, next) {
+	console.log('TOO DELETE :: ', req.body.toDelete);
+	File.find({ '_id': { $in: req.body.toDelete } }, function (err, files) {
+		console.log('ALL DELETE :: ', files);
+		if (err)
+			res.json({ success: false, message: err });
+		var i = 0;
+		var deleted = [];
+		(function next () {
+			var file = files[i++];
+			if (!file)
+				return res.json({ success: true, message: 'files successfully unlocked', data: deleted });
+			file.deleteFile(req.app.locals.transmission, function (err, msg) {
+				if (!err)
+					deleted.push(file._id);
+				next();
+			});
+		})();
+	});
+});
+
 // method put , attention au path !
 router.put('/:id', function (req, res, next) {
 	console.log(req.body);
@@ -259,26 +309,22 @@ router.put('/:id', function (req, res, next) {
 });
 
 
-router.delete('/:id', function (req, res, next) {
+
+router.delete('/:id', rights.admin, function (req, res, next) {
 	//rajouter un check de config pour voir si tout le monde peut delete ???
 	File.findById(req.params.id, function (err, file) {
 		if (err)
 			return next(err);
-		if (req.user.role === 0 || (file.privacy === 0 && req.user._id === file.creator))
-		{
-			File.findById(file._id, function (err, file) {
+		File.findById(file._id, function (err, file) {
+			if (err)
+				return next(err);
+			file.deleteFile(req.app.locals.transmission, function (err, message) {
 				if (err)
-					return next(err);
-				file.deleteFile(req.app.locals.transmission, function (err, message) {
-					if (err)
-						res.json({ success: false, err: err, message: message });
-					else
-						res.json({ success: true, message: message });
-				});
+					res.json({ success: false, err: err, message: message });
+				else
+					res.json({ success: true, message: message });
 			});
-		}
-		else
-			res.json({ success: false, message: "You don't have enought rights for this action" });
+		});
 	});
 });
 
