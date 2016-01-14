@@ -1,56 +1,58 @@
-<div class="page-title">
-    <h3>Configuration</h3>
-</div>
+<div class="row">
+	<div class="col-md-12 as-title">
+	    <h4 class="tt-title">CONFIGURATION:</h4>
+	</div>
+	<div class="col-md-12 as-config">
+		<div class="col-md-12 as-tabs tt-title">
+			<ul class="nav nav-tabs" role="tablist">
+				<li ng-repeat="(settingKey, setting) in settings" ng-class="$first ? 'active' : ''">
+					<a data-target="#conf-{{settingKey}}" role="tab" data-toggle="tab">{{settingKey | uppercase}}</a>
+				</li>
+			</ul>
+		</div>
+		<div class="col-md-12 as-content tab-content tt-text">
+			<div ng-repeat="(settingKey, setting) in settings" class="tab-pane fade as-tabpane" id="conf-{{settingKey}}" ng-class="$first ? 'active in' : ''">
+				<form ng-submit="updatePart(settingKey)">
+					<div ng-repeat="(elementKey, element) in setting">
+						<div ng-class="(elementKey == 'panels') ? 'col-md-12 tt-title as-element-panel' : 'col-md-3'">{{elementKey}}:</div>
+						<!-- GENERIC SHOW -->
+						<div ng-if="elementKey != 'panels'" class="as-element col-md-9">
+							<div ng-if="settingsDefault[settingKey][elementKey].switch">
+								<select ng-options="value for value in settingsDefault[settingKey][elementKey].values" ng-model="settings[settingKey][elementKey]"></select>
+							</div>
+							<div ng-if="!settingsDefault[settingKey][elementKey].switch && settingsDefault[settingKey][elementKey].type == 'string' ">
+								<input type="text" ng-model="settings[settingKey][elementKey]">
+							</div>
+							<div ng-if="!settingsDefault[settingKey][elementKey].switch && settingsDefault[settingKey][elementKey].type == 'number' ">
+								<input type="number" ng-model="settings[settingKey][elementKey]">
+							</div>
+							<div ng-if="settingsDefault[settingKey][elementKey].type == 'boolean'">
+								<input type="checkbox" ng-model="settings[settingKey][elementKey]">
+							</div>
+						</div>
 
-<div id="main-wrapper">
-
-        <div ng-repeat="(settingKey, setting) in settings">
-            <div class="col-md-6">
-                <div class="panel panel-white">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">{{settingKey}}</h3>
-                    </div>
-                    <div class="panel-body">
-                        <form ng-submit="updatePart(settingKey)">
-                            <div ng-repeat="(elementKey, element) in setting">
-                                {{elementKey}}
-
-                                <!-- GENERIC SHOW -->
-                                <div ng-if="elementKey != 'panels'">
-                                    <div ng-if="settingsDefault[settingKey][elementKey].switch">
-                                        <select ng-options="value for value in settingsDefault[settingKey][elementKey].values" ng-model="settings[settingKey][elementKey]"></select>
-                                    </div>
-                                    <div ng-if="!settingsDefault[settingKey][elementKey].switch && settingsDefault[settingKey][elementKey].type == 'string' ">
-                                        <input type="text" ng-model="settings[settingKey][elementKey]">
-                                    </div>
-                                    <div ng-if="!settingsDefault[settingKey][elementKey].switch && settingsDefault[settingKey][elementKey].type == 'number' ">
-                                        <input type="number" ng-model="settings[settingKey][elementKey]">
-                                    </div>
-                                    <div ng-if="settingsDefault[settingKey][elementKey].type == 'boolean'">
-                                        <input type="checkbox" ng-model="settings[settingKey][elementKey]">
-                                    </div>
-                                </div>
-
-                                <!-- DASHBOARD - PANELS -->
-                                <div ng-if="elementKey == 'panels'" ng-repeat="(panelKey, panel) in setting.panels">
-                                    {{panel.title}}
-                                    <div ng-repeat="(panelElementKey, panelElement) in panel">
-                                        {{panelElementKey}}
-                                        <div ng-if="settingsDefault.dashboard.panels.match[panelElementKey].switch">
-                                            <select ng-options="value for value in settingsDefault.dashboard.panels.match[panelElementKey].values" ng-model="settings[settingKey][elementKey][panelKey][panelElementKey]"></select>
-                                        </div>
-                                        <div ng-if="!settingsDefault.dashboard.panels.match[panelElementKey].switch">
-                                            <input type="text" ng-model="settings[settingKey][elementKey][panelKey][panelElementKey]">
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    
+						<!-- DASHBOARD - PANELS -->
+						<div ng-if="elementKey == 'panels'" ng-repeat="(panelKey, panel) in setting.panels" class="col-md-12 well">
+							<span class="tt-title">{{panel.title | uppercase}}</span>
+							<div ng-repeat="(panelElementKey, panelElement) in panel">
+								<div ng-if="panelElementKey != 'name'">
+									{{panelElementKey}}
+									<div ng-if="settingsDefault.dashboard.panels.match[panelElementKey].switch">
+										<select ng-options="value for value in settingsDefault.dashboard.panels.match[panelElementKey].values" ng-model="settings[settingKey][elementKey][panelKey][panelElementKey]"></select>
+									</div>
+									<div ng-if="!settingsDefault.dashboard.panels.match[panelElementKey].switch">
+										<input type="text" ng-model="settings[settingKey][elementKey][panelKey][panelElementKey]">
+									</div>
+								</div>
+							</div>
+						</div>
+						<hr class=" col-md-12 as-hr" />
+					</div>
+					<div class="col-md-12">
+						<button type="submit" class="btn btn-default tt-button">Submit <i class="fa fa-check pr-submitcheck"></i></button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 </div>
