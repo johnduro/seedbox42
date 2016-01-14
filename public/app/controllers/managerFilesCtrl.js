@@ -9,7 +9,6 @@ app.controller("managerFilesCtrl", function($rootScope, $scope,$filter, Tools, R
 			$scope.elementsActual = result.data.data;
 			console.log($scope.treeBase);
 			addType($scope.elementsActual);
-			// $rootScope.$broadcast('filesLoaded');
 		});
 
 	function addType(list){
@@ -20,11 +19,76 @@ app.controller("managerFilesCtrl", function($rootScope, $scope,$filter, Tools, R
 		});
 	};
 
+	$scope.hardUnlockSelected = function () {
+		if ($scope.itemSelected.length > 0)
+		{
+			RequestHandler.put(api + "file/hard-remove-all-lock/", { toUnlock: $scope.itemSelected })
+				.then(function (result) {
+					if (result.data.success)
+					{
+						angular.forEach($scope.elementsActual, function (file) {
+							if (result.data.data.indexOf(file._id) >= 0)
+							{
+								file.isLockedByUser = 0;
+								file.isLocked = 0;
+							}
+						});
+					}
+				});
+		}
+	};
+
+
+	$scope.deleteSelected = function () {
+		console.log('DELETE SELECTED :: ', $scope.itemSelected);
+		if ($scope.itemSelected.length > 0)
+		{
+			RequestHandler.put(api + "file/delete-all/", { toDelete: $scope.itemSelected })
+				.then(function (result) {
+					if (result.data.success)
+					{
+						RequestHandler.get(api + "file/all")
+							.then(function(result){
+								$scope.elementsActual = result.data.data;
+								console.log($scope.treeBase);
+								addType($scope.elementsActual);
+								$scope.itemSelected = [];
+							});
+					}
+				});
+		}
+	};
+
+	$scope.deleteUnlocked = function () {
+		var toDelete = [];
+		angular.forEach($scope.elementsActual, function (file) {
+			if (!(file.isLocked))
+				toDelete.push(file._id);
+		});
+		RequestHandler.put(api + "file/delete-all/", { toDelete: toDelete })
+			.then(function (result) {
+				if (result.data.success)
+				{
+					RequestHandler.get(api + "file/all")
+						.then(function(result){
+							$scope.elementsActual = result.data.data;
+							console.log($scope.treeBase);
+							addType($scope.elementsActual);
+							$scope.itemSelected = [];
+						});
+				}
+			});
+		console.log('DELETE UNLOCKED :: ', toDelete);
+	};
+
 	$scope.lockFile = function(item){ //GENERALISER DOUBLON DANS FILES
 		RequestHandler.post(api + "file/add-lock/" + item._id)
 			.then(function(result){
 				if (result.data.success)
+				{
 					item.isLockedByUser = true;
+					item.isLocked = true;
+				}
 				console.log(item);
 			});
 	};

@@ -238,6 +238,8 @@ FileSchema.statics = {
 					var torrent = resp['torrents'][0];
 					var path = torrent['downloadDir'] + '/' + name;
 					fs.stat(path, function (err, stat) {
+						if (err)
+							return done(err);
 						var fileType = '';
 						if (stat.isDirectory())
 							fileType = 'folder';
@@ -435,17 +437,20 @@ FileSchema.methods = {
 		this.save(cb);
 	},
 
+	removeAllLock: function (cb) {
+		console.log('HERE UNLOCK ALL :: ', this.name);
+		this.lastupdatedLocked = null;
+		this.oldestLocked = null;
+		this.locked = [];
+		this.save(cb);
+	},
+
 	removeDayLockInFile: function (dateDelete) {
 		for (var i = (this.locked.length - 1); i >= 0; i--)
 		{
 			if (this.locked[i].createdAt.getTime() < dateDelete.getTime())
 				this.locked.splice(i, 1);
 		}
-		this.save();
-	},
-
-	removeAllLock: function () {
-		this.locked = [];
 		this.save();
 	},
 
