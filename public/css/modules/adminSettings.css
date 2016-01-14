@@ -1,0 +1,18 @@
+.as-hr {
+	color: #315078;
+	background-color: #E9EDF0;
+	height: 2px;
+}
+
+.as-tabpane {
+	margin-top: 30px;
+}
+.as-element-panel {
+	text-transform: uppercase;
+}
+
+.as-config {
+	margin-top: 24px;
+}
+
+.as-element {}
