@@ -19,7 +19,7 @@ app.controller('filesCtrl', function ($scope, $rootScope, $state, $location, $st
 		});
 	});
 
-	RequestHandler.get(api + (!$stateParams.sort ? $stateParams.sort = "file" : $stateParams.sort) + "/all")
+	RequestHandler.get(api + (!$stateParams.sort ? $stateParams.sort = "file" : ('dashboard/' + $stateParams.sort)) + "/all")
 		.then(function(result){
 			$scope.elementsActual = result.data.data;
 			addType($scope.elementsActual);

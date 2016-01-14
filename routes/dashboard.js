@@ -29,7 +29,7 @@ var getTotalDiskSpace = function (downloadDir, done) {
 // 	});
 // });
 
-router.get('/:panel', function (req, res, next) {
+router.get('/:panel/:all?', function (req, res, next) {
 	// panels[req.params.panel](req.user, req.app.locals.ttConfig.dashboard, function (ret) {
 	panels[req.params.panel](req, function (ret) {
 		res.json(ret);
@@ -41,7 +41,8 @@ var panels = {
 	'recent-file': function (req, done) {
 		var dashConf = req.app.locals.ttConfig.dashboard;
 		var user = req.user;
-		File.getFileList({}, { createdAt: -1 }, dashConf['file-number-exhibit'], user, function (err, files) {
+		var limit = (req.params.all ? 0 : dashConf['file-number-exhibit']);
+		File.getFileList({}, { createdAt: -1 }, limit, user, function (err, files) {
 			if (err)
 				done({ success: false, message: err });
 			else
@@ -51,7 +52,8 @@ var panels = {
 	'recent-user-file': function (req, done) {
 		var dashConf = req.app.locals.ttConfig.dashboard;
 		var user = req.user;
-		File.getFileList({ creator: user._id }, { createdAt: -1 }, dashConf['file-number-exhibit'], user, function (err, files) {
+		var limit = (req.params.all ? 0 : dashConf['file-number-exhibit']);
+		File.getFileList({ creator: user._id }, { createdAt: -1 }, limit, user, function (err, files) {
 			if (err)
 				done({ success: false, message: err });
 			else
@@ -61,7 +63,8 @@ var panels = {
 	'oldest-user-locked-file': function (req, done) {
 		var dashConf = req.app.locals.ttConfig.dashboard;
 		var user = req.user;
-		File.getFileList({ "locked.user": user._id }, { "locked.createdAt": 1 }, dashConf['file-number-exhibit'], user, function (err, files) {
+		var limit = (req.params.all ? 0 : dashConf['file-number-exhibit']);
+		File.getFileList({ "locked.user": user._id }, { "locked.createdAt": 1 }, limit, user, function (err, files) {
 			if (err)
 				done({ success: false, message: err });
 			else
@@ -71,7 +74,8 @@ var panels = {
 	'oldest-locked-file': function (req, done) {
 		var dashConf = req.app.locals.ttConfig.dashboard;
 		var user = req.user;
-		File.getFileList({ 'locked': { $exists: true, $not: { $size: 0 } } }, { "locked.createdAt": 1 }, dashConf['file-number-exhibit'], user, function (err, files) {
+		var limit = (req.params.all ? 0 : dashConf['file-number-exhibit']);
+		File.getFileList({ 'locked': { $exists: true, $not: { $size: 0 } } }, { "locked.createdAt": 1 }, limit, user, function (err, files) {
 			if (err)
 				done({ success: false, message: err });
 			else
@@ -97,7 +101,8 @@ var panels = {
 	'best-rated-file': function (req, done) {
 		var dashConf = req.app.locals.ttConfig.dashboard;
 		var user = req.user;
-		File.getFileList({}, { averageGrade: -1 }, dashConf['file-number-exhibit'], user, function (err, files) {
+		var limit = (req.params.all ? 0 : dashConf['file-number-exhibit']);
+		File.getFileList({}, { averageGrade: -1 }, limit, user, function (err, files) {
 			if (err)
 				done({ success: false, message: err });
 			else
@@ -107,7 +112,8 @@ var panels = {
 	'most-commented-file': function (req, done) {
 		var dashConf = req.app.locals.ttConfig.dashboard;
 		var user = req.user;
-		File.getFileList({}, { commentsNbr: -1 }, dashConf['file-number-exhibit'], user, function (err, files) {
+		var limit = (req.params.all ? 0 : dashConf['file-number-exhibit']);
+		File.getFileList({}, { commentsNbr: -1 }, limit, user, function (err, files) {
 			if (err)
 				done({ success: false, message: err });
 			else
@@ -117,7 +123,8 @@ var panels = {
 	'most-downloaded-file': function (req, done) {
 		var dashConf = req.app.locals.ttConfig.dashboard;
 		var user = req.user;
-		File.getFileList({}, { downloads: -1 }, dashConf['file-number-exhibit'], user, function (err, files) {
+		var limit = (req.params.all ? 0 : dashConf['file-number-exhibit']);
+		File.getFileList({}, { downloads: -1 }, limit, user, function (err, files) {
 			if (err)
 				done({ success: false, message: err });
 			else
