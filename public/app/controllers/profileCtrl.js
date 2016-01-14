@@ -97,6 +97,11 @@ app.controller("profileCtrl", function($scope, $rootScope, $filter, Tools, Uploa
 		window.location.href = path;
 	};
 
+	$scope.openFile = function(file){
+		//console.log(file);
+		$location.url('seedbox/file/' + file._id);
+	};
+
 	$scope.checkboxSwitch = function (id) {
 		var index = $scope.itemSelected.indexOf(id);
 		if (index >= 0)

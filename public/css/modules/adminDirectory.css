@@ -20,8 +20,33 @@
 }
 
 
-.au-addcheck { /* doublon */
+.ad-addcheck { /* doublon */
 	padding-left: 8px;
 	font-size: 22px;
 	vertical-align: middle;
+}
+
+.ad-popover-read {
+	color: red;
+}
+
+.ad-popover-write {
+	color: red;
+}
+
+.ad-disclaimer {
+	margin-top: 16px;
+}
+
+.ad-search {
+	margin-top: 12px;
+}
+
+.ad-add-files {
+	margin-top: 16px;
+	margin-left: 36px;
+}
+
+.ad-table {
+	margin-top: 70px;
 }

@@ -34,16 +34,3 @@
 	-webkit-border-radius: 21px;
 	-moz-border-radius: 21px;
 }
-
-.pr-button {
-	color: #fff;
-	font-family: 'MuseoSans-300';
-	background-color: #325064;
-	margin-top: 4px;
-	float: left;
-}
-
-.pr-button:hover {
-	color: #fff;
-	background-color: #99A8B2
-}

@@ -4,17 +4,9 @@ app.controller("directoryCtrl", function($rootScope, $scope, RequestHandler, Too
 
     $scope.sendDir = "";
     $scope.tree = "";
-    var indexSelected = [];
+    $scope.indexSelected = [];
+	$scope.checkbox = { all: false };
 
-    $scope.selectItem = function(index){
-        var a;
-        // if ((a = indexSelected.indexOf(index)))  // NULL !
-        if ((a = indexSelected.indexOf(index)) == -1)
-            indexSelected.push(index);
-        else
-            indexSelected.splice(a, 1);
-        console.log(indexSelected);
-    };
 
     $scope.searchDirectory = function(){
         RequestHandler.get(api + "admin/new-directory/" + btoa($scope.sendDir))
@@ -23,20 +15,57 @@ app.controller("directoryCtrl", function($rootScope, $scope, RequestHandler, Too
 				{
 					console.log("result::get:: ", result.data.data);
                     $scope.tree = result.data.data;
+					addType($scope.tree);
 				}
             });
     };
 
+	function addType (list) {
+		angular.forEach(list, function(value, key){
+			res = value.fileType.split("/");
+			value.type = res[0];
+			value.sizeConvert = Tools.FileConvertSize(value.size);
+			value.checkbox = false;
+		});
+	};
+
+    $scope.selectItem = function(index){
+		// console.log($scope.tree[index]);
+        var a;
+        if ((a = $scope.indexSelected.indexOf(index)) == -1)
+            $scope.indexSelected.push(index);
+        else
+            $scope.indexSelected.splice(a, 1);
+        console.log($scope.indexSelected);
+    };
+
+	$scope.selectAll = function () {
+		console.log('here :: ', $scope.checkbox.all);
+		if ($scope.checkbox.all)
+		{
+			Tools.setAllItems($scope.tree, "checkbox", true);
+			var treeLength = $scope.tree.length;
+			$scope.indexSelected = [];
+			for (var i = 0; i < treeLength; i++)
+			{
+				if ($scope.tree[i].checkbox)
+					$scope.indexSelected.push(i);
+			}
+		}
+		else
+		{
+			Tools.setAllItems($scope.tree, "checkbox", false);
+			$scope.indexSelected = [];
+		}
+	};
+
     $scope.addDirectory = function(){
         var send = [];
-        if (indexSelected.length)
+        if ($scope.indexSelected.length)
 		{
-            // for (var key in indexSelected){ //SERIEUSEMENT ?!
-            //     send.push($scope.tree[key]);
-            // }
-			for (var i = 0; i < indexSelected.length; i++)
+			for (var i = 0; i < $scope.indexSelected.length; i++)
 			{
-				var key = indexSelected[i];
+				var key = $scope.indexSelected[i];
 				send.push($scope.tree[key]);
 			}
 			console.log('tree::put:: ', $scope.tree);
@@ -51,5 +80,5 @@ app.controller("directoryCtrl", function($rootScope, $scope, RequestHandler, Too
                     Tools.popMessage("Erreur", result.data.message);
                 });
         }
-    }
+    };
 });

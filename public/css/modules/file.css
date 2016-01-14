@@ -31,27 +31,6 @@
 	margin-bottom: 25px;
 }
 
-
-.fls-avatar {
-	height:32;
-	width:32;
-    border-radius: 16px;
-	-webkit-border-radius: 16px;
-	-moz-border-radius: 16px;
-}
-
-.fls-locked-no {
-	color: #B4BEC6;
-}
-
-.fls-locked-other {
-	color: #253E51;
-}
-
-.fls-locked-user {
-	color: #FA000A;
-}
-
 .fl-path {
 	margin-top: 5px;
 	color: #337ab7;

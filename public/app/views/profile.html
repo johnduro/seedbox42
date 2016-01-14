@@ -24,7 +24,7 @@
 			</div>
 			<div class="col-md-12 pr-update">
 				<div class="tt-title">UPDATE MY PROFILE : </div>
-				<button type="submit" class="btn btn-default pr-button">Submit <i class="fa fa-check pr-submitcheck"></i></button>
+				<button type="submit" class="btn btn-default tt-button">Submit <i class="fa fa-check pr-submitcheck"></i></button>
 			</div>
 		</div>
 	</form>
@@ -40,7 +40,7 @@
 		  <input class="tt-search-input col-md-10 col-xs-10" placeholder="Search files" ng-model="search"> <button type="button" class="tt-search-button">|<i class="fa fa-search tt-search-icon"></i></button>
 		</div>
 		<div class="col-md-3 col-xs-6">
-			<button ng-click="unlockSelected()" class="btn btn-default pr-button">Unlock selected <i class="fa fa-check pr-submitcheck"></i></button>
+			<button ng-click="unlockSelected()" class="btn btn-default tt-button">Unlock selected <i class="fa fa-check pr-submitcheck"></i></button>
 		</div>
 	</div>
 	<div class="col-md-12 pr-table">
@@ -95,9 +95,9 @@
                     <td>{{item.sizeConvert}}</td>
                     <td class="tt-darkblue"> <i ng-click="download(item._id, item.name)" class="icon-down-circled fls-download"></i> </td>
                     <td>
-                        <i ng-if="item.isLockedByUser == 1" class="fa fa-heart fls-locked-user" ng-click="unlockFile(item)"></i> <!-- !!!!! CSSEX !!!!!! -->
-                        <i ng-if="(item.isLocked == 1 && item.isLockedByUser == 0)" class="fa fa-heart fls-locked-other" ng-click="lockFile(item)"></i><!-- !!!!! CSSEX !!!!! -->
-                        <i ng-if="(item.isLocked == 0 && item.isLockedByUser == 0)" class="fa fa-heart fls-locked-no" ng-click="lockFile(item)"></i><!-- !!!!! CSSEX !!!!!! -->
+                        <i ng-if="item.isLockedByUser == 1" class="fa fa-heart tt-locked-user" ng-click="unlockFile(item)"></i>
+                        <i ng-if="(item.isLocked == 1 && item.isLockedByUser == 0)" class="fa fa-heart tt-locked-other" ng-click="lockFile(item)"></i>
+                        <i ng-if="(item.isLocked == 0 && item.isLockedByUser == 0)" class="fa fa-heart tt-locked-no" ng-click="lockFile(item)"></i>
                     </td>
 					<td>{{item.createdAt | date:'MM/dd/yy'}}</td>
 					<td><div class="stars">{{item.averageGrade}}</div></td>
