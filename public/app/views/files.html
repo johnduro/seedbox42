@@ -26,7 +26,10 @@
 
                         <th class=""></th>
 
-                        <th class=""><i class="fa fa-heart"></i></th>
+                        <th class="" ng-click="order('isLocked')">
+                            <i class="fa fa-heart"></i>
+                            <i ng-show="sortColumn === 'isLocked'" ng-class="classSort"></i>
+                        </th>
 
 						<th class="" ng-click="order('createdAt')">
                             DATE <i ng-show="sortColumn === 'createdAt'" ng-class="classSort"></i>
