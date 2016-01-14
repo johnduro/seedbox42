@@ -14,6 +14,13 @@ app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http, $loca
 		Tools.getUser();
 	}
 
+	socket.emit("chat:get:message", null, function(data){
+		$rootScope.chatMessages = data.message;
+		console.log("chat", data.message);
+		//element.html(resultTemplate.data).show();
+		//$compile(element.contents())(scope);
+	});
+
 	RequestHandler.get(api + "admin/settings")
         .then(function(result){
             if (result.data.success){

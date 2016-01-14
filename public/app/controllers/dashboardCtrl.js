@@ -6,8 +6,8 @@ app.controller('dashboardCtrl', function ($scope, $rootScope, $timeout, $locatio
 	$scope.newMessage = "";
 	$scope.content = {};
 	var roles = {
-		"user" : 1,
-		"admin": 0,
+		"1" : "user",
+		"0": "admin",
 	};
 
 	Tools.getConfig().then(function(result){

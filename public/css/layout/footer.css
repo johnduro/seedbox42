@@ -25,3 +25,8 @@ footer {
 .contenttest {
     padding-bottom: 100px;
 }
+
+.popover {
+  width:400px !important;
+  height:250px;
+}

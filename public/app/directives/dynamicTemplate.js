@@ -30,7 +30,8 @@ app.directive('contentItem', function ($compile, RequestHandler, $rootScope, $lo
     		$location.url('seedbox/file/' + file._id);
     	};
         scope.sendMessage = function(){
-    		socket.emit("chat:post:message", {message: scope.newMessage, id:$rootScope.user._id});
+            if (scope.newMessage != "")
+    		      socket.emit("chat:post:message", {message: scope.newMessage, id:$rootScope.user._id});
     		scope.newMessage = "";
     	};
         socket.on("chat:post:message", function(data){
