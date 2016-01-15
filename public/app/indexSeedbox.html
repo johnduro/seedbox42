@@ -50,7 +50,7 @@
 				<span class="icon-bar"></span>
 			  </button>
 			</div>
-				<a href="#" class="navbar-center navbar-brand" id="ttTitle">Teurpi Torrent</a>
+				<a ui-sref="seedbox.dashboard" class="navbar-center navbar-brand" id="ttTitle">Teurpi Torrent</a>
 				<!-- <a href="#" class="navbar-center">TEURPITORRENT</a> -->
                 <div id="navbar-1" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
@@ -69,9 +69,9 @@
                         </li>
 
                         <li>
-                            <a ui-sref="seedbox.files" class="waves-effect waves-button">
+                            <a href="/#/seedbox/files/" class="waves-effect waves-button">
                                 <!-- <span class="menu-icon glyphicon glyphicon-folder-open"></span> -->
-                                <span ng-class="{'ft-active': isActive('/seedbox/files')}" class="custom-navcolor custom-navCat">Files</span>
+                                <span ng-class="{'ft-active': isActive('/seedbox/files/')}" class="custom-navcolor custom-navCat">Files</span>
                             </a>
                         </li>
 
@@ -128,7 +128,7 @@
                                 <li>
                                 <!-- <li  ng-class="{active: isActive('/seedbox/profile')}"> -->
                                     <a ui-sref="seedbox.profile" class="waves-effect waves-button">
-                                        <span class="menu-icon glyphicon fa fa-user"></span> Mon profile
+                                        <span class="menu-icon glyphicon fa fa-user"></span> My profil
                                     </a>
                                 </li>
 
@@ -143,7 +143,7 @@
 
                                 <li ng-if="user.role == 0" ng-class="{active: isActive('/seedbox/admin/managerFiles')}">
                                     <a ui-sref="seedbox.adminManagerFiles" class="waves-effect waves-button">
-                                        <span class="menu-icon glyphicon fa fa-wrench"></span>
+                                        <span class="fa fa-files-o"></span>
                                         Files manager
                                     </a>
                                 </li>
@@ -186,7 +186,7 @@
                     <!-- <div class="col-xs-12"> -->
                     <div>
                         <footer class="col-md-12 col-centered tt-text">
-                            <p class=""> 2015 &copy; Teurpitorrent By Student42</p>
+                            <p class=""> 2015 &copy; TeurpiTorrent By Student42</p>
                             <!-- <p class="col-md-2 col-md-offset-5"> 2015 &copy; Teurpitorrent By Student42</p> -->
                         </footer>
                     </div>

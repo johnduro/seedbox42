@@ -18,13 +18,18 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 		isFinished: "",
 		status: ""
 	};
+	var roles = {
+		"1" : "user",
+		"0": "admin",
+	};
 	$scope.selected = "all";
+
+	console.log($rootScope);
 
 	//------------------------------------------------  EVENTS SOCKETS -------------------------------------------------------
 	socket.emit('torrentRefresh');
 
 	socket.on("put:torrent:rename", function(data){
-		console.log("NEWNAME", data);
 		$scope.torrents[data.id].name = data.newName;
 	});
 
@@ -38,6 +43,7 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 	});
 
 	socket.on('post:torrent', function(data){
+		console.log(data);
 		if (data.success){
 			$scope.newTorrentUrl = "";
 			RequestHandler.get(api + "torrent/refresh/" + data.id)
@@ -71,29 +77,40 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 
 	//------------------------------------------------  FUNCTIONS SCOPE -------------------------------------------------------
 	$scope.torrentRemove = function(arrayId, local){
-		if (!arrayId.length){
-			arrayId = Tools.getElementForMatchValue($scope.torrents, "id", "checkbox", true);
+		if ($rootScope.user.role == 0 || $rootScope.config.torrents['delete-torrent-enabled']){
+			if (!arrayId.length){
+				arrayId = Tools.getElementForMatchValue($scope.torrents, "id", "checkbox", true);
+			}
+			socket.emit('delete:torrent', {"ids": arrayId, "removeLocalData": local});
+		}else{
+			toaster.pop('error', "Error", "You can't remove torrent.", 5000);
 		}
-		socket.emit('delete:torrent', {"ids": arrayId, "removeLocalData": local});
 	};
 
 	$scope.torrentRename = function(data, id){
 		RequestHandler.put(api + "torrent/rename/" + id, {'newName': data})
-			.then(function(result){
-
-			});
-		console.log(id);
+			.then(function(result){});
 	};
 
 	$scope.sendTorrentUrl = function(){
-		socket.emit('post:torrent:url', {"url":$scope.newTorrentUrl, "id": $rootScope.user._id});
+		if ($rootScope.user.role == 0 || $rootScope.config.torrents['add-torrent-enabled'])
+			socket.emit('post:torrent:url', {"url":$scope.newTorrentUrl, "id": $rootScope.user._id});
+		else
+			toaster.pop('error', "Error", "You can't add torrents.", 5000);
 	};
 
 	$scope.torrentStop = function(arrayId){
 		if (!arrayId.length){
 			arrayId = Tools.getElementForMatchValue($scope.torrents, "id", "checkbox", true);
 		}
-		RequestHandler.post(api + "torrent/action/stop", {ids: arrayId});
+		RequestHandler.post(api + "torrent/action/stop", {ids: arrayId})
+			.then(function (result){
+				if (result.data.success){
+					for (var i=0; i < arrayId.length; i++){
+						$scope.torrents[arrayId[i]].status = 0;
+					}
+				}
+			});
 	};
 
 	$scope.torrentMove = function(arrayId, direction){
@@ -128,14 +145,11 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 		}else{
 			$scope.itemSelected.push(id);
 		}
-
-		console.log($scope.itemSelected);
 	};
 
 	$scope.selectAll = function(){
 		if ($scope.checkboxAll){
 			var itemsFilter = $filter('filter')($scope.torrents, $scope.filters);
-			console.log(itemsFilter);
 			Tools.setAllItems(itemsFilter, "checkbox", true);
 			$scope.itemSelected = Tools.getElementForMatchValue(itemsFilter, "id", "checkbox", true);
 		}else{
@@ -214,29 +228,33 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
     $scope.log = '';
 
     $scope.upload = function (files) {
-        if (files && files.length) {
-            for (var i = 0; i < files.length; i++) {
-              var file = files[i];
-              if (!file.$error) {
-                Upload.upload({
-                    url: '/torrent/add-torrents',
-                    data: {
-                      username: $scope.username,
-                      torrent: file
-                    }
-                }).progress(function (evt) {
-                    var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-                    $scope.log = 'progress: ' + progressPercentage + '% ' + evt.config.data.file.name + '\n' + $scope.log;
-                }).success(function (data, status, headers, config) {
-					if (!data[0].success){
-						$rootScope.msgInfo("Error !", "L'ajout du nouveau torrent a echoue...");
-					}
-                }).error(function (data, status, headers, config) {
-					$rootScope.msgInfo("Error !", "L'ajout du nouveau torrent a echoue...");
-				});
-              }
-            }
-        }
+		if ($rootScope.user.role == 0 || $rootScope.config.torrents['add-torrent-enabled']){
+			if (files && files.length) {
+	            for (var i = 0; i < files.length; i++) {
+	              var file = files[i];
+	              if (!file.$error) {
+	                Upload.upload({
+	                    url: '/torrent/add-torrents',
+	                    data: {
+	                      username: $scope.username,
+	                      torrent: file
+	                    }
+	                }).progress(function (evt) {
+	                    var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+	                    $scope.log = 'progress: ' + progressPercentage + '% ' + evt.config.data.file.name + '\n' + $scope.log;
+	                }).success(function (data, status, headers, config) {
+						/*if (!data[0].success){
+							toaster.pop('error', "Error", "L'ajout du nouveau torrent a echoue...", 5000);
+						}*/
+	                }).error(function (data, status, headers, config) {
+						toaster.pop('error', "Error", "L'ajout du nouveau torrent a echoue...", 5000);
+					});
+	              }
+	            }
+	        }
+		}else
+			toaster.pop('error', "Error", "You can't add torrents.", 5000);
+
     };
 
 	function timeInterval(seconds)

@@ -1,6 +1,6 @@
 <div class="row tt-text pr-myprofile">
 	<div class="col-md-12">
-	    <h4 class="tt-title">MY PROFILE:</h4>
+	    <h4 class="tt-title">MY PROFIL:</h4>
 	</div>
 	<form ng-submit="updateUser()" enctype="multipart/form-data">
 		<div class="col-md-6">
@@ -93,7 +93,7 @@
                     </td>
                     <td ng-click="openFile(item)">{{item.name}}</td>
                     <td>{{item.sizeConvert}}</td>
-                    <td class="tt-darkblue"> <i ng-click="download(item._id, item.name)" class="icon-down-circled fls-download"></i> </td>
+                    <td class="tt-darkblue"> <i ng-if="(item.type != 'folder' || item.size < 4294967296)" ng-click="download(item._id, item.name)" class="icon-down-circled fls-download"></i> </td>
                     <td>
                         <i ng-if="item.isLockedByUser == 1" class="fa fa-heart tt-locked-user" ng-click="unlockFile(item)"></i>
                         <i ng-if="(item.isLocked == 1 && item.isLockedByUser == 0)" class="fa fa-heart tt-locked-other" ng-click="lockFile(item)"></i>

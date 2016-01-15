@@ -9,6 +9,10 @@ app.controller('filesCtrl', function ($scope, $rootScope, $state, $location, $st
 	$scope.itemSelected = false;
 	var requestApi = "file";
 	console.log($stateParams);
+	var roles = {
+		"1" : "user",
+		"0": "admin",
+	};
 
 	socket.on("newFile", function(data){
 		RequestHandler.get(api + "file/all")
@@ -81,21 +85,31 @@ app.controller('filesCtrl', function ($scope, $rootScope, $state, $location, $st
 
 // --------------------------------------------- FUNCTION LOCK --------------------------------------------
 	$scope.lockFile = function(item){
-		RequestHandler.post(api + "file/add-lock/" + item._id)
-			.then(function(result){
-				if (result.data.success)
-					item.isLockedByUser = true;
-				console.log(item);
-			});
+		if ($rootScope.config.files['lock-enabled'] == 'all' || $rootScope.config.files['lock-enabled'] == roles[$rootScope.user.role]){
+			RequestHandler.post(api + "file/add-lock/" + item._id)
+				.then(function(result){
+					if (result.data.success)
+						item.isLockedByUser = true;
+					console.log(item);
+				});
+		}
 	};
 
 	$scope.unlockFile = function(item){
-		RequestHandler.delete(api + "file/remove-lock/" + item._id, {})
-			.then(function(result){
-				if (result.data.success)
-					item.isLockedByUser = false;
-				console.log(result);
-			});
+		if ($rootScope.config.files['lock-enabled'] == 'all' || $rootScope.config.files['lock-enabled'] == roles[$rootScope.user.role]){
+			RequestHandler.delete(api + "file/remove-lock/" + item._id, {})
+				.then(function(result){
+					if (result.data.success)
+						item.isLockedByUser = false;
+					console.log(result);
+				});
+		}
+	};
+
+	$scope.showCreator = function () {
+		if ($rootScope.config.files['show-creator'] == 'all' || $rootScope.config.files['show-creator'] == roles[$rootScope.user.role])
+			return true;
+		return false;
 	};
 
 	rateFunction = function(rating) {

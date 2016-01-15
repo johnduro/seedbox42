@@ -7,7 +7,7 @@
 <div id="main-wrapper">
 	<div class="row">
 		<div class="col-md-12 fl-path tt-text">
-            <span ng-click="backFolder(treeBase, []);">< Go back </span>/<a ui-sref="seedbox.files"> files  </a> / <span>{{torrent.name}} /</span> {{pathActualString}}
+            <span ng-click="backFolder();">< Go back </span>/<a ui-sref="seedbox.files"> files  </a> / <span>{{torrent.name}} /</span> {{pathActualString}}
 		</div>
 		<div class="col-md-12 fl-body">
 			<div class="col-md-8 fl-arbo">
@@ -34,7 +34,7 @@
 							<td class="col-md-7" colspan="2">{{treeActual.name}}</td>
 							<td class="col-md-2">{{torrent.sizeConvert}}</td>
 		                    <td class="col-md-2 tt-darkblue">
-								<i class="icon-down-circled fl-downloadico" ng-click="downloadDirActual()"></i>
+								<i class="icon-down-circled fl-downloadico" ng-if="(treeActual.type != 'folder' || treeActual.size < 4294967296)" ng-click="downloadDirActual()"></i>
 							</td>
 						</tr>
                     	<tr ng-repeat="item in treeActual.fileList">
@@ -51,7 +51,7 @@
 		                    </td>
                     	    <td class="col-md-6" ng-click="openFolder(item)">{{item.name}}</td>
                     	    <td class="col-md-2">{{item.sizeConvert}}</td>
-                    	    <td class="col-md-2 tt-darkblue"> <i ng-click="download(torrent._id, item.name)" class="icon-down-circled fl-downloadico" ></i> </td>
+                    	    <td class="col-md-2 tt-darkblue"> <i ng-if="(item.type != 'folder' || item.size < 4294967296)" ng-click="download(torrent._id, item.name)" class="icon-down-circled fl-downloadico" ></i> </td>
                     	</tr>
 					</tbody>
 				</table>
@@ -61,16 +61,16 @@
 					<div> Download : {{torrent.createdAt | date:'MM/dd/yy'}}</div>
 					<div>
 						Wishlist :
-                        <i ng-if="torrent.isLockedByUser == 1" class="fa fa-heart fls-locked-user" ng-click="unlockFile(torrent)"></i>
-                        <i ng-if="(torrent.isLocked == 1 && torrent.isLockedByUser == 0)" class="fa fa-heart fls-locked-other" ng-click="lockFile(torrent)"></i>
-                        <i ng-if="(torrent.isLocked == 0 && torrent.isLockedByUser == 0)" class="fa fa-heart fls-locked-no" ng-click="lockFile(torrent)"></i>
+                        <i ng-if="torrent.isLockedByUser == 1" class="fa fa-heart tt-locked-user" ng-click="unlockFile(torrent)"></i>
+                        <i ng-if="(torrent.isLocked == 1 && torrent.isLockedByUser == 0)" class="fa fa-heart tt-locked-other" ng-click="lockFile(torrent)"></i>
+                        <i ng-if="(torrent.isLocked == 0 && torrent.isLockedByUser == 0)" class="fa fa-heart tt-locked-no" ng-click="lockFile(torrent)"></i>
 					</div>
 					<div> Downloaded : {{torrent.downloads}} times</div>
 				</div>
 				<div class="col-md-12 fl-add-file" ng-if="treeActual.type == 'folder'">
 					<h4 class="fl-title tt-title">ADD LOCAL FILE:</h4>
                     <form>
-                        <div ngf-drop ngf-select ng-model="files" class="drop-box tt-dottedborder tt-dragndrop"
+                        <div ngf-drop ngf-select ng-model="files.upload" class="drop-box tt-dottedborder tt-dragndrop"
                             ngf-drag-over-class="dragover" ngf-multiple="true" ngf-allow-dir="true"
                             accept="*"
                             ngf-pattern="'*'">Drop files here or click to upload</div>
@@ -92,7 +92,7 @@
                             <td class="col-md-2">
                                 <div class="stars fl-comment-stars">{{getGradeByUser(comment.user._id)}}</div>
                             </td>
-                            <td class="col-md-9">
+                            <td class="col-md-9" style="word-break: break-all;">
                                 <span class="fl-comment-name">{{comment.user.login}} -</span> {{comment.text}}
                             </td>
 							<td class="col-md-2" ng-if="user.role == 0 || comment.user._id == user._id">
@@ -106,7 +106,7 @@
 				<div class="col-md-12 fl-rate-info tt-text">
 					<div>Average rating : <div class="stars fl-average">{{torrent.averageGrade}}</div></div>
 					<div>Number of comments : {{torrent.commentsNbr}}</div>
-					<div>Rate it : <div class="rating" starrating score="torrent.rateByUser" max="5"></div></div>
+					<div ng-if="allowRate()">Rate it : <div class="rating" starrating score="torrent.rateByUser" max="5"></div></div>
 				</div>
 				<div class="col-md-12 fl-add-comment">
 					<h4 class="fl-title tt-title">LEAVE A COMMENT:</h4>

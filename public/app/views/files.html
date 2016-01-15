@@ -39,7 +39,9 @@
                             DL <i ng-show="sortColumn === 'downloads'" ng-class="classSort"></i>
                         </th>
 
-						<th class=""><i class="fa fa-user"></i></th>
+						<th class="" ng-if="showCreator()" ng-click="order('creator.login')">
+                            <i class="fa fa-user"></i> <i ng-show="sortColumn === 'creator.login'" ng-class="classSort"></i>
+                        </th>
 
 						<th class"" ng-click="order('averageGrade')">
                             RATE <i ng-show="sortColumn === 'averageGrade'" ng-class="classSort"></i>
@@ -64,7 +66,7 @@
                         </td>
                         <td ng-click="openFile(item)">{{item.name}}</td>
                         <td>{{item.sizeConvert}}</td>
-                        <td class="tt-darkblue"> <i ng-click="download(item._id, item.name)" class="icon-down-circled fls-download"></i> </td>
+                        <td class="tt-darkblue"> <i ng-if="(item.type != 'folder' || item.size < 4294967296)" ng-click="download(item._id, item.name)" class="icon-down-circled fls-download"></i> </td>
                         <td>
                             <i ng-if="item.isLockedByUser == 1" class="fa fa-heart tt-locked-user" ng-click="unlockFile(item)"></i>
                             <i ng-if="(item.isLocked == 1 && item.isLockedByUser == 0)" class="fa fa-heart tt-locked-other" ng-click="lockFile(item)"></i>
@@ -72,7 +74,7 @@
                         </td>
 						<td>{{item.createdAt | date:'MM/dd/yy'}}</td>
                         <td>{{item.downloads}}</td>
-						<td><img ng-src="/assets/avatar/{{item.creator.avatar}}" err-SRC="/assets/avatar/default.png" title="{{item.creator.login}}" alt="{{item.creator.login}}" class="tt-list-avatar"></img></td>
+						<td ng-if="showCreator()"><img ng-src="/assets/avatar/{{item.creator.avatar}}" err-SRC="/assets/avatar/default.png" title="{{item.creator.login}}" alt="{{item.creator.login}}" class="tt-list-avatar"></img></td>
 						<td><div class="stars">{{item.averageGrade}}</div></td>
                         <td>{{item.commentsNbr}}</td>
                     </tr>

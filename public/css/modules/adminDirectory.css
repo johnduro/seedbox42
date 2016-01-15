@@ -1,52 +1,41 @@
-.ad-warning {
+.admdir-warning {
 	color: red;
 }
-
-.ad-button { /* doublon */
+.admdir-button {
 	color: #fff;
 	font-family: 'MuseoSans-300';
 	background-color: #325064;
 	margin-top: 4px;
 	float: left;
 }
-
-.ad-button:hover { /* doublon */
+.admdir-button:hover {
 	color: #fff;
-	background-color: #99A8B2
+	background-color: #99A8B2;
 }
-
-.ad-submitcheck { /* doublon */
+.admdir-submitcheck {
 	padding-left: 8px;
 }
-
-
-.ad-addcheck { /* doublon */
+.admdir-addcheck {
 	padding-left: 8px;
 	font-size: 22px;
 	vertical-align: middle;
 }
-
-.ad-popover-read {
+.admdir-popover-read {
 	color: red;
 }
-
-.ad-popover-write {
+.admdir-popover-write {
 	color: red;
 }
-
-.ad-disclaimer {
+.admdir-disclaimer {
 	margin-top: 16px;
 }
-
-.ad-search {
+.admdir-search {
 	margin-top: 12px;
 }
-
-.ad-add-files {
+.admdir-add-files {
 	margin-top: 16px;
 	margin-left: 36px;
 }
-
-.ad-table {
+.admdir-table {
 	margin-top: 70px;
 }

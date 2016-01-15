@@ -60,7 +60,11 @@ router.put('/:id', rights.adminOrUserParam, upload.avatar.single('avatar'), func
 		if (err)
 			res.json({ success: false, message: err });
 		else
-			res.json({ success: true, data: post });
+		{
+			newUser = post.toObject();
+			delete newUser.password;
+			res.json({ success: true, data: newUser });
+		}
 	});
 });
 

@@ -1,5 +1,5 @@
 
-app.controller('connexionCtrl', function ($scope, $rootScope, $state, RequestHandler) {
+app.controller('connexionCtrl', function ($scope, $rootScope, $state, RequestHandler, toaster) {
 
 	console.log("connexionCtrl");
 
@@ -13,9 +13,11 @@ app.controller('connexionCtrl', function ($scope, $rootScope, $state, RequestHan
 				if (result.data.success){
 					$rootScope.user = result.data.data;
 					$rootScope.token = result.data.token;
-					
+
 					localStorage.setItem("token", result.data.token);
 					$state.go("seedbox.dashboard");
+				}else{
+					toaster.pop('error', "Wrong login or password !", "", 5000);
 				}
 		})
 	}

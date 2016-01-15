@@ -30,7 +30,8 @@ app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http, $loca
 
 	//Gestion des onglets du menu
 	$scope.isActive = function (viewLocation) {
-        return viewLocation === $location.path();
+		var str = $location.path();
+        return str.startsWith(viewLocation);
     };
 
 	//Fonction de deconnexion

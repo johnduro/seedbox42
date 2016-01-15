@@ -1,10 +1,14 @@
-app.controller("profileCtrl", function($scope, $rootScope, $filter, Tools, Upload, RequestHandler){
+app.controller("profileCtrl", function($scope, $rootScope, $filter, $location, Tools, Upload, RequestHandler){
 
 	$scope.itemSelected = [];
 	$scope.checkboxAll = false;
 	$scope.search;
     console.log("profileCtrl");
     $scope.editUser = angular.copy($rootScope.user);
+	var roles = {
+		"1" : "user",
+		"0": "admin",
+	};
 
     $rootScope.$watch("user", function(){
         $scope.editUser = angular.copy($rootScope.user);
@@ -75,21 +79,25 @@ app.controller("profileCtrl", function($scope, $rootScope, $filter, Tools, Uploa
 	};
 
 	$scope.lockFile = function(item){ //GENERALISER DOUBLON DANS FILES
-		RequestHandler.post(api + "file/add-lock/" + item._id)
-			.then(function(result){
-				if (result.data.success)
-					item.isLockedByUser = true;
-				console.log(item);
-			});
+		if ($rootScope.config.files['lock-enabled'] == 'all' || $rootScope.config.files['lock-enabled'] == roles[$rootScope.user.role]){
+			RequestHandler.post(api + "file/add-lock/" + item._id)
+				.then(function(result){
+					if (result.data.success)
+						item.isLockedByUser = true;
+					console.log(item);
+				});
+		}
 	};
 
 	$scope.unlockFile = function(item){ //GENERALISER DOUBLON DANS FILES
-		RequestHandler.delete(api + "file/remove-lock/" + item._id, {})
-			.then(function(result){
-				if (result.data.success)
-					item.isLockedByUser = false;
-				console.log(result);
-			});
+		if ($rootScope.config.files['lock-enabled'] == 'all' || $rootScope.config.files['lock-enabled'] == roles[$rootScope.user.role]){
+			RequestHandler.delete(api + "file/remove-lock/" + item._id, {})
+				.then(function(result){
+					if (result.data.success)
+						item.isLockedByUser = false;
+					console.log(result);
+				});
+		}
 	};
 
 	$scope.download = function (id, name){ //GENERALISER ??

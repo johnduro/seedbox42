@@ -65,7 +65,7 @@ UserSchema.statics = {
 
 	updateUserById: function (id, infos, cb) {
 		var self = this;
-		if (infos.password === "")
+		if (!('password' in infos) || infos.password === "")
 		{
 			delete infos.password;
 			self.findByIdAndUpdate(id, { $set: infos }, { new: true }, function (err, post) {

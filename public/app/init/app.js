@@ -49,6 +49,8 @@ app.run(function ($rootScope, $location, $http, $state, $timeout, Tools, editabl
         }, 0, false);
     });
 
+    Tools.getConfig();
+
 
     // gestion des droits d'access aux url
     $rootScope.$on("$stateChangeStart", function (event, toState, toParams, fromState, fromParams) {

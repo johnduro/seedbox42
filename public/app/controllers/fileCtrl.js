@@ -1,9 +1,14 @@
-app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $modal, $http, RequestHandler, $sce, Tools, Upload, Lightbox){
+app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $modal, $http, RequestHandler, $sce, Tools, Upload, Lightbox, toaster){
 
     $scope.pathActualString = "";
     $scope.folderActual = '';
     var pathActualArray = [];
     Lightbox.templateUrl = 'app/views/partials/imagesTemplate.html';
+    $scope.files = { upload: [] };
+    var roles = {
+		"1" : "user",
+		"0": "admin",
+	};
 
     console.log($rootScope);
 
@@ -37,13 +42,9 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
                 $scope.folderActual = result.data.file.name;
                 $scope.treeActual = result.data.data;
                 addType([$scope.treeActual]);
-                console.log("RESULT : ", result.data);
-                console.log("TORRENT : ", $scope.torrent);
-                console.log("TREEACTUAL", $scope.treeActual);
+
                 if (result.data.data.fileList.length){
                     addType(result.data.data.fileList);
-                    //$scope.treeActual = result.data.data;
-
                     $scope.treeBase = result.data.data;
                 }else{
                     $scope.tree = null;
@@ -64,12 +65,6 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
 			$scope.treeActual = item;
 			addType($scope.treeActual.fileList);
 			$scope.pathActualString = generatePath(pathActualArray, "view");
-		}else if (item.type == "video"){
-			//video.addSource(value.type, generatePathDownload($scope.treeSelected.id, value.name));
-			//$scope.typeStreaming = value.fileType;
-			//Lightbox.openMourl:generatePathDownload($scope.treeSelected.id, value.name)}], 0);
-
-			$scope.pathStreaming = generatePathDownload($scope.treeSelected.id, item.name);
 		}else if (item.type == "image"){
 			Lightbox.openModal([{url:generatePathDownload($scope.torrent._id, item.name)}], 0);
 		}
@@ -77,27 +72,37 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
 
 // --------------------------------------------- ACTION BACK FOLDER --------------------------------------------
     var folderBack;
-    $scope.backFolder = function(folder, ArrayPath){
-        if (!pathActualArray.length)
+    $scope.backFolder = function(){
+
+        if (pathActualArray.length == 0)
             $state.go('seedbox.files');
-        else{
-            if(folder == $scope.treeActual){
-                $scope.treeActual = folderBack;
-                $scope.folderActual = folderBack.name;
-                $scope.pathActualString = generatePath(ArrayPath, "view");
-                pathActualArray = ArrayPath;
-            }else{
-                for (var key in folder.fileList){
-    				if (folder.fileList[key].isDirectory){
-    					folderBack = folder;
-    					if (folder.name != $scope.torrent.name)
-                            ArrayPath.push(folder.name);
-    					$scope.backFolder(folder.fileList[key], ArrayPath);
-    				}
-    			}
-            }
+
+        pathActualArray.pop();
+        $scope.pathActualString = generatePath(pathActualArray, "view");
+        if (pathActualArray.length == 0){
+            $scope.treeActual = angular.copy($scope.treeBase);
+            $scope.folderActual = angular.copy($scope.treeBase.name);
+        }else{
+            var way = angular.copy($scope.treeBase.fileList);
+
+            var i = 0;
+            (function next () {
+                var cf = pathActualArray[i++];
+                if (!cf)
+                    return ;
+                for (var idx = 0; idx < way.length; idx++)
+                {
+                    if (way[idx].name == cf)
+                    {
+                        $scope.treeActual = way[idx];
+                        $scope.folderActual = way[idx].name;
+                        next();
+                    }
+                }
+            })();
         }
     }
+
 
 // --------------------------------------------- FUNCTION DOWNLOAD --------------------------------------------
     function generatePathDownload(id, name){
@@ -140,40 +145,48 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
 
 // --------------------------------------------- FUNCTION LOCK FILE --------------------------------------------
     $scope.lockFile = function(item){
-		RequestHandler.post(api + "file/add-lock/" + item._id)
-			.then(function(result){
-				if (result.data.success)
-					item.isLockedByUser = true;
-				console.log(item);
-			});
+        if ($rootScope.config.files['lock-enabled'] == 'all' || $rootScope.config.files['lock-enabled'] == roles[$rootScope.user.role]){
+    		RequestHandler.post(api + "file/add-lock/" + item._id)
+    			.then(function(result){
+    				if (result.data.success)
+    					item.isLockedByUser = true;
+    				console.log(item);
+    			});
+        }
 	};
 
 	$scope.unlockFile = function(item){
-		RequestHandler.delete(api + "file/remove-lock/" + item._id, {})
-			.then(function(result){
-				if (result.data.success)
-					item.isLockedByUser = false;
-				console.log(result);
-			});
+        if ($rootScope.config.files['lock-enabled'] == 'all' || $rootScope.config.files['lock-enabled'] == roles[$rootScope.user.role]){
+    		RequestHandler.delete(api + "file/remove-lock/" + item._id, {})
+    			.then(function(result){
+    				if (result.data.success)
+    					item.isLockedByUser = false;
+    				console.log(result);
+    			});
+        }
 	};
 
 // --------------------------------------------- FUNCTION COMMENT --------------------------------------------
     $scope.addComment = function(){
 		if ($scope.newComment == "")
 			return;
-		RequestHandler.post(api + "file/add-comment/" + $scope.torrent._id, {text: $scope.newComment})
-			.then(function(result){
-				if (result.data.success){
-					RequestHandler.get(api + "file/comments/" + $scope.torrent._id, {text: $scope.newComment})
-						.then(function(result){
-							$scope.torrent.comments = result.data.data;
-                            $rootScope.$broadcast('filesLoaded');
-						});
-					$scope.newComment = "";
-				}else{
-					console.log("Error add comment...");
-				}
-			});
+        if ($rootScope.config.files['comments-enabled'] == 'all' || $rootScope.config.files['comments-enabled'] == roles[$rootScope.user.role]){
+    		RequestHandler.post(api + "file/add-comment/" + $scope.torrent._id, {text: $scope.newComment})
+    			.then(function(result){
+    				if (result.data.success){
+    					RequestHandler.get(api + "file/comments/" + $scope.torrent._id, {text: $scope.newComment})
+    						.then(function(result){
+    							$scope.torrent.comments = result.data.data;
+                                $rootScope.$broadcast('filesLoaded');
+    						});
+    					$scope.newComment = "";
+    				}else{
+    					console.log("Error add comment...");
+    				}
+    			});
+        }else{
+            toaster.pop('error', "Error", "You can't comment on this file.", 5000);
+        }
 	};
 
     $scope.deleteComment = function(index, id){
@@ -196,6 +209,12 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
         return tmp;
     };
 
+    $scope.allowRate = function () {
+        if ($rootScope.config.files['grades-enabled'] == 'all' || $rootScope.config.files['grades-enabled'] == roles[$rootScope.user.role])
+            return true;
+        return false;
+    };
+
 //------------------------------------------------  DRAG & DROP-------------------------------------------------------
 
     function generatePathUpload(){
@@ -205,10 +224,11 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
         return(api + "file/upload/" + $scope.torrent._id + "/" + pathEncode);
     };
 
-	$scope.$watch('files', function () {
-        $scope.upload($scope.files);
+	$scope.$watch('files.upload', function () {
+        $scope.upload($scope.files.upload);
     });
     $scope.$watch('file', function () {
+        console.log($scope.files);
         if ($scope.file != null) {
             $scope.files = [$scope.file];
         }
@@ -216,6 +236,7 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
     $scope.log = '';
 
     $scope.upload = function (files) {
+        console.log("upload");
         if (files && files.length) {
             for (var i = 0; i < files.length; i++) {
               var file = files[i];
@@ -232,13 +253,14 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
                     //$scope.log = 'progress: ' + progressPercentage + '% ' + evt.config.data.file.name + '\n' + $scope.log;
                 }).success(function (data, status, headers, config) {
 					if (!data.success){
-						$rootScope.msgInfo("Error !", "L'ajout du nouveau torrent a echoue...");
+                        toaster.pop('error', "Error !", "L'ajout du nouveau fichier a echoue...", 5000);
 					}else{
                         $scope.treeActual.fileList.push(data.data[0]);
-                        Tools.popMessage("Succes", "L'ajout du fichier a ete effectue");
+                        addType($scope.treeActual.fileList);
+                        toaster.pop('success', "Succes !", "L'ajout du fichier a ete effectue", 5000);
                     }
                 }).error(function (data, status, headers, config) {
-					$rootScope.msgInfo("Error !", "L'ajout du nouveau torrent a echoue...");
+					toaster.pop('error', "Error !", "L'ajout du nouveau fichier a echoue...", 5000);
 				});
               }
             }

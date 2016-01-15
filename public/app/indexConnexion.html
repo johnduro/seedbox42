@@ -15,6 +15,7 @@
         <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600' rel='stylesheet' type='text/css'>
         <link rel='stylesheet' href='css/bootstrap-3.3.6/css/bootstrap.min.css'/>
         <link rel='stylesheet' href='css/font-awesome-4.5.0/css/font-awesome.min.css'/>
+        <link rel='stylesheet' href='css/tools/toaster.css'/>
 
     </head>
     <body class="page-login">
@@ -28,7 +29,7 @@
                 <input type="password" ng-model="user.password" class="form-control" placeholder="Password" required="">
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox" value="remember-me"> Remember me
+                        <!-- <input type="checkbox" value="remember-me"> Remember me -->
                     </label>
                 </div>
                 <button ng-click="connexion()" class="btn btn-lg btn-primary btn-block">Sign in</button>
@@ -36,6 +37,8 @@
 
             <p class="text-center m-t-xs text-sm">2015 &copy; Seedbox42 by Students42.</p>
         </div>
+
+        <toaster-container toaster-options="{'close-button': true, 'position-class': 'toast-bottom-right'}"></toaster-container>
 
     </body>
 </html>

@@ -52,11 +52,12 @@ router.post('/add-torrents', upload.torrent.array('torrent', 10), function (req,
 				else if ('torrent-added' in resp)
 				{
 					File.createFile(resp['torrent-added'], req.user._id, function (err, fileAd) {
+						var name = fileAd ? fileAd.name : "";
 						if (err)
 							resAll.push({ success: false, message: 'Torrent was successfully added but there was an issue when adding it to the database', error: err, id: resp['torrent-added']['id'], name: resp['torrent-added']['name'] });
 						else
-							resAll.push({ success: true, message: 'Torrent successfully added', torrent: fileAd.filename });
-						req.app.io.sockets.emit('post:torrent', { success: true, message: 'torrent successfully added', id: resp['torrent-added']['id'], name: fileAd.filename });
+							resAll.push({ success: true, message: 'Torrent successfully added', torrent: name });
+						req.app.io.sockets.emit('post:torrent', { success: true, message: 'torrent successfully added', id: resp['torrent-added']['id'], name: name });
 						next();
 					});
 				}

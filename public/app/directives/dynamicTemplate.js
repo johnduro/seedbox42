@@ -3,6 +3,7 @@ app.directive('contentItem', function ($compile, RequestHandler, $rootScope, $lo
     var linker = function (scope, element, attrs) {
 
         scope.messages = [];
+        scope.newMessage = "";
 
         RequestHandler.get("/app/views/partials/" + scope.content.template + ".html")
             .then(function(resultTemplate){

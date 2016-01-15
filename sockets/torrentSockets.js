@@ -113,9 +113,14 @@ module.exports = function (socket, io, transmission) {
 								respGet['torrents'].forEach(function (torrent) {
 									toFind.push(torrent.hashString);
 								});
-								File.remove({ hashString:  { $in: toFind } }, function (err, file) {
-									if (err)
-										console.log('Socket - On - delete:torrent: ', err);
+								File.find({ hashString:  { $in: toFind } }, function (err, files) {
+									if (!err)
+									{
+										files.forEach(function (file) {
+											file.deleteFile(transmission, function (err, msg) {
+											});
+										});
+									}
 								});
 							}
 							respGet['torrents'].forEach(function (torrent) {

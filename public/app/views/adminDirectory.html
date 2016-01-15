@@ -2,10 +2,14 @@
 	<div class="col-md-12">
 	    <h3 class="tt-title">ADD DIRECTORY:</h3>
 	</div>
-	<div class="ad-disclaimer col-md-12">
-		<p class="tt-text">Enter below the full path of your directory <br/><span class="ad-warning"><i class="fa fa-exclamation-triangle"></i> WARNING : this can take a lot of time, don't enter a directory too deep <i class="fa fa-exclamation-triangle"></i></span></p>
+	<div class="col-md-12" style="margin-top: 16px;">
+		<p class="tt-text">Enter below the full path of your directory <br/>
+			<span class="" style="color: red;"><i class="fa fa-exclamation-triangle"></i>
+				 WARNING : this can take a lot of time, don't enter a directory too deep <i class="fa fa-exclamation-triangle"></i>
+			</span>
+		</p>
 	</div>
-	<div class="col-md-4 tt-text ad-search">
+	<div class="col-md-4 tt-text admdir-search">
 		<form ng-submit="searchDirectory()">
 			<div class="tt-search-div">
 				<input class="tt-search-input" placeholder="Enter directory path" ng-model="sendDir"> <button type="submit" class="tt-search-button">|<i class="fa fa-check au-addcheck"></i></button>
@@ -13,10 +17,10 @@
 		</form>
 	</div>
 	<div ng-if="tree.length > 0" class="col-md-12">
-		<div class="ad-add-files">
-			<button class="btn btn-default ad-button" ng-click="addDirectory()">Add selected files <i class="fa fa-check pr-submitcheck"></i></button>
+		<div class="admdir-add-files">
+			<button class="btn btn-default admdir-button" ng-click="addDirectory()">Add selected files <i class="fa fa-check pr-submitcheck"></i></button>
 		</div>
-		<table class="table tt-table ad-table">
+		<table class="table tt-table admdir-table">
 			<thead class="tt-title">
 				<tr>
 					<th>
@@ -44,8 +48,8 @@
 					<td>{{element.path}}</td>
 					<td>{{element.sizeConvert}}</td>
 					<td>
-						<span ng-if="element.rights.read == false" class="ad-popover-read" data-content="You may not be able to read this file" data-trigger="hover" data-placement="top" mypopover><i class="fa fa-exclamation-triangle"></i></span>
-						<span ng-if="element.rights.write == false" class="ad-popover-write" data-content="You may not be able to write/delete this file" data-trigger="hover" data-placement="bottom" mypopover><i class="fa fa-pencil"></i></span>
+						<span ng-if="element.rights.read == false" class="admdir-popover-read" data-content="You may not be able to read this file" data-trigger="hover" data-placement="top" mypopover><i class="fa fa-exclamation-triangle"></i></span>
+						<span ng-if="element.rights.write == false" class="admdir-popover-write" data-content="You may not be able to write/delete this file" data-trigger="hover" data-placement="bottom" mypopover><i class="fa fa-pencil"></i></span>
 					</td>
 				</tr>
 			</tbody>

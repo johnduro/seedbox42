@@ -58,8 +58,8 @@ module.exports = {
 	},
 	"torrents": {
 		"add-torrent-enabled": { "type": "boolean", "default": true, "switch": false, "range": false },
-		"delete-torrent-enabled": { "type": "boolean", "default": true, "switch": false, "range": false },
-		"settings-access-enabled": { "type": "boolean", "default": false, "switch": false, "range": false }
+		"delete-torrent-enabled": { "type": "boolean", "default": true, "switch": false, "range": false }
+//		"settings-access-enabled": { "type": "boolean", "default": false, "switch": false, "range": false }
 	},
 	"files": {
 		"show-creator": { "type": "string", "default": "all", "switch": true, "values": ["all", "user", "admin", "none"], "range": false },
