@@ -4,10 +4,6 @@ var mime = require('mime');
 
 
 var getFileRights = function (path, done) {
-	// fs.access(path, fs.F_OK, function (err) {
-		// console.log("FILE > ", file);
-		// if (err)
-		// 	console.log("ERROR F > ", err);
 	var rights = {
 		read: true,
 		write: true
@@ -15,16 +11,12 @@ var getFileRights = function (path, done) {
 	fs.access(path, fs.R_OK, function (err) {
 		if (err)
 			rights.read = false;
-			// console.log("ERROR R > ", err);
 		fs.access(path, fs.W_OK, function (err) {
 			if (err)
 				rights.write = false;
-			// console.log("ERROR W > ", err);
 			done(rights);
 		});
 	});
-	// });
-
 };
 
 var getFileRightsRecurs = function self (path, done) {
@@ -62,7 +54,6 @@ var getFileRightsRecurs = function self (path, done) {
 						self(filePath, function (err, fInfos) {
 							if (err)
 								infos.rights.read = false;
-								// return done(err);
 							else
 							{
 								infos.rights.read = fInfos.rights.read ? infos.rights.read : fInfos.rights.read;
@@ -92,14 +83,12 @@ module.exports = {
 				return done(err);
 			if (stats.isDirectory())
 				return done(null, true, stats.size);
-				// return done(null, true);
 			return done(null, false, stats.size);
-			// return done(null, false);
 		});
 	},
 
 	getFileInfosRecurs: function self (path, name, done) {
-		var fileInfos = { name: name, path: path, isDirectory: false, size: 0, fileList: [] }; //isDirectory utile ?
+		var fileInfos = { name: name, path: path, isDirectory: false, size: 0, fileList: [] };
 		fs.stat(path, function (err, fileStats) {
 			if (err)
 				return done(err);

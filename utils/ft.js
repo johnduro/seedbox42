@@ -1,7 +1,5 @@
-// var File = require('../models/File.js');
 var mongoose = require('mongoose');
 var bcrypt = require('bcrypt');
-// var File = mongoose.model('File');
 var User = require('../models/User.js');
 var fs = require('fs');
 

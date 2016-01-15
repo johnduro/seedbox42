@@ -7,8 +7,6 @@ module.exports = {
 		"template": { "type": "string", "default": "dashboard-fileList", "switch": true, "values": ["dashboard-fileList", "graph", "dashboard-chat"], "range": false },
 		"title": { "type": "string","default": "my new module", "switch": false, "range": false },
 		"order": { "type": "number", "default": 0, "switch": false, "range": false }
-		// "sort": { "type": "string", "default": "none", "switch": true, "values": ["none", "createdAt", ""], "range": false },
-		// "reverse": {}
 	},
 	panels : [
 		{

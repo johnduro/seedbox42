@@ -73,12 +73,7 @@ module.exports = {
 	},
 	"dashboard": {
 		"panels": { "type": "array", "default": dashboard.panels, "switch": false, "range": false, "match": dashboard.match },
-		// "recent-file-enabled": ,
-		// "recent-user-file-enabled": { "type": "string", "default": "all", "switch": true, "values": ["all", "user", "admin", "none"], "range": false },
-		// "recent-user-locked-file-enabled": { "type": "string", "default": "all", "switch": true, "values": ["all", "user", "admin", "none"], "range": false },
 		"file-number-exhibit": { "type": "number", "default": 5, "switch": false, "range": false },
-		// "disk-space-enabled": { "type": "string", "default": "admin", "switch": true, "values": ["all", "user", "admin", "none"], "range": false },
-		// "mini-chat-enabled": { "type": "string", "default": "all", "switch": true, "values": ["all", "user", "admin", "none"], "range": false },
 		"mini-chat-message-limit": { "type": "number", "default": 100, "switch": false, "range": true, "rangeValues": { "min": 1, "max": 10000 } }
 	},
 	"users": {

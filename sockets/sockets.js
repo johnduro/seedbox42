@@ -14,11 +14,9 @@ module.exports = function (io, transmission, app) {
 	 * Socket auth
 	 */
 	io.use(function (socket, next) {
-		console.log('SOCK AUTH --> ', socket.request._query['token']);
 		if ('_query' in socket.request && 'token' in socket.request._query)
 		{
 			var token = socket.request._query['token'];
-			// jwt.verify(token, app.get('secret'), function (err, decoded) {
 			jwt.verify(token, app.locals.ttConfig.secret, function (err, decoded) {
 				if (err)
 					next (new Error('not authorized'));
@@ -37,9 +35,6 @@ module.exports = function (io, transmission, app) {
 	 * Socket connection
 	 */
 	io.on('connection', function (socket) {
-		console.log('new user connection', socket.appUser);
-		console.log('number of users currently connected :', io.engine.clientsCount);
-
 		io.sockets.emit('connectedUsers', { connectedUsers: io.engine.clientsCount });
 
 		/**
@@ -53,7 +48,6 @@ module.exports = function (io, transmission, app) {
 		wall(socket, io, app.get('config'));
 
 		socket.on('disconnect', function () {
-			console.log('users still online : ', io.engine.clientsCount);
 			if (io.engine.clientsCount > 0)
 				io.sockets.emit('connectedUsers', { connectedUsers: io.engine.clientsCount });
 		});

@@ -18,55 +18,9 @@ module.exports = function (socket, io, transmission) {
 
 	/**
 	 * Socket - Emit - torrentRefreshRes
-	 * Ajout en db le nouveau fichier telecharger et fini
-	 * Envois un event a tout les utilisateurs avec les nouvelles donnees des torrents actifs
-	 */
-	// var addFinishedTorrentToDB = function (id, name) {
-	// 	transmission.torrentGet(infosFinished, id, function (err, resp) {
-	// 		console.log("ajout in DB");
-	// 		if (err)
-	// 			console.log("add finish torrent error: ", err);
-	// 			// throw err;
-	// 		else
-	// 		{
-	// 			console.log(resp['torrents'].length);
-	// 			if (resp['torrents'].length > 0)
-	// 			{
-	// 				var torrent = resp['torrents'][0];
-	// 				var path = torrent['downloadDir'] + '/' + name;
-	// 				fs.stat(path, function (err, stat) {
-	// 					var fileType = '';
-	// 					if (stat.isDirectory())
-	// 						fileType = 'folder';
-	// 					else
-	// 						fileType = mime.lookup(path);
-	// 					File.findOneAndUpdate(
-	// 						{ hashString: torrent['hashString'], isFinished: false },
-	// 						{ $set: { name: name, path: path, size: torrent['totalSize'], isFinished: true, fileType: fileType, createdAt: Date.now() } },
-	// 						{ new: true },
-	// 						function (err, newFile) {
-	// 							if (err)
-	// 								console.log("add finish torrent error: ", err);
-	// 							else
-	// 							{
-	// 								if (newFile != null)
-	// 									io.sockets.emit("newFile", { name: torrent["name"], data: newFile });
-	// 							}
-	// 						}
-	// 					);
-	// 				});
-	// 			}
-	// 		}
-	// 	});
-	// };
-
-	/**
-	 * Socket - Emit - torrentRefreshRes
-	 * Ajout en db le nouveau fichier telecharger et fini
-	 * Envois un event a tout les utilisateurs avec les nouvelles donnees des torrents actifs
-	 */
-	/**
 	 * Mets a jour le tableau finishedTorrents si il y a des torrents fini et met a jour la DB
+	 * Ajout en db le nouveau fichier telecharger et fini
+	 * Envois un event a tout les utilisateurs avec les nouvelles donnees des torrents actifs
 	 */
 	var finishRefreshTorrent = function () {
 		transmission.torrentGet(checkFinished, "recently-active", function (err, res) {
@@ -80,11 +34,9 @@ module.exports = function (socket, io, transmission) {
 				res["torrents"].forEach(function (torrent) {
 					if (finishedTorrents.indexOf(torrent['name']) < 0)
 					{
-						if (torrent['leftUntilDone'] === 0 && torrent["percentDone"] === 1.0)// && torrent["status"] > 4)
+						if (torrent['leftUntilDone'] === 0 && torrent["percentDone"] === 1.0)
 						{
-							console.log("Un nouveau fichier est telecharge : ", torrent["name"]);
 							finishedTorrents.push(torrent["name"]);
-							// addFinishedTorrentToDB(torrent['id'], torrent['name']);
 							File.insertTorrent(torrent['id'], torrent['name'], transmission, function (err, newFile) {
 								if (newFile != null)
 									io.sockets.emit("newFile", { name: torrent["name"], data: newFile });
@@ -108,18 +60,6 @@ module.exports = function (socket, io, transmission) {
 			io.sockets.emit('torrentRefreshRes', { result: res });
 		});
 	};
-
-	/**
-	 * Create File
-	 */
-	// var createFile = function (torrentAdded, userId) {
-	// 	File.create({ name: torrentAdded['name'], creator: userId, hashString: torrentAdded['hashString']}, function (err, file) {
-	// 		if (err)
-	// 			throw err;
-	// 	});
-	// };
-
-
 
 	if (io.engine.clientsCount === 1)
 		finishRefreshTorrentIntervalId = setInterval(finishRefreshTorrent, second);
@@ -153,12 +93,10 @@ module.exports = function (socket, io, transmission) {
 	 */
 	socket.on('delete:torrent', function (data) {
 		var removeLocalData = data.removeLocalData;
-		// var id = parseInt(data.id, 10);
 		var ids = format.torrentsIds(data.ids);
 		transmission.torrentGet(['hashString', 'name'], ids, function (err, respGet) {
 			if (err)
 				socket.emit('delete:torrent', { success: false, message: 'Could not remove torrent', error: err });
-				// console.log('Socket - On - delete:torrent: ', err);
 			else
 			{
 				transmission.torrentRemove(ids, removeLocalData, function (err, respRemove) {
@@ -175,7 +113,6 @@ module.exports = function (socket, io, transmission) {
 								respGet['torrents'].forEach(function (torrent) {
 									toFind.push(torrent.hashString);
 								});
-								// File.findOneAndRemove({ hashString: respGet['torrents'][0]['hashString'] }, function (err, file) {
 								File.remove({ hashString:  { $in: toFind } }, function (err, file) {
 									if (err)
 										console.log('Socket - On - delete:torrent: ', err);
@@ -186,9 +123,6 @@ module.exports = function (socket, io, transmission) {
 								if (index > 0)
 									finishedTorrents.splice(index, 1);
 							});
-							// var index = finishedTorrents.indexOf(respGet['torrents'][0]['name']);
-							// if (index > 0)
-							// 	finishedTorrents.splice(index, 1);
 						}
 					}
 				});
@@ -212,7 +146,6 @@ module.exports = function (socket, io, transmission) {
 					socket.emit('post:torrent', { success: false, message: 'duplicate, torrent already present' });
 				else if ('torrent-added' in resp)
 				{
-					// createFile(resp['torrent-added'], data.id);
 					File.createFile(resp['torrent-added'], data.id, function (err, file) {
 						if (err)
 							io.sockets.emit('post:torrent', { success: false, message: 'torrent successfully added but adding it in db failed', id: resp['torrent-added']['id'], name: resp['torrent-added']['name'], error: err });

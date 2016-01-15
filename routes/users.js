@@ -8,7 +8,6 @@ var rights = require('../middlewares/rights');
 var upload = require('../middlewares/upload');
 
 
-/* GET users listing. */
 router.get('/', function (req, res, next) {
 	// check role si besoin
 	User.find({}, { password: 0 }, function (err, users) {
@@ -23,7 +22,6 @@ router.post('/', rights.admin, upload.avatar.single('avatar'), function (req, re
 		req.body.avatar = req.file.filename;
 	else
 		req.body.avatar = req.app.locals.ttConfig.users["default-avatar"];
-	// User.create(req.body, function (err, post) {
 	User.createNew(req.body, function (err, post) {
 		if (err)
 			res.json({ success: false, message: err });
@@ -58,7 +56,6 @@ router.put('/:id', rights.adminOrUserParam, upload.avatar.single('avatar'), func
 		req.body.avatar = req.file.filename;
 	if ('_id' in req.body)
 		delete req.body._id;
-	// User.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true }, function (err, post) {
 	User.updateUserById(req.params.id, req.body, function (err, post) {
 		if (err)
 			res.json({ success: false, message: err });

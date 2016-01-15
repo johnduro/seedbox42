@@ -174,26 +174,6 @@ router.put('/new-directory', rightsMW.admin, function (req, res, next) {
 				result.push(newFile);
 			loop();
 		});
-		// var fileToInsert = {
-		// 	name: pathS.basename(file.path),
-		// 	path: file.path,
-		// 	size: file.size,
-		// 	creator:  mongoose.mongo.ObjectID(req.user._id),
-		// 	hashString: btoa(file.path),
-		// 	isFinished: true,
-		// 	fileType: file.fileType,
-		// 	createdAt: Date.now()
-		// };
-		// File.create(fileToInsert, function (err, newFile) {
-		// 	if (err)
-		// 	{
-		// 		error = true;
-		// 		result.push({ error: err, path: fileToInsert.path });
-		// 	}
-		// 	else
-		// 		result.push(newFile);
-		// 	loop();
-		// });
 	})();
 });
 

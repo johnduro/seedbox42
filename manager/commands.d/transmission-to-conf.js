@@ -9,7 +9,6 @@ module.exports = function (configFileName, args, commandLineArg, done) {
 			console.log(chalk.red('Could not get transmission settings, error : '), err);
 			return done();
 		}
-			// process.exit();
 		args.config['transmission-settings'] = tConf;
 		ft.jsonToFile(configFileName, args.config, function (err) {
 			if (err)

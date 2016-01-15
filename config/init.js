@@ -12,7 +12,6 @@ var getMongoConnex = function (mongoConfig) {
 			console.log('database: connection error', err);
 			console.log("Could not connect to database, exiting process");
 			process.exit();
-//			configFileError("Could not connect to database, exiting process");
 		}
 		else
 			console.log('database: connection successful');
@@ -27,7 +26,6 @@ var checkTransmissionSettings = function (t, tSettings) {
 			console.log("Could not retreive 'transmission' session infos");
 			process.exit();
 		}
-			// configFileError("Could not retreive 'transmission' session infos");
 		else
 		{
 			var tMod = {};
@@ -47,7 +45,6 @@ var checkTransmissionSettings = function (t, tSettings) {
 						console.log("session set error: ", err);
 						console.log("Could not set session for transmission");
 						process.exit();
-						// configFileError("Could not set session for transmission");
 					}
 				});
 			}
@@ -88,7 +85,6 @@ var checkDashboardSettings = function (dSettings) {
 module.exports = function () {
 	var infos = {
 		configFileName: './config.json',
-		// configDefaultName: './config/default-config.json',
 		config: null,
 		configDefault: null,
 		connexionDb: null,
@@ -96,7 +92,6 @@ module.exports = function () {
 	};
 
 	infos.config = JSON.parse(fs.readFileSync(infos.configFileName, 'utf8'));
-	// infos.configDefault = JSON.parse(fs.readFileSync(infos.configDefaultName, 'utf8'));
 	infos.configDefault = require('./default-config');
 	var validityError = validity.checkConfig(infos.config, infos.configDefault, "", infos.configFileName);
 	if (validity.checkConfigErrors(validityError, infos.configFileName))

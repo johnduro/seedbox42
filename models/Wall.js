@@ -13,7 +13,7 @@ var WallMessageSchema = new mongoose.Schema({
 		validate: [
 			function (message) {
 				if (message.length > 0)
-					true;
+					return true;
 			}
 		]
 	},
@@ -48,15 +48,12 @@ WallMessageSchema.statics = {
 		this.create({ message: message, user: user }, function (err, file) {
 			if (err)
 				return cb(err);
-				// throw err;
 			this.count({}, function (err, count) {
-				// if (count > 100)
 				if (count > limit)
 				{
 					this.findOneAndRemove({}).sort({ createdAt: 1 }).exec(function (err, message) {
 						if (err)
 							return cb(err);
-							// throw err;
 					});
 				}
 			});
@@ -65,7 +62,6 @@ WallMessageSchema.statics = {
 					return cb(err);
 				return cb(null, formatFile[0]);
 			});
-			// return cb(null, file);
 		});
 	},
 

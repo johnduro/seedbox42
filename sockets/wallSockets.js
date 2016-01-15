@@ -7,7 +7,6 @@ module.exports = function (socket, io, appConfig) {
 	 * Add a message on the dashboard
 	 */
 	socket.on('chat:post:message', function (data) {
-		console.log("data::post::messages ", data);
 		Wall.addMessage(data.id, data.message, appConfig.dashboard["mini-chat-message-limit"], function (err, message) {
 			if (err)
 				socket.emit('chat:post:message', { success: false, message: 'could not record message' });

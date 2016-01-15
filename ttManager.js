@@ -6,7 +6,6 @@ var commands = require('./manager/commands');
 var Arguments = require('./manager/arguments');
 
 var configFileName = './config.json';
-// var configFileName = './toto.json';
 
 var scriptArguments = {
 	string: ['user'],
@@ -16,8 +15,24 @@ var scriptArguments = {
 for (var command in commands)
 	scriptArguments[commands[command].type].push(command);
 
+var commandNames = Object.keys(commands);
+
 var argvOg = mini(process.argv.slice(2));
 var argvParsed = mini(process.argv.slice(2), scriptArguments);
+
+var isCommand = false;
+
+for (var i = 0; i < commandNames.length;i++)
+{
+	if (argvParsed[commandNames[i]])
+		isCommand = true;
+}
+
+if (!isCommand)
+{
+	console.log('Usage : node ttManager [[--help] ...]');
+	process.exit();
+}
 
 var functionArgs = null;
 
@@ -50,7 +65,6 @@ var checkCommand = function (name, done) {
 	{
 		console.log('Usage: ' + commands[name].usage);
 		done();
-		//ajouter message erreur si pas d'arg
 	}
 	else if (commands[name].type == 'boolean' && argvParsed[name] == true)
 		callCommand(name, commands[name], '', done);

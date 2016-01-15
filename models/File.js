@@ -50,7 +50,6 @@ var FileSchema = new mongoose.Schema({
 		type: Number,
 		default: 1
 	},
-	// torrent: String, //utile ?
 	commentsNbr: {
 		type: Number,
 		default: 0
@@ -175,7 +174,6 @@ FileSchema.statics = {
 	removeOldFile: function (days, transmission, cb) {
 		var dateDelete = new Date();
 		dateDelete.setDate(dateDelete.getDate() - days);
-		// this.find({ "createdAt": { $lt: dateDelete }, "locked": { $size: 0 } }).remove().exec(function (err, files) {
 		this.find({ "createdAt": { $lt: dateDelete }, "locked": { $size: 0 } }).exec(function (err, files) {
 			if (err)
 				cb(err);
@@ -201,14 +199,12 @@ FileSchema.statics = {
 		});
 	},
 
-	// insertFile: function (file, userId, cb) {
 	insertFile: function (file, userId, hashString, cb) {
 		var fileToInsert = {
 			name: pathS.basename(file.path),
 			path: file.path,
 			size: file.size,
 			creator:  mongoose.mongo.ObjectID(userId),
-			// hashString: btoa(file.path),
 			hashString: hashString,
 			isFinished: true,
 			fileType: file.fileType,
@@ -228,8 +224,6 @@ FileSchema.statics = {
 			console.log("ajout in DB");
 			if (err)
 				done(err);
-				// console.log("add finish torrent error: ", err);
-				// throw err;
 			else
 			{
 				console.log(resp['torrents'].length);
@@ -252,13 +246,8 @@ FileSchema.statics = {
 							function (err, newFile) {
 								if (err)
 									done(err);
-									// console.log("add finish torrent error: ", err);
 								else
 									done(null, newFile);
-								// {
-								// 	if (newFile != null)
-								// 		io.sockets.emit("newFile", { name: torrent["name"], data: newFile });
-								// }
 							}
 						);
 					});
@@ -266,24 +255,6 @@ FileSchema.statics = {
 			}
 		});
 	}
-
-	// removeExistingFiles: function (files, cb) {
-	// 	var i = 0;
-	// 	var result = [];
-	// 	(function next () {
-	// 		var addFile = files[i++];
-	// 		if (!addFile)
-	// 			cb(null, result);
-	// 		console.log('user', User);
-	// 		// console.log('file' ,File);
-	// 		this.findOne({ path: addFile.path }, function (err, file) {
-	// 			if (err)
-	// 				cb(err);
-	// 			console.log(file);
-	// 			next();
-	// 		});
-	// 	})();
-	// }
 };
 
 /**
@@ -344,7 +315,6 @@ FileSchema.methods = {
 
 	addGrade: function (user, grade, cb) {
 		var index = ft.indexOfByIdKey(this.grades, 'user', user._id.toString());
-		// var index = ft.indexOfByUserId(this.grades, user._id);
 		if (index === -1)
 		{
 			this.grades.push({ user: user._id, grade: grade });
@@ -355,25 +325,12 @@ FileSchema.methods = {
 			this.grades.splice(index, 1);
 			this.grades.push({ user: user._id, grade: grade });
 			this.averageGrade = this.getAverageGrade();
-			// return cb('already graded');
 		}
-		this.save(cb);
-	},
-
-	modGrade: function (user, newGrade, cb) { //SUPPRIMER !!!!!!!!??
-		var index = ft.indexOfByIdKey(this.grades, 'user', user._id.toString());
-		// var index = ft.indexOfByUserId(this.grades, user._id);
-		if (index > -1)
-			this.grades[index].grade = newGrade;
-		else
-			return cb('this user have not graded this file yet');
-		this.averageGrade = this.getAverageGrade();
 		this.save(cb);
 	},
 
 	removeGrade: function (user, cb) {
 		var index = ft.indexOfByIdKey(this.grades, 'user', user._id.toString());
-		// var index = ft.indexOfByUserId(this.grades, user._id);
 		if (index > -1)
 			this.grades.splice(index, 1);
 		else
@@ -461,7 +418,6 @@ FileSchema.methods = {
 	},
 
 	getIsLockedByUser: function (user) {
-		// var index = ft.indexOfByIdKey(this.locked, 'user', user._id);
 		var index = ft.indexOfByUserId(this.locked, user._id);
 		if (index > -1)
 			return true;

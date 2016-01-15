@@ -42,13 +42,11 @@ router.get('/:id', function (req, res, next) {
 router.post('/add-grade/:id', function (req, res, next) {
 	File.findById(req.params.id, function (err, file) {
 		if (err)
-			// return next(err);
 			res.json({ success: false, message: err });
 		else
 		{
 			file.addGrade(req.user, req.body.grade, function (err) {
 				if (err)
-					// return next(err);
 					res.json({ success: false, message: err });
 				else
 					res.json({ success: true, message: 'grade added' });
@@ -68,8 +66,6 @@ router.delete('/remove-grade/:id', function (req, res, next) {
 		});
 	});
 });
-
-// router.put('/mod-grade/:id');
 
 router.post('/add-lock/:id', function (req, res, next) {
 	File.findById(req.params.id, function (err, file) {
@@ -103,7 +99,6 @@ router.delete('/remove-lock/:id', function (req, res, next) {
 
 router.put('/remove-all-user-lock', function (req, res, next) {
 	File.find({ '_id': { $in: req.body.toUnlock } }, function (err, files) {
-		console.log('ALL LOCKED :: ', files);
 		if (err)
 			res.json({ success: false, message: err });
 		var i = 0;
@@ -124,23 +119,15 @@ router.put('/remove-all-user-lock', function (req, res, next) {
 
 router.put('/hard-remove-all-lock', function (req, res, next) {
 	File.find({ '_id': { $in: req.body.toUnlock } }, function (err, files) {
-		console.log('ALL HARD LOCKED :: ', files);
-		console.log('ERR :: ', err);
-		console.log('there1');
 		if (err)
 			res.json({ success: false, message: err });
-		console.log('there2');
 		var i = 0;
 		var unlocked = [];
 		(function next () {
 			var file = files[i++];
-			console.log('there3 :: ', file);
 			if (!file)
 				return res.json({ success: true, message: 'files successfully unlocked', data: unlocked });
-			console.log('there4 :: ');
 			file.removeAllLock(function (err) {
-				console.log('FILE :: ', file.name);
-				console.log('UNLOCK WERR : ', err);
 				if (!err)
 					unlocked.push(file._id);
 				next();
@@ -189,13 +176,8 @@ router.delete('/remove-comment/:id', function (req, res, next) {
 				res.json({ success: true, message: 'comment successfully removed' });
 			});
 		}
-		// if (err)
-		// 	return next(err);
 	});
 });
-
-
-// db.files.aggregate([ {"$match": {"comments.user":  ObjectId("561286ad881dd9a9727b2313")} }, {"$unwind": "$comments"}, {"$match": {"comments.user":  ObjectId("561286ad881dd9a9727b2313")}}, {"$group": {"_id": "$_id", "comments": {"$push": "$comments"}}} ])
 
 router.get('/user-comment/:id', function (req, res, next) {
 	var id = mongoose.mongo.ObjectID(req.params.id);
@@ -204,14 +186,11 @@ router.get('/user-comment/:id', function (req, res, next) {
 			{ "$match": { "comments.user": id } },
 		 	{ "$unwind": "$comments" },
 			{ "$match": { "comments.user": id } },
-			// { "$project": { "fileName": "$name" } },
 			{ "$group": { "_id": "$_id", "comments": { "$push": "$comments" } } }
-			// { "$group": { "_id": "$_id", "name": "$name", "comments": { "$push": "$comments" } } }
 		],
 		function (err, resp) {
 			if (err)
 			{
-				console.log("EROR ",err);
 				next(err);
 			}
 			res.json({ success: true, data: resp });
@@ -237,29 +216,8 @@ router.get('/user-locked/:id', function (req, res, next) {
 	});
 });
 
-// router.get('/user-locked/:id' ,function (req, res, next) {
-// 	var id = mongoose.mongo.ObjectID(req.params.id);
-// 	File.aggregate(
-// 		[
-// 			{ "$match": { "locked.user": id } },
-// 		 	{ "$unwind": "$locked" },
-// 			{ "$match": { "locked.user": id } },
-// 			{ "$group": { "_id": "$_id" } }
-// 		],
-// 		function (err, resp) {
-// 			if (err)
-// 			{
-// 				console.log("EROR ",err);
-// 				next(err);
-// 			}
-// 			res.json({ success: true, data: resp});
-// 	});
-// });
-
 router.put('/delete-all', rights.admin, function (req, res, next) {
-	console.log('TOO DELETE :: ', req.body.toDelete);
 	File.find({ '_id': { $in: req.body.toDelete } }, function (err, files) {
-		console.log('ALL DELETE :: ', files);
 		if (err)
 			res.json({ success: false, message: err });
 		var i = 0;
@@ -277,41 +235,29 @@ router.put('/delete-all', rights.admin, function (req, res, next) {
 	});
 });
 
-// method put , attention au path !
-router.put('/:id', function (req, res, next) {
-	console.log(req.body);
-	//rajouter un check de config pour voir si tout le monde peut delete ???
-	if (req.user.role === 0 || (req.body.privacy === 0 && req.user._id === req.body.creator))
-	{
-		if ('path' in req.body)
-			delete req.body.path;
-		if ('size' in req.body)
-			delete req.body.size;
-		if ('hashString' in req.body)
-			delete req.body.hashString;
-		if ('createdAt' in req.body)
-			delete req.body.createdAt;
-		if ('torrentAddedAt' in req.body)
-			delete req.body.torrentAddedAt;
-		delete req.body._id;
-		// File.findByIdAndUpdate(req.params.id, req.body, { new: true }, function (err, file) {
-		File.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true }, function (err, file) {
-			if (err)
-				res.json({ success: false, message: err });
-			else
-				res.json({ success: true, data: file });
-				// return next(err);
-			// res.json(file);
-		});
-	}
-	else
-		res.json({ success: false, message: "You don't have enought rights for this action" });
+router.put('/:id', rights.admin, function (req, res, next) {
+	if ('path' in req.body)
+		delete req.body.path;
+	if ('size' in req.body)
+		delete req.body.size;
+	if ('hashString' in req.body)
+		delete req.body.hashString;
+	if ('createdAt' in req.body)
+		delete req.body.createdAt;
+	if ('torrentAddedAt' in req.body)
+		delete req.body.torrentAddedAt;
+	delete req.body._id;
+	File.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true }, function (err, file) {
+		if (err)
+			res.json({ success: false, message: err });
+		else
+			res.json({ success: true, data: file });
+	});
 });
 
 
 
 router.delete('/:id', rights.admin, function (req, res, next) {
-	//rajouter un check de config pour voir si tout le monde peut delete ???
 	File.findById(req.params.id, function (err, file) {
 		if (err)
 			return next(err);

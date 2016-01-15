@@ -12,7 +12,6 @@ module.exports = function (configFileName, args, commandLineArg, done) {
 		}
 		else
 		{
-			// console.log('USER > ', user);
 			var questions = [
 				{
 					type: 'input',
@@ -30,7 +29,6 @@ module.exports = function (configFileName, args, commandLineArg, done) {
 					type: 'password',
 					name: 'password',
 					message: "Password:\n > ",
-					default: function () { return (user.password); },
 					validate: function (value) {
 						if (value === '')
 							return chalk.red('Please enter a password');

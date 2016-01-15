@@ -5,7 +5,6 @@ var bcrypt = require('bcrypt');
 var User = require('../models/User.js');
 
 router.post('/', function(req, res, next) {
-	console.log("authenticate::body:: ", req.body);
 	User.findOne({ login: req.body.login }, function(err, user) {
 		if (err)
 			return next(err);

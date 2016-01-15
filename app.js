@@ -14,16 +14,9 @@ var socketIO = require('socket.io');
 // EXTRAS
 // ====================================
 var fs = require('fs');
-// var join = require('path').join;
-// var mongoose = require('mongoose');//dans init
-// fs.readdirSync(join(__dirname, 'models')).forEach(function (file) {
-// 	if (~file.indexOf('.js')) require(join(__dirname, 'models', file));
-// });
 var jwt = require('jsonwebtoken');
 var multer = require('multer');
 var auth = require('./middlewares/auth.js');
-// var TransmissionNode = require('./utils/transmissionNode');
-// var configInit = require('./utils/configInit');
 var configInit = require('./config/init');
 var ttCron = require('./utils/cron');
 // ************************************
@@ -33,16 +26,10 @@ var ttCron = require('./utils/cron');
 // ====================================
 var app = express();
 var configInfos = configInit();
-// app.set('configFileName', configInfos.configFileName);
-// app.set('defaultConfig', configInfos.configDefault);
-// app.set('secret', configInfos.config.secret);
 app.set('config', configInfos.config);
-// app.set('connexionDB', configInfos.connexionDb);
-// app.set('transmission', configInfos.transmission);
-app.locals.ttConfig = configInfos.config; //IMPLEMENTER DANS TOUTE L APP !!!!!!!!!!!
+app.locals.ttConfig = configInfos.config;
 app.locals.ttConfigDefault = configInfos.configDefault;
 app.locals.ttConfigFileName = configInfos.configFileName;
-// app.locals.ttConfigDefaultName = configInfos.configDefaultName;
 app.locals.connexionDb = configInfos.connexionDb;
 app.locals.transmission = configInfos.transmission;
 // ************************************
@@ -58,42 +45,18 @@ ttCron(app.locals.ttConfig, app.locals.transmission);
 // ====================================
 var users = require('./routes/users');
 var authenticate = require('./routes/authenticate');
-var debugSetup = require('./routes/ds');
 var torrent = require('./routes/torrent');
 var file = require('./routes/file');
 var dashboard = require('./routes/dashboard');
 var admin = require('./routes/admin');
 // ************************************
 
-
-// ====================================
-// DATABASE CONNEXION
-// ====================================
-// var connexionDB = mongoose.connect(config.database, function (err) {
-// 	if (err)
-// 		console.log('database: connection error', err);
-// 	else
-// 		console.log('database: connection successful');
-// });
-// app.set('connexionDB', connexionDB);
-// ************************************
-
-// ====================================
-// TORRENTS
-// ====================================
-// var transmission = new TransmissionNode();
-// app.set('transmission', transmission);
-//************************************
-
 // ====================================
 // SOCKETS
 // ====================================
 var io = socketIO();
 app.io = io;
-// var sockets = require('./utils/sockets')(io, transmission, app.get('secret'));
-// var sockets = require('./utils/sockets')(io, transmission, app);
 var sockets = require('./sockets/sockets')(io, configInfos.transmission, app);
-// var sockets = require('./utils/sockets')(io, configInfos.transmission, app);
 //************************************
 
 // view engine setup
@@ -114,7 +77,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ====================================
 
 // ----- STANDARDS -----
-app.use('/debug', debugSetup);
 app.use('/authenticate', authenticate);
 
 // ----- CONNECTED -----

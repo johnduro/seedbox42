@@ -44,7 +44,6 @@ module.exports = function (config, transmission) {
 								else if (newFile != null)
 									console.log('cron:success:newfile:', newFile.name);
 							});
-							// addFinishedTorrentToDB(torrent['id'], torrent['name']);
 						}
 					}
 				});

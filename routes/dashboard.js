@@ -20,17 +20,7 @@ var getTotalDiskSpace = function (downloadDir, done) {
 	});
 };
 
-// router.get('/disk-space', function (req, res, next) {
-// 	getTotalDiskSpace(req.app.locals.ttConfig["transmission-settings"]["download-dir"], function (err, diskInfos) {
-// 		if (err)
-// 			res.json({ success: false, message: err });
-// 		else
-// 			res.json({ success: true, data: diskInfos });
-// 	});
-// });
-
 router.get('/:panel/:all?', function (req, res, next) {
-	// panels[req.params.panel](req.user, req.app.locals.ttConfig.dashboard, function (ret) {
 	panels[req.params.panel](req, function (ret) {
 		res.json(ret);
 	});
