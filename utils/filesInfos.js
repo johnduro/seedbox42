@@ -126,18 +126,20 @@ module.exports = {
 
 	getFilesStreams: function self (fileDetail, pathInDir, done) {
 		var fileStream = [];
+		var zipSize = 0;
 		if (fileDetail.isDirectory)
 		{
 			var i = 0;
 			(function next () {
 				var file = fileDetail.fileList[i++];
 				if (!file)
-					return done(null, fileStream);
+					return done(null, { streams: fileStream, size: zipSize });
 				var filePathInDir = pathInDir + '/' + file.name;
 				self(file, filePathInDir, function (err, data) {
 					if (err)
 						return done(err);
-					fileStream = fileStream.concat(data);
+					fileStream = fileStream.concat(data.streams);
+					zipSize += data.size;
 					next();
 				});
 			})();
@@ -145,7 +147,7 @@ module.exports = {
 		else
 		{
 			fileStream.push({ stream: fs.createReadStream(fileDetail.path), name: pathInDir });
-			return done(null, fileStream);
+			return done(null, { streams: fileStream, size: (fileDetail.size + 30 + (pathInDir.length * 2) + 16 + 46) });
 		}
 	},
 
