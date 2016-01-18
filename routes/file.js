@@ -350,12 +350,11 @@ router.get('/download/:id/:path/:name', function (req, res, next) {
 				fileInfos.getFileInfosRecurs(filePath, fileName, function (err, data) {
 					if (err)
 						return next(err);
-					res.setHeader('Content-Length', data.size);
-					fileInfos.getFilesStreams(data, '', function (err, streams) {
+					fileInfos.getFilesStreams(data, '', function (err, infosZip) {
+						res.setHeader('Content-Length', infosZip.size + 22);
 						var zip = new zipstream();
 						zip.pipe(res);
-						var i = 0;
-						streams.forEach(function (s) {
+						infosZip.streams.forEach(function (s) {
 							zip.addFile(s.stream, { name : s.name }, function () {
 							});
 						});
@@ -364,26 +363,27 @@ router.get('/download/:id/:path/:name', function (req, res, next) {
 					});
 				});
 			}
-			else if (typeof req.header("range") !== 'undefined')
-			{
-				var mimeType = mime.lookup(filePath);
-				var range = ft.getRange(fileSize, req.header("range"));
-				res.setHeader('Content-type', mimeType);
-				res.setHeader("Content-Range", "bytes " + range[0].start + "-" + range[0].end + "/" + fileSize);
-				res.setHeader('Accept-Ranges', "bytes");
-				res.setHeader('Content-Length', (range[0].end - range[0].start)+1);
-				var fileStream = fs.createReadStream(filePath, { start: range[0].start, end: range[0].end });
-				res.openedFile = fileStream;
-				res.status(206);
-				fileStream.pipe(res);
-			}
 			else
 			{
+				var fileStream;
+				if (typeof req.header("range") !== 'undefined')
+				{
+					var range = ft.getRange(fileSize, req.header("range"));
+					res.setHeader('Content-Length', (range[0].end - range[0].start) + 1);
+					res.setHeader("Content-Range", "bytes " + range[0].start + "-" + range[0].end + "/" + fileSize);
+					res.setHeader('Accept-Ranges', "bytes");
+					fileStream = fs.createReadStream(filePath, { start: range[0].start, end: range[0].end });
+					res.openedFile = fileStream;
+					res.status(206);
+				}
+				else
+				{
+					res.setHeader('Content-disposition', 'attachment; filename=' + fileName);
+					res.setHeader('Content-Length', fileSize);
+					fileStream = fs.createReadStream(filePath);
+				}
 				var mimeType = mime.lookup(filePath);
-				res.setHeader('Content-disposition', 'attachment; filename=' + fileName);
 				res.setHeader('Content-type', mimeType);
-				res.setHeader('Content-Length', fileSize);
-				var fileStream = fs.createReadStream(filePath);
 				fileStream.pipe(res);
 			}
 		});
