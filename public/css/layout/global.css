@@ -190,6 +190,10 @@ textarea {
 	height: 40px;
 }
 
+.tt-search-div input {
+	width: 80%;
+}
+
 .tt-search-input {
 	height: 100%;
 	border: none;

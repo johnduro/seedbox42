@@ -187,7 +187,7 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
         }else{
             toaster.pop('error', "Error", "You can't comment on this file.", 5000);
         }
-	};
+	}; 
 
     $scope.deleteComment = function(index, id){
         RequestHandler.delete(api + "file/remove-comment/" + $scope.torrent._id, {commentId: id})
