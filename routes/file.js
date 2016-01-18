@@ -362,6 +362,7 @@ router.get('/download/:id/:path/:name', function (req, res, next) {
 						});
 					});
 				});
+				file.incDownloads();
 			}
 			else
 			{
@@ -381,13 +382,13 @@ router.get('/download/:id/:path/:name', function (req, res, next) {
 					res.setHeader('Content-disposition', 'attachment; filename=' + fileName);
 					res.setHeader('Content-Length', fileSize);
 					fileStream = fs.createReadStream(filePath);
+					file.incDownloads();
 				}
 				var mimeType = mime.lookup(filePath);
 				res.setHeader('Content-type', mimeType);
 				fileStream.pipe(res);
 			}
 		});
-		file.incDownloads();
 	});
 });
 
