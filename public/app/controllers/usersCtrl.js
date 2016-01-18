@@ -1,4 +1,4 @@
-app.controller('usersCtrl', function ($scope, $rootScope, RequestHandler, Upload, Tools, clipboard) {
+app.controller('usersCtrl', function ($scope, $rootScope, RequestHandler, Upload, Tools, clipboard, toaster) {
 
 	console.log("usersCtrl");
 
@@ -54,6 +54,9 @@ app.controller('usersCtrl', function ($scope, $rootScope, RequestHandler, Upload
 					result.data = JSON.parse(result.data);
 					if (result.data.success){
 						$scope.users.push(result.data.data);
+						toaster.pop('success', "Success", result.data.message, 5000);
+					}else{
+						toaster.pop('error', "Error", result.data.message, 5000);
 					}
 				});
 		};
@@ -69,7 +72,9 @@ app.controller('usersCtrl', function ($scope, $rootScope, RequestHandler, Upload
 				.then(function(result){
 					if (result.data.success){
 						$scope.users = result.data.data;
-						console.log($scope.users);
+						toaster.pop('success', "Success", result.data.message, 5000);
+					}else{
+						toaster.pop('error', "Error", result.data.message, 5000);
 					}
 				});
 		};
@@ -103,9 +108,10 @@ app.controller('usersCtrl', function ($scope, $rootScope, RequestHandler, Upload
 				.then(function(result){
 					result.data = JSON.parse(result.data);
 					if (result.data.success){
-						getUsers();
+						toaster.pop('success', "Success", result.data.message, 5000);
+						getUsers();						
 					}else{
-						console.log("error");
+						toaster.pop('error', "Error", result.data.message, 5000);
 					}
 				});
 		};

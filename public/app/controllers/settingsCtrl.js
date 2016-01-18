@@ -1,4 +1,4 @@
-app.controller("settingsCtrl", function($rootScope, $scope, RequestHandler){
+app.controller("settingsCtrl", function($rootScope, $scope, RequestHandler, toaster){
     console.log("settingsCtrl");
 
     $scope.sendDir = "";
@@ -35,9 +35,6 @@ app.controller("settingsCtrl", function($rootScope, $scope, RequestHandler){
                     .then(function(result2){
                         $scope.settings = result1.data.data;
                         $scope.settingsDefault = result2.data.data;
-                        console.log("SETTINGS", $scope.settings);
-                        console.log("SETTINGS-DEFAULT", $scope.settingsDefault);
-                        console.log("ROOTSCOPE", $rootScope);
                         sortSettings();
                     });
 
@@ -48,17 +45,12 @@ app.controller("settingsCtrl", function($rootScope, $scope, RequestHandler){
         console.log($scope.settings[part]);
         RequestHandler.put(api + "admin/settings/" + part, $scope.settings[part])
             .then(function(result){
-                /*if (result.data.success)
-                    $scope.settings[part] = result.data.data;*/
-                console.log(result);
+                if (result.data.success){
+                    toaster.pop('success', "Success", result.data.message, 5000);
+                } else {
+                    toaster.pop('error', "Error", result.data.message, 5000);
+                }
             });
     };
 
-    $scope.addDirectory = function(){
-        RequestHandler.get(api + "admin/new-directory/" + btoa($scope.sendDir))
-            .then(function(result){
-                if (result.data.success)
-                    newDir = result.data.data;
-            });
-    };
 });

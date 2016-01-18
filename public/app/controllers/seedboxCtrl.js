@@ -15,8 +15,8 @@ app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http, $loca
 	}
 
 	socket.emit("chat:get:message", null, function(data){
-		$rootScope.chatMessages = data.message;
-		console.log("chat", data.message);
+		//$rootScope.chatMessages = data.message;
+		//console.log("chat", data.message);
 		//element.html(resultTemplate.data).show();
 		//$compile(element.contents())(scope);
 	});

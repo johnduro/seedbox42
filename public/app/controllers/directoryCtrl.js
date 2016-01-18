@@ -1,4 +1,4 @@
-app.controller("directoryCtrl", function($rootScope, $scope, RequestHandler, Tools){
+app.controller("directoryCtrl", function($rootScope, $scope, RequestHandler, Tools, toaster){
 
     console.log("directoryCtrl");
 
@@ -9,6 +9,7 @@ app.controller("directoryCtrl", function($rootScope, $scope, RequestHandler, Too
 
 
     $scope.searchDirectory = function(){
+        toaster.pop('info', "Info", "Search in path", 5000);
         RequestHandler.get(api + "admin/new-directory/" + btoa($scope.sendDir))
             .then(function(result){
                 if (result.data.success)
@@ -16,6 +17,8 @@ app.controller("directoryCtrl", function($rootScope, $scope, RequestHandler, Too
 					console.log("result::get:: ", result.data.data);
                     $scope.tree = result.data.data;
 					addType($scope.tree);
+				}else {
+				    toaster.pop('error', "Error", "Path do not exist.", 5000);
 				}
             });
     };
