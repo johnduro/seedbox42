@@ -17,8 +17,23 @@ app.directive('contentItem', function ($compile, RequestHandler, $rootScope, $lo
                     RequestHandler.get(api + "dashboard/" + scope.content.name)
                 		.then(function(result){
                             if (result.status == 200 && resultTemplate.status == 200){
-                                scope.files = result.data.data;
-                    			$rootScope.tools.convertFields(scope.files);
+
+                                switch(scope.content.template) {
+                                    case "dashboard-fileList":
+                                        scope.files = result.data.data;
+                                        $rootScope.tools.convertFields(scope.files);
+                                        break;
+                                    case "dashboard-chart-donut":
+                                        scope.chartData = [
+                                          {label: "Free space", value: result.data.data.freePer},
+                                          {label: "Used space", value: result.data.data.usedPer},
+                                        ];
+                                        scope.myFormatter = function(input) {
+                                          return input + '%';
+                                        };
+                                        break;
+                                }
+
                                 element.html(resultTemplate.data).show();
                                 $compile(element.contents())(scope);
                             }

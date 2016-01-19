@@ -8,7 +8,6 @@ var app = angular.module('seedApp', [
     'bootstrapLightbox',
     'angular.morris-chart',
     'luegg.directives',
-    'chart.js',
     'com.2fdevs.videogular',
     'xeditable',
     'ui.bootstrap.contextMenu',

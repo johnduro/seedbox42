@@ -4,7 +4,7 @@ module.exports = {
 	match : {
 		"name": { "type": "string", "default": "new module", "switch": false, "range": false },
 		"enabled": { "type": "string", "default": "all", "switch": true, "values": ["all", "user", "admin", "none"], "range": false },
-		"template": { "type": "string", "default": "dashboard-fileList", "switch": true, "values": ["dashboard-fileList", "graph", "dashboard-chat"], "range": false },
+		"template": { "type": "string", "default": "dashboard-fileList", "switch": true, "values": ["dashboard-fileList", "dashboard-chart-donut", "dashboard-chat"], "range": false },
 		"title": { "type": "string","default": "my new module", "switch": false, "range": false },
 		"order": { "type": "number", "default": 0, "switch": false, "range": false }
 	},
@@ -54,7 +54,7 @@ module.exports = {
 		{
 			"name": "disk-space",
 			"enabled": "all",
-			"template": "graph",
+			"template": "dashboard-chart-donut",
 			"title": "disk space",
 			"order": 6
 		},

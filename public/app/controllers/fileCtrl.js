@@ -187,17 +187,25 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
         }else{
             toaster.pop('error', "Error", "You can't comment on this file.", 5000);
         }
-	}; 
+	};
 
     $scope.deleteComment = function(index, id){
-        RequestHandler.delete(api + "file/remove-comment/" + $scope.torrent._id, {commentId: id})
-            .then(function(result){
-                if (result.data.success){
-                    $scope.torrent.comments.splice(index, 1);
-                }else{
-                    console.log("Error delete comment...");
-                }
-            });
+
+        var callbackConfirm = function(){
+            RequestHandler.delete(api + "file/remove-comment/" + $scope.torrent._id, {commentId: id})
+                .then(function(result){
+                    if (result.data.success){
+                        toaster.pop('success', "Success", result.data.message, 5000);
+                        $scope.torrent.comments.splice(index, 1);
+                    }else{
+                        toaster.pop('error', "Error", result.data.message, 5000);
+                    }
+                });
+		};
+
+		var callbackCancel = function(){};
+
+		Tools.modalConfirm("Confirmation", "You want to delete this comment?", callbackConfirm, callbackCancel);
     }
 
     $scope.getGradeByUser = function(id){
