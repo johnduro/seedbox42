@@ -53,10 +53,10 @@
 									</div>
 	                                <!-- ************************* INFOS UP TORRENT *************************  -->
 									<div class="col-md-12">
-										<span class="ts-infos" ng-if="torrent.isFinished"> Seeding Completed </span>
+										<span class="ts-infos" ng-if="torrent.isFinished"> Seeding Complete </span>
 										<span class="ts-infos" ng-if="torrent.status == 0 && !torrent.isFinished"> Paused </span>
-										<span class="ts-infos" ng-if="torrent.status == 4"> Downloading from {{torrent.peersSendingToUs}} of {{torrent.peersConnected}} - <i class="fa fa-arrow-down tt-darkblue"></i> {{FileConvertSize(torrent.rateDownload)}}/s <i class="fa fa-arrow-up tt-darkblue"></i> {{FileConvertSize(torrent.rateUpload)}}/s </span>
-										<span class="ts-infos" ng-if="torrent.status == 6"> Seeding from {{torrent.peersSendingToUs}} of {{torrent.peersConnected}} - <i class="fa fa-arrow-up tt-darkblue"></i> {{FileConvertSize(torrent.rateUpload)}}/s </span>
+										<span class="ts-infos" ng-if="torrent.status == 4"> Downloading from {{torrent.peersSendingToUs}} of {{torrent.peersConnected}} peers - <i class="fa fa-arrow-down tt-darkblue"></i> {{FileConvertSize(torrent.rateDownload)}}/s <i class="fa fa-arrow-up tt-darkblue"></i> {{FileConvertSize(torrent.rateUpload)}}/s </span>
+										<span class="ts-infos" ng-if="torrent.status == 6"> Seeding to {{torrent.peersSendingToUs}} of {{torrent.peersConnected}} peers - <i class="fa fa-arrow-up tt-darkblue"></i> {{FileConvertSize(torrent.rateUpload)}}/s </span>
 									</div>
         	                        <!-- ************************* PROGRESS BAR *************************  -->
 									<div class="col-md-12">

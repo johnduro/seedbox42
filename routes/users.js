@@ -61,7 +61,7 @@ router.put('/:id', rights.adminOrUserParam, upload.avatar.single('avatar'), func
 			res.json({ success: false, message: err });
 		else
 		{
-			newUser = post.toObject();
+			var newUser = post.toObject();
 			delete newUser.password;
 			res.json({ success: true, data: newUser });
 		}
@@ -79,7 +79,7 @@ router.delete('/:id', rights.adminOrUserParam, function (req, res, next) {
 					console.log(err);
 			});
 		}
-		User.find(function (err, users) {
+		User.find({}, { password : 0 }, function (err, users) {
 			if (err)
 				return next(err);
 			res.json({ success: true, message: 'user successfully deleted', data: users });
