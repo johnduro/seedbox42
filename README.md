@@ -1,9 +1,18 @@
 #Seedbox Teurpi Torrent
  
 
-**Setting up a debian vm** : https://jtreminio.com/2012/07/setting-up-a-debian-vm-step-by-step/
+##What's this ?
 
-**Download VMbox**
+
+**Teurpi Torrent** allows you to turn a server into a **seedbox** easily.
+
+Providing a **nice web interface** for Transmission to manage several users, torrents, download files easily and even stream your content.
+
+This tutorial is aimed at beginners.
+
+### What you need to do :
+
+**Setting up a debian** : https://jtreminio.com/2012/07/setting-up-a-debian-vm-step-by-step/
 
 **Download a Debian** http://ftp.cae.tntech.edu/debian-cd/ amd64 i386
 
@@ -26,17 +35,13 @@
 
 	echo 'admin ALL=(ALL) ALL' >> /etc/sudoers
 
-**install emacs** : 
+**edit ssh file in order to prevent a root connection** : 
 
-	apt-get emacs
-
-**edit ssh file in order to disallow a root connection** : 
-
-	emacs /etc/ssh/sshd_config
+	nano /etc/ssh/sshd_config
 
 **Find the line “#PermitRootLogin”** and change the value “Yes” or “without-password”, by “no”.
 
-Save with ctrl+x then ctrl+s. Use ctrl+x then ctrl+c to quit.
+Ctrl+x to exit. Answer *yes* to save, and press *enter* to keep the name.
 
 Connect to your server with the new user.
 
@@ -111,7 +116,7 @@ If auth error, stop the service
 
 Edit the file with 
 
-	sudo emacs /etc/transmission-daemon/settings.json
+	sudo nano /etc/transmission-daemon/settings.json
 
 Find the line **rpc-authentication-required: true** and modify **true** into **false**
 
