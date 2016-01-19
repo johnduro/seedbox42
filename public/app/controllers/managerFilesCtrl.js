@@ -42,14 +42,14 @@ app.controller("managerFilesCtrl", function($rootScope, $scope,$filter, Tools, R
 
         var callbackCancel = function(){};
 
-		Tools.modalConfirm("Confirmation", "Voulez vous vraiment delocker tous les fichiers ?", callbackConfirm, callbackCancel);
+		Tools.modalConfirm("Confirmation", "Do you really want to unlock the selected files ?", callbackConfirm, callbackCancel);
 	};
 
 
 	$scope.deleteSelected = function () {
 
         var callbackConfirm = function(){
-            console.log('DELETE SELECTED :: ', $scope.itemSelected);
+            // console.log('DELETE SELECTED :: ', $scope.itemSelected);
     		if ($scope.itemSelected.length > 0)
     		{
     			RequestHandler.put(api + "file/delete-all/", { toDelete: $scope.itemSelected })
@@ -70,8 +70,41 @@ app.controller("managerFilesCtrl", function($rootScope, $scope,$filter, Tools, R
 
         var callbackCancel = function(){};
 
-		Tools.modalConfirm("Confirmation", "Voulez vous vraiment supprimer tous les fichiers selectionnes ?", callbackConfirm, callbackCancel);
+		Tools.modalConfirm("Confirmation", "Do you really want to delete from database and server the selected files ?", callbackConfirm, callbackCancel);
 	};
+
+	// /delete-all-from-db
+	$scope.deleteSelectedOnlyDb = function () {
+
+        var callbackConfirm = function(){
+            // console.log('DELETE SELECTED :: ', $scope.itemSelected);
+    		if ($scope.itemSelected.length > 0)
+    		{
+    			RequestHandler.put(api + "file/delete-all-from-db/", { toDelete: $scope.itemSelected })
+    				.then(function (result) {
+    					if (result.data.success)
+    					{
+    						RequestHandler.get(api + "file/all")
+    							.then(function(result){
+    								$scope.elementsActual = result.data.data;
+    								console.log($scope.treeBase);
+    								addType($scope.elementsActual);
+    								$scope.itemSelected = [];
+    							});
+    					}
+    				});
+    		}
+        };
+
+        var callbackCancel = function(){};
+
+		Tools.modalConfirm("Confirmation", "Do you really want to delete from database the selected files ?", callbackConfirm, callbackCancel);
+	};
+
+
+
+
+
 
 	$scope.deleteUnlocked = function () {
 
@@ -99,7 +132,7 @@ app.controller("managerFilesCtrl", function($rootScope, $scope,$filter, Tools, R
 
 		var callbackCancel = function(){};
 
-		Tools.modalConfirm("Confirmation", "Voulez vous vraiment supprimer tous les fichiers non lockes ?", callbackConfirm, callbackCancel);
+		Tools.modalConfirm("Confirmation", "Do you really want to delete from database and server the unlocked files ?", callbackConfirm, callbackCancel);
 
 
 	};

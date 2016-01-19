@@ -54,12 +54,13 @@ UserSchema.statics = {
 		if (infos.password.length < 5)
 			return cb('The password must 5 characters at least');
 		ft.getUserPwHash(infos.password, function (err, hash) {
-				self.create(infos, function (err, post) {
-					if (err)
-						return cb(err);
-					else
-						return cb(null, post);
-				});
+			infos.password = hash;
+			self.create(infos, function (err, post) {
+				if (err)
+					return cb(err);
+				else
+					return cb(null, post);
+			});
 		});
 	},
 

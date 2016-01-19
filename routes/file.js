@@ -225,8 +225,28 @@ router.put('/delete-all', rights.admin, function (req, res, next) {
 		(function next () {
 			var file = files[i++];
 			if (!file)
-				return res.json({ success: true, message: 'files successfully unlocked', data: deleted });
+				return res.json({ success: true, message: 'files successfully removed from database and server', data: deleted });
 			file.deleteFile(req.app.locals.transmission, function (err, msg) {
+				if (!err)
+					deleted.push(file._id);
+				next();
+			});
+		})();
+	});
+});
+
+
+router.put('/delete-all-from-db', rights.admin, function (req, res, next) {
+	File.find({ '_id': { $in: req.body.toDelete } }, function (err, files) {
+		if (err)
+			res.json({ success: false, message: err });
+		var i = 0;
+		var deleted = [];
+		(function next () {
+			var file = files[i++];
+			if (!file)
+				return res.json({ success: true, message: 'files successfully removed from database', data: deleted });
+			file.deleteFileFromDb(req.app.locals.transmission, function (err) {
 				if (!err)
 					deleted.push(file._id);
 				next();

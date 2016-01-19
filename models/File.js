@@ -281,6 +281,17 @@ FileSchema.methods = {
 		});
 	},
 
+	deleteFileFromDb: function (transmission, cb) {
+		var self = this;
+		transmission.torrentRemove(self.hashString, false, function (err, resp) {
+			if (err)
+				console.log("delete:file:torrent-remove:err: ", err);
+			else
+				console.log('delete:file:torrent-remove:success: ', resp);
+			self.remove(cb);
+		});
+	},
+
 	addComment: function (user, comment, cb) {
 		this.comments.push({ text: comment, user: user._id });
 		this.commentsNbr++;
