@@ -30,10 +30,6 @@
 
 .content-messages {
     height: 300px;
-    /* background-color: #ddd; */
-    /* border-radius: 5px; */
-    /* border-style: solid; */
-    /* border-style: dotted; */
     padding: 5px;
     overflow-y: auto;
 }
@@ -89,8 +85,8 @@
 	background-color: #325064;
 	margin-top: 10px;
 	float: right;
-	/* &:hover { background-color: #99A8B2 } */
 }
+
 .form-message .btn-default:hover {
 	color: #fff;
 	background-color: #99A8B2
@@ -111,7 +107,7 @@
 }
 
 .d-header {
-	border: none;
+	margin-bottom: 20px;
 }
 
 .d-nbusers {
@@ -129,6 +125,10 @@
 	margin-top: -30px;
 }
 
+.d-panel {
+	margin-bottom: 20px;
+}
+
 .d-hr {
 	color: #315078;
 	background-color: #E9EDF0;
@@ -142,7 +142,6 @@
 .d-title {
 	float: left;
 	color: #325064;
-	/* font-weight: bold; */
 	font-family: 'MuseoSans-700';
 }
 
@@ -153,9 +152,6 @@
 }
 
 .d-table {
-	/* width: 100%; /\* ALEXIS VERIFIER SI UTILE !!!!!!!!!!!!!!!!!!!! *\/ */
-	/* font-family: MuseoSans-300; */
-	/* cellspacing: 0; /\* ALEXIS *\/ */
 }
 
 .d-table tr th, .d-table tr td, .d-table tr {
@@ -164,5 +160,4 @@
 
 .d-td-fontsize {
 	font-size: 0.9em;
-	/* font-weight: bold; */
 }
