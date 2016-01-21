@@ -170,7 +170,7 @@ npm is already installed thanks to nodejs
 
 Use 
 		
-		git clone https://github.com/johnduro/seedbox42.git -o nameofthedirectoryyouwant
+		git clone https://github.com/johnduro/seedbox42.git nameofthedirectoryyouwant
 		
 
 ######Recommanded Treeview for a teurpittorrent user :
@@ -431,7 +431,7 @@ npm est déja installé via nodejs
 
 On utilise
 		
-		git clone https://github.com/johnduro/seedbox42.git -o nomdurépertoirequevousvoulez
+		git clone https://github.com/johnduro/seedbox42.git nomdurépertoirequevousvoulez
 ######Si le serveur transmission est deja existant et que vous avez quelques fichiers.
 
 	node ttManager.js --transmission-to-conf
