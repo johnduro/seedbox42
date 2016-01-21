@@ -6,7 +6,7 @@ Teurpi Torrent est un projet réalisé par des étudiants de l'école 42.
 
 Disposant d'une **interface web claire** pour Transmission, il permet une gestion complète des utilisateurs et de leurs accès. Il autorise le téléchargement de torrents, la gestion des fichiers téléchargés ainsi que la possibilité de streamer des médias.
 
-Ce tutorial est destiné à des débutants.
+Ce tutorial est destiné à des débutants avec un serveur debian.
 
 [Tutorial français](#french)<br><br>
 
@@ -16,7 +16,7 @@ Teurpi Torrent is a project made by students from 42 school.
 
 Providing a **neat web interface** for Transmission, it allows to manage several users and their access. You can also download torrents files easily, manage your downloaded files and even stream your content.
 
-This tutorial is aimed at beginners.
+This tutorial is aimed at beginners with a debian server.
 
 [English Tutorial](#english)
 
@@ -24,8 +24,7 @@ This tutorial is aimed at beginners.
 ##<a name="english"></a>English Tutorial
 <br>
 
-### What you need to do :
-
+### Prerequisite :
 
 - [install sudo](#secure)
 (how to secure your server)
@@ -35,16 +34,12 @@ This tutorial is aimed at beginners.
 - [install mongo](#mongodb)
 - [install transmission](#transmission)
 
-If you already know what you're doing, feel free to skip until the following part.
+If all the above is installed, follow this part.
 
 - [**INSTALL TEURPI TORRENT SEEDBOX**](#seedbox)
 
-**Setting up a debian** : https://jtreminio.com/2012/07/setting-up-a-debian-vm-step-by-step/
-
-**Download a Debian** http://ftp.cae.tntech.edu/debian-cd/ amd64 i386
-
 <a name="secure"></a>
-###Secure the server.
+###Install sudo (and secure your access).
 
 Some basics needed to secure your server a bit. Feel free to go further...
 
@@ -79,13 +74,9 @@ Connect to your server with the new user.
 <a name="git"></a>
 ###Install git.
 
-**install git** : 
-
 	sudo apt-get install git
 <a name="make"></a>
 ###Install make.
-
-**install make** :
 
 	sudo apt-get install make
 	
@@ -137,7 +128,7 @@ Do a
 	sudo apt-get install transmission-cli transmission-common transmission-daemon
 To launch the process
 
-	 transmission-daemon
+	transmission-daemon
 Note that you can **stop the service** with 
 
 	sudo service transmission-daemon stop
@@ -282,7 +273,7 @@ _______________
 ##<a name="french"></a>Installation française.
 <br>
 
-### Que dois-je faire :
+### Prérequis :
 
 
 - [installer sudo](#secure-fr)
@@ -293,7 +284,7 @@ _______________
 - [installer mongo](#mongodb-fr)
 - [installer transmission](#transmission-fr)
 
-Si vous savez déjà ce que vous faites, allez directement à
+Si tout est installé, suivez cette partie :
 
 - [**INSTALLATION DE LA SEEDBOX TEURPI TORRENT**](#seedbox-fr)
 
@@ -305,7 +296,7 @@ Si vous savez déjà ce que vous faites, allez directement à
 **Télécharger l'image Debian** http://ftp.cae.tntech.edu/debian-cd/ amd64 i386
 
 <a name="secure-fr"></a>
-###Sécuriser le serveur.
+###Installer sudo (et sécuriser votre accès).
 
 Quelques trucs basiques pour sécuriser votre serveur. N'hésitez pas à aller plus loin.
 
@@ -340,14 +331,12 @@ Se connecter au serveur avec le nouvel utilisateur.
 <a name="git-fr"></a>
 ###Installer git.
 
-**installer git** : 
 
 	sudo apt-get install git
 
 <a name="make-fr"></a>	
 ###Installer make.
 
-**installer make** :
 
 	sudo apt-get install make
 
@@ -431,7 +420,7 @@ npm est déja installé via nodejs
 
 On utilise
 		
-		git clone https://github.com/johnduro/seedbox42.git nomdurépertoirequevousvoulez
+	git clone https://github.com/johnduro/seedbox42.git nomdurépertoirequevousvoulez
 ######Si le serveur transmission est deja existant et que vous avez quelques fichiers.
 
 	node ttManager.js --transmission-to-conf
