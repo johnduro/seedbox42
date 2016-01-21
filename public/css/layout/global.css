@@ -271,3 +271,45 @@ textarea {
 	color: #fff;
 	background-color: #99A8B2
 }
+
+/* CONNEXION */
+
+.tt-signin {
+	font-family: 'MuseoSans-300';
+	margin-top: 10px;
+}
+
+.tt-signin-input {
+	text-align: center;
+}
+::-webkit-input-placeholder {
+	text-align: center;
+}
+
+:-moz-placeholder { /* Firefox 18- */
+	text-align: center;
+}
+
+::-moz-placeholder {  /* Firefox 19+ */
+	text-align: center;
+}
+
+:-ms-input-placeholder {
+	text-align: center;
+}
+
+.tt-sign-title {
+	font-family: 'MuseoSans-700';
+	text-align: center;
+	color: #325064;
+}
+
+.tt-sign-div {
+	margin-top: 20px;
+}
+
+
+.tt-sign-button {
+	margin-top: 20px;
+	margin-bottom: 40px;
+}

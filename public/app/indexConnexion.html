@@ -12,31 +12,38 @@
         <meta name="author" content="Steelcoders" />
 
         <!-- Styles -->
-        <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600' rel='stylesheet' type='text/css'>
-        <link rel='stylesheet' href='css/bootstrap-3.3.6/css/bootstrap.min.css'/>
-        <link rel='stylesheet' href='css/font-awesome-4.5.0/css/font-awesome.min.css'/>
-        <link rel='stylesheet' href='css/tools/toaster.css'/>
+        <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600" type="text/css">
+        <link rel="stylesheet" href="css/bootstrap-3.3.6/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="css/font-awesome-4.5.0/css/font-awesome.min.css"/>
+        <link rel="stylesheet" href="css/tools/toaster.css"/>
 
     </head>
     <body class="page-login">
 
-        <div class="container">
-            <form class="form-signin">
-                <h2 class="form-signin-heading">Connexion</h2>
-                <label for="inputEmail" class="sr-only">Login</label>
-                <input type="text" ng-model="user.login" class="form-control" placeholder="Login" required="" autofocus="">
-                <label for="inputPassword" class="sr-only">Password</label>
-                <input type="password" ng-model="user.password" class="form-control" placeholder="Password" required="">
-                <div class="checkbox">
-                    <label>
-                        <!-- <input type="checkbox" value="remember-me"> Remember me -->
-                    </label>
-                </div>
-                <button ng-click="connexion()" class="btn btn-lg btn-primary btn-block">Sign in</button>
-            </form>
+		<div class="row">
+			<div class="col-md-4"></div>
+	        <div class="container col-md-4">
+	            <form class="">
+	                <h2 class="tt-sign-title">TeurpiTorrent</h2>
+	                <label for="inputEmail" class="sr-only">Login</label>
+					<div class="tt-search-div col-md-12 tt-text tt-sign-div">
+		                <input type="text" ng-model="user.login" class="tt-search-input tt-signin-input" placeholder="Login" required="" autofocus="" style="width: 100%;">
+					</div>
+	                <label for="inputPassword" class="sr-only">Password</label>
+					<div class="tt-search-div col-md-12 tt-text tt-sign-div">
+		                <input type="password" ng-model="user.password" class="tt-search-input tt-signin-input" placeholder="Password" required="" style="width: 100%;">
+					</div>
+					<div class="col-md-12 tt-sign-button">
+		                <button ng-click="connexion()" class="btn btn-lg btn-default btn-block tt-signin" style="background-color: #325064; color: #fff;">Sign in</button>
+					</div>
+	            </form>
 
-            <p class="text-center m-t-xs text-sm">2015 &copy; Seedbox42 by Students42.</p>
-        </div>
+	        </div>
+			<div class="col-md-4"></div>
+		</div>
+		<div class="row">
+	        <p class="text-center m-t-xs text-sm">2015 &copy; Seedbox42 by Students42.</p>
+		</div>
 
         <toaster-container toaster-options="{'close-button': true, 'position-class': 'toast-bottom-right'}"></toaster-container>
 
