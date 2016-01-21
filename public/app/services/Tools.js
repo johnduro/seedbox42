@@ -263,9 +263,10 @@ app.service('Tools', function ($rootScope, RequestHandler, $timeout, $modal, $q)
             defer.resolve($rootScope.config);
         }else{
             RequestHandler.get(api + "admin/settings")
-                .then(function(result){
-                    $rootScope.config = result.data.data;
-                    defer.resolve($rootScope.config);
+                .then(function(result){);
+                    if (result.data.status)
+                        $rootScope.config = result.data.data;
+                    defer.resolve(result.data.data);
                 });
         }
         return defer.promise;
