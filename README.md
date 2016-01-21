@@ -28,6 +28,7 @@ This tutorial is aimed at beginners with a debian server.
 
 - [install sudo](#secure)
 (how to secure your server)
+- [create user with sudo rights](#createuser)
 - [install git](#git)
 - [install make](#make)
 - [install nodejs](#nodejs)
@@ -47,13 +48,13 @@ Some basics needed to secure your server a bit. Feel free to go further...
 
 	apt-get install sudo
 
+*The following part is optional but help you to secure your server.*
+<a name="createuser"></a>
+#####Create a new user with sudo rights
+
 **create a user named admin** : 
 
 	adduser admin
-
-**give this user a password** : 
-
-	passwd admin
 
 **add “sudo” rights for the user** : 
 
@@ -70,6 +71,7 @@ You can add several others users with sudo rights if you want.
 Ctrl+x to exit. Answer *yes* to save, and press *enter* to keep the name.
 
 Connect to your server with the new user.
+
 
 <a name="git"></a>
 ###Install git.
@@ -128,7 +130,7 @@ Do a
 	sudo apt-get install transmission-cli transmission-common transmission-daemon
 To launch the process
 
-	transmission-daemon
+	sudo /etc/init.d/transmission-daemon start
 Note that you can **stop the service** with 
 
 	sudo service transmission-daemon stop
@@ -157,26 +159,35 @@ Check again :
 <a name="seedbox"></a>
 ###Starting with Teurpi Torrent.
 
-npm is already installed thanks to nodejs
+*If you want your server to be managed by its own user*
+**create a teurpitorrent user** : 
 
-Use 
+	adduser teurpitorrent
+
+Connect with the user
+
+	su teurpitorrent
+
+Make a directory to save the files
+
+	mkdir -p /home/teurpitorrent/ttFiles/complete
+	
+We give the write permission to transmission in the directory (first you need to use the old sudo user using the command "exit")
+
+	sudo chown :debian-transmission -R /home/teurpitorrent/ttFiles/
+	
+Take back the teurpitorrent user. Use the git clone to get seedbox files in your chosen directory. (here named 'app').
+
 		
-		git clone https://github.com/johnduro/seedbox42.git nameofthedirectoryyouwant
-		
+	git clone https://github.com/johnduro/seedbox42.git app
 
-######Recommanded Treeview for a teurpittorrent user :
+###Install the dependencies.
 
-If you're a beginner, here's a recommanded treeview.
+	cd app
+	npm install 
 
-**/home/teurpitorrent/app** : git clone of the app
+----- If error, take back your sudo user and follow this part -----
 
-**/home/teurpitorrent/ttFiles/complete** : completed files directory
-
-###Install npm dependencies.
-But you need to install all dependancies with 
-
-	cd directorynameyouchose
-	sudo npm install 
 If it doesn’t work, it can be an error linked to make, gyp or bcrypt, you should follow the following part :
 
 Check gyp  
@@ -192,17 +203,17 @@ Lastly,
 again
 
 
-###Using ttManager.
+###Create a configuration file.
 
 ttManager is a tool to manage your serv easily and fast from the shell, you can launch it with 
 
-	node ttManager.js (--option).
+	node ttManager.js (--option)
 
 The following command give you all the options 
 
 	node ttManager.js --help
 
-First, you'll **need** to generate the default configuration with the option
+**Generate the configuration** with the option
 
 	node ttManager.js --generate-conf 
 	
@@ -210,11 +221,11 @@ You'll have to choose the port you want, a secret to encrypt passwords, your mon
 
 *You can use defaults values, if you installed all things on one server.*
 
-Vous allez **devoir** ajouter un utilisateur avec cette commande afin d'accéder à votre seedbox. Le mot de passe doit faire plus de 5 lettres. 
+Add a user with this command in order to get access to the seedbox web interface. Password must be 5 letters or more.
 
 	node ttManager.js --create-user
 
-Si vous tentez d’ajouter un utilisateur dont le nom est deja rentré, mongo devrait renvoyer une erreur.
+If you try to add an existing name, mongo should get you an error.
 
 The following option allow you to edit the informations (name, pass etc.) of an existing user.
 
@@ -242,11 +253,11 @@ to add the selected files from a specific directory.
 
 It is used in order to leave the ssh connection without stopping the server.
 
-First you need to install forever : 
+First you need to install forever with the sudo user : 
 
 	sudo npm install forever -g
 
-Then, at the seedbox directory : 
+Then, at the seedbox directory with your teurpitorrent user : 
 
 	npm install forever-monitor
 
@@ -278,6 +289,7 @@ _______________
 
 - [installer sudo](#secure-fr)
 (vous pouvez voir comment securiser votre serveur)
+- [créer un utilisateur avec les droits sudo](#createuser-fr)
 - [installer git](#git-fr)
 - [installer make](#make-fr)
 - [installer nodejs](#nodejs-fr)
@@ -288,13 +300,6 @@ Si tout est installé, suivez cette partie :
 
 - [**INSTALLATION DE LA SEEDBOX TEURPI TORRENT**](#seedbox-fr)
 
-
-
-
-**Mettre en place un serveur debian** : https://jtreminio.com/2012/07/setting-up-a-debian-vm-step-by-step/
-
-**Télécharger l'image Debian** http://ftp.cae.tntech.edu/debian-cd/ amd64 i386
-
 <a name="secure-fr"></a>
 ###Installer sudo (et sécuriser votre accès).
 
@@ -304,15 +309,15 @@ Quelques trucs basiques pour sécuriser votre serveur. N'hésitez pas à aller p
 
 	apt-get install sudo
 
+*La partie qui suit est optionnelle mais vous aide à sécuriser votre serveur.*
+<a name="createuser-fr"></a>
+#####Créer un utilisateur avec les droits sudo
+
 **créer un utilisateur admin** : 
 
 	adduser admin
 
-**donner à cet utilisateur un password** : 
-
-	passwd admin
-
-**ajouter les droits “sudo” pour l'utilisateur (afin qu'il puisse récupérer les droits roots)** : 
+**si vous voulez ajouter les droits “sudo” pour l'utilisateur (afin qu'il puisse récupérer les droits roots)** : 
 
 	echo 'admin ALL=(ALL) ALL' >> /etc/sudoers
 
@@ -387,7 +392,7 @@ Faire
 	sudo apt-get install transmission-cli transmission-common transmission-daemon
 Pour lancer le processus
 
-	 transmission-daemon
+	 sudo /etc/init.d/transmission-daemon start
 A noter que l'on peut **stopper le service** avec 
 
 	sudo service transmission-daemon stop
@@ -416,35 +421,34 @@ On vérifie encore :
 <a name="seedbox-fr"></a>
 ###Commencer avec Teurpi Torrent.
 
-npm est déja installé via nodejs
+*Si vous voulez que le serveur tourne sur son propre utilisateur*
+**créer un utilisateur teurpitorrent** : 
 
-On utilise
+	adduser teurpitorrent
+
+On se connecte avec l'utilisateur
+
+	su teurpitorrent
+
+On créée un dossier pour enregistrer les fichiers
+
+	mkdir -p /home/teurpitorrent/ttFiles/complete
+	
+On donne les droits à transmission d'écrire dans le dossier (attention vous devrez reprendre l'ancien utilisateur avec "exit")
+
+	sudo chown :debian-transmission -R /home/teurpitorrent/ttFiles/
+	
+On repasse avec l'utilisateur teurpitorrent. On utilise le git clone, pour récupérer les fichiers de la seedbox dans le répertoire de votre choix (ici nommé 'app').
 		
-	git clone https://github.com/johnduro/seedbox42.git nomdurépertoirequevousvoulez
-######Si le serveur transmission est deja existant et que vous avez quelques fichiers.
-
-	node ttManager.js --transmission-to-conf
-récupèrera les options de transmission dans la configuration.
-
-	
-	node ttManager.js --add-existing-torrents
-pour ajouter les torrents de transmission à la base de donnée.
-
-Et enfin 
-	
-	node ttManager.js  --add-directory /path/to/directory
-vous demandera quels fichiers ajouter à partir d'un répertoire donné.
-
-######Arborescence des fichiers conseillée avec un utilisateur teurpittorrent :
-
-**/home/teurpitorrent/app** : pour git clone de l'application
-
-**/home/teurpitorrent/ttFiles/complete** : dossier de fichiers complets
+	git clone https://github.com/johnduro/seedbox42.git app
 
 ###Installer les dépendances.
 
-	cd nomdurépertoire
-	sudo npm install 
+	cd app
+	npm install 
+
+----- Si erreur il y'a, reprenez votre utilisateur sudo et suivez cette partie -----
+
 Si cela ne fonctionne pas, l'erreur peut être liée à make, gyp ou bcrypt, il faut suivre la partie suivante :
 
 Vérifiez gyp  
@@ -462,25 +466,25 @@ Si cela ne marche toujours pas,
 	sudo npm install
 
 
-###Utiliser ttManager.
+###Création du fichier de configuration.
 
 ttManager est un outil pour gérer son serveur facilement et rapidement depuis la console, vous pouvez le lancer via la commande
 
-	node ttManager.js (--option).
+	node ttManager.js (--option)
 
 La commande suivante vous présente les diverses options
 
 	node ttManager.js --help
 
-De base, vous allez **devoir** générer un fichier de configuration par défaut avec l’option
+**Générez un fichier de configuration** avec l’option
 
 	node ttManager.js --generate-conf 
 	
-Vous devrez choisir un port, un secret pour encrypter les passwords, l'adresse de la base de données mongo, et le nom de votre base. Puis les questions pour configurer transmission (adresse, port, etc). Si vous utilisez déjà transmission vous pouvez conserver le champ vide et suivre les instructions suivantes.
+Vous devrez choisir un port, un secret pour encrypter les passwords, l'adresse de la base de données mongo, et le nom de votre base. Puis les questions pour configurer l'accès à transmission (adresse, port, etc). Si vous utilisez déjà transmission, vous pouvez conserver le champ du choix de répertoire de téléchargement vide et suivre les instructions suivantes, sinon choisissez l'endroit où vous voulez télécharger ces fichiers.
 
 *Les valeurs par défauts peuvent être utilisées si tout est installé sur le même serveur.*
 
-Vous allez **devoir** ajouter un utilisateur avec cette commande afin d'accéder à votre seedbox. Le mot de passe doit faire plus de 5 lettres. 
+**Ajoutez un utilisateur** avec cette commande afin d'accéder à votre seedbox. Le mot de passe doit faire plus de 5 lettres. 
 
 	node ttManager.js --create-user 
 	
@@ -489,16 +493,31 @@ Si vous tentez d’ajouter un utilisateur dont le nom est deja rentré, mongo de
 L'option suivante vous permet de modifier les informations d'un utilisateur existant.
 
 	node ttManager.js --modify-user
+	
+######Si le serveur transmission est deja existant et/ou que vous avez quelques fichiers.
+
+	node ttManager.js --transmission-to-conf
+récupèrera les options de transmission dans la configuration.
+
+	
+	node ttManager.js --add-existing-torrents
+pour ajouter les torrents de transmission à la base de donnée.
+
+Et enfin 
+	
+	node ttManager.js  --add-directory /path/to/directory
+vous demandera quels fichiers ajouter à partir d'un répertoire donné.
+
 
 ###Pour lancer le serveur en daemon.
 
 C'est ce qui permet de quitter la session ssh et de garder le serveur lancé.
 
-Installer forever : 
+Installer forever en reprenant l'utisateur sudo : 
 
 	sudo npm install forever -g
 
-Puis dans le répertoire seedbox : 
+Puis dans le répertoire seedbox sous l'utilisateur teurpitorrent : 
 
 	npm install forever-monitor
 
