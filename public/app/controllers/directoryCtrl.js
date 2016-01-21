@@ -15,9 +15,10 @@ app.controller("directoryCtrl", function($rootScope, $scope, RequestHandler, Too
                 if (result.data.success)
 				{
 					console.log("result::get:: ", result.data.data);
+					$scope.indexSelected = [];
                     $scope.tree = result.data.data;
 					addType($scope.tree);
-				}else {
+				} else {
 				    toaster.pop('error', "Error", "Path do not exist.", 5000);
 				}
             });
