@@ -14,6 +14,7 @@ var generateConfigurationFile = function (configFileName, done) {
 			name: "appPort",
 			message: "Choose a port for this application:\n > ",
 			default: function () { return (newConfig['appPort']); },
+			filter: function (value) {return parseInt(value, 10);},
 			validate: function (value) {
 				if (value < configDefault['appPort']['rangeValues']['min'] || value > configDefault['appPort']['rangeValues']['max'])
 					return ("Port must be between " + configDefault['appPort']['rangeValues']['min'] + " and " + configDefault['appPort']['rangeValues']['max']);
