@@ -1,29 +1,27 @@
-<div class="col-md-6">
-    <div class="d-panel">
-        <div class="panel-heading">
-			<h3 class="panel-title d-title">{{content.title | uppercase}}</h3>
-		  	<a href="/#/seedbox/files/{{content.name}}" class="d-view-all"><span class="icon-plus"></span> <span class="tt-font-museo300">view all</span></a>
-        </div>
-		<hr class="d-hr"/>
-        <div class="panel-body d-body">
-            <table class="table d-table tt-text">
-				<tbody>
-                    <tr ng-click="openFile(item)" ng-repeat="item in files" ng-class-odd="'tt-table-odd'" ng-class-even="'tt-table-even'">
-                        <td class="d-file-icon">
-                            <div ng-switch="item.type">
-                                <div ng-switch-when="folder"> <i class="icon-folder d-icon"></i> </div>
-                                <div ng-switch-when="audio"> <i class="tt-icon-music d-tt-icon"></i> </div>
-                                <div ng-switch-when="video"> <i class="tt-icon-film d-tt-icon"></i> </div>
-                                <div ng-switch-when="image"> <i class="icon-picture d-icon"></i> </div>
-                                <div ng-switch-when="text"> <i class="tt-icon-file-text2 d-tt-icon"></i> </div>
-                                <div ng-switch-default> <i class="tt-icon-file-empty d-tt-icon"></i> </div>
-                            </div>
-                        </td>
-                        <td><span class="d-td-fontsize">{{item.name}}</span></td>
-                        <td><span class="d-td-fontsize">{{item.sizeConvert}}</span></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+<div class="d-panel">
+    <div class="panel-heading">
+		<h3 class="panel-title d-title">{{content.title | uppercase}}</h3>
+	  	<a href="/#/seedbox/files/{{content.name}}" class="d-view-all"><span class="icon-plus"></span> <span class="tt-font-museo300">view all</span></a>
+    </div>
+	<hr class="d-hr"/>
+    <div class="panel-body d-body">
+        <table class="table d-table tt-text">
+			<tbody>
+                <tr ng-click="openFile(item)" ng-repeat="item in files" ng-class-odd="'tt-table-odd'" ng-class-even="'tt-table-even'">
+                    <td class="d-file-icon">
+                        <div ng-switch="item.type">
+                            <div ng-switch-when="folder"> <i class="icon-folder d-icon"></i> </div>
+                            <div ng-switch-when="audio"> <i class="tt-icon-music d-tt-icon"></i> </div>
+                            <div ng-switch-when="video"> <i class="tt-icon-film d-tt-icon"></i> </div>
+                            <div ng-switch-when="image"> <i class="icon-picture d-icon"></i> </div>
+                            <div ng-switch-when="text"> <i class="tt-icon-file-text2 d-tt-icon"></i> </div>
+                            <div ng-switch-default> <i class="tt-icon-file-empty d-tt-icon"></i> </div>
+                        </div>
+                    </td>
+                    <td><span class="d-td-fontsize">{{item.name}}</span></td>
+                    <td><span class="d-td-fontsize">{{item.sizeConvert}}</span></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>

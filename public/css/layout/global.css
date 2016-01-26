@@ -176,7 +176,7 @@ textarea {
 }
 
 .one-star {
-	display: inline;
+	display: inline !important;
 }
 
 /* SEARCH INPUT */
@@ -260,10 +260,10 @@ textarea {
 }
 
 .tt-button {
-	color: #fff;
-	font-family: 'MuseoSans-300';
-	background-color: #325064;
-	margin-top: 4px;
+	color: #fff	!important;
+	font-family: 'MuseoSans-300'	!important;
+	background-color: #325064	!important;
+	margin-top: 4px	!important;
 	/* float: left; */
 }
 

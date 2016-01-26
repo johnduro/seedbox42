@@ -1,5 +1,5 @@
 
-app.controller('dashboardCtrl', function ($scope, $rootScope, $timeout, $location, RequestHandler, socket, Tools) {
+app.controller('dashboardCtrl', function ($scope, $rootScope, $timeout, $location, $filter, RequestHandler, socket, Tools) {
 
 	console.log("dashboardCtrl");
 
@@ -16,6 +16,7 @@ app.controller('dashboardCtrl', function ($scope, $rootScope, $timeout, $locatio
 				if (result.dashboard.panels[key].enabled == "all" || result.dashboard.panels[key].enabled == roles[user.role])
 					$scope.content.push(result.dashboard.panels[key]);
 			}
+			$scope.content = $filter('orderBy')($scope.content, 'order', false);
 		});
 	});
 

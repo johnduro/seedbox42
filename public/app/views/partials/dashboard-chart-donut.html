@@ -1,11 +1,9 @@
-<div class="col-md-6">
-    <div class="panel panel-white">
-        <div class="panel-heading">
-			<h3 class="panel-title d-title">{{content.title | uppercase}}</h3>
-        </div>
-        <hr class="d-hr"/>
-        <div class="panel-body d-body">
-            <div donut-chart donut-data='chartData' donut-colors='["#31C0BE","#c7254e","#98a0d3"]' donut-formatter='myFormatter'> </div>
-        </div>
+<div class="d-panel">
+    <div class="panel-heading">
+		<h3 class="panel-title d-title">{{content.title | uppercase}}</h3>
+    </div>
+    <hr class="d-hr"/>
+    <div class="panel-body d-body">
+        <div donut-chart donut-data='chartData' donut-colors='["#31C0BE","#c7254e","#98a0d3"]' donut-formatter='myFormatter'> </div>
     </div>
 </div>

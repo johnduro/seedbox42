@@ -1,23 +1,21 @@
-<div class="col-md-6">
-    <div class="panel panel-white">
-        <div class="panel-heading">
-          <h3 class="panel-title d-title">MINICHAT <i class="fa fa-paw"></i></h3>
+<div class="d-panel">
+    <div class="panel-heading">
+      <h3 class="panel-title d-title">MINICHAT <i class="fa fa-paw"></i></h3>
+    </div>
+    <div class="panel-body d-chatpanel">
+	  <div class=" tt-dottedborder">
+        <div scroll-glue class="content-messages">
+            <div class="content-message" ng-repeat="message in messages">
+                <div class="name"><img ng-src="/assets/avatar/{{message.user.avatar}}" err-SRC="/assets/avatar/default.png" alt="Smiley face" class="message-avatar"></div>
+                <div class="name">{{message.user.login}} - </div>
+                <div class="message">{{message.message}}</div>
+                <div class="date">{{message.createdAt | date : 'dd-MM-yy HH:mm'}}</div>
+            </div>
         </div>
-        <div class="panel-body d-chatpanel">
-		  <div class=" tt-dottedborder">
-            <div scroll-glue class="content-messages">
-                <div class="content-message" ng-repeat="message in messages">
-                    <div class="name"><img ng-src="/assets/avatar/{{message.user.avatar}}" err-SRC="/assets/avatar/default.png" alt="Smiley face" class="message-avatar"></div>
-                    <div class="name">{{message.user.login}} - </div>
-                    <div class="message">{{message.message}}</div>
-                    <div class="date">{{message.createdAt | date : 'dd-MM-yy HH:mm'}}</div>
-                </div>
-            </div>
-		  </div>
-            <div class="form-message">
-                <textarea placeholder="Write here" code="13" key-press='sendMessage()' ng-model="newMessage"  maxlength='100'></textarea>
-                <button ng-click="sendMessage()" class="btn btn-default">Submit <i class="fa fa-check d-chatcheck"></i></button>
-            </div>
+	  </div>
+        <div class="form-message">
+            <textarea placeholder="Write here" code="13" key-press='sendMessage()' ng-model="newMessage"  maxlength='100'></textarea>
+            <button ng-click="sendMessage()" class="btn btn-default">Submit <i class="fa fa-check d-chatcheck"></i></button>
         </div>
     </div>
 </div>
