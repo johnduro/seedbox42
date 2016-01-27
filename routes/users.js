@@ -52,11 +52,14 @@ router.get('/:id', function (req, res, next) {
 });
 
 router.put('/:id', rights.adminOrUserParam, upload.avatar.single('avatar'), function (req, res, next) {
+	var infos = req.body;
 	if ("file" in req && 'filename' in req.file)
-		req.body.avatar = req.file.filename;
-	if ('_id' in req.body)
+		infos.avatar = req.file.filename;
+	else
+		delete infos.avatar;
+	if ('_id' in infos)
 		delete req.body._id;
-	User.updateUserById(req.params.id, req.body, function (err, post) {
+	User.updateUserById(req.params.id, infos, function (err, post) {
 		if (err)
 			res.json({ success: false, message: err });
 		else
