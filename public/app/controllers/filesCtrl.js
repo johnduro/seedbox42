@@ -13,6 +13,7 @@ app.controller('filesCtrl', function ($scope, $rootScope, $state, $location, $st
 		"1" : "user",
 		"0": "admin",
 	};
+	// var cols= ["type", "name", "size", "isLocked", ];
 
 	socket.on("newFile", function(data){
 		RequestHandler.get(api + "file/all")
@@ -76,6 +77,23 @@ app.controller('filesCtrl', function ($scope, $rootScope, $state, $location, $st
 			$scope.classSort = "fa fa-sort-desc";
 		}
 	}
+
+	$scope.getOrderBy = function () {
+		if ($scope.sortColumn == "size" || $scope.sortColumn == "isLocked" || $scope.sortColumn == "downloads" || $scope.sortColumn == "averageGrade" || $scope.sortColumn == "commentsNbr")
+		{
+			if ($scope.reverse)
+				return [$scope.sortColumn];
+			else
+				return ['-' + $scope.sortColumn];
+		}
+		else
+		{
+			if ($scope.reverse)
+				return ['-' + $scope.sortColumn];
+			else
+				return [$scope.sortColumn];
+		}
+	};
 
 	$scope.order = function(item){
 		$scope.reverse = ($scope.sortColumn === item) ? !$scope.reverse : false;

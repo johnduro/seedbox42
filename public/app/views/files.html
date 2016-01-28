@@ -53,7 +53,7 @@
                     </tr>
                 </thead>
                 <tbody class="tt-text">
-                    <tr ng-repeat="(key, item) in elementsActual | filter : search | orderBy:sortColumn:reverse"  ng-class-odd="'tt-table-odd'" ng-class-even="'tt-table-even'">
+                    <tr ng-repeat="(key, item) in elementsActual | filter : search | orderBy:getOrderBy()"  ng-class-odd="'tt-table-odd'" ng-class-even="'tt-table-even'">
                         <td class="tt-darkblue">
                             <div ng-switch="item.type">
                                 <div ng-switch-when="folder" ><i class="icon-folder fls-icon"></i></div>

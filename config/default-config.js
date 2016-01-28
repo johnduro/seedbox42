@@ -8,9 +8,9 @@ module.exports = {
 		"name" : { "type": "string", "default": "seedapp", "switch": false, "range": false }
 	},
 	"transmission": {
-		"address": { "type": "string", "default": "localhost", "switch": false, "range": false },
-		"port": { "type": "number", "default": 9091, "switch": false, "range": true, "rangeValues": { "min": 1024, "max": 65535 } },
-		"url": { "type": "string", "default": "/transmission/rpc", "switch": false, "range": false }
+		"address": { "type": "string", "default": "localhost", "switch": false, "range": false, "infos": "Adress of your transmission client" },
+		"port": { "type": "number", "default": 9091, "switch": false, "range": true, "rangeValues": { "min": 1024, "max": 65535 }, "infos": "Port of your transmission client" },
+		"url": { "type": "string", "default": "/transmission/rpc", "switch": false, "range": false, "infos": "Url of the transmission rpc" }
 	},
 	"transmission-settings": {
 		"alt-speed-down": { "type": "number", "default": 50, "switch": false, "range": false },
@@ -57,26 +57,26 @@ module.exports = {
 		"utp-enabled": { "type": "boolean", "default": true, "switch": false, "range": false }
 	},
 	"torrents": {
-		"add-torrent-enabled": { "type": "boolean", "default": true, "switch": false, "range": false },
-		"delete-torrent-enabled": { "type": "boolean", "default": true, "switch": false, "range": false }
+		"add-torrent-enabled": { "type": "boolean", "default": true, "switch": false, "range": false, "infos": "Allow users to add torrents to transmission" },
+		"delete-torrent-enabled": { "type": "boolean", "default": true, "switch": false, "range": false, "infos": "Allow users to delete torrents from transmission" }
 //		"settings-access-enabled": { "type": "boolean", "default": false, "switch": false, "range": false }
 	},
 	"files": {
-		"show-creator": { "type": "string", "default": "all", "switch": true, "values": ["all", "user", "admin", "none"], "range": false },
-		"lock-enabled": { "type": "string", "default": "all", "switch": true, "values": ["all", "user", "admin", "none"], "range": false },
-		"comments-enabled": { "type": "string", "default": "all", "switch": true, "values": ["all", "user", "admin", "none"], "range": false },
-		"grades-enabled": { "type": "string", "default": "all", "switch": true, "values": ["all", "user", "admin", "none"], "range": false },
-		"auto-remove-lock-enabled": { "type": "boolean", "default": false, "switch": false, "range": false },
-		"auto-remove-lock": { "type": "number", "default": 300, "switch": false, "range": true, "rangeValues": { "min": 1, "max": 1000 } },
-		"auto-delete-enabled": { "type": "boolean", "default": false, "switch": false, "range": false },
-		"auto-delete": { "type": "number", "default": 60, "switch": false, "range": true, "rangeValues": { "min": 1, "max": 1000 } }
+		"show-creator": { "type": "string", "default": "all", "switch": true, "values": ["all", "user", "admin", "none"], "range": false, "infos": "Who can see the names of the downloaders" },
+		"lock-enabled": { "type": "string", "default": "all", "switch": true, "values": ["all", "user", "admin", "none"], "range": false, "infos": "Who can lock files" },
+		"comments-enabled": { "type": "string", "default": "all", "switch": true, "values": ["all", "user", "admin", "none"], "range": false, "infos": "Who can comment files" },
+		"grades-enabled": { "type": "string", "default": "all", "switch": true, "values": ["all", "user", "admin", "none"], "range": false, "infos": "Who can grade files" },
+		"auto-remove-lock-enabled": { "type": "boolean", "default": false, "switch": false, "range": false, "infos": "Activate to automaticaly remove files lock after a number of days" },
+		"auto-remove-lock": { "type": "number", "default": 300, "switch": false, "range": true, "rangeValues": { "min": 1, "max": 1000 }, "infos": "Number of days after what files are automaticaly unlocked" },
+		"auto-delete-enabled": { "type": "boolean", "default": false, "switch": false, "range": false, "infos": "Activate to automaticaly delete files after a number of days" },
+		"auto-delete": { "type": "number", "default": 60, "switch": false, "range": true, "rangeValues": { "min": 1, "max": 1000 }, "infos": "Number of days after what files are automaticaly deleted" }
 	},
 	"dashboard": {
 		"panels": { "type": "array", "default": dashboard.panels, "switch": false, "range": false, "match": dashboard.match },
-		"file-number-exhibit": { "type": "number", "default": 5, "switch": false, "range": false },
-		"mini-chat-message-limit": { "type": "number", "default": 100, "switch": false, "range": true, "rangeValues": { "min": 1, "max": 10000 } }
+		"file-number-exhibit": { "type": "number", "default": 5, "switch": false, "range": false, "infos": "Number of files shown in panel's files list" },
+		"mini-chat-message-limit": { "type": "number", "default": 100, "switch": false, "range": true, "rangeValues": { "min": 1, "max": 10000 }, "infos": "Number of messages recorded in the chat (1 to 10000)" }
 	},
 	"users": {
-		"default-avatar": { "type": "string", "default": "default.png", "switch": false, "range": false }
+		"default-avatar": { "type": "string", "default": "default.png", "switch": false, "range": false, "infos": "Name of the default avatar (You have to upload it to public/assets/avatar)" }
 	}
 }

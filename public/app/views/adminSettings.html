@@ -12,11 +12,14 @@
 		</div>
 		<div class="col-md-12 as-content tab-content tt-text">
 			<div ng-repeat="(settingKey, setting) in settings" class="tab-pane fade as-tabpane" id="conf-{{settingKey}}" ng-class="$first ? 'active in' : ''">
+				<div ng-if="settingsDefault[settingKey].infos" class="col-md-12 row">
+					<span>{{settingsDefault[settingKey].infos}}</span>
+				</div>
 				<form ng-submit="updatePart(settingKey)">
 					<div ng-repeat="(elementKey, element) in setting">
 						<div ng-class="(elementKey == 'panels') ? 'col-md-12 tt-title as-element-panel' : 'col-md-3'">{{elementKey}}:</div>
 						<!-- GENERIC SHOW -->
-						<div ng-if="elementKey != 'panels'" class="as-element col-md-9">
+						<div ng-if="elementKey != 'panels'" class="as-element col-md-2">
 							<div ng-if="settingsDefault[settingKey][elementKey].switch">
 								<select ng-options="value for value in settingsDefault[settingKey][elementKey].values" ng-model="settings[settingKey][elementKey]"></select>
 							</div>
@@ -30,12 +33,15 @@
 								<input type="checkbox" ng-model="settings[settingKey][elementKey]">
 							</div>
 						</div>
+						<div ng-if="settingsDefault[settingKey][elementKey].infos" class="col-md-6">
+							<span>{{settingsDefault[settingKey][elementKey].infos}}</span>
+						</div>
 
 						<!-- DASHBOARD - PANELS -->
 						<div ng-if="elementKey == 'panels'" ng-repeat="(panelKey, panel) in setting.panels" class="col-md-12 well">
 							<span class="tt-title">{{panel.title | uppercase}}</span>
 							<div ng-repeat="(panelElementKey, panelElement) in panel">
-								<div ng-if="panelElementKey != 'name'">
+								<div ng-if="panelElementKey != 'name' && panelElementKey != 'template'">
 									{{panelElementKey}}
 									<div ng-if="settingsDefault.dashboard.panels.match[panelElementKey].switch">
 										<select ng-options="value for value in settingsDefault.dashboard.panels.match[panelElementKey].values" ng-model="settings[settingKey][elementKey][panelKey][panelElementKey]"></select>
