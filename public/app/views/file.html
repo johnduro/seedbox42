@@ -57,7 +57,7 @@
 								<span ng-switch="item.type">
 									<i ng-switch-when="audio" ng-click="openModal.streamMovie(torrent._id, item)" class="fa fa-eye"></i>
 									<i ng-switch-when="video" ng-click="openModal.streamMovie(torrent._id, item)" class="fa fa-eye"></i>
-									<!-- <i ng-switch-when="image" ng-click="Lightbox.openModal([{url:generatePathDownload(torrent._id, item.name)}], 0)" class="fa fa-eye"></i> -->
+									<i ng-switch-when="image" ng-click="showImage(torrent._id, item.name)" class="fa fa-eye"></i>
 								</span>
 							</td>
                     	</tr>

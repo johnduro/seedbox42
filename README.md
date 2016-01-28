@@ -1,5 +1,7 @@
 #Seedbox Teurpi Torrent.
 
+![!alt tag](https://cloud.githubusercontent.com/assets/6706015/12647149/023de2de-c5d4-11e5-9451-e5cfa0b2bf55.png)
+
 **Teurpi Torrent** vous permet de transformer votre serveur dédié en **seedbox** facilement.
 
 Teurpi Torrent est un projet réalisé par des étudiants de l'école 42.
@@ -19,6 +21,13 @@ Providing a **neat web interface** for Transmission, it allows to manage several
 This tutorial is aimed at beginners with a debian server.
 
 [English Tutorial](#english)
+
+![alt tag](https://cloud.githubusercontent.com/assets/6706015/12647148/0234537c-c5d4-11e5-87f8-8aa658eb1ff1.png)
+<br>
+![alt tag](https://cloud.githubusercontent.com/assets/6706015/12647143/022353b0-c5d4-11e5-8a6a-9aa8e309c9c6.png)
+
+More screens [here](#screens)
+Plus d'images [ici](#screens)
 
 <br>
 ##<a name="english"></a>English Tutorial
@@ -542,3 +551,13 @@ Lister les processus lancés
 
 
 #####Maintenant vous pouvez vous connecter à votre serveur dans votre navigateur en rentrant l'adresse de votre serveur suivi du port choisi.
+
+
+<br>
+##<a name="screens"></a>Screens shots
+
+![alt tag](https://cloud.githubusercontent.com/assets/6706015/12647141/021a0170-c5d4-11e5-89a8-716655246f35.png)
+<br>
+![alt tag](https://cloud.githubusercontent.com/assets/6706015/12647144/02242bdc-c5d4-11e5-9f75-97af73eb4406.png)
+<br>
+![alt tag](https://cloud.githubusercontent.com/assets/6706015/12647145/022796f0-c5d4-11e5-8a63-f5abb9903ecb.png)

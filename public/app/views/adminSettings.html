@@ -38,7 +38,7 @@
 						</div>
 
 						<!-- DASHBOARD - PANELS -->
-						<div ng-if="elementKey == 'panels'" ng-repeat="(panelKey, panel) in setting.panels" class="col-md-12 well">
+						<div ng-if="elementKey == 'panels'" ng-repeat="(panelKey, panel) in setting.panels" class="col-md-6 well">
 							<span class="tt-title">{{panel.title | uppercase}}</span>
 							<div ng-repeat="(panelElementKey, panelElement) in panel">
 								<div ng-if="panelElementKey != 'name' && panelElementKey != 'template'">

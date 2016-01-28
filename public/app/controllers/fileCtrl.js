@@ -65,8 +65,6 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
 			$scope.treeActual = item;
 			addType($scope.treeActual.fileList);
 			$scope.pathActualString = generatePath(pathActualArray, "view");
-		}else if (item.type == "image"){
-			Lightbox.openModal([{url:generatePathDownload($scope.torrent._id, item.name)}], 0);
 		}
 	};
 
@@ -222,6 +220,10 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
             return true;
         return false;
     };
+
+	$scope.showImage = function (torrentId, name) {
+		Lightbox.openModal([{url:generatePathDownload(torrentId, name)}], 0);
+	};
 
 //------------------------------------------------  DRAG & DROP-------------------------------------------------------
 

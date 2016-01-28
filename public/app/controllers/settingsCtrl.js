@@ -26,6 +26,16 @@ app.controller("settingsCtrl", function($rootScope, $scope, RequestHandler, toas
             }
             $scope.settings[settingskey] = jQuery.extend(boolean, others);
         }
+		if ($scope.settings['dashboard']['panels'])
+		{
+			$scope.settings['dashboard']['panels'].sort(function (it1, it2) {
+				if (it1.order < it2.order)
+					return -1;
+				else if (it1.order > it2.order)
+					return 1;
+				return 0;
+			});
+		}
     };
 
     RequestHandler.get(api + "admin/settings")
