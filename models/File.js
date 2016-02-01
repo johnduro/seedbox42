@@ -221,12 +221,10 @@ FileSchema.statics = {
 	insertTorrent: function (torrentId, name, transmission, done) {
 		var self = this;
 		transmission.torrentGet(transmission.requestFormat.infosFinished, torrentId, function (err, resp) {
-			console.log("ajout in DB");
 			if (err)
 				done(err);
 			else
 			{
-				console.log(resp['torrents'].length);
 				if (resp['torrents'].length > 0)
 				{
 					var torrent = resp['torrents'][0];

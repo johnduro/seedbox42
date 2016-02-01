@@ -1,6 +1,6 @@
 var jwt = require('jsonwebtoken');
-var torrents = require('./torrentSockets');
 var wall = require('./wallSockets');
+var TorrentSockets = require('./torrentSockets');
 
 /**
  * Sockets
@@ -9,6 +9,7 @@ var wall = require('./wallSockets');
 module.exports = function (io, transmission, app) {
 
 	var second = 1000;
+	var torrentSocket = new TorrentSockets(io, transmission, app);
 
 	/**
 	 * Socket auth
@@ -40,7 +41,7 @@ module.exports = function (io, transmission, app) {
 		/**
 		 * Torrents management through sockets
 		 */
-		torrents(socket, io, transmission);
+		torrentSocket.newConnection(socket);
 
 		/**
 		 * Wall messages management through sockets

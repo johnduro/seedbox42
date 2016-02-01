@@ -1,3 +1,4 @@
+// var events = require('events');
 var CronJob = require('cron').CronJob;
 var File = require('../models/File');
 
@@ -7,8 +8,9 @@ var File = require('../models/File');
  * - Auto-remove lock :: check every day at 2 oclock
  * - Refresh torrents & check finished :: check every 5 minutes
  */
-module.exports = function (config, transmission) {
+module.exports = function (config, transmission, app) {
 	var finishedTorrents = [];
+	// var eventEmitter = new events.EventEmitter();
 
 	var checkFileJob = new CronJob('0 3 * * * *', function () {
 		if (config.files['auto-remove-lock-enabled'])
@@ -54,5 +56,7 @@ module.exports = function (config, transmission) {
 
 	var clearFinishedTorrent = new CronJob('0 5 * * * *', function () {
 		finishedTorrents = [];
+		app.emit('torrents:clearFinishedTorrents');
 	}, null, true);
+
 };

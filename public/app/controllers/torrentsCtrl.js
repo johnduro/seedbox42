@@ -16,7 +16,8 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 	$scope.search = "";
 	$scope.filters = {
 		isFinished: "",
-		status: ""
+		status: "",
+		isActive: ""
 	};
 	var roles = {
 		"1" : "user",
@@ -24,7 +25,6 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 	};
 	$scope.selected = "all";
 
-	console.log($rootScope);
 
 	//------------------------------------------------  EVENTS SOCKETS -------------------------------------------------------
 	socket.emit('torrentRefresh');
@@ -43,7 +43,6 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 	});
 
 	socket.on('post:torrent', function(data){
-		console.log(data);
 		if (data.success){
 			$scope.newTorrentUrl = "";
 			RequestHandler.get(api + "torrent/refresh/" + data.id)
@@ -55,6 +54,7 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 	});
 
 	socket.on("torrentRefreshRes", function(data){
+		var active = [];
 		angular.forEach(data.result.torrents, function(newTorrent, keys) {
 			if (newTorrent.id in $scope.torrents){
 				for (var key in newTorrent){
@@ -62,7 +62,16 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 				};
 				$scope.torrents[newTorrent.id].percentDone2 = $scope.torrents[newTorrent.id].percentDone * 100;
 				$scope.torrents[newTorrent.id].time = timeInterval($scope.torrents[newTorrent.id].eta);
+				active.push(newTorrent.id);
 			}
+		});
+		angular.forEach($scope.torrents, function (torrentIt) {
+			if (active.indexOf(torrentIt.id) > -1)
+			{
+				torrentIt.isActive = true;
+			}
+			else
+				torrentIt.isActive = false;
 		});
 	});
 
@@ -161,11 +170,14 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 	$scope.selectStatus = function (status){
 		$scope.filters.isFinished = "";
 		$scope.filters.status = "";
+		$scope.filters.isActive = "";
 
 		if (status == "all"){
 			console.log("All");
 		}else if (status == "finished"){
 			$scope.filters.isFinished = true;
+		}else if (status == "active"){
+			$scope.filters.isActive = true;
 		}else{
 			$scope.filters.status = status;
 		}

@@ -1,20 +1,28 @@
-var fs = require('fs');
-var mime = require('mime');
 var File = require('../models/File.js');
 var format = require('../utils/format');
 
-module.exports = function (socket, io, transmission) {
+var TorrentSockets = module.exports = function (io, transmission, app) {
+	this.io = io;
+	this.transmission = transmission;
+	this.app = app;
 
-	var second = 1000;
-	var torrentRefreshCounter = 0;
-	var torrentRefreshIntervalId = null;
-	var finishRefreshTorrentIntervalId = null;
-	var finishedTorrents = [];
+	this.second = 1000;
+	this.torrentRefreshCounter = 0;
+	this.torrentRefreshIntervalId = null;
+	this.finishRefreshTorrentIntervalId = null;
+	this.finishedTorrents = [];
 
-	var infosFinished = transmission.requestFormat.infosFinished;
-	var checkFinished = transmission.requestFormat.checkFinished;
-	var refreshActive = transmission.requestFormat.refreshActive;
-	var refreshAll = transmission.requestFormat.refreshAll;
+	this.infosFinished = transmission.requestFormat.infosFinished;
+	this.checkFinished = transmission.requestFormat.checkFinished;
+	this.refreshActive = transmission.requestFormat.refreshActive;
+	this.refreshAll = transmission.requestFormat.refreshAll;
+
+	var self = this;
+
+	this.app.on('torrents:clearFinishedTorrents', function () {
+		self.finishedTorrents = [];
+	});
+
 
 	/**
 	 * Socket - Emit - torrentRefreshRes
@@ -22,24 +30,24 @@ module.exports = function (socket, io, transmission) {
 	 * Ajout en db le nouveau fichier telecharger et fini
 	 * Envois un event a tout les utilisateurs avec les nouvelles donnees des torrents actifs
 	 */
-	var finishRefreshTorrent = function () {
-		transmission.torrentGet(checkFinished, "recently-active", function (err, res) {
+	this.finishRefreshTorrent = function () {
+		self.transmission.torrentGet(self.checkFinished, "recently-active", function (err, res) {
 			if (err)
 			{
-				clearInterval(finishRefreshTorrentIntervalId);
-				finishRefreshTorrentIntervalId = null;
+				clearInterval(self.finishRefreshTorrentIntervalId);
+				self.finishRefreshTorrentIntervalId = null;
 			}
 			else
 			{
 				res["torrents"].forEach(function (torrent) {
-					if (finishedTorrents.indexOf(torrent['name']) < 0)
+					if (self.finishedTorrents.indexOf(torrent['name']) < 0)
 					{
 						if (torrent['leftUntilDone'] === 0 && torrent["percentDone"] === 1.0)
 						{
-							finishedTorrents.push(torrent["name"]);
-							File.insertTorrent(torrent['id'], torrent['name'], transmission, function (err, newFile) {
+							self.finishedTorrents.push(torrent["name"]);
+							File.insertTorrent(torrent['id'], torrent['name'], self.transmission, function (err, newFile) {
 								if (newFile != null)
-									io.sockets.emit("newFile", { name: torrent["name"], data: newFile });
+									self.io.sockets.emit("newFile", { name: torrent["name"], data: newFile });
 							});
 						}
 					}
@@ -52,132 +60,138 @@ module.exports = function (socket, io, transmission) {
 	 * Socket - Emit - torrentRefreshRes
 	 * Permet d'envoyer un event a tous les utilisateurs avec les nouvelles donnees des torrents actifs
 	 */
-	var refreshTorrent = function () {
-		transmission.torrentGet(refreshActive, "recently-active", function (err, res) {
+	this.refreshTorrent = function () {
+		self.transmission.torrentGet(self.refreshActive, "recently-active", function (err, res) {
 		if (err)
-			io.sockets.emit('torrentErrorRefresh', { error: err });
+			self.io.sockets.emit('torrentErrorRefresh', { error: err });
 		else if (res['removed'].length > 0 || res['torrents'].length > 0)
-			io.sockets.emit('torrentRefreshRes', { result: res });
+			self.io.sockets.emit('torrentRefreshRes', { result: res });
 		});
 	};
 
-	if (io.engine.clientsCount === 1)
-		finishRefreshTorrentIntervalId = setInterval(finishRefreshTorrent, second);
-
-	socket.on('torrentRefresh', function () {
-		torrentRefreshCounter++;
-		transmission.torrentGet(refreshAll, {}, function (err, res) {
-			if (err)
-				socket.emit("torrentErrorRefresh", { error: err });
-			else
-				socket.emit("torrentFirstRefresh", { torrents: res });
-		});
-		if (torrentRefreshCounter === 1)
-			torrentRefreshIntervalId = setInterval(refreshTorrent, second);
-	});
-
-	socket.on('torrentStopRefresh', function () {
-		torrentRefreshCounter--;
-		if (torrentRefreshCounter === 0)
+	this.newConnection = function (socket) {
+		if (self.io.engine.clientsCount === 1)
 		{
-			clearInterval(torrentRefreshIntervalId);
-			torrentRefreshIntervalId = null;
+			self.finishRefreshTorrentIntervalId = setInterval(self.finishRefreshTorrent, self.second);
 		}
-	});
 
-	/**
-	 * Socket - On - Event
-	 * Permet de supprimer un torrent via une url
-	 * @param {removeLocalData: true/false, id:idTorrent}
-	 * Retroune un event 'post:torrent:url' true ou false
-	 */
-	socket.on('delete:torrent', function (data) {
-		var removeLocalData = data.removeLocalData;
-		var ids = format.torrentsIds(data.ids);
-		transmission.torrentGet(['hashString', 'name'], ids, function (err, respGet) {
-			if (err)
-				socket.emit('delete:torrent', { success: false, message: 'Could not remove torrent', error: err });
-			else
+		socket.on('torrentRefresh', function () {
+			self.torrentRefreshCounter++;
+			self.transmission.torrentGet(self.refreshAll, {}, function (err, res) {
+				if (err)
+					socket.emit("torrentErrorRefresh", { error: err });
+				else
+					socket.emit("torrentFirstRefresh", { torrents: res });
+			});
+			if (self.torrentRefreshCounter === 1)
 			{
-				transmission.torrentRemove(ids, removeLocalData, function (err, respRemove) {
-					if (err)
-						socket.emit('delete:torrent', { success: false, message: "Could not remove torrent" });
-					else
-					{
-						io.sockets.emit('delete:torrent', { success: true, ids: ids, message: 'Torrent removed' });
-						if (respGet['torrents'].length > 0)
+				self.torrentRefreshIntervalId = setInterval(self.refreshTorrent, self.second);
+			}
+		});
+
+		socket.on('torrentStopRefresh', function () {
+			self.torrentRefreshCounter--;
+			if (self.torrentRefreshCounter === 0)
+			{
+				clearInterval(self.torrentRefreshIntervalId);
+				self.torrentRefreshIntervalId = null;
+			}
+		});
+
+		/**
+		 * Socket - On - Event
+		 * Permet de supprimer un torrent via une url
+		 * @param {removeLocalData: true/false, id:idTorrent}
+		 * Retroune un event 'post:torrent:url' true ou false
+		 */
+		socket.on('delete:torrent', function (data) {
+			var removeLocalData = data.removeLocalData;
+			var ids = format.torrentsIds(data.ids);
+			self.transmission.torrentGet(['hashString', 'name'], ids, function (err, respGet) {
+				if (err)
+					socket.emit('delete:torrent', { success: false, message: 'Could not remove torrent', error: err });
+				else
+				{
+					self.transmission.torrentRemove(ids, removeLocalData, function (err, respRemove) {
+						if (err)
+							socket.emit('delete:torrent', { success: false, message: "Could not remove torrent" });
+						else
 						{
-							if (removeLocalData)
+							self.io.sockets.emit('delete:torrent', { success: true, ids: ids, message: 'Torrent removed' });
+							if (respGet['torrents'].length > 0)
 							{
-								var toFind = [];
-								respGet['torrents'].forEach(function (torrent) {
-									toFind.push(torrent.hashString);
-								});
-								File.find({ hashString:  { $in: toFind } }, function (err, files) {
-									if (!err)
-									{
-										files.forEach(function (file) {
-											file.deleteFile(transmission, function (err, msg) {
+								if (removeLocalData)
+								{
+									var toFind = [];
+									respGet['torrents'].forEach(function (torrent) {
+										toFind.push(torrent.hashString);
+									});
+									File.find({ hashString:  { $in: toFind } }, function (err, files) {
+										if (!err)
+										{
+											files.forEach(function (file) {
+												file.deleteFile(self.transmission, function (err, msg) {
+												});
 											});
-										});
-									}
+										}
+									});
+								}
+								respGet['torrents'].forEach(function (torrent) {
+									var index = self.finishedTorrents.indexOf(torrent.name);
+									if (index > 0)
+										self.finishedTorrents.splice(index, 1);
 								});
 							}
-							respGet['torrents'].forEach(function (torrent) {
-								var index = finishedTorrents.indexOf(torrent.name);
-								if (index > 0)
-									finishedTorrents.splice(index, 1);
-							});
 						}
-					}
-				});
-			}
-		});
-	});
-
-
-	/**
-	 * Socket - On - Event
-	 * Permet d'ajouter un torrent via une url
-	 * Retourne un event 'post:torrent:url' true ou false
-	 */
-	socket.on('post:torrent:url',  function (data) {
-		transmission.torrentAdd({ filename: data.url }, function (err, resp) {
-			if (err)
-				socket.emit('post:torrent:url', { success: false, message: "torrent not added, wrong url" });
-			else
-			{
-				if ('torrent-duplicate' in resp)
-					socket.emit('post:torrent', { success: false, message: 'duplicate, torrent already present' });
-				else if ('torrent-added' in resp)
-				{
-					File.createFile(resp['torrent-added'], data.id, function (err, file) {
-						if (err)
-							io.sockets.emit('post:torrent', { success: false, message: 'torrent successfully added but adding it in db failed', id: resp['torrent-added']['id'], name: resp['torrent-added']['name'], error: err });
-						else
-							io.sockets.emit('post:torrent', { success: true, message: 'torrent successfully added', id: resp['torrent-added']['id'], name: file.name });
 					});
 				}
+			});
+		});
+
+
+		/**
+		 * Socket - On - Event
+		 * Permet d'ajouter un torrent via une url
+		 * Retourne un event 'post:torrent:url' true ou false
+		 */
+		socket.on('post:torrent:url',  function (data) {
+			self.transmission.torrentAdd({ filename: data.url }, function (err, resp) {
+				if (err)
+					socket.emit('post:torrent:url', { success: false, message: "torrent not added, wrong url" });
 				else
-					socket.emit('post:torrent', { success: false, message: 'unexpected error' });
+				{
+					if ('torrent-duplicate' in resp)
+						socket.emit('post:torrent', { success: false, message: 'duplicate, torrent already present' });
+					else if ('torrent-added' in resp)
+					{
+						File.createFile(resp['torrent-added'], data.id, function (err, file) {
+							if (err)
+								self.io.sockets.emit('post:torrent', { success: false, message: 'torrent successfully added but adding it in db failed', id: resp['torrent-added']['id'], name: resp['torrent-added']['name'], error: err });
+							else
+								self.io.sockets.emit('post:torrent', { success: true, message: 'torrent successfully added', id: resp['torrent-added']['id'], name: file.name });
+						});
+					}
+					else
+						socket.emit('post:torrent', { success: false, message: 'unexpected error' });
+				}
+			});
+		});
+
+		socket.on('disconnect', function () {
+			if (self.io.engine.clientsCount === 0)
+			{
+				if (self.torrentRefreshIntervalId !== null)
+				{
+					self.torrentRefreshCounter = 0;
+					clearInterval(self.torrentRefreshIntervalId);
+					self.torrentRefreshIntervalId = null;
+				}
+				if (self.finishRefreshTorrentIntervalId !== null)
+				{
+					clearInterval(self.finishRefreshTorrentIntervalId);
+					self.finishRefreshTorrentIntervalId = null;
+				}
 			}
 		});
-	});
-
-	socket.on('disconnect', function () {
-		if (io.engine.clientsCount === 0)
-		{
-			if (torrentRefreshIntervalId !== null)
-			{
-				torrentRefreshCounter = 0;
-				clearInterval(torrentRefreshIntervalId);
-				torrentRefreshIntervalId = null;
-			}
-			if (finishRefreshTorrentIntervalId !== null)
-			{
-				clearInterval(finishRefreshTorrentIntervalId);
-				finishRefreshTorrentIntervalId = null;
-			}
-		}
-	});
+	};
 };

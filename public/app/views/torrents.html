@@ -40,7 +40,7 @@
 			<div class="col-md-12 ts-torrents-body">
 				<table class="table tt-table">
                     <tbody>
-                        <tr ng-repeat="torrent in torrents | filter : search | filter : filters" context-menu="menuOptions" class="tt-dottedbottom ts-torrent-row">
+                        <tr ng-repeat="torrent in torrents.slice().reverse() | filter : search | filter : filters" context-menu="menuOptions" class="tt-dottedbottom ts-torrent-row">
                             <td>
                                 <!-- ************************* CHECK BOX *************************  -->
 								<div class="col-md-1 ts-checkbox-tr">

@@ -37,7 +37,7 @@ app.locals.transmission = configInfos.transmission;
 // ====================================
 // CRON
 // ====================================
-ttCron(app.locals.ttConfig, app.locals.transmission);
+ttCron(app.locals.ttConfig, app.locals.transmission, app);
 
 
 // ====================================
