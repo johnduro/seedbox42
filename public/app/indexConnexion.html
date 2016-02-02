@@ -23,18 +23,18 @@
 		<div class="row">
 			<div class="col-md-4"></div>
 	        <div class="container col-md-4">
-	            <form class="">
+	            <form ng-submit="connexion()">
 	                <h2 class="tt-sign-title">TeurpiTorrent</h2>
 	                <label for="inputEmail" class="sr-only">Login</label>
 					<div class="tt-search-div col-md-12 tt-text tt-sign-div">
-		                <input type="text" ng-model="user.login" class="tt-search-input tt-signin-input" placeholder="Login" required="" autofocus="" style="width: 100%;">
+		                <input id="login" name="login" type="text" ng-model="user.login" class="tt-search-input tt-signin-input" placeholder="Login" required="" autofocus="" style="width: 100%;">
 					</div>
 	                <label for="inputPassword" class="sr-only">Password</label>
 					<div class="tt-search-div col-md-12 tt-text tt-sign-div">
-		                <input type="password" ng-model="user.password" class="tt-search-input tt-signin-input" placeholder="Password" required="" style="width: 100%;">
+		                <input id="password" name="password" type="password" ng-model="user.password" class="tt-search-input tt-signin-input" placeholder="Password" required="" style="width: 100%;">
 					</div>
 					<div class="col-md-12 tt-sign-button">
-		                <button ng-click="connexion()" class="btn btn-lg btn-default btn-block tt-signin" style="background-color: #325064; color: #fff;">Sign in</button>
+		                <button type="submit" class="btn btn-lg btn-default btn-block tt-signin" style="background-color: #325064; color: #fff;">Sign in</button>
 					</div>
 	            </form>
 
