@@ -81,7 +81,9 @@ var TorrentSockets = module.exports = function (io, transmission, app) {
 				if (err)
 					socket.emit("torrentErrorRefresh", { error: err });
 				else
+				{
 					socket.emit("torrentFirstRefresh", { torrents: res });
+				}
 			});
 			if (self.torrentRefreshCounter === 1)
 			{
