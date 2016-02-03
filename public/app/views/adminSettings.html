@@ -38,20 +38,22 @@
 						</div>
 
 						<!-- DASHBOARD - PANELS -->
-						<div ng-if="elementKey == 'panels'" ng-repeat="(panelKey, panel) in setting.panels" class="col-md-6 well">
-							<span class="tt-title">{{panel.title | uppercase}}</span>
-							<div ng-repeat="(panelElementKey, panelElement) in panel">
-								<div ng-if="panelElementKey != 'name' && panelElementKey != 'template'">
-									{{panelElementKey}}
-									<div ng-if="settingsDefault.dashboard.panels.match[panelElementKey].switch">
-										<select ng-options="value for value in settingsDefault.dashboard.panels.match[panelElementKey].values" ng-model="settings[settingKey][elementKey][panelKey][panelElementKey]"></select>
-									</div>
-									<div ng-if="!settingsDefault.dashboard.panels.match[panelElementKey].switch">
-										<input type="text" ng-model="settings[settingKey][elementKey][panelKey][panelElementKey]">
+						<ul ui-sortable="sortableOptions" ng-if="elementKey == 'panels'" ng-model="setting.panels">
+							<li ng-if="elementKey == 'panels'" ng-repeat="(panelKey, panel) in setting.panels" class="col-md-6 well">
+								<span class="tt-title">{{panel.title | uppercase}}</span>
+								<div ng-repeat="(panelElementKey, panelElement) in panel">
+									<div ng-if="panelElementKey != 'name' && panelElementKey != 'template' && panelElementKey != 'order'">
+										{{panelElementKey}}
+										<div ng-if="settingsDefault.dashboard.panels.match[panelElementKey].switch">
+											<select ng-options="value for value in settingsDefault.dashboard.panels.match[panelElementKey].values" ng-model="settings[settingKey][elementKey][panelKey][panelElementKey]"></select>
+										</div>
+										<div ng-if="!settingsDefault.dashboard.panels.match[panelElementKey].switch">
+											<input type="text" ng-model="settings[settingKey][elementKey][panelKey][panelElementKey]">
+										</div>
 									</div>
 								</div>
-							</div>
-						</div>
+							</li>
+						</ul>
 						<hr class=" col-md-12 as-hr" />
 					</div>
 					<div class="col-md-12">

@@ -13,7 +13,8 @@ var app = angular.module('seedApp', [
     'ui.bootstrap.contextMenu',
 	'angular-clipboard',
     'toaster',
-    'ngAnimate'
+    'ngAnimate',
+    'ui.sortable'
 ]);
 
 // ---------------------- variable global -------------------------------
