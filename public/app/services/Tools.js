@@ -257,11 +257,15 @@ app.service('Tools', function ($rootScope, RequestHandler, $timeout, $modal, $q)
 		}*/
 	};
 
-    var getConfig = function (){
+    var getConfig = function (force){
+        force = typeof force !== 'undefined' ? force : false;
+
         var defer = $q.defer();
-        if ("config" in $rootScope){
+        if ("config" in $rootScope && !force){
+            console.log("getConfig : rootscope")
             defer.resolve($rootScope.config);
         }else{
+            console.log("getConfig : api")
             RequestHandler.get(api + "admin/settings")
                 .then(function(result){
                     if (result.data.status)

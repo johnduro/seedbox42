@@ -1,4 +1,4 @@
-app.controller("settingsCtrl", function($rootScope, $scope, RequestHandler, toaster){
+app.controller("settingsCtrl", function($rootScope, $scope, RequestHandler, toaster, Tools){
     console.log("settingsCtrl");
 
     $scope.sendDir = "";
@@ -57,6 +57,7 @@ app.controller("settingsCtrl", function($rootScope, $scope, RequestHandler, toas
             .then(function(result){
                 if (result.data.success){
                     toaster.pop('success', "Success", result.data.message, 5000);
+                    Tools.getConfig(true);
                 } else {
                     toaster.pop('error', "Error", result.data.message, 5000);
                 }
