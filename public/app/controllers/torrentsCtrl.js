@@ -184,7 +184,9 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 	};
 
 	$scope.renderProgressBar = function (torrent) {
-		if (torrent.isFinished || torrent.isStalled || torrent.status == 0 || torrent.status == 1 || torrent.status == 3 || torrent.status == 5)
+		if (torrent.isFinished)
+			return 'ts-progressbar-finished';
+		else if (torrent.isStalled || torrent.status == 0 || torrent.status == 1 || torrent.status == 3 || torrent.status == 5)
 			return 'ts-progressbar-inactive';
 		else
 			return 'ts-progressbar-active';
