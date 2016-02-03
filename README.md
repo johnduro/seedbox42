@@ -1,5 +1,15 @@
 #Seedbox Teurpi Torrent.
 
+______________________
+Creative Commons License
+
+![alt tag](https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png)
+
+Teurpi Torrent is licensed under a [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-nc-sa/4.0/).
+
+Based on a work at https://github.com/johnduro/seedbox42.
+______________________
+
 ![!alt tag](https://cloud.githubusercontent.com/assets/6706015/12647149/023de2de-c5d4-11e5-9451-e5cfa0b2bf55.png)
 
 **Teurpi Torrent** vous permet de transformer votre serveur dédié en **seedbox** facilement.

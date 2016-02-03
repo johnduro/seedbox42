@@ -81,6 +81,11 @@
 	/* color: black; */
 }
 
+.ts-progressbar-finished {
+	background-color: #D0D0D0;
+	color: black;
+}
+
 .ts-progressbar-active {
 	background-color: #2DFEFE;
 	color: black;
