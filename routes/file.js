@@ -68,13 +68,15 @@ router.delete('/remove-grade/:id', function (req, res, next) {
 });
 
 router.post('/add-lock/:id', function (req, res, next) {
+	console.log('HERE');
 	File.findById(req.params.id, function (err, file) {
 		if (err)
 			return next(err);
 		file.addLock(req.user, function (err) {
 			if (err)
-				return next(err);
-			res.json({ success: true, message: 'file successfuly locked' });
+				res.json({ success: false, message: err });
+			else
+				res.json({ success: true, message: 'file successfuly locked' });
 		});
 	});
 });

@@ -9,9 +9,7 @@ module.exports = {
 			var infos = file.toObject();
 			infos.isLocked = file.getIsLocked();
 			infos.isLockedByUser = file.getIsLockedByUser(user);
-			delete infos.comments;
 			delete infos.locked;
-			delete infos.grades;
 			result.push(infos);
 		});
 		return result;

@@ -38,6 +38,7 @@
 						</div>
 
 						<!-- DASHBOARD - PANELS -->
+						<span class="tt-text as-panel-text" ng-if="elementKey == 'panels'" ><i class="fa fa-exclamation-triangle" style="color: red;"></i> Drap & drop the panels to set the order on the dashboard</span>
 						<ul ui-sortable="sortableOptions" ng-if="elementKey == 'panels'" ng-model="setting.panels">
 							<li ng-if="elementKey == 'panels'" ng-repeat="(panelKey, panel) in setting.panels" class="col-md-6 well">
 								<span class="tt-title">{{panel.title | uppercase}}</span>

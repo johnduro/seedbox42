@@ -99,7 +99,7 @@ FileSchema.statics = {
 		var populateSelect = 'login role avatar';
 		this.findOne({ _id: id, isFinished: true })
 			.select('-isFinished -hashString -torrentAddedAt')
-			.populate([{ path: 'creator', select: populateSelect }, { path: 'comments.user', select: populateSelect }, { path: 'locked.user', select: populateSelect }, { path: 'grades.user', select: populateSelect }])
+			.populate([{ path: 'creator', select: populateSelect }, { path: 'comments.user', select: populateSelect }, { path: 'grades.user', select: populateSelect }])
 			.exec(function (err, file) {
 				if (err)
 					return cb(err);
@@ -116,8 +116,8 @@ FileSchema.statics = {
 		var populateSelect = 'login role avatar';
 		match.isFinished = true;
 		var query = this.find(match);
-		query.select('-path -hashString -isFinished -privacy -torrentAddedAt');
-		query.populate([{ path: 'creator', select: populateSelect }, { path: 'comments.user', select: populateSelect }, { path: 'locked.user', select: populateSelect }, { path: 'grades.user', select: populateSelect }]);
+		query.select('-path -hashString -isFinished -privacy -torrentAddedAt -grades -comments');
+		query.populate([{ path: 'creator', select: populateSelect }]);
 		query.sort(sort);
 		if (limit > 0)
 			query.limit(limit);
@@ -427,7 +427,7 @@ FileSchema.methods = {
 	},
 
 	getIsLockedByUser: function (user) {
-		var index = ft.indexOfByUserId(this.locked, user._id);
+		var index = ft.indexOfByIdKey(this.locked, 'user', user._id);
 		if (index > -1)
 			return true;
 		return false;
