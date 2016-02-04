@@ -1,14 +1,14 @@
-app.controller('filesCtrl', function ($scope, $rootScope, $state, $location, $stateParams, RequestHandler, socket, $timeout, $http, $cookies, Lightbox, Tools, toaster) {
+app.controller('filesCtrl', function ($scope, $rootScope, $state, $location, $filter, $stateParams, $window, RequestHandler, socket, $timeout, $http, $cookies, Lightbox, Tools, toaster) {
 
 	console.log("filesCtrl");
 
 	$scope.treeSelected = '';
-	$scope.elementsActual = '';
-	var pathActualArray = [];
+	$scope.elementsActual = [];
 	$scope.pathActual = " / ";
 	$scope.itemSelected = false;
+	//$scope.research = "";
+	var pathActualArray = [];
 	var requestApi = "file";
-	console.log($stateParams);
 	var roles = {
 		"1" : "user",
 		"0": "admin",
@@ -26,8 +26,12 @@ app.controller('filesCtrl', function ($scope, $rootScope, $state, $location, $st
 
 	RequestHandler.get(api + (!$stateParams.sort ? $stateParams.sort = "file" : ('dashboard/' + $stateParams.sort)) + "/all")
 		.then(function(result){
-			$scope.elementsActual = result.data.data;
-			addType($scope.elementsActual);
+			$scope.allElements = result.data.data;
+			addType($scope.allElements);
+			$scope.elementsActual = result.data.data.slice(0, 50);
+			$scope.pageMax = Math.ceil(result.data.data.length/50);
+			$scope.pageActual = 1;
+			console.log(Math.ceil(result.data.data.length/50));
 			$rootScope.$broadcast('filesLoaded');
 		});
 
@@ -99,7 +103,36 @@ app.controller('filesCtrl', function ($scope, $rootScope, $state, $location, $st
 		$scope.reverse = ($scope.sortColumn === item) ? !$scope.reverse : false;
 		setClassSort();
 		$scope.sortColumn = item;
-	}
+	};
+
+	$scope.pageNext = function(){
+		if ($scope.pageActual == $scope.pageMax)
+			return;
+		$scope.pageActual++;
+		$scope.elementsActual = $scope.allElements.slice($scope.elementsActual.length, ($scope.elementsActual.length + 50));
+		$window.scrollTo(0, 0);
+	};
+
+	$scope.setPageActual = function(){
+		$scope.elementsActual = $scope.allElements.slice(($scope.pageActual-1)*50, ($scope.pageActual-1)*50+50);
+		$window.scrollTo(0, 0);
+	};
+
+	$scope.pagePast = function(){
+		if ($scope.pageActual == 1)
+			return;
+		$scope.pageActual--;
+		$scope.elementsActual = $scope.allElements.slice($scope.elementsActual.length - 50, $scope.elementsActual.length);
+		$window.scrollTo(0, 0);
+	};
+
+	$scope.$watch('research', function(){
+		if ($scope.research == ""){
+			$scope.setPageActual();
+			return;
+		}
+		$scope.elementsActual = $filter('filter')($scope.allElements, {name: $scope.research});
+	});
 
 // --------------------------------------------- FUNCTION LOCK --------------------------------------------
 	$scope.lockFile = function(item){
