@@ -7,9 +7,7 @@ var fs = require('fs');
 module.exports = {
 	indexOfByIdKey: function (arr, key, value) {
 		var arrayLength = arr.length;
-		console.log('VALUE :: ', value);
 		for (var i = 0; i < arrayLength; i++) {
-			console.log('TO CHECK :: ', arr[i][key].toString());
 			if (arr[i][key].toString() == value)
 				return i;
 		}
