@@ -186,4 +186,38 @@ app.controller("managerFilesCtrl", function($rootScope, $scope,$filter, Tools, R
 		}
 	};
 
+	function setClassSort () {
+		if ($scope.reverse)
+		{
+			$scope.classSort = "fa fa-sort-asc";
+		}
+		else
+		{
+			$scope.classSort = "fa fa-sort-desc";
+		}
+	}
+
+	$scope.getOrderBy = function () {
+		if ($scope.sortColumn == "size" || $scope.sortColumn == "isLocked" || $scope.sortColumn == "downloads" || $scope.sortColumn == "averageGrade" || $scope.sortColumn == "commentsNbr")
+		{
+			if ($scope.reverse)
+				return [$scope.sortColumn];
+			else
+				return ['-' + $scope.sortColumn];
+		}
+		else
+		{
+			if ($scope.reverse)
+				return ['-' + $scope.sortColumn];
+			else
+				return [$scope.sortColumn];
+		}
+	};
+
+	$scope.order = function(item) {
+		$scope.reverse = ($scope.sortColumn === item) ? !$scope.reverse : false;
+		setClassSort();
+		$scope.sortColumn = item;
+	};
+
 });

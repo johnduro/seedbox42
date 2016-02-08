@@ -77,7 +77,18 @@
                     </ul>
 					<!-- <ul class="nav navbar-nav navbar-center"><li><a href="#">TEURPITORRENT</a></li></ul> -->
 
-                     <ul class="nav navbar-nav navbar-right">
+                    <ul class="nav navbar-nav navbar-right">
+						<li class="dropdown" ng-if="ShowConnected()">
+							<a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+								<span class="fa fa-user-secret nb-connected-logo"></span>
+							</a>
+							<ul class="dropdown-menu">
+								<li class="dropdown-header"><i class="fa fa-circle" style="color: #35AC19;"></i> Connected users</li>
+								<li ng-repeat="userLogin in connectedUsersLogin" class="nb-connected-login">
+									<span class="tt-text">{{userLogin}}</span>
+								</li>
+							</ul>
+						</li>
                         <!-- <li class="dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                                 <img src="assets/images/tt-chat-icon.png" class="tt-icon-navbar"></img>
@@ -120,7 +131,7 @@
                                 <!-- <li> -->
                                 <li  ng-class="{active: isActive('/seedbox/profile')}">
                                     <a ui-sref="seedbox.profile" class="waves-effect waves-button">
-                                        <span class="menu-icon glyphicon fa fa-user"></span> My profil
+                                        <span class="menu-icon glyphicon fa fa-user"></span> My profile
                                     </a>
                                 </li>
 

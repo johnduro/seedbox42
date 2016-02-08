@@ -127,3 +127,14 @@
 	width: auto;
 	margin:-5px -15px;
 }
+
+.nb-connected-login {
+	text-align: center;
+	padding-top: 2px;
+}
+
+.nb-connected-logo {
+	margin-top: 5px;
+	font-size: 22px;
+	color: white;
+}
