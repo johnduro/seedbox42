@@ -14,7 +14,8 @@ var app = angular.module('seedApp', [
 	'angular-clipboard',
     'toaster',
     'ngAnimate',
-    'ui.sortable'
+    'ui.sortable',
+    'scroll'
 ]);
 
 // ---------------------- variable global -------------------------------

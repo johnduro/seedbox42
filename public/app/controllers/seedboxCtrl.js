@@ -37,6 +37,7 @@ app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http, $loca
 	//Fonction de deconnexion
 	$scope.logout = function(){
 		console.log("logout");
+		socket.disconnect();
 		localStorage.clear();
 	};
 

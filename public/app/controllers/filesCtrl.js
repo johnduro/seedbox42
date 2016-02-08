@@ -6,29 +6,34 @@ app.controller('filesCtrl', function ($scope, $rootScope, $state, $location, $fi
 	$scope.elementsActual = [];
 	$scope.pathActual = " / ";
 	$scope.itemSelected = false;
-	var pageSize = 20;
+	var pageSize = 50;
 	var pathActualArray = [];
 	var requestApi = "file";
 	var roles = {
 		"1" : "user",
 		"0": "admin",
 	};
+	$scope.listLimit = 10;
 	// var cols= ["type", "name", "size", "isLocked", ];
 
 	socket.on("newFile", function(data){
 		RequestHandler.get(api + "file/all")
 			.then(function(result){
-				//toaster.pop('success', "Nouveau fichier !", "Le nouveau fichier a ete ajoute a la liste.", pageSize00);
 				$scope.elementsActual = result.data.data;
 				addType($scope.elementsActual);
 		});
 	});
 
+	$scope.loadMore = function(){
+		$scope.listLimit += 20;
+	};
+
 	RequestHandler.get(api + (!$stateParams.sort ? $stateParams.sort = "file" : ('dashboard/' + $stateParams.sort)) + "/all")
 		.then(function(result){
 			$scope.allElements = result.data.data;
 			addType($scope.allElements);
-			$scope.elementsActual = result.data.data.slice(0, pageSize);
+			//$scope.elementsActual = result.data.data.slice(0, pageSize);
+			$scope.elementsActual = result.data.data;
 			$scope.pageMax = Math.ceil(result.data.data.length/pageSize);
 			$scope.pageActual = 1;
 			console.log(Math.ceil(result.data.data.length/pageSize));
@@ -58,7 +63,6 @@ app.controller('filesCtrl', function ($scope, $rootScope, $state, $location, $fi
 	};
 
 	$scope.openFile = function(file){
-		//console.log(file);
 		$location.url('seedbox/file/' + file._id);
 	};
 
@@ -113,7 +117,7 @@ app.controller('filesCtrl', function ($scope, $rootScope, $state, $location, $fi
 		$scope.elementsActual = $filter('filter')($scope.allElements, {name: $scope.research});
 	});
 
-// --------------------------------------------- FUNCTION LOCK --------------------------------------------
+// --------------------------------------------- FUNCTION PAGINATE --------------------------------------------
 	$scope.setPageActual = function(){
 		$scope.elementsActual = $scope.allElements.slice(($scope.pageActual-1)*pageSize, ($scope.pageActual-1)*pageSize+pageSize);
 		$window.scrollTo(0, 0);

@@ -53,7 +53,7 @@
                     </tr>
                 </thead>
                 <tbody class="tt-text">
-                    <tr ng-repeat="(key, item) in elementsActual | orderBy:getOrderBy()"  ng-class-odd="'tt-table-odd'" ng-class-even="'tt-table-even'">
+                    <tr ng-repeat="(key, item) in elementsActual | orderBy:getOrderBy() | limitTo:listLimit" when-scrolled="loadMore()" ng-class-odd="'tt-table-odd'" ng-class-even="'tt-table-even'">
                         <td class="tt-darkblue">
                             <div ng-switch="item.type">
                                 <div ng-switch-when="folder" ><i class="icon-folder fls-icon"></i></div>
@@ -81,11 +81,11 @@
                 </tbody>
             </table>
 
-            <div ng-hide="research">
+            <!-- <div ng-hide="research">
                 <i class="fa fa-chevron-left" ng-click="pagePast()"></i>
                 {{pageActual}}/{{pageMax}}
                 <i class="fa fa-chevron-right" ng-click="pageNext()"></i>
-            </div>
+            </div> -->
         </div>
     </div>
 </div>
