@@ -17,6 +17,14 @@ app.config(function ($stateProvider, $urlRouterProvider) {
         url: "/dashboard",
         templateUrl: "app/views/dashboard.html",
         controller: "dashboardCtrl",
+        resolve: {
+            rconfig: function(Tools){
+                return Tools.getConfig();
+            },
+            ruser: function(Tools){
+                return Tools.getUser();
+            },
+        },
         access: ["0", "1"]
     })
     .state('seedbox.profile', {

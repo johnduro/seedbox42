@@ -66,6 +66,7 @@ app.controller("settingsCtrl", function($rootScope, $scope, RequestHandler, toas
     };
 
     $scope.sortableOptions = {
+        'ui-floating': 'auto',
         update: function(e, ui) {
         },
         stop: function(e, ui) {
