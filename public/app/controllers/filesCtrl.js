@@ -13,7 +13,7 @@ app.controller('filesCtrl', function ($scope, $rootScope, $state, $location, $fi
 		"1" : "user",
 		"0": "admin",
 	};
-	$scope.listLimit = 10;
+	$scope.listLimit = 50;
 	// var cols= ["type", "name", "size", "isLocked", ];
 
 	socket.on("newFile", function(data){
