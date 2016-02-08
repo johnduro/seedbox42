@@ -47,6 +47,10 @@ app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http, $loca
 		}, 500);
 	});
 
+	socket.on('update:config', function () {
+		Tools.getConfig(true);
+	});
+
 	$rootScope.msgInfo = function(title, msg){
 		setTimeout(function() {
 			toastr.options = {

@@ -1,5 +1,5 @@
 var jwt = require('jsonwebtoken');
-var wall = require('./wallSockets');
+var WallSockets = require('./wallSockets');
 var TorrentSockets = require('./torrentSockets');
 
 /**
@@ -10,6 +10,7 @@ module.exports = function (io, transmission, app) {
 
 	var second = 1000;
 	var torrentSocket = new TorrentSockets(io, transmission, app);
+	var wallSocket = new WallSockets(io, app.get('config'));
 
 	/**
 	 * Socket auth
@@ -46,11 +47,18 @@ module.exports = function (io, transmission, app) {
 		/**
 		 * Wall messages management through sockets
 		 */
-		wall(socket, io, app.get('config'));
+		wallSocket.newConnection(socket);
 
 		socket.on('disconnect', function () {
 			if (io.engine.clientsCount > 0)
 				io.sockets.emit('connectedUsers', { connectedUsers: io.engine.clientsCount });
 		});
+	});
+
+	/**
+	 * Make the connected users update their config when modified
+	 */
+	app.on('config:reload', function () {
+		io.sockets.emit('update:config');
 	});
 };
