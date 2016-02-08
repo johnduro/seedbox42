@@ -32,6 +32,11 @@ app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http, $loca
         .then(function(result){
             if (result.data.success){
                 $rootScope.config = result.data.data;
+				$scope.ShowConnected = function () {
+					if ($rootScope.config.users['show-connected'] == 'all' || $rootScope.config.users['show-connected'] == roles[$rootScope.user.role])
+						return true;
+					return false;
+				};
             }
         });
 
@@ -80,9 +85,4 @@ app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http, $loca
 		toaster.pop('success', "Fin de telechargement", data.data.name, 5000);
 	});
 
-	$scope.ShowConnected = function () {
-		if ($rootScope.config.users['show-connected'] == 'all' || $rootScope.config.users['show-connected'] == roles[$rootScope.user.role])
-			return true;
-		return false;
-	};
 });

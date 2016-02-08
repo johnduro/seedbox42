@@ -268,8 +268,11 @@ app.service('Tools', function ($rootScope, RequestHandler, $timeout, $modal, $q)
             console.log("getConfig : api")
             RequestHandler.get(api + "admin/settings")
                 .then(function(result){
-                    if (result.data.status)
+                    if (result.data.success)
+					{
                         $rootScope.config = result.data.data;
+						$rootScope.ttVersion = result.data.version;
+					}
                     defer.resolve(result.data.data);
                 });
         }

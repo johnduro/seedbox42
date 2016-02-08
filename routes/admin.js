@@ -12,6 +12,7 @@ var filesInfos = require('../utils/filesInfos');
 var File = require('../models/File.js');
 var rightsMW = require('../middlewares/rights');
 var tSettings = require('../config/transmission');
+var pjson = require('../package.json');
 
 router.get('/settings', function (req, res, next) {
 	var config = req.app.locals.ttConfig;
@@ -23,7 +24,7 @@ router.get('/settings', function (req, res, next) {
 		"dashboard": config.dashboard,
 		"users": config.users
 	};
-	res.json({ success: true, data: ret });
+	res.json({ success: true, data: ret, version: pjson.version });
 });
 
 router.get('/settings-default', function (req, res, next) {
