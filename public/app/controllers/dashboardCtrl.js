@@ -10,7 +10,7 @@ app.controller('dashboardCtrl', function ($scope, $rootScope, $timeout, $locatio
 		"0": "admin",
 	};
 
-	Tools.getConfig(true).then(function(result){
+	Tools.getConfig().then(function(result){
 		Tools.getUser().then(function(user){
 			for (var key in result.dashboard.panels){
 				if (result.dashboard.panels[key].enabled == "all" || result.dashboard.panels[key].enabled == roles[user.role])

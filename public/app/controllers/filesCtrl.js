@@ -6,7 +6,7 @@ app.controller('filesCtrl', function ($scope, $rootScope, $state, $location, $fi
 	$scope.elementsActual = [];
 	$scope.pathActual = " / ";
 	$scope.itemSelected = false;
-	var pageSize = 2;
+	var pageSize = 20;
 	var pathActualArray = [];
 	var requestApi = "file";
 	var roles = {
