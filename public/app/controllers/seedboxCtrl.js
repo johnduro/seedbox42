@@ -18,7 +18,16 @@ app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http, $loca
 		$cookies.put("token", $rootScope.token);
 		$http.defaults.headers.common['X-Access-Token'] = $rootScope.token;
 		socket.connection();
-		Tools.getUser();
+		Tools.getUser().then(function(user){
+			if (user.role == 0){
+				delete $http.defaults.headers.common['X-Access-Token'];
+				RequestHandler.get("https://raw.githubusercontent.com/johnduro/seedbox42/master/package.json").then(function (pkgjson) {
+					if ($rootScope.ttVersion != pkgjson.data.version)
+						toaster.pop('info', 'New version !', 'A new version (' + pkgjson.data.version + ') of TeurpiTorrent is available', 10000);
+				});
+				$http.defaults.headers.common['X-Access-Token'] = $rootScope.token;
+			}
+		});
 	}
 
 	socket.emit("chat:get:message", null, function(data){
