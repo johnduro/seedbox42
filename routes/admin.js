@@ -57,7 +57,10 @@ router.put('/settings/transmission', rightsMW.admin, function (req, res, next) {
 						if (err)
 							res.json({ success: false, message: "Could not update config file", err: err });
 						else
+						{
+							req.app.emit('config:reload');
 							res.json({ success: true, message: "transmission infos were successfuly updated" });
+						}
 					});
 				}
 			});
@@ -76,6 +79,7 @@ router.put('/settings/transmission-settings', rightsMW.admin, function (req, res
 			res.json({ success: false, message: err });
 		else
 		{
+			req.app.emit('config:reload');
 			tSettings.transmissionSettingsToConfig(t, req.app.locals.ttConfig["transmission-settings"], function (err, newConf) {
 				if (err)
 					res.json({ success: true, message: "transmission settings succesfully updated, but could not get session infos from transmission", data: null });
@@ -94,45 +98,19 @@ router.put('/settings/transmission-settings', rightsMW.admin, function (req, res
 	});
 });
 
-router.put('/settings/torrents', rightsMW.admin, function (req, res, next) {
-	req.app.locals.ttConfig.torrents = ft.updateSettings(req.body, req.app.locals.ttConfig.torrents);
+router.put('/settings/:part', rightsMW.admin, function (req, res, next) {
+	req.app.locals.ttConfig[req.params.part] = ft.updateSettings(req.body, req.app.locals.ttConfig[req.params.part]);
 	ft.jsonToFile(req.app.locals.ttConfigFileName, req.app.locals.ttConfig, function (err) {
 		if (err)
 			res.json({ success: false, message: "Could not update config file", err: err });
 		else
-			res.json({ success: true, message: "torrents settings succesfully updated", data: req.app.locals.ttConfig.torrents });
+		{
+			req.app.emit('config:reload');
+			res.json({ success: true, message: req.params.part + " settings succesfully updated", data: req.app.locals.ttConfig[req.params.part] });
+		}
 	});
 });
 
-router.put('/settings/files', rightsMW.admin, function (req, res, next) {
-	req.app.locals.ttConfig.files = ft.updateSettings(req.body, req.app.locals.ttConfig.files);
-	ft.jsonToFile(req.app.locals.ttConfigFileName, req.app.locals.ttConfig, function (err) {
-		if (err)
-			res.json({ success: false, message: "Could not update config file", err: err });
-		else
-			res.json({ success: true, message: "files settings succesfully updated", data: req.app.locals.ttConfig.files });
-	});
-});
-
-router.put('/settings/dashboard', rightsMW.admin, function (req, res, next) {
-	req.app.locals.ttConfig.dashboard = ft.updateSettings(req.body, req.app.locals.ttConfig.dashboard);
-	ft.jsonToFile(req.app.locals.ttConfigFileName, req.app.locals.ttConfig, function (err) {
-		if (err)
-			res.json({ success: false, message: "Could not update config file", err: err });
-		else
-			res.json({ success: true, message: "dashboard settings succesfully updated", data: req.app.locals.ttConfig.dashboard });
-	});
-});
-
-router.put('/settings/users', rightsMW.admin, function (req, res, next) {
-	req.app.locals.ttConfig.users = ft.updateSettings(req.body, req.app.locals.ttConfig.users);
-	ft.jsonToFile(req.app.locals.ttConfigFileName, req.app.locals.ttConfig, function (err) {
-		if (err)
-			res.json({ success: false, message: "Could not update config file", err: err });
-		else
-			res.json({ success: true, message: "users settings succesfully updated", data: req.app.locals.ttConfig.users });
-	});
-});
 
 router.get('/new-directory/:path', rightsMW.admin, function (req, res, next) {
 	var path = atob(req.params.path);
