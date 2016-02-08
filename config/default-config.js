@@ -77,6 +77,7 @@ module.exports = {
 		"mini-chat-message-limit": { "type": "number", "default": 100, "switch": false, "range": true, "rangeValues": { "min": 1, "max": 10000 }, "infos": "Number of messages recorded in the chat (1 to 10000)" }
 	},
 	"users": {
+		"show-connected": { "type": "string", "default": "all", "switch": true, "values": ["all", "user", "admin", "none"], "range": false, "infos": "Who can see the users currently connected" },
 		"default-avatar": { "type": "string", "default": "default.png", "switch": false, "range": false, "infos": "Name of the default avatar (You have to upload it to public/assets/avatar)" }
 	}
 }

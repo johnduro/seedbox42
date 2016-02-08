@@ -4,6 +4,13 @@ app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http, $loca
 
 	$rootScope.token = localStorage.getItem("token");
 
+	$rootScope.connectedUsersLogin = [];
+
+	var roles = {
+		"1" : "user",
+		"0": "admin"
+	};
+
 	//Check si l'utilisateur est connecte
 	if (!$rootScope.token){
 		$state.go("connexion");
@@ -51,6 +58,10 @@ app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http, $loca
 		Tools.getConfig(true);
 	});
 
+	socket.on('connectedUsers', function (data) {
+		$rootScope.connectedUsersLogin = data.logins;
+	});
+
 	$rootScope.msgInfo = function(title, msg){
 		setTimeout(function() {
 			toastr.options = {
@@ -69,4 +80,9 @@ app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http, $loca
 		toaster.pop('success', "Fin de telechargement", data.data.name, 5000);
 	});
 
+	$scope.ShowConnected = function () {
+		if ($rootScope.config.users['show-connected'] == 'all' || $rootScope.config.users['show-connected'] == roles[$rootScope.user.role])
+			return true;
+		return false;
+	};
 });

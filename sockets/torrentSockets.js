@@ -140,7 +140,7 @@ var TorrentSockets = module.exports = function (io, transmission, app) {
 								}
 								respGet['torrents'].forEach(function (torrent) {
 									var index = self.finishedTorrents.indexOf(torrent.name);
-									if (index > 0)
+									if (index > -1)
 										self.finishedTorrents.splice(index, 1);
 								});
 							}
