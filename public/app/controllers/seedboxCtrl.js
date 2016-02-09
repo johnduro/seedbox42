@@ -27,15 +27,9 @@ app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http, $loca
 				});
 				$http.defaults.headers.common['X-Access-Token'] = $rootScope.token;
 			}
+			$state.go("seedbox.dashboard");
 		});
 	}
-
-	socket.emit("chat:get:message", null, function(data){
-		//$rootScope.chatMessages = data.message;
-		//console.log("chat", data.message);
-		//element.html(resultTemplate.data).show();
-		//$compile(element.contents())(scope);
-	});
 
 	RequestHandler.get(api + "admin/settings")
         .then(function(result){
