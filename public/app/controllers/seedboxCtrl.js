@@ -53,6 +53,7 @@ app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http, $loca
 	$scope.logout = function(){
 		console.log("logout");
 		socket.disconnect();
+		$cookies.remove("token");
 		localStorage.clear();
 	};
 

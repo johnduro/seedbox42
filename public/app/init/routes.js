@@ -18,11 +18,11 @@ app.config(function ($stateProvider, $urlRouterProvider) {
         templateUrl: "app/views/dashboard.html",
         controller: "dashboardCtrl",
         resolve: {
-            rconfig: function(Tools){
-                return Tools.getConfig();
+            rconfig: function(Resolve){
+                return Resolve.getConfig();
             },
-            ruser: function(Tools){
-                return Tools.getUser();
+            ruser: function(Resolve){
+                return Resolve.getUser();
             },
         },
         access: ["0", "1"]
