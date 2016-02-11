@@ -36,8 +36,6 @@ app.controller("settingsCtrl", function($rootScope, $scope, RequestHandler, toas
 				return 0;
 			});
 		}
-
-        console.log($scope.settings['dashboard']['panels']);
     };
 
     RequestHandler.get(api + "admin/settings")
@@ -54,7 +52,6 @@ app.controller("settingsCtrl", function($rootScope, $scope, RequestHandler, toas
         });
 
     $scope.updatePart = function(part){
-        console.log($scope.settings[part]);
         RequestHandler.put(api + "admin/settings/" + part, $scope.settings[part])
             .then(function(result){
                 if (result.data.success){
@@ -67,13 +64,11 @@ app.controller("settingsCtrl", function($rootScope, $scope, RequestHandler, toas
 
     $scope.sortableOptions = {
         'ui-floating': 'auto',
-        update: function(e, ui) {
-        },
-        stop: function(e, ui) {
+        update: function(e, ui){},
+        stop: function(e, ui){
             angular.forEach($scope.settings['dashboard']['panels'], function(panel, key) {
                 panel.order = key;
             });
-
         }
     };
 

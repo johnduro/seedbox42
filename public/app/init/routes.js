@@ -11,20 +11,23 @@ app.config(function ($stateProvider, $urlRouterProvider) {
     .state('seedbox', {
         url: "/seedbox",
         templateUrl: "app/indexSeedbox.html",
-        controller: "seedboxCtrl"
-    })
-    .state('seedbox.dashboard', {
-        url: "/dashboard",
-        templateUrl: "app/views/dashboard.html",
-        controller: "dashboardCtrl",
+        controller: "seedboxCtrl",
         resolve: {
+            connection: function($q,Resolve, $location){
+                return Resolve.connection();
+            },
             rconfig: function(Resolve){
                 return Resolve.getConfig();
             },
             ruser: function(Resolve){
                 return Resolve.getUser();
             },
-        },
+        }
+    })
+    .state('seedbox.dashboard', {
+        url: "/dashboard",
+        templateUrl: "app/views/dashboard.html",
+        controller: "dashboardCtrl",
         access: ["0", "1"]
     })
     .state('seedbox.profile', {

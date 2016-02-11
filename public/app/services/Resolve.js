@@ -1,15 +1,17 @@
-app.factory("Resolve", function ($rootScope, RequestHandler, $timeout, $modal, $q, $location, $state) {
+app.factory("Resolve", function ($rootScope, $http, RequestHandler, socket, $timeout, $modal, $q, $location, $state, $cookies) {
 
     var connection = function(){
         var defer = $q.defer();
 
         $rootScope.token = localStorage.getItem("token");
 
-        if ($rootScope.token){
-            defer.reject(false);
-            $state.go("connexion");
-        }else
-            defer.resolve("Ok token !");
+        if (!$rootScope.token){
+            defer.reject("badConnection");
+        }else{
+            defer.resolve();
+            $cookies.put("token", $rootScope.token);
+            socket.connection();
+        }
 
         return defer.promise;
     };
@@ -19,10 +21,8 @@ app.factory("Resolve", function ($rootScope, RequestHandler, $timeout, $modal, $
 
         var defer = $q.defer();
         if ("config" in $rootScope && !force){
-            console.log("getConfig : rootscope")
             defer.resolve($rootScope.config);
         }else{
-            console.log("getConfig : api")
             RequestHandler.get(api + "admin/settings")
                 .then(function(result){
                     if (result.data.success)

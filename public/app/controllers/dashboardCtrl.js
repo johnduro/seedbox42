@@ -1,18 +1,14 @@
 
-app.controller('dashboardCtrl', function ($scope, $rootScope, $timeout, $location, $filter, $http, RequestHandler, socket, Tools, toaster, rconfig, ruser) {
+app.controller('dashboardCtrl', function ($scope, $rootScope, $timeout, $location, $filter, $http, RequestHandler, socket, Tools, toaster) {
 
 	console.log("dashboardCtrl");
 
 	$scope.newMessage = "";
 	$scope.content = [];
-	var roles = {
-		"1" : "user",
-		"0": "admin",
-	};
 
-	for (var key in rconfig.dashboard.panels){
-		if (rconfig.dashboard.panels[key].enabled == "all" || rconfig.dashboard.panels[key].enabled == roles[ruser.role])
-			$scope.content.push(rconfig.dashboard.panels[key]);
+	for (var key in $rootScope.config.dashboard.panels){
+		if ($rootScope.config.dashboard.panels[key].enabled == "all" || $rootScope.config.dashboard.panels[key].enabled == roles[$rootScope.user.role])
+			$scope.content.push($rootScope.config.dashboard.panels[key]);
 	}
 
 });

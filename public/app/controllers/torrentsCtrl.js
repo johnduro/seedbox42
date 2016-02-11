@@ -15,11 +15,6 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 		status: "",
 		isActive: ""
 	};
-	var roles = {
-		"1" : "user",
-		"0": "admin",
-	};
-
 
 	//------------------------------------------------  EVENTS SOCKETS -------------------------------------------------------
 	socket.emit('torrentRefresh');

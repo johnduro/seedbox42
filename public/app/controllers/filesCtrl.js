@@ -9,10 +9,7 @@ app.controller('filesCtrl', function ($scope, $rootScope, $state, $location, $fi
 	var pageSize = 50;
 	var pathActualArray = [];
 	var requestApi = "file";
-	var roles = {
-		"1" : "user",
-		"0": "admin",
-	};
+
 	$scope.listLimit = 50;
 	// var cols= ["type", "name", "size", "isLocked", ];
 
@@ -36,7 +33,6 @@ app.controller('filesCtrl', function ($scope, $rootScope, $state, $location, $fi
 			$scope.elementsActual = result.data.data;
 			$scope.pageMax = Math.ceil(result.data.data.length/pageSize);
 			$scope.pageActual = 1;
-			console.log(Math.ceil(result.data.data.length/pageSize));
 			$rootScope.$broadcast('filesLoaded');
 		});
 
@@ -145,7 +141,6 @@ app.controller('filesCtrl', function ($scope, $rootScope, $state, $location, $fi
 				.then(function(result){
 					if (result.data.success)
 						item.isLockedByUser = true;
-					console.log(item);
 				});
 		}
 	};
@@ -156,7 +151,6 @@ app.controller('filesCtrl', function ($scope, $rootScope, $state, $location, $fi
 				.then(function(result){
 					if (result.data.success)
 						item.isLockedByUser = false;
-					console.log(result);
 				});
 		}
 	};

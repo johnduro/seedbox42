@@ -7,7 +7,6 @@ app.controller("managerFilesCtrl", function($rootScope, $scope,$filter, Tools, R
 	RequestHandler.get(api + "file/all")
 		.then(function(result){
 			$scope.elementsActual = result.data.data;
-			console.log($scope.treeBase);
 			addType($scope.elementsActual);
 		});
 
