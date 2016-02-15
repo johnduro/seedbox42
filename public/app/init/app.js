@@ -14,13 +14,18 @@ var app = angular.module('seedApp', [
 	'angular-clipboard',
     'toaster',
     'ngAnimate',
-    'ui.sortable'
+    'ui.sortable',
+    'scroll'
 ]);
 
 // ---------------------- variable global -------------------------------
 var api = "";
+var roles = {
+    "1" : "user",
+    "0": "admin",
+};
 
-app.run(function ($rootScope, $location, $http, $state, $timeout, Tools, editableOptions, editableThemes) {
+app.run(function ($rootScope, $location, $http, $state, $timeout, Tools, editableOptions, editableThemes, socket) {
 
     api = "/";
 
@@ -49,7 +54,13 @@ app.run(function ($rootScope, $location, $http, $state, $timeout, Tools, editabl
         }, 0, false);
     });
 
-    Tools.getConfig();
+    $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error){
+        console.log('stateChangeError');
+        console.log(event, toState, toParams, fromState, fromParams, error);
+
+        if (error == "badConnection")
+            $state.go("connexion");
+    });
 
 
     // gestion des droits d'access aux url

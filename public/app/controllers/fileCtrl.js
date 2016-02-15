@@ -5,12 +5,6 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
     var pathActualArray = [];
     Lightbox.templateUrl = 'app/views/partials/imagesTemplate.html';
     $scope.files = { upload: [] };
-    var roles = {
-		"1" : "user",
-		"0": "admin",
-	};
-
-    console.log($rootScope);
 
 // --------------------------------------------- FUNCTION PRIVATE --------------------------------------------
     function addType(list){
@@ -109,16 +103,13 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
         newPath += "/" + generatePath(pathActualArray, "") + name;
         if (name == "")
             name = "base";
-        console.log("generatePathDownload : newPath", newPath);
 		pathEncode = btoa(newPath);
 		nameEncode = btoa(name);
 		return(api + "file/download/" + id + "/" + pathEncode + "/" + nameEncode);
 	};
 
     $scope.download = function (id, name){
-        console.log("download");
 		path = generatePathDownload(id, name);
-        console.log("download : path -> ", path);
 		window.location.href = path;
 	};
 
@@ -246,7 +237,6 @@ app.controller("fileCtrl", function($rootScope, $scope, $state, $stateParams, $m
     $scope.log = '';
 
     $scope.upload = function (files) {
-        console.log("upload");
         if (files && files.length) {
             for (var i = 0; i < files.length; i++) {
               var file = files[i];

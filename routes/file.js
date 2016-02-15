@@ -68,7 +68,6 @@ router.delete('/remove-grade/:id', function (req, res, next) {
 });
 
 router.post('/add-lock/:id', function (req, res, next) {
-	console.log('HERE');
 	File.findById(req.params.id, function (err, file) {
 		if (err)
 			return next(err);
@@ -372,7 +371,10 @@ router.get('/download/:id/:path/:name', function (req, res, next) {
 				fileInfos.getFileInfosRecurs(filePath, fileName, function (err, data) {
 					if (err)
 						return next(err);
+					// console.log('FILE INFOS RECURS :: ', data);
 					fileInfos.getFilesStreams(data, '', function (err, infosZip) {
+						// console.log('*****************************************************************');
+						// console.log('FILE STREAMS :: ', infosZip);
 						res.setHeader('Content-Length', infosZip.size + 22);
 						var zip = new zipstream();
 						zip.pipe(res);

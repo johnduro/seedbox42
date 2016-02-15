@@ -3,12 +3,7 @@ app.controller("profileCtrl", function($scope, $rootScope, $filter, $location, T
 	$scope.itemSelected = [];
 	$scope.checkboxAll = false;
 	$scope.search;
-    console.log("profileCtrl");
     $scope.editUser = angular.copy($rootScope.user);
-	var roles = {
-		"1" : "user",
-		"0": "admin",
-	};
 
     $rootScope.$watch("user", function(){
         $scope.editUser = angular.copy($rootScope.user);
@@ -18,39 +13,18 @@ app.controller("profileCtrl", function($scope, $rootScope, $filter, $location, T
         $scope.editUser.avatar = args.file;
     });
 
-    console.log($scope.editUser);
-
-    /*$scope.newUser.avatar = $scope.myFile;
-    var fd = new FormData();
-    for (var key in $scope.newUser){
-        fd.append(key, $scope.newUser[key]);
-    }
-    RequestHandler.post(api + "users", fd, false, {transformRequest: angular.identity, headers: {'Content-Type': undefined}})
-        .then(function(result){
-            result.data = JSON.parse(result.data);
-            if (result.data.success){
-                $scope.users.push(result.data.data);
-            }
-        });*/
-
-
 	function getUserLockedFiles (user) {
 		RequestHandler.get(api + "file/user-locked/" + user._id)
 			.then(function(result) {
-	            if (result.data.success)
-				{
+	            if (result.data.success){
 	                $scope.userLockedFiles = result.data.data;
 					addType($scope.userLockedFiles);
 					$rootScope.$broadcast('filesLoaded');
 	            }
-				console.log(result.data);
 			});
 	};
 
-	Tools.getUser().
-		then(function (user) {
-			getUserLockedFiles(user);
-		});
+	getUserLockedFiles($rootScope.user);
 
 	function addType (list) {
 		angular.forEach(list, function(value, key){
@@ -60,7 +34,6 @@ app.controller("profileCtrl", function($scope, $rootScope, $filter, $location, T
 			value.checkbox = false;
 		});
 	};
-
 
 	$scope.unlockSelected = function () {
 		if ($scope.itemSelected.length > 0)
@@ -84,7 +57,6 @@ app.controller("profileCtrl", function($scope, $rootScope, $filter, $location, T
 				.then(function(result){
 					if (result.data.success)
 						item.isLockedByUser = true;
-					console.log(item);
 				});
 		}
 	};
@@ -95,7 +67,6 @@ app.controller("profileCtrl", function($scope, $rootScope, $filter, $location, T
 				.then(function(result){
 					if (result.data.success)
 						item.isLockedByUser = false;
-					console.log(result);
 				});
 		}
 	};
@@ -106,7 +77,6 @@ app.controller("profileCtrl", function($scope, $rootScope, $filter, $location, T
 	};
 
 	$scope.openFile = function(file){
-		//console.log(file);
 		$location.url('seedbox/file/' + file._id);
 	};
 
@@ -122,7 +92,6 @@ app.controller("profileCtrl", function($scope, $rootScope, $filter, $location, T
 		if ($scope.checkboxAll)
 		{
 			var itemsFilter = $filter('filter')($scope.userLockedFiles, { name: $scope.search });
-			// console.log(itemsFilter);
 			Tools.setAllItems(itemsFilter, "checkbox", true);
 			$scope.itemSelected = Tools.getElementForMatchValue(itemsFilter, "_id", "checkbox", true);
 		}
@@ -153,9 +122,7 @@ app.controller("profileCtrl", function($scope, $rootScope, $filter, $location, T
                 if (result.data.success){
                     $rootScope.user = result.data.data;
                 }
-				console.log(result.data);
 			});
-
 	};
 
 });

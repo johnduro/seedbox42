@@ -12,7 +12,7 @@
     <div class="row col-md-12">
         <div ng-repeat="item in content" ng-if="$index % 2 == 0" class="row">
 			<content-item class="col-md-6" content="content[$index]"></content-item>
-			<content-item class="col-md-6" content="content[$index + 1]"></content-item>
+			<content-item class="col-md-6" ng-if="content[$index + 1]" content="content[$index + 1]"></content-item>
 		</div>
     </div>
 </div>

@@ -15,7 +15,6 @@ module.exports = function (config, transmission, app) {
 	var finishedTorrents = [];
 
 	var checkFileJob = new CronJob('00 00 3 * * *', function () {
-		console.log('CHECK-FILEJOB :: ', new Date());
 		if (config.files['auto-remove-lock-enabled'])
 		{
 			File.removeDayLock(config.files['auto-remove-lock'], function (err, files) {
@@ -58,7 +57,6 @@ module.exports = function (config, transmission, app) {
 
 
 	var clearFinishedTorrent = new CronJob('00 00 5 * * *', function () {
-		console.log('CHECK-CLEARFINISHEDTORRENTS :: ', new Date());
 		finishedTorrents = [];
 		app.emit('torrents:clearFinishedTorrents');
 	}, null, true);

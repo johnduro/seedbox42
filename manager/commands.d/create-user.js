@@ -49,6 +49,7 @@ module.exports = function (configFileName, args, commandLineArg, done) {
 
 	];
 	inquirer.prompt(questions, function (answers) {
+		answers.avatar = args.config.users['default-avatar'];
 		User.createNew(answers, function (err, newUser) {
 			if (err)
 				console.log(chalk.red("An error occured while creating the user : "), err);

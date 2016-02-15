@@ -1,32 +1,15 @@
 app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http, $location, $timeout, $cookies, RequestHandler, socket, Tools, toaster) {
 
 	console.log("seedboxCtrl");
+	$rootScope.connectedUsersLogin = [];
+	$rootScope.connectedUsers;
 
-	$rootScope.token = localStorage.getItem("token");
-
-	//Check si l'utilisateur est connecte
-	if (!$rootScope.token){
-		$state.go("connexion");
-	}else{
-		$cookies.put("token", $rootScope.token);
-		$http.defaults.headers.common['X-Access-Token'] = $rootScope.token;
-		socket.connection();
-		Tools.getUser();
-	}
-
-	socket.emit("chat:get:message", null, function(data){
-		//$rootScope.chatMessages = data.message;
-		//console.log("chat", data.message);
-		//element.html(resultTemplate.data).show();
-		//$compile(element.contents())(scope);
-	});
-
-	RequestHandler.get(api + "admin/settings")
-        .then(function(result){
-            if (result.data.success){
-                $rootScope.config = result.data.data;
-            }
-        });
+	//Affichage des utilisateurs connectes
+	$scope.ShowConnected = function () {
+		if ($rootScope.config.users['show-connected'] == 'all' || $rootScope.config.users['show-connected'] == roles[$rootScope.user.role])
+			return true;
+		return false;
+	};
 
 	//Gestion des onglets du menu
 	$scope.isActive = function (viewLocation) {
@@ -36,29 +19,31 @@ app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http, $loca
 
 	//Fonction de deconnexion
 	$scope.logout = function(){
-		console.log("logout");
+		socket.disconnect();
+		$cookies.remove("token");
 		localStorage.clear();
 	};
 
-	//Evenement du nombre d'utilisateurs connectes
-	socket.on('connectedUsers', function(data){
-		$timeout(function() {
-			$rootScope.connectedUsers = data.connectedUsers;
-		}, 500);
+	//Recuperation du pkjson pour verifier la version
+	if ($rootScope.user.role == 0){
+		RequestHandler.get("https://raw.githubusercontent.com/johnduro/seedbox42/master/package.json", "basic")
+			.then(function (pkgjson) {
+				$rootScope.pkgjson = pkgjson;
+				if ($rootScope.ttVersion != $rootScope.pkgjson.data.version)
+					toaster.pop('info', 'New version !', 'A new version (' + $rootScope.pkgjson.data.version + ') of TeurpiTorrent is available', 10000);
+			});
+	}
+
+	//Recuperation des utilisateurs connectes
+	socket.emit("connectedUsers", null, function(data){
+		$rootScope.connectedUsers = data.connectedUsers;
+		$rootScope.connectedUsersLogin = data.logins;
 	});
 
-	$rootScope.msgInfo = function(title, msg){
-		setTimeout(function() {
-			toastr.options = {
-				closeButton: true,
-				progressBar: true,
-				showMethod: 'fadeIn',
-				hideMethod: 'fadeOut',
-				timeOut: 10000
-			};
-			toastr.success(msg, title);
-		}, 1800);
-	};
+	//Evenement pour la mise a jour de la config
+	socket.on('update:config', function () {
+		Tools.getConfig(true);
+	});
 
 	//Evenement quand un torrent est fini
 	socket.on("newFile", function(data){

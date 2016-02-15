@@ -2,7 +2,7 @@
     <div class="row fls-search">
         <div class="col-md-12">
 			<div class="tt-search-div col-md-3 col-xs-6">
-			  <input class="tt-search-input col-md-10 col-xs-10" placeholder="Search files" ng-model="search"> <button type="button" class="tt-search-button">|<i class="fa fa-search tt-search-icon"></i></button>
+			  <input class="tt-search-input col-md-10 col-xs-10" placeholder="Search files" ng-model="research"> <button type="button" class="tt-search-button">|<i class="fa fa-search tt-search-icon"></i></button>
 			</div>
         </div>
     </div>
@@ -53,7 +53,7 @@
                     </tr>
                 </thead>
                 <tbody class="tt-text">
-                    <tr ng-repeat="(key, item) in elementsActual | filter : search | orderBy:getOrderBy()"  ng-class-odd="'tt-table-odd'" ng-class-even="'tt-table-even'">
+                    <tr ng-repeat="(key, item) in elementsActual | orderBy:getOrderBy() | limitTo:listLimit" when-scrolled="loadMore()" ng-class-odd="'tt-table-odd'" ng-class-even="'tt-table-even'">
                         <td class="tt-darkblue">
                             <div ng-switch="item.type">
                                 <div ng-switch-when="folder" ><i class="icon-folder fls-icon"></i></div>
@@ -80,6 +80,12 @@
                     </tr>
                 </tbody>
             </table>
+
+            <!-- <div ng-hide="research">
+                <i class="fa fa-chevron-left" ng-click="pagePast()"></i>
+                {{pageActual}}/{{pageMax}}
+                <i class="fa fa-chevron-right" ng-click="pageNext()"></i>
+            </div> -->
         </div>
     </div>
 </div>

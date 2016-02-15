@@ -109,7 +109,7 @@ app.controller('usersCtrl', function ($scope, $rootScope, RequestHandler, Upload
 					result.data = JSON.parse(result.data);
 					if (result.data.success){
 						toaster.pop('success', "Success", result.data.message, 5000);
-						getUsers();						
+						getUsers();
 					}else{
 						toaster.pop('error', "Error", result.data.message, 5000);
 					}

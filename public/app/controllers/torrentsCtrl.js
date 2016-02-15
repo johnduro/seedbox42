@@ -4,27 +4,17 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 	console.log("torrentsCtrl");
 
 	//------------------------------------------------  VARIABLES -------------------------------------------------------
-	$scope.torrentUrls = [
-		"magnet:?xt=urn:btih:2b12ce09236526a728c6974c0d89d52860e82daa&dn=Major+Lazer+x+DJ+Snake+feat.+M%26Oslash%3B+-+Lean+On.mp3&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80&tr=udp%3A%2F%2Fopen.demonii.com%3A1337&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Fexodus.desync.com%3A6969",
-		"https://torcache.net/torrent/C54CE5AD116BD42F0C8FB59E79FC9BEC0D2919F8.torrent?title=[kat.cr]alcohol.120.2.0.3.8314.final.crack.techtools",
-		"https://torcache.net/torrent/8C0AC56C38391A50EC542220F7E83D9544292BCA.torrent?title=[kat.cr]fansub.resistance.naruto.shippuuden.438.1280x720.mp4"
-	]
 	$scope.newTorrentUrl = "";
-	$scope.torrents = [];
-	$scope.checkboxAll = false;
-	$scope.itemSelected = [];
 	$scope.search = "";
+	$scope.selected = "all";
+	$scope.torrents = [];
+	$scope.itemSelected = [];
+	$scope.checkboxAll = false;
 	$scope.filters = {
 		isFinished: "",
 		status: "",
 		isActive: ""
 	};
-	var roles = {
-		"1" : "user",
-		"0": "admin",
-	};
-	$scope.selected = "all";
-
 
 	//------------------------------------------------  EVENTS SOCKETS -------------------------------------------------------
 	socket.emit('torrentRefresh');
@@ -81,6 +71,7 @@ app.controller('torrentsCtrl', function ($scope, $rootScope, $interval, $timeout
 			$scope.torrents[data.torrents.torrents[key].id].percentDone2 = $scope.torrents[data.torrents.torrents[key].id].percentDone * 100;
 			$scope.torrents[data.torrents.torrents[key].id].time = timeInterval($scope.torrents[data.torrents.torrents[key].id]);
 			$scope.torrents[data.torrents.torrents[key].id].checkbox = false;
+			$scope.torrents[data.torrents.torrents[key].id].isActive = false;
 		}
 	});
 

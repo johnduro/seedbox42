@@ -134,7 +134,11 @@ module.exports = {
 				var file = fileDetail.fileList[i++];
 				if (!file)
 					return done(null, { streams: fileStream, size: zipSize });
-				var filePathInDir = pathInDir + '/' + file.name;
+				// var filePathInDir = pathInDir + '/' + file.name;
+				var filePathInDir = pathInDir;
+				if (filePathInDir != '')
+					filePathInDir += '/';
+				filePathInDir += file.name;
 				self(file, filePathInDir, function (err, data) {
 					if (err)
 						return done(err);
@@ -146,8 +150,10 @@ module.exports = {
 		}
 		else
 		{
+			var pathInDirByteLength = Buffer.byteLength(pathInDir, 'utf8');
 			fileStream.push({ stream: fs.createReadStream(fileDetail.path), name: pathInDir });
-			return done(null, { streams: fileStream, size: (fileDetail.size + 30 + (pathInDir.length * 2) + 16 + 46) });
+			// return done(null, { streams: fileStream, size: (fileDetail.size + 30 + (pathInDir.length * 2) + 16 + 46) });
+			return done(null, { streams: fileStream, size: (fileDetail.size + 30 + (pathInDirByteLength * 2) + 16 + 46) });
 		}
 	},
 

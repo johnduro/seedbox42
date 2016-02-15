@@ -1,8 +1,8 @@
 /**
  * ZipStream
- * 
+ *
  * @author : Lionel Seguin
- * @email  : lseguin@student.42.fr 
+ * @email  : lseguin@student.42.fr
  * @date   : 17 april 2015
  */
 
@@ -98,7 +98,7 @@ ZipStream.prototype._addFile = function(source, file, callback) {
 
 			self.files.push(file);
 			self.busy = false;
-			
+
 			if (self.queue.length > 0) {
 				var n = self.queue.shift();
 				self._addFile(n.source, n.file, n.callback);
@@ -140,7 +140,10 @@ ZipStream.prototype._pushLocalFileHeader = function(file) {
 	file.moddate = convertDate(new Date());
 	file.offset = self.fileptr;
 
-	var buf = new Buffer(30 + file.name.length);
+	var byteFileNameLenght = Buffer.byteLength(file.name, 'utf8'); // johnduro
+
+	// var buf = new Buffer(30 + file.name.length);
+	var buf = new Buffer(30 + byteFileNameLenght); //johnduro
 
 	buf.writeUInt32LE(0x04034b50, 0);         // local file header signature
 	buf.writeUInt16LE(file.version, 4);       // version needed to extract
@@ -152,7 +155,8 @@ ZipStream.prototype._pushLocalFileHeader = function(file) {
 	buf.writeUInt32LE(0, 18);                 // compressed size
 	buf.writeUInt32LE(0, 22);                 // uncompressed size
 
-	buf.writeUInt16LE(file.name.length, 26);  // file name length
+	// buf.writeUInt16LE(file.name.length, 26);  // file name length
+	buf.writeUInt16LE(byteFileNameLenght, 26);  // file name length // johnduro
 	buf.writeUInt16LE(0, 28);                 // extra field length
 	buf.write(file.name, 30);                 // file name
 
@@ -185,7 +189,10 @@ ZipStream.prototype._pushCentralDirectory = function() {
 	for (var i=0; i<self.files.length; i++) {
 		var file = self.files[i];
 
-		len = 46 + file.name.length;
+		var byteFileNameLenght = Buffer.byteLength(file.name, 'utf8'); // johnduro
+
+		len = 46 + byteFileNameLenght; // johnduro
+		// len = 46 + file.name.length;
 		buf = new Buffer(len);
 
 		// central directory file header
@@ -198,7 +205,8 @@ ZipStream.prototype._pushCentralDirectory = function() {
 		buf.writeInt32LE(file.crc32, 16);         // crc-32
 		buf.writeUInt32LE(file.compressed, 20);   // compressed size
 		buf.writeUInt32LE(file.uncompressed, 24); // uncompressed size
-		buf.writeUInt16LE(file.name.length, 28);  // file name length
+		buf.writeUInt16LE(byteFileNameLenght, 28);  // file name length // johnduro
+		// buf.writeUInt16LE(file.name.length, 28);  // file name length
 		buf.writeUInt16LE(0, 30);                 // extra field length
 		buf.writeUInt16LE(0, 32);                 // file comment length
 		buf.writeUInt16LE(0, 34);                 // disk number where file starts

@@ -1,23 +1,14 @@
 
-app.controller('dashboardCtrl', function ($scope, $rootScope, $timeout, $location, $filter, RequestHandler, socket, Tools) {
+app.controller('dashboardCtrl', function ($scope, $rootScope, $timeout, $location, $filter, $http, RequestHandler, socket, Tools, toaster) {
 
 	console.log("dashboardCtrl");
 
 	$scope.newMessage = "";
 	$scope.content = [];
-	var roles = {
-		"1" : "user",
-		"0": "admin",
-	};
 
-	Tools.getConfig(true).then(function(result){
-		Tools.getUser().then(function(user){
-			for (var key in result.dashboard.panels){
-				if (result.dashboard.panels[key].enabled == "all" || result.dashboard.panels[key].enabled == roles[user.role])
-					$scope.content.push(result.dashboard.panels[key]);
-			}
-			$scope.content = $filter('orderBy')($scope.content, 'order', false);
-		});
-	});
+	for (var key in $rootScope.config.dashboard.panels){
+		if ($rootScope.config.dashboard.panels[key].enabled == "all" || $rootScope.config.dashboard.panels[key].enabled == roles[$rootScope.user.role])
+			$scope.content.push($rootScope.config.dashboard.panels[key]);
+	}
 
 });

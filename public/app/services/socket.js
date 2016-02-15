@@ -19,6 +19,10 @@ app.factory('socket', ['$rootScope', function ($rootScope) {
             socket = io.connect(api, { query : "token=" + localStorage.getItem("token") });
         },
 
+        disconnect: function(){
+            socket.disconnect();
+        },
+
         on: function (eventName, callback) {
             function wrapper() {
                 var args = arguments;

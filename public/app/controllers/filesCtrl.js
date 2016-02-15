@@ -1,33 +1,38 @@
-app.controller('filesCtrl', function ($scope, $rootScope, $state, $location, $stateParams, RequestHandler, socket, $timeout, $http, $cookies, Lightbox, Tools, toaster) {
+app.controller('filesCtrl', function ($scope, $rootScope, $state, $location, $filter, $stateParams, $window, RequestHandler, socket, $timeout, $http, $cookies, Lightbox, Tools, toaster) {
 
 	console.log("filesCtrl");
 
 	$scope.treeSelected = '';
-	$scope.elementsActual = '';
-	var pathActualArray = [];
+	$scope.elementsActual = [];
 	$scope.pathActual = " / ";
 	$scope.itemSelected = false;
+	var pageSize = 50;
+	var pathActualArray = [];
 	var requestApi = "file";
-	console.log($stateParams);
-	var roles = {
-		"1" : "user",
-		"0": "admin",
-	};
+
+	$scope.listLimit = 50;
 	// var cols= ["type", "name", "size", "isLocked", ];
 
 	socket.on("newFile", function(data){
 		RequestHandler.get(api + "file/all")
 			.then(function(result){
-				//toaster.pop('success', "Nouveau fichier !", "Le nouveau fichier a ete ajoute a la liste.", 5000);
 				$scope.elementsActual = result.data.data;
 				addType($scope.elementsActual);
 		});
 	});
 
+	$scope.loadMore = function(){
+		$scope.listLimit += 20;
+	};
+
 	RequestHandler.get(api + (!$stateParams.sort ? $stateParams.sort = "file" : ('dashboard/' + $stateParams.sort)) + "/all")
 		.then(function(result){
+			$scope.allElements = result.data.data;
+			addType($scope.allElements);
+			//$scope.elementsActual = result.data.data.slice(0, pageSize);
 			$scope.elementsActual = result.data.data;
-			addType($scope.elementsActual);
+			$scope.pageMax = Math.ceil(result.data.data.length/pageSize);
+			$scope.pageActual = 1;
 			$rootScope.$broadcast('filesLoaded');
 		});
 
@@ -54,7 +59,6 @@ app.controller('filesCtrl', function ($scope, $rootScope, $state, $location, $st
 	};
 
 	$scope.openFile = function(file){
-		//console.log(file);
 		$location.url('seedbox/file/' + file._id);
 	};
 
@@ -99,7 +103,36 @@ app.controller('filesCtrl', function ($scope, $rootScope, $state, $location, $st
 		$scope.reverse = ($scope.sortColumn === item) ? !$scope.reverse : false;
 		setClassSort();
 		$scope.sortColumn = item;
-	}
+	};
+
+	$scope.$watch('research', function(){
+		if ($scope.research == ""){
+			$scope.setPageActual();
+			return;
+		}
+		$scope.elementsActual = $filter('filter')($scope.allElements, {name: $scope.research});
+	});
+
+// --------------------------------------------- FUNCTION PAGINATE --------------------------------------------
+	$scope.setPageActual = function(){
+		$scope.elementsActual = $scope.allElements.slice(($scope.pageActual-1)*pageSize, ($scope.pageActual-1)*pageSize+pageSize);
+		$window.scrollTo(0, 0);
+	};
+
+	$scope.pagePast = function(){
+		if ($scope.pageActual == 1)
+			return;
+		$scope.pageActual--;
+		$scope.setPageActual();
+	};
+	$scope.pageNext = function(){
+		if ($scope.pageActual == $scope.pageMax)
+			return;
+		$scope.pageActual++;
+		$scope.setPageActual();
+	};
+
+
 
 // --------------------------------------------- FUNCTION LOCK --------------------------------------------
 	$scope.lockFile = function(item){
@@ -108,7 +141,6 @@ app.controller('filesCtrl', function ($scope, $rootScope, $state, $location, $st
 				.then(function(result){
 					if (result.data.success)
 						item.isLockedByUser = true;
-					console.log(item);
 				});
 		}
 	};
@@ -119,7 +151,6 @@ app.controller('filesCtrl', function ($scope, $rootScope, $state, $location, $st
 				.then(function(result){
 					if (result.data.success)
 						item.isLockedByUser = false;
-					console.log(result);
 				});
 		}
 	};

@@ -1,5 +1,5 @@
 var jwt = require('jsonwebtoken');
-var wall = require('./wallSockets');
+var WallSockets = require('./wallSockets');
 var TorrentSockets = require('./torrentSockets');
 
 /**
@@ -10,6 +10,8 @@ module.exports = function (io, transmission, app) {
 
 	var second = 1000;
 	var torrentSocket = new TorrentSockets(io, transmission, app);
+	var wallSocket = new WallSockets(io, app.get('config'));
+	var connectedUsersLogin = [];
 
 	/**
 	 * Socket auth
@@ -36,7 +38,14 @@ module.exports = function (io, transmission, app) {
 	 * Socket connection
 	 */
 	io.on('connection', function (socket) {
-		io.sockets.emit('connectedUsers', { connectedUsers: io.engine.clientsCount });
+		/**
+		 * Connected users infos
+		 */
+		connectedUsersLogin.push(socket.appUser.login);
+		io.sockets.emit('connectedUsers', { connectedUsers: io.engine.clientsCount, logins: connectedUsersLogin });
+		socket.on('connectedUsers', function (data, callback) {
+			callback({ connectedUsers: io.engine.clientsCount, logins: connectedUsersLogin });
+		});
 
 		/**
 		 * Torrents management through sockets
@@ -46,11 +55,28 @@ module.exports = function (io, transmission, app) {
 		/**
 		 * Wall messages management through sockets
 		 */
-		wall(socket, io, app.get('config'));
+		wallSocket.newConnection(socket);
 
 		socket.on('disconnect', function () {
+
+			if (io.engine.clientsCount == 0)
+				connectedUsersLogin = [];
+			else
+			{
+				var index = connectedUsersLogin.indexOf(socket.appUser.login);
+				if (index > -1)
+					connectedUsersLogin.splice(index, 1);
+			}
+
 			if (io.engine.clientsCount > 0)
-				io.sockets.emit('connectedUsers', { connectedUsers: io.engine.clientsCount });
+				io.sockets.emit('connectedUsers', { connectedUsers: io.engine.clientsCount, logins: connectedUsersLogin });
 		});
+	});
+
+	/**
+	 * Make the connected users update their config when modified
+	 */
+	app.on('config:reload', function () {
+		io.sockets.emit('update:config');
 	});
 };
