@@ -40,6 +40,12 @@ app.controller('seedboxCtrl', function ($scope, $rootScope, $state, $http, $loca
 		$rootScope.connectedUsersLogin = data.logins;
 	});
 
+	//Evenement pour la mise a jour des infos users
+	socket.on('connectedUsers', function (data) {
+		$rootScope.connectedUsers = data.connectedUsers;
+		$rootScope.connectedUsersLogin = data.logins;
+	});
+
 	//Evenement pour la mise a jour de la config
 	socket.on('update:config', function () {
 		Tools.getConfig(true);
