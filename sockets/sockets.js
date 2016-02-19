@@ -1,6 +1,7 @@
 var jwt = require('jsonwebtoken');
 var WallSockets = require('./wallSockets');
 var TorrentSockets = require('./torrentSockets');
+var UsersManager = require('../utils/usersConnection');
 
 /**
  * Sockets
@@ -11,7 +12,8 @@ module.exports = function (io, transmission, app) {
 	var second = 1000;
 	var torrentSocket = new TorrentSockets(io, transmission, app);
 	var wallSocket = new WallSockets(io, app.get('config'));
-	var connectedUsersLogin = [];
+	var usersManager = new UsersManager();
+	// var connectedUsersLogin = [];
 
 	/**
 	 * Socket auth
@@ -38,13 +40,19 @@ module.exports = function (io, transmission, app) {
 	 * Socket connection
 	 */
 	io.on('connection', function (socket) {
+		// console.log('SOCKET :: ', socket.handshake.address);
 		/**
 		 * Connected users infos
 		 */
-		connectedUsersLogin.push(socket.appUser.login);
-		io.sockets.emit('connectedUsers', { connectedUsers: io.engine.clientsCount, logins: connectedUsersLogin });
+		usersManager.newConnection(socket.handshake.address, socket.appUser);//new
+		// console.log('MANGER :: ', usersManager.getList());
+
+		// connectedUsersLogin.push(socket.appUser.login);
+		// io.sockets.emit('connectedUsers', { connectedUsers: io.engine.clientsCount, logins: connectedUsersLogin });
+		// io.sockets.emit('connectedUsers', { connectedUsers: io.engine.clientsCount, logins: usersManager.getList() });
+		io.sockets.emit('connectedUsers', { connectedUsers: usersManager.getUsersCount(), logins: usersManager.getList() });
 		socket.on('connectedUsers', function (data, callback) {
-			callback({ connectedUsers: io.engine.clientsCount, logins: connectedUsersLogin });
+			callback({ connectedUsers: usersManager.getUsersCount(), logins: usersManager.getList() });
 		});
 
 		/**
@@ -59,17 +67,20 @@ module.exports = function (io, transmission, app) {
 
 		socket.on('disconnect', function () {
 
+			usersManager.disconnect(socket.handshake.address, socket.appUser);//new
 			if (io.engine.clientsCount == 0)
-				connectedUsersLogin = [];
-			else
-			{
-				var index = connectedUsersLogin.indexOf(socket.appUser.login);
-				if (index > -1)
-					connectedUsersLogin.splice(index, 1);
-			}
+				usersManager.clean();
+			// if (io.engine.clientsCount == 0)
+			// 	connectedUsersLogin = [];
+			// else
+			// {
+			// 	var index = connectedUsersLogin.indexOf(socket.appUser.login);
+			// 	if (index > -1)
+			// 		connectedUsersLogin.splice(index, 1);
+			// }
 
 			if (io.engine.clientsCount > 0)
-				io.sockets.emit('connectedUsers', { connectedUsers: io.engine.clientsCount, logins: connectedUsersLogin });
+				io.sockets.emit('connectedUsers', { connectedUsers: usersManager.getUsersCount(), logins: usersManager.getList() });
 		});
 	});
 
