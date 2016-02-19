@@ -1,7 +1,13 @@
+var http = require('http');
+
 
 var UsersConn = module.exports = function () {
 	this.usersConnected = {};
 	this.usersNbr = 0;
+	this.options = {
+		// host: "freegeoip.net"
+		host: "ipinfo.io"
+	};
 };
 
 UsersConn.prototype.newConnection = function (uip, user) {
@@ -77,5 +83,39 @@ UsersConn.prototype.getList = function () {
 
 UsersConn.prototype.getUsersCount = function () {
 	var self = this;
-	return( self.usersNbr);
+	return(self.usersNbr);
+};
+
+UsersConn.prototype.getDetails = function (done) {
+	var self = this;
+	var list = [];
+	var uips = Object.keys(self.usersConnected);
+	var i = 0;
+	(function next () {
+		var uip = uips[i++];
+		if (!uip)
+			return done(null, list);
+
+		// self.options.path = '/json/' + uip;
+		self.options.path = '/' + uip + '/json';
+
+		http.request(self.options, function (response) {
+			var str = '';
+
+			response.on('data', function (chunk) {
+				str += chunk;
+			});
+
+			response.on('end', function () {
+				var jsonData = JSON.parse(str);
+				self.usersConnected[uip].forEach(function (user) {
+					user.ip = jsonData.ip;
+					// user.location = jsonData.city + ' - ' + jsonData.region_name + ' - ' + jsonData.country_name;
+					user.location = jsonData.city + ' - ' + jsonData.region + ' - ' + jsonData.country;
+					list.push(user);
+				});
+				next();
+			});
+		}).end();
+	})();
 };

@@ -62,6 +62,12 @@ app.config(function ($stateProvider, $urlRouterProvider) {
         controller: "usersCtrl",
         access: ["0"]
     })
+	.state('seedbox.adminConnectedInfos', {
+		url: "/admin/connected-infos",
+		templateUrl: "app/views/adminConnected.html",
+		controller: "connectedCtrl",
+		access: ["0"]
+	})
     .state('seedbox.adminSettings', {
         url: "/admin/settings",
         templateUrl: "app/views/adminSettings.html",

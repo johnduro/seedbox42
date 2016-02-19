@@ -87,6 +87,13 @@
 								<li ng-repeat="userLogin in connectedUsersLogin" class="nb-connected-login">
 									<span class="tt-text">{{userLogin}}</span>
 								</li>
+                                <li ng-if="user.role == 0" role="separator" class="divider"></li>
+                                <li ng-if="user.role == 0" ng-class="{active: isActive('/seedbox/admin/connected-infos')}">
+                                    <a ui-sref="seedbox.adminConnectedInfos" class="waves-effect waves-button">
+                                        <span class="menu-icon glyphicon fa fa-users"></span>
+                                        Infos
+                                    </a>
+                                </li>
 							</ul>
 						</li>
                         <!-- <li class="dropdown">
