@@ -11,6 +11,7 @@ save*
 
 config.json
 
+docker/docker-compose.env
 
 # Logs
 logs

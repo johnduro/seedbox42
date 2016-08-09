@@ -1,0 +1,13 @@
+version: '2'
+
+services:
+  seed-node:
+    build:
+      context: .
+      dockerfile: docker/node/Dockerfile
+    volumes:
+      - .:/app-src
+      # - ./package.json:/app-src/package.json
+    # working_dir: /app-src
+    ports:
+      - "3030:3000"
