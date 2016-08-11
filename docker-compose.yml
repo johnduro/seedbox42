@@ -1,13 +1,19 @@
 version: '2'
 
 services:
+  seed-mongo:
+      image: mongo:3.2
+      ports:
+        - "27017:27017"
   seed-node:
     build:
       context: .
       dockerfile: docker/node/Dockerfile
-    volumes:
-      - .:/app-src
+    # volumes:
+    #   - .:/app-src
       # - ./package.json:/app-src/package.json
     # working_dir: /app-src
     ports:
-      - "3030:3000"
+      - "3000:3000"
+    links:
+      - seed-mongo
