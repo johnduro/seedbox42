@@ -197,7 +197,7 @@ We give the write permission to transmission in the directory (first you need to
 
 We add the user teurpitorrent to the group debian-transmission
 
-	sudo useradd -G debian-transmission teurpitorrent
+	sudo usermod -G debian-transmission teurpitorrent
 
 Take back the teurpitorrent user. Use the git clone to get seedbox files in your chosen directory. (here named 'app').
 
