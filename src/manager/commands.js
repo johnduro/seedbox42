@@ -1,5 +1,4 @@
-module.exports =
-	{
+export default {
 		'add-directory': {
 			type: 'string',
 			mandatoryStr: true,

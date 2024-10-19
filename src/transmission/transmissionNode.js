@@ -24,22 +24,23 @@
 **/
 
 
-var http = require('http');
+import http from 'http';
 
-var Transmission = module.exports = function (config) {
-	config = config || {};
-	this.address = config.address || 'localhost';
-	this.port = config.port || 9091;
-	this.url = config.url || '/transmission/rpc';
-	this.sessionId = '',
-	this.postOptions = {
-		host: this.address,
-		port: this.port,
-		path: this.url,
-		method: 'POST',
-		headers: {}
-	};
-};
+class Transmission {
+	constructor(config = {}) {
+		this.address = config.address || 'localhost';
+		this.port = config.port || 9091;
+		this.url = config.url || '/transmission/rpc';
+		this.sessionId = '',
+		this.postOptions = {
+			host: this.address,
+			port: this.port,
+			path: this.url,
+			method: 'POST',
+			headers: {}
+		};
+	}
+}
 
 Transmission.prototype.makeStringJsonQuery = function (args, method) {
 	var query = {
@@ -612,3 +613,5 @@ Transmission.prototype.requestFormat = {
 	refreshAll: ["id", "addedDate", "name", "totalSize",  "error", "errorString", "eta", "isFinished", "isStalled", "leftUntilDone", "metadataPercentComplete", "peersConnected", "peersGettingFromUs", "peersSendingToUs", "percentDone", "queuePosition", "rateDownload", "rateUpload", "recheckProgress", "seedRatioMode", "seedRatioLimit", "sizeWhenDone", "status", "trackers", "downloadDir", "uploadedEver", "uploadRatio", "Webseedssendingtous"],
 	allTorrents: ['uploadRatio', 'id', 'addedDate', 'isFinished', 'leftUntilDone', 'name', 'rateDownload', 'rateUpload', 'queuePosition', 'downloadDir', 'eta', 'peerConnected', 'percentDone', 'startDate', 'status', 'totalSize', 'torrentFile']
 };
+
+export default Transmission;

@@ -6,9 +6,10 @@
  * @date   : 17 april 2015
  */
 
-var Stream = require('stream').Stream;
-var util = require('util');
-var crc32 = require('./crc32');
+import { Stream } from "stream";
+import util from "util";
+import { createCRC32 } from "./crc32.js";
+
 
 function ZipStream() {
 	var self = this;
@@ -80,7 +81,7 @@ ZipStream.prototype._addFile = function(source, file, callback) {
 	setImmediate(function () {
 		self._pushLocalFileHeader(file);
 
-		var checksum = crc32.createCRC32();
+		var checksum = createCRC32();
 		var uncompressed = 0;
 
 		source.on('data', function(chunk) {
@@ -240,4 +241,4 @@ ZipStream.prototype._pushCentralDirectory = function() {
 	self.fileptr += ptr;
 }
 
-module.exports = ZipStream;
+export default ZipStream;

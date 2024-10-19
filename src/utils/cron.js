@@ -1,5 +1,5 @@
-var CronJob = require('cron').CronJob;
-var File = require('../models/File');
+import { CronJob } from 'cron';
+import File from '../models/File.js';
 
 /**
  * Scheluded jobs :
@@ -11,7 +11,8 @@ var File = require('../models/File');
 	*		*		*		*		*		*
 	sec		min		hour 	day/mon	month	day/week
  */
-module.exports = function (config, transmission, app) {
+export default function (config, transmission, app) {
+
 	var finishedTorrents = [];
 
 	var checkFileJob = new CronJob('00 00 3 * * *', function () {

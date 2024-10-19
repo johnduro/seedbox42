@@ -1,13 +1,12 @@
-var Wall = require('../models/Wall.js');
+import Wall from "../models/Wall.js";
 
+class WallSockets {
+	constructor (io, appConfig) {
+		this.io = io;
+		this.appConfig = appConfig;	
+	}
 
-var WallSockets = module.exports = function (io, appConfig) {
-	this.io = io;
-	this.appConfig = appConfig;
-
-	var self = this;
-
-	this.newConnection = function (socket) {
+	newConnection(socket) {
 		socket.on('chat:post:message', function (data) {
 			Wall.addMessage(data.id, data.message, self.appConfig.dashboard["mini-chat-message-limit"], function (err, message) {
 				if (err)
@@ -29,5 +28,7 @@ var WallSockets = module.exports = function (io, appConfig) {
 					callback({ success: true, message: messages });
 			});
 		});
-	};
-};
+	}
+}
+
+export default WallSockets;

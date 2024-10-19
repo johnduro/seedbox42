@@ -1,9 +1,10 @@
-var fs = require('fs');
-var inquirer = require('inquirer');
-var chalk = require('chalk');
-var generate = require('../../config/generate');
-var configDefault = require('../../config/default-config');
-var ft = require('../../utils/ft');
+import fs from 'fs';
+import inquirer from 'inquirer';
+import chalk from 'chalk';
+import generate from '../../config/generate.js';
+import configDefault from '../../config/default-config.js';
+import ft from '../../utils/ft.js';
+
 
 var generateConfigurationFile = function (configFileName, done) {
 	var newConfig = generate.configFromDefault(configDefault);
@@ -87,28 +88,27 @@ var generateConfigurationFile = function (configFileName, done) {
 		}
 	];
 	console.log(chalk.green('Please select the settings for your applications:\n') + "Leaving the field blank and pressing enter will use default value");
-	inquirer.prompt(questions, function (answers) {
-		for (var key in answers)
-		{
-			var split = key.split(':');
-			var conf = newConfig;
-			var len = split.length;
-			for (var i = 0; i < (len - 1); i++)
-				conf = conf[split[i]];
-			conf[split[len - 1]] = answers[key];
-		}
-		ft.jsonToFile(configFileName, newConfig, function (err) {
-			if (err)
-				console.log(chalk.red('Could not write to configuration file: "' + configFileName + '"'));
-			else
-				console.log(chalk.green('Configuration file: "' + configFileName + '" was successfully created'));
-			return done();
-		});
-	});
+	inquirer.prompt(questions)
+		.then(answers => {
+			for (var key in answers) {
+				var split = key.split(':');
+				var conf = newConfig;
+				var len = split.length;
+				for (var i = 0; i < (len - 1); i++)
+					conf = conf[split[i]];
+				conf[split[len - 1]] = answers[key];
+			}
+			ft.jsonToFile(configFileName, newConfig, function (err) {
+				if (err)
+					console.log(chalk.red('Could not write to configuration file: "' + configFileName + '"'));
+				else
+					console.log(chalk.green('Configuration file: "' + configFileName + '" was successfully created'));
+				return done();
+			});
+		})
 };
 
-
-module.exports = function (configFileName, args, commandLineArg, done) {
+export default function (configFileName, args, commandLineArg, done) {
 	try {
 		fs.accessSync(configFileName, fs.F_OK | fs.W_OK);
 		inquirer.prompt([

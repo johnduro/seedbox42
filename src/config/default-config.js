@@ -1,6 +1,6 @@
-var dashboard = require('../config/dashboard');
+import dashboard from '../config/dashboard.js';
 
-module.exports = {
+export default {
 	"appPort": { "type": "number", "default": 3000, "switch": false, "range": true, "rangeValues": { "min": 1024, "max": 65535 } },
 	"secret": { "type": "string", "default": "", "switch": false, "range": false },
 	"mongodb": {
@@ -24,14 +24,14 @@ module.exports = {
 		"blocklist-url": { "type": "string", "default": "http://www.example.com/blocklist", "switch": false, "range": false, "infos": "location of the blocklist to use for 'blocklist-update'" },
 		"cache-size-mb": { "type": "number", "default": 4, "switch": false, "range": false, "infos": "maximum size of the disk cache (MB)" },
 		"dht-enabled": { "type": "boolean", "default": true, "switch": false, "range": false, "infos": "true means allow dht in public torrents" },
-		"download-dir": { "type": "string", "default": "", "switch": false, "range": false, "infos": "default path to download torrents" },
+//		"download-dir": { "type": "string", "default": "", "switch": false, "range": false, "infos": "default path to download torrents" },
 		"download-queue-enabled": { "type": "boolean", "default": true, "switch": false, "range": false, "infos": "if true, limit how many torrents can be downloaded at once" },
 		"download-queue-size": { "type": "number", "default": 5, "switch": false, "range": false, "infos": "max number of torrents to download at once (see download-queue-enabled)" },
 		"encryption": { "type": "string", "default": "preferred", "switch": true, "values": ["required", "preferred", "tolerated"], "range": false },
 		"idle-seeding-limit": { "type": "number", "default": 30, "switch": false, "range": false, "infos": "torrents we're seeding will be stopped if they're idle for this long" },
 		"idle-seeding-limit-enabled": { "type": "boolean", "default": false, "switch": false, "range": false, "infos": "true if the seeding inactivity limit is honored by default" },
-		"incomplete-dir": { "type": "string", "default": "", "switch": false, "range": false, "infos": "path for incomplete torrents, when enabled" },
-		"incomplete-dir-enabled": { "type": "boolean", "default": false, "switch": false, "range": false, "infos": "true means keep torrents in incomplete-dir until done" },
+//		"incomplete-dir": { "type": "string", "default": "", "switch": false, "range": false, "infos": "path for incomplete torrents, when enabled" },
+//		"incomplete-dir-enabled": { "type": "boolean", "default": false, "switch": false, "range": false, "infos": "true means keep torrents in incomplete-dir until done" },
 		"lpd-enabled": { "type": "boolean", "default": false, "switch": false, "range": false, "infos": "true means allow Local Peer Discovery in public torrents" },
 		"peer-limit-global": { "type": "number", "default": 240, "switch": false, "range": false, "infos": "maximum global number of peers" },
 		"peer-limit-per-torrent": { "type": "number", "default": 60, "switch": false, "range": false, "infos": "maximum global number of peers" },

@@ -1,8 +1,8 @@
-var express = require('express');
+import express from "express";
 var router = express.Router();
-var jwt = require('jsonwebtoken');
-var bcrypt = require('bcrypt');
-var User = require('../models/User.js');
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+import User from "../models/User.js";
 
 router.post('/', function(req, res, next) {
 	User.findOne({ login: req.body.login }, function(err, user) {
@@ -37,4 +37,4 @@ router.post('/', function(req, res, next) {
 	});
 });
 
-module.exports = router;
+export default router;

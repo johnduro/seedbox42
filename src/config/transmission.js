@@ -1,7 +1,7 @@
 
-var chalk = require('chalk');
+import chalk from "chalk";
 
-module.exports = {
+export default {
 	configToTransmissionSettings : function (t, tSettings, done) {
 		t.sessionGet(function (err, res) {
 			if (err)

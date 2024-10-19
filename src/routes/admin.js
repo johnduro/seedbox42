@@ -1,18 +1,18 @@
-var express = require('express');
+import express from "express";
 var router = express.Router();
-var fs = require('fs');
-var atob = require('atob');
-var btoa = require('btoa');
-var rimraf = require('rimraf');
-var pathS = require('path');
-var mongoose = require('mongoose');
-var TransmissionNode = require('../transmission/transmissionNode');
-var ft = require('../utils/ft');
-var filesInfos = require('../utils/filesInfos');
-var File = require('../models/File.js');
-var rightsMW = require('../middlewares/rights');
-var tSettings = require('../config/transmission');
-var pjson = require('../package.json');
+import fs from "fs";
+import atob from "atob";
+import btoa from "btoa";
+import { rimraf } from 'rimraf';
+import pathS from "path";
+import mongoose from "mongoose"
+import TransmissionNode from "../transmission/transmissionNode.js"
+import ft from "../utils/ft.js";
+import filesInfos from "../utils/filesInfos.js";
+import File from "../models/File.js";
+import rightsMW from "../middlewares/rights.js";
+import tSettings from "../config/transmission.js";
+import pjson from "../package.json" with { type: 'json' };
 
 router.get('/settings', function (req, res, next) {
 	var config = req.app.locals.ttConfig;
@@ -156,4 +156,4 @@ router.put('/new-directory', rightsMW.admin, function (req, res, next) {
 	})();
 });
 
-module.exports = router;
+export default router;

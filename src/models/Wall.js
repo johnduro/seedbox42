@@ -1,12 +1,14 @@
 
-var mongoose = require('mongoose');
-var format = require('../utils/format');
+import mongoose from 'mongoose';
+import format from '../utils/format.js';
+
+const { Schema } = mongoose
 
 /**
  * WallMessage Schema
  */
 
-var WallMessageSchema = new mongoose.Schema({
+var WallMessageSchema = new Schema({
 	message: {
 		type: String,
 		required: true,
@@ -79,4 +81,4 @@ WallMessageSchema.statics = {
 	}
 };
 
-module.exports = mongoose.model('WallMessage', WallMessageSchema);
+export default mongoose.model('WallMessage', WallMessageSchema);

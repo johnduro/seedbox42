@@ -1,31 +1,36 @@
 // ====================================
 // MODULES NPM
 // ====================================
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var socketIO = require('socket.io');
+import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import favicon from 'serve-favicon';
+import logger from 'morgan';
+import cookieParser from 'cookie-parser';
+import bodyParser from 'body-parser';
+import { Server } from 'socket.io';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 // ************************************
 
 // ====================================
 // EXTRAS
 // ====================================
-var fs = require('fs');
-var jwt = require('jsonwebtoken');
-var multer = require('multer');
-var auth = require('./middlewares/auth.js');
-var configInit = require('./config/init');
-var ttCron = require('./utils/cron');
+import fs from 'fs';
+import jwt from 'jsonwebtoken';
+import multer from 'multer';
+import auth from './middlewares/auth.js';
+import configInit from './config/init.js'
+import ttCron from './utils/cron.js';
+import { renderFile } from 'ejs';
 // ************************************
 
 // ====================================
 // CONFIG
 // ====================================
 var app = express();
-var configInfos = configInit();
+var configInfos = await configInit();
 app.set('config', configInfos.config);
 app.locals.ttConfig = configInfos.config;
 app.locals.ttConfigDefault = configInfos.configDefault;
@@ -43,25 +48,26 @@ ttCron(app.locals.ttConfig, app.locals.transmission, app);
 // ====================================
 // ROUTES REQUIRE
 // ====================================
-var users = require('./routes/users');
-var authenticate = require('./routes/authenticate');
-var torrent = require('./routes/torrent');
-var file = require('./routes/file');
-var dashboard = require('./routes/dashboard');
-var admin = require('./routes/admin');
+import users from "./routes/users.js";
+import authenticate from "./routes/authenticate.js";
+import torrent from "./routes/torrent.js";
+import file from "./routes/file.js";
+import dashboard from "./routes/dashboard.js";
+import admin from "./routes/admin.js";
 // ************************************
 
 // ====================================
 // SOCKETS
 // ====================================
-var io = socketIO();
+var io = new Server()
 app.io = io;
-var sockets = require('./sockets/sockets')(io, configInfos.transmission, app);
+import createSockets from "./sockets/sockets.js";
+const sockets = createSockets(io, configInfos.transmission, app);
 //************************************
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.engine('html', require('ejs').renderFile);
+app.engine('html', renderFile);
 app.set('view engine', 'ejs');
 
 // favicon
@@ -118,4 +124,4 @@ app.use(function(err, req, res, next) {
   });
 });
 
-module.exports = app;
+export default app;

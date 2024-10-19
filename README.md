@@ -1,4 +1,4 @@
-#Seedbox Teurpi Torrent.
+# Seedbox Teurpi Torrent.
 
 ______________________
 Creative Commons License
@@ -59,7 +59,8 @@ If all the above is installed, follow this part.
 - [**INSTALL TEURPI TORRENT SEEDBOX**](#seedbox)
 
 <a name="secure"></a>
-###Install sudo (and secure your access).
+
+### Install sudo (and secure your access).
 
 Some basics needed to secure your server a bit. Feel free to go further...
 
@@ -69,7 +70,8 @@ Some basics needed to secure your server a bit. Feel free to go further...
 
 *The following part is optional but help you to secure your server.*
 <a name="createuser"></a>
-#####Create a new user with sudo rights
+
+##### Create a new user with sudo rights
 
 **create a user named admin** :
 
@@ -93,16 +95,19 @@ Connect to your server with the new user.
 
 
 <a name="git"></a>
-###Install git.
+
+### Install git.
 
 	sudo apt-get install git
 <a name="make"></a>
-###Install make.
+
+### Install make.
 
 	sudo apt-get install make
 
 <a name="nodejs"></a>
-###Install nodejs and npm.
+
+### Install nodejs and npm.
 
 
 **install curl** :
@@ -116,7 +121,8 @@ Connect to your server with the new user.
 
 **nodejs -v** should give you a 5.something version
 <a name="mongodb"></a>
-###Install mongodb.
+
+### Install mongodb.
 
 **Following the instructions here** : https://docs.mongodb.org/manual/tutorial/install-mongodb-on-debian/
 
@@ -142,7 +148,8 @@ version :
 
 then ctrl+c to exit
 <a name="transmission"></a>
-###Install transmission.
+
+### Install transmission.
 
 Do a
 
@@ -176,7 +183,8 @@ Check again :
 	sudo /etc/init.d/transmission-daemon start
 
 <a name="seedbox"></a>
-###Starting with Teurpi Torrent.
+
+### Starting with Teurpi Torrent.
 
 *If you want your server to be managed by its own user*
 **create a teurpitorrent user** :
@@ -203,7 +211,7 @@ Take back the teurpitorrent user. Use the git clone to get seedbox files in your
 
 	git clone https://github.com/johnduro/seedbox42.git app
 
-###Install the dependencies.
+### Install the dependencies.
 
 	cd app
 	npm install
@@ -225,7 +233,7 @@ Lastly,
 again
 
 
-###Create a configuration file.
+### Create a configuration file.
 
 ttManager is a tool to manage your serv easily and fast from the shell, you can launch it with
 
@@ -253,7 +261,7 @@ The following option allow you to edit the informations (name, pass etc.) of an 
 
 	node ttManager.js --modify-user
 
-#####If you already have a transmission server and some files.
+##### If you already have a transmission server and some files.
 
 use
 
@@ -271,7 +279,7 @@ And
 to add the selected files from a specific directory.
 
 
-###How to launch the server as a daemon process.
+### How to launch the server as a daemon process.
 
 It is used in order to leave the ssh connection without stopping the server.
 
@@ -296,11 +304,12 @@ listing launched process
 	forever list
 
 
-#####Now you can connect to your server in your browser, by using the server adress followed by the selected port.
+##### Now you can connect to your server in your browser, by using the server adress followed by the selected port.
 <br>
 _______________
 <br>
-#Seedbox Teurpi Torrent.
+
+# Seedbox Teurpi Torrent.
 
 <br><br>
 ##<a name="french"></a>Installation française.
@@ -356,19 +365,22 @@ Ctrl+x pour quitter. Répondre *yes* pour sauvegarder, et appuyer sur *enter* po
 Se connecter au serveur avec le nouvel utilisateur.
 
 <a name="git-fr"></a>
-###Installer git.
+
+### Installer git.
 
 
 	sudo apt-get install git
 
 <a name="make-fr"></a>
-###Installer make.
+
+### Installer make.
 
 
 	sudo apt-get install make
 
 <a name="nodejs-fr"></a>
-###Installer nodejs et npm.
+
+### Installer nodejs et npm.
 
 
 **installer curl** :
@@ -407,7 +419,8 @@ En utilisant la commande **mongo**, on ouvre une console, on peut alors rentrer 
 
 puis ctrl+c pour sortir
 <a name="transmission-fr"></a>
-###Installer transmission.
+
+### Installer transmission.
 
 Faire
 
@@ -441,7 +454,8 @@ On vérifie encore :
 	sudo /etc/init.d/transmission-daemon start
 
 <a name="seedbox-fr"></a>
-###Commencer avec Teurpi Torrent.
+
+### Commencer avec Teurpi Torrent.
 
 *Si vous voulez que le serveur tourne sur son propre utilisateur*
 **créer un utilisateur teurpitorrent** :
@@ -468,7 +482,7 @@ On repasse avec l'utilisateur teurpitorrent. On utilise le git clone, pour récu
 
 	git clone https://github.com/johnduro/seedbox42.git app
 
-###Installer les dépendances.
+### Installer les dépendances.
 
 	cd app
 	npm install
@@ -492,7 +506,7 @@ Si cela ne marche toujours pas,
 	sudo npm install
 
 
-###Création du fichier de configuration.
+### Création du fichier de configuration.
 
 ttManager est un outil pour gérer son serveur facilement et rapidement depuis la console, vous pouvez le lancer via la commande
 
@@ -520,7 +534,7 @@ L'option suivante vous permet de modifier les informations d'un utilisateur exis
 
 	node ttManager.js --modify-user
 
-######Si le serveur transmission est deja existant et/ou que vous avez quelques fichiers.
+###### Si le serveur transmission est deja existant et/ou que vous avez quelques fichiers.
 
 	node ttManager.js --transmission-to-conf
 récupèrera les options de transmission dans la configuration.

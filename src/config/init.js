@@ -1,29 +1,28 @@
-var fs = require('fs');
-var mongoose = require('mongoose');
-var TransmissionNode = require('../transmission/transmissionNode');
-var File = require('../models/File.js');
-var Wall = require('../models/Wall.js');
-var validity = require('./validity');
+import fs from 'fs';
+import mongoose from 'mongoose';
+import TransmissionNode from '../transmission/transmissionNode.js';
+import File from '../models/File.js';
+import Wall from '../models/Wall.js';
+import validity from './validity.js';
+import defaultConfig from './default-config.js';
 
-var getMongoConnex = function (mongoConfig) {
-	var connex = mongoose.connect("mongodb://" + mongoConfig.address + '/' + mongoConfig.name, function (err) {
-		if (err)
-		{
-			console.log('database: connection error', err);
-			console.log("Could not connect to database, exiting process");
-			process.exit();
-		}
-		else
-			console.log('database: connection successful');
-	});
-	return connex;
+var getMongoConnex = async function (mongoConfig) {
+    try {
+//        await mongoose.connect("mongodb://" + mongoConfig.address + '/' + mongoConfig.name);
+        await mongoose.connect("mongodb://mongouser:mongopass@mongodb:27017/seedapp"); // todo variabilize
+        console.log('Connected to the database!');
+        return mongoose.connection; // You can return the connection or any other value
+    } catch (err) {
+        console.log('Connection to the database failed!', err);
+        process.exit();
+    }
 };
 
 var checkTransmissionSettings = function (t, tSettings) {
 	t.sessionGet(function (err, res) {
 		if (err)
 		{
-			console.log("Could not retreive 'transmission' session infos");
+			console.log("Could not retrieve 'transmission' session infos");
 			process.exit();
 		}
 		else
@@ -69,20 +68,17 @@ var checkFileSettings = function (fSettings, transmission) {
 	}
 };
 
-var checkDashboardSettings = function (dSettings) {
-	Wall.count({}, function (err, count) {
-		if (err)
-			console.log("error::checkDashboardSettings:: ", err);
-		else
-		{
-			if (count > dSettings["mini-chat-message-limit"])
-				Wall.deleteXOldMessages(count - dSettings["mini-chat-message-limit"]);
-		}
-	});
-
+var checkDashboardSettings = async function (dSettings) {
+	try {
+		var wallCount = await Wall.countDocuments({});
+		if (wallCount > dSettings["mini-chat-message-limit"])
+			Wall.deleteXOldMessages(wallCount - dSettings["mini-chat-message-limit"]); //todo not tested yet
+	} catch (err) {
+		console.log("error::checkDashboardSettings:: ", err);
+	}
 };
 
-module.exports = function () {
+export default async function () {
 	var infos = {
 		configFileName: './config.json',
 		config: null,
@@ -92,14 +88,14 @@ module.exports = function () {
 	};
 
 	infos.config = JSON.parse(fs.readFileSync(infos.configFileName, 'utf8'));
-	infos.configDefault = require('./default-config');
+	infos.configDefault = defaultConfig;
 	var validityError = validity.checkConfig(infos.config, infos.configDefault, "", infos.configFileName);
 	if (validity.checkConfigErrors(validityError, infos.configFileName))
 		process.exit();
-	infos.connexionDb = getMongoConnex(infos.config.mongodb);
+	infos.connexionDb = await getMongoConnex(infos.config.mongodb);
 	infos.transmission = new TransmissionNode(infos.config.transmission);
 	checkTransmissionSettings(infos.transmission, infos.config['transmission-settings']);
 	checkFileSettings(infos.config.files, infos.transmission);
-	checkDashboardSettings(infos.config.dashboard);
+	await checkDashboardSettings(infos.config.dashboard);
 	return infos;
 };

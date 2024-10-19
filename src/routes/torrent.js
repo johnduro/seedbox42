@@ -1,10 +1,10 @@
-var express = require('express');
+import express from "express";
 var router = express.Router();
-var multer = require('multer');
-var File = require("../models/File.js");
-var upload = require("../middlewares/upload");
-var rights = require('../middlewares/rights');
-var format = require('../utils/format');
+import multer from "multer";
+import File from "../models/File.js";
+import upload from "../middlewares/upload.js";
+import rights from "../middlewares/rights.js";
+import format from "../utils/format.js";
 
 router.post('/add-url', function (req, res, next) {
 	req.app.locals.transmission.torrentAdd({filename: req.body.url}, function (err, resp) {
@@ -226,4 +226,4 @@ router.get('/get-all-torrents', function (req, res, next) {
 	});
 });
 
-module.exports = router;
+export default router;

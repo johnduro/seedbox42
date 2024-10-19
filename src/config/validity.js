@@ -1,5 +1,5 @@
-var util = require('util');
-var chalk = require('chalk');
+import util from 'util';
+import chalk from 'chalk';
 
 var keyValidityError = function (key, arborescence, configFileName) {
 	return (chalk.red(util.format('%s configuration file has no property %s', configFileName, arborescence) + chalk.underline(key)) + '(try to update config with ttManager)');
@@ -54,7 +54,7 @@ var checkArrayError = function checkArrayError(toMatch, arr, arborescence, confi
 	return errors;
 };
 
-module.exports = {
+export default {
 	checkConfig: function checkConfig (config, defaultConfig, arborescence, configFileName) {
 		var errors = [];
 		for (var key in defaultConfig)

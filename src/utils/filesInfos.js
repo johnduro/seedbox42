@@ -1,5 +1,5 @@
-var fs = require('fs');
-var mime = require('mime');
+import fs from "fs";
+import mime from "mime";
 
 
 
@@ -76,7 +76,7 @@ var getFileRightsRecurs = function self (path, done) {
  * Files Infos
  */
 
-module.exports = {
+export default {
 	isDirectory: function (path, done) {
 		fs.stat(path, function (err, stats) {
 			if (err)

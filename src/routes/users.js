@@ -1,11 +1,11 @@
-var express = require('express');
+import express from "express";
 var router = express.Router();
-var btoa = require('btoa');
-var multer = require('multer');
-var fs = require('fs');
-var User = require("../models/User.js");
-var rights = require('../middlewares/rights');
-var upload = require('../middlewares/upload');
+import btoa from "btoa";
+import multer from "multer";
+import fs from "fs";
+import User from "../models/User.js";
+import rights from "../middlewares/rights.js";
+import upload from "../middlewares/upload.js";
 
 
 router.get('/', function (req, res, next) {
@@ -90,4 +90,4 @@ router.delete('/:id', rights.adminOrUserParam, function (req, res, next) {
 	});
 });
 
-module.exports = router;
+export default router;

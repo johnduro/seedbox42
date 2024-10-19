@@ -1,16 +1,16 @@
-var express = require('express');
-var atob = require('atob');
+import express from "express";
+import atob from "atob";
 var router = express.Router();
-var File = require("../models/File.js");
-var User = require("../models/User.js");
-var fs = require('fs');
-var mime = require('mime');
-var mongoose = require('mongoose');
-var fileInfos = require('../utils/filesInfos');
-var zipstream = require('../utils/zipstream/zipstream');
-var upload = require("../middlewares/upload");
-var rights = require('../middlewares/rights');
-var ft = require('../utils/ft');
+import File from "../models/File.js";
+import User from "../models/User.js";
+import fs from "fs";
+import mime from "mime";
+import mongoose from "mongoose";
+import fileInfos from "../utils/filesInfos.js";
+import zipstream from "../utils/zipstream/zipstream.js";
+import upload from "../middlewares/upload.js";
+import rights from "../middlewares/rights.js";
+import ft from "../utils/ft.js";
 
 /**
  * Files
@@ -416,4 +416,4 @@ router.get('/download/:id/:path/:name', function (req, res, next) {
 	});
 });
 
-module.exports = router;
+export default router;

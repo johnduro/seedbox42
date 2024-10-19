@@ -1,6 +1,6 @@
 
 
-module.exports = {
+export default {
 	configFromDefault: function self (defaultConfig) {
 		var newConfig = {};
 		for (var key in defaultConfig)

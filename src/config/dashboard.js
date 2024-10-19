@@ -1,6 +1,6 @@
 
 
-module.exports = {
+export default {
 	match : {
 		"name": { "type": "string", "default": "new module", "switch": false, "range": false },
 		"enabled": { "type": "string", "default": "all", "switch": true, "values": ["all", "user", "admin", "none"], "range": false },

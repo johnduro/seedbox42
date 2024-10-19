@@ -1,8 +1,8 @@
-var chalk = require('chalk');
-var User = require('../models/User');
-var ft = require('../utils/ft');
+import chalk from 'chalk';
+import User from '../models/User.js';
+import ft from '../utils/ft.js';
 
-module.exports = {
+export default {
 	fileList: function (files, user) {
 		var result = [];
 		files.forEach(function (file) {

@@ -1,10 +1,10 @@
-var mongoose = require('mongoose');
-var bcrypt = require('bcrypt');
-var User = require('../models/User.js');
-var fs = require('fs');
+import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
+import User from "../models/User.js";
+import fs from 'fs';
 
 
-module.exports = {
+export default {
 	indexOfByIdKey: function (arr, key, value) {
 		var arrayLength = arr.length;
 		for (var i = 0; i < arrayLength; i++) {

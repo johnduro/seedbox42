@@ -1,0 +1,65 @@
+services:
+  seedbox:
+    build: .
+    user: "1000:1000"
+    volumes:
+      - ./src:/opt/app
+      - /opt/app/node_modules/
+    ports:
+      - 3000:3000
+    networks:
+      - mongodb-network
+      - transmission-network
+  mongodb:
+    image: mongo:8.0.0
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_DATABASE: seedapp
+    volumes:
+      - mongodb-storage:/data/db
+      - ./docker/mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - mongodb-network
+  mongo-express:
+    image: mongo-express
+    ports:
+      - 8088:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: root
+      ME_CONFIG_MONGODB_SERVER: mongodb
+    networks:
+      - mongodb-network
+  transmission:
+    image: lscr.io/linuxserver/transmission:latest
+    container_name: transmission
+    environment:
+      PUID: 1000
+      PGID: 1000
+      TZ: Europe/Paris
+#    - WHITELIST= #optional
+#    - PEERPORT= #optional
+#    - HOST_WHITELIST= #optional
+#    - TRANSMISSION_WEB_HOME= #optional
+    volumes:
+      - ./transmission/data:/config
+      - ./transmission/downloads:/downloads
+#    - /path/to/watch/folder:/watch
+    ports:
+      - 9091:9091
+      - 51413:51413
+      - 51413:51413/udp
+    restart: unless-stopped
+    networks:
+      - transmission-network
+volumes:
+  mongodb-storage:
+
+networks:
+  mongodb-network:
+    driver: bridge
+  transmission-network:
+    driver: bridge

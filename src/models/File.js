@@ -1,11 +1,12 @@
-var fs = require('fs');
-var pathS = require('path');
-var mongoose = require('mongoose');
-var rimraf = require('rimraf');
-var mime = require('mime');
-var User = require('../models/User.js');
-var ft = require('../utils/ft');
-var format = require('../utils/format');
+import fs from 'fs';
+import pathS from 'path';
+import mongoose from 'mongoose';
+import { rimraf } from 'rimraf';
+import mime from 'mime';
+import User from '../models/User.js'
+import ft from '../utils/ft.js'
+import format from '../utils/format.js';
+
 
 
 /**
@@ -232,7 +233,7 @@ FileSchema.statics = {
 					fs.stat(path, function (err, stat) {
 						if (err)
 							return done(err);
-						var fileType = '';
+						var fileType= '';
 						if (stat.isDirectory())
 							fileType = 'folder';
 						else
@@ -461,4 +462,4 @@ FileSchema.methods = {
 	}
 };
 
-module.exports = mongoose.model('File', FileSchema);
+export default mongoose.model('File', FileSchema);

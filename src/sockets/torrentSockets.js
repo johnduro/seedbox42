@@ -1,27 +1,27 @@
-var File = require('../models/File.js');
-var format = require('../utils/format');
+import File from "../models/File.js";
+import format from "../utils/format.js";
 
-var TorrentSockets = module.exports = function (io, transmission, app) {
-	this.io = io;
-	this.transmission = transmission;
-	this.app = app;
+class TorrentSockets {
+	constructor (io, transmission, app) {
+		this.io = io;
+		this.transmission = transmission;
+		this.app = app;
+	
+		this.second = 1000;
+		this.torrentRefreshCounter = 0;
+		this.torrentRefreshIntervalId = null;
+		this.finishRefreshTorrentIntervalId = null;
+		this.finishedTorrents = [];
+	
+		this.infosFinished = transmission.requestFormat.infosFinished;
+		this.checkFinished = transmission.requestFormat.checkFinished;
+		this.refreshActive = transmission.requestFormat.refreshActive;
+		this.refreshAll = transmission.requestFormat.refreshAll;	
 
-	this.second = 1000;
-	this.torrentRefreshCounter = 0;
-	this.torrentRefreshIntervalId = null;
-	this.finishRefreshTorrentIntervalId = null;
-	this.finishedTorrents = [];
-
-	this.infosFinished = transmission.requestFormat.infosFinished;
-	this.checkFinished = transmission.requestFormat.checkFinished;
-	this.refreshActive = transmission.requestFormat.refreshActive;
-	this.refreshAll = transmission.requestFormat.refreshAll;
-
-	var self = this;
-
-	this.app.on('torrents:clearFinishedTorrents', function () {
-		self.finishedTorrents = [];
-	});
+		this.app.on('torrents:clearFinishedTorrents', function () {
+			self.finishedTorrents = [];
+		});	
+	}
 
 
 	/**
@@ -30,7 +30,7 @@ var TorrentSockets = module.exports = function (io, transmission, app) {
 	 * Ajout en db le nouveau fichier telecharger et fini
 	 * Envois un event a tout les utilisateurs avec les nouvelles donnees des torrents actifs
 	 */
-	this.finishRefreshTorrent = function () {
+	finishRefreshTorrent () {
 		self.transmission.torrentGet(self.checkFinished, "recently-active", function (err, res) {
 			if (err)
 			{
@@ -60,7 +60,7 @@ var TorrentSockets = module.exports = function (io, transmission, app) {
 	 * Socket - Emit - torrentRefreshRes
 	 * Permet d'envoyer un event a tous les utilisateurs avec les nouvelles donnees des torrents actifs
 	 */
-	this.refreshTorrent = function () {
+	refreshTorrent () {
 		self.transmission.torrentGet(self.refreshActive, "recently-active", function (err, res) {
 		if (err)
 			self.io.sockets.emit('torrentErrorRefresh', { error: err });
@@ -69,7 +69,7 @@ var TorrentSockets = module.exports = function (io, transmission, app) {
 		});
 	};
 
-	this.newConnection = function (socket) {
+	newConnection (socket) {
 		if (self.io.engine.clientsCount === 1)
 		{
 			self.finishRefreshTorrentIntervalId = setInterval(self.finishRefreshTorrent, self.second);
@@ -196,4 +196,6 @@ var TorrentSockets = module.exports = function (io, transmission, app) {
 			}
 		});
 	};
-};
+}
+
+export default TorrentSockets;

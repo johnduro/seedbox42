@@ -1,5 +1,5 @@
-var mongoose = require('mongoose');
-var ft = require('../utils/ft');
+import mongoose from 'mongoose';
+import ft from '../utils/ft.js';
 
 var UserSchema = new mongoose.Schema({
 	login: {
@@ -93,4 +93,4 @@ UserSchema.statics = {
 	}
 };
 
-module.exports = mongoose.model('User', UserSchema);
+export default mongoose.model('User', UserSchema);

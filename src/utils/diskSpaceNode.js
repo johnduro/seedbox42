@@ -1,17 +1,17 @@
-var exec = require('child_process').exec;
-var os = require('os');
-var fs = require('fs');
+import { exec } from 'child_process';
+import os from "os";
+import fs from "fs";
 
-var async = require('async');
-var numeral = require('numeral');
+import async from "async";
+import numeral from 'numeral';
 
 /**
  * Retrieve disks list.
  *
  * @param callback
  */
-exports.drives = function (directory, callback) {
-	fs.access(directory, fs.F_OK, function (err) {
+export function drives(directory, callback) {
+        fs.access(directory, fs.F_OK, function (err) {
 		if (err)
 			return callback('Could not access directory, error: ' + err.code);
 	    switch (os.platform().toLowerCase()) {
@@ -57,7 +57,7 @@ function getDrives(command, callback) {
  * @param drive
  * @param callback
  */
-exports.driveDetail = function (drive, callback) {
+export function driveDetail(drive, callback) {
     detail(drive, callback);
 };
 
@@ -67,8 +67,8 @@ exports.driveDetail = function (drive, callback) {
  * @param drives
  * @param callback
  */
-exports.drivesDetail = function (drives, callback) {
-    var drivesDetail = [];
+export function drivesDetail(drives, callback) {
+        var drivesDetail = [];
 
     async.eachSeries(
         drives,

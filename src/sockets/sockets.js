@@ -1,12 +1,12 @@
-var jwt = require('jsonwebtoken');
-var WallSockets = require('./wallSockets');
-var TorrentSockets = require('./torrentSockets');
+import jwt from "jsonwebtoken";
+import WallSockets from "./wallSockets.js";
+import TorrentSockets from "./torrentSockets.js";
 
 /**
  * Sockets
  */
 
-module.exports = function (io, transmission, app) {
+export default function (io, transmission, app) {
 
 	var second = 1000;
 	var torrentSocket = new TorrentSockets(io, transmission, app);

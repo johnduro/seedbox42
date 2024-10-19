@@ -1,9 +1,9 @@
-var fs = require('fs');
-var util = require('util');
-var mini = require('minimist');
-var chalk = require('chalk');
-var commands = require('./manager/commands');
-var Arguments = require('./manager/arguments');
+import fs from 'fs';
+import util from 'util';
+import mini from 'minimist';
+import chalk from 'chalk';
+import commands from './manager/commands.js'
+import Arguments from './manager/arguments.js';
 
 var configFileName = './config.json';
 
@@ -44,7 +44,13 @@ var callCommand = function (name, command, commandLineArg, done) {
 		if (!arg)
 		{
 			console.log(chalk.green(util.format('-- %s :', name)));
-			require('./manager/commands.d/' + name)(configFileName, command.functionArg, commandLineArg, done);
+			import('./manager/commands.d/' + name + '.js')
+			.then(module => {
+				module.default(configFileName, command.functionArg, commandLineArg, done)
+			})
+			.catch(err => {
+				console.error('Error loading module:', err)
+			})
 			return ;
 		}
 		if (functionArgs === null)

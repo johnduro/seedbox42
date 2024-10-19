@@ -1,7 +1,7 @@
-var multer = require('multer');
-var btoa = require('btoa');
-var atob = require('atob');
-var File = require("../models/File.js");
+import multer from "multer";
+import btoa from "btoa";
+import atob from "atob";
+import File from "../models/File.js";
 
 var avatarStorage = multer.diskStorage({
 	destination: function (req, file, cb) {
@@ -46,7 +46,7 @@ var fileStorage = multer.diskStorage({
 /**
  * Upload management for the app:
  */
-module.exports = {
+export default {
 	/**
 	 * Avatar upload for the users
 	 */

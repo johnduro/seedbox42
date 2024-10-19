@@ -1,5 +1,5 @@
-var jwt = require('jsonwebtoken');
-var User = require("../models/User.js");
+import jwt from 'jsonwebtoken';
+import User from "../models/User.js";
 
 
 /**
@@ -29,4 +29,4 @@ var auth = function (req, res, next) {
 };
 
 
-module.exports = auth;
+export default auth;

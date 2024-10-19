@@ -1,18 +1,18 @@
 
-var fs = require('fs');
-var express = require('express');
+import fs from "fs";
+import express from "express";
 var router = express.Router();
-var File = require('../models/File.js');
-var diskSpace = require('../utils/diskSpaceNode');
-var ft = require('../utils/ft');
+import File from "../models/File.js";
+import { drives, drivesDetail} from "../utils/diskSpaceNode.js";
+import ft from "../utils/ft.js";
 
 
 var getTotalDiskSpace = function (downloadDir, done) {
-	diskSpace.drives(downloadDir, function (err, drives) {
+	drives(downloadDir, function (err, drives) {
 		if (err)
 			return done(err);
 		else
-			diskSpace.drivesDetail(drives, function (err, data) {
+			drivesDetail(drives, function (err, data) {
 				if (data.length == 1)
 					return done(null, { used: data[0].used, freePer: parseInt(data[0].freePer, 10), usedPer: parseInt(data[0].usedPer, 10), total: data[0].total});
 				return done('Could not find any data');
@@ -123,4 +123,4 @@ var panels = {
 	}
 };
 
-module.exports = router;
+export default router;
