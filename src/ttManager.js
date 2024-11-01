@@ -1,4 +1,4 @@
-import fs from 'fs';
+//import fs from 'fs';
 import util from 'util';
 import mini from 'minimist';
 import chalk from 'chalk';
@@ -22,39 +22,27 @@ var argvParsed = mini(process.argv.slice(2), scriptArguments);
 
 var isCommand = false;
 
-for (var i = 0; i < commandNames.length;i++)
-{
+for (var i = 0; i < commandNames.length; i++) {
 	if (argvParsed[commandNames[i]])
 		isCommand = true;
 }
 
-if (!isCommand)
-{
+if (!isCommand) {
 	console.log('Usage : node ttManager [[--help] ...]');
 	process.exit();
 }
 
 var functionArgs = null;
 
-var callCommand = function (name, command, commandLineArg, done) {
+var initializeArgument = function (command) {
 	var fnArgs = Object.keys(command.functionArg);
 	var i = 0;
 	(function loop() {
 		var arg = fnArgs[i++];
-		if (!arg)
-		{
-			console.log(chalk.green(util.format('-- %s :', name)));
-			import('./manager/commands.d/' + name + '.js')
-			.then(module => {
-				module.default(configFileName, command.functionArg, commandLineArg, done)
-			})
-			.catch(err => {
-				console.error('Error loading module:', err)
-			})
-			return ;
+		if (!arg) {
+			return;
 		}
-		if (functionArgs === null)
-		{
+		if (functionArgs === null) {
 			functionArgs = new Arguments(configFileName, argvOg, argvParsed);
 		}
 		functionArgs.getArgument(arg, function (ret) {
@@ -62,13 +50,24 @@ var callCommand = function (name, command, commandLineArg, done) {
 			loop();
 		});
 	})();
+}
+
+var callCommand = function (name, command, commandLineArg, done) {
+	initializeArgument(command);
+	console.log(chalk.green(util.format('-- %s :', name)));
+	import('./manager/commands.d/' + name + '.js')
+		.then(module => {
+			module.default(configFileName, command.functionArg, commandLineArg, done)
+		})
+		.catch(err => {
+			console.error('Error loading module:', err)
+		})
 };
 
 var checkCommand = function (name, done) {
-	if (commands[name].type == 'string' && argvOg[name] && (argvParsed[name] != '' || commands[command].mandatoryStr == false ))
+	if (commands[name].type == 'string' && argvOg[name] && (argvParsed[name] != '' || commands[command].mandatoryStr == false))
 		callCommand(name, commands[name], argvParsed[name], done);
-	else if (commands[name].type == 'string' && argvOg[name] && argvParsed[name] == '')
-	{
+	else if (commands[name].type == 'string' && argvOg[name] && argvParsed[name] == '') {
 		console.log('Usage: ' + commands[name].usage);
 		done();
 	}
@@ -80,7 +79,7 @@ var checkCommand = function (name, done) {
 
 var commandNames = Object.keys(commands);
 var i = 0;
-(function next () {
+(function next() {
 	var name = commandNames[i++];
 	if (!name)
 		process.exit();

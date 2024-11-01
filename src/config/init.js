@@ -1,12 +1,13 @@
 import fs from 'fs';
-import mongoose from 'mongoose';
+// import mongoose from 'mongoose';
 import TransmissionNode from '../transmission/transmissionNode.js';
 import File from '../models/File.js';
 import Wall from '../models/Wall.js';
 import validity from './validity.js';
 import defaultConfig from './default-config.js';
+import connectDb from '../database/database.js';
 
-var getMongoConnex = async function (mongoConfig) {
+/* var getMongoConnex = async function (mongoConfig) {
     try {
 //        await mongoose.connect("mongodb://" + mongoConfig.address + '/' + mongoConfig.name);
         await mongoose.connect("mongodb://mongouser:mongopass@mongodb:27017/seedapp"); // todo variabilize
@@ -16,7 +17,7 @@ var getMongoConnex = async function (mongoConfig) {
         console.log('Connection to the database failed!', err);
         process.exit();
     }
-};
+}; */
 
 var checkTransmissionSettings = function (t, tSettings) {
 	t.sessionGet(function (err, res) {
@@ -92,7 +93,8 @@ export default async function () {
 	var validityError = validity.checkConfig(infos.config, infos.configDefault, "", infos.configFileName);
 	if (validity.checkConfigErrors(validityError, infos.configFileName))
 		process.exit();
-	infos.connexionDb = await getMongoConnex(infos.config.mongodb);
+/* 	infos.connexionDb = await getMongoConnex(infos.config.mongodb); */
+	infos.connexionDb = await connectDb(infos.config.mongodb);
 	infos.transmission = new TransmissionNode(infos.config.transmission);
 	checkTransmissionSettings(infos.transmission, infos.config['transmission-settings']);
 	checkFileSettings(infos.config.files, infos.transmission);

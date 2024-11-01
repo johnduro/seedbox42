@@ -21,9 +21,14 @@ var UserSchema = new mongoose.Schema({
 		type: String
 	},
 	role: {
+		type: String,
+		enum: ['admin', 'user'],
+		default: 'user'
+	},
+/* 	role: {
 		type: Number,
 		default: 1
-	},
+	}, */
 	createdAt: {
 		type: Date,
 		default: Date.now
@@ -43,23 +48,26 @@ UserSchema.statics = {
 				if (err)
 					return cb(err);
 				else if (user == null)
-					return cb(null, { login: "unknown user", avatar: "undefined", role: 1 });
+					return cb(null, { login: "unknown user", avatar: "undefined", role: 'user' });
 				else
 					return cb(null, user.toObject());
 			});
 	},
 
-	createNew: function (infos, cb) {
-		var self = this;
-		if (infos.password.length < 5)
-			return cb('The password must 5 characters at least');
-		ft.getUserPwHash(infos.password, function (err, hash) {
-			infos.password = hash;
-			self.create(infos, function (err, post) {
-				if (err)
-					return cb(err);
-				else
-					return cb(null, post);
+	createNew: async function (infos) {
+		return new Promise((resolve, reject) => {
+			var self = this;
+			if (infos.password.length < 5)
+				return reject('The password must 5 characters at least');
+			ft.getUserPwHash(infos.password, async function (err, hash) {
+				infos.password = hash;
+				try {
+					infos.password = hash;
+					const post = await self.create(infos);
+					return resolve(post);
+				  } catch (err) {
+					return reject(err);
+				  }
 			});
 		});
 	},

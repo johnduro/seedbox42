@@ -1,93 +1,102 @@
 import express from "express";
-var router = express.Router();
-import btoa from "btoa";
-import multer from "multer";
 import fs from "fs";
 import User from "../models/User.js";
 import rights from "../middlewares/rights.js";
 import upload from "../middlewares/upload.js";
 
+const router = express.Router();
 
-router.get('/', function (req, res, next) {
-	// check role si besoin
-	User.find({}, { password: 0 }, function (err, users) {
-		if (err)
-			return next(err);
+router.get('/', async (req, res, next) => {
+	try {
+		const users = await User.find({}, { password: 0 }).exec();
 		res.json(users);
-	});
+	} catch (err) {
+		next(err);
+	}
 });
 
-router.post('/', rights.admin, upload.avatar.single('avatar'), function (req, res, next) {
-	if ("file" in req && 'filename' in req.file)
-		req.body.avatar = req.file.filename;
-	else
-		req.body.avatar = req.app.locals.ttConfig.users["default-avatar"];
-	User.createNew(req.body, function (err, post) {
-		if (err)
-			res.json({ success: false, message: err });
-		else
-		{
-			var rawUser = post.toObject();
-			rawUser.password = "";
-			res.json({ success: true, message: 'user successfully created', data: rawUser });
+router.post('/', rights.admin, upload.avatar.single('avatar'), async function (req, res, next) {
+	try {
+		if ("file" in req && 'filename' in req.file) {
+			req.body.avatar = req.file.filename;
+		} else {
+			req.body.avatar = req.app.locals.ttConfig.users["default-avatar"];
 		}
-	});
+
+		// Check if the user already exists
+		const existingUser = await User.findOne({ login: req.body.login }).exec();
+		if (existingUser) {
+			return res.status(409).json({ message: 'User with this login already exists' });
+		}
+
+		const post = await User.createNew(req.body);
+		const rawUser = post.toObject();
+		rawUser.password = "";
+		res.json({ message: 'User successfully created', data: rawUser });
+	} catch (err) {
+		if (err.code === 11000) {
+			res.status(409).json({ message: 'Duplicate key error: User with this login already exists' });
+		} else {
+			res.status(500).json({ message: err.message });
+		}
+	}
 });
 
-router.get('/profile', function (req, res, next) {
-	User.findById(req.user._id, { password: 0 }, function (err, post) {
-		if (err)
-			res.json({ success: false, message: err });
-		else
-			res.json({ success: true, data: post });
-	});
+router.get('/profile', async function (req, res, next) {
+	try {
+		const post = await User.findById(req.user._id, { password: 0 }).exec();
+		res.json({ data: post });
+	} catch (err) {
+		res.status(500).json({ message: err.message });
+	}
 });
 
-router.get('/:id', function (req, res, next) {
-	User.findById(req.params.id, { password: 0 }, function (err, post) {
-		if (err)
-			return next(err);
+router.get('/:id', async function (req, res, next) {
+	try {
+		const post = await User.findById(req.params.id, { password: 0 }).exec();
 		res.json(post);
-	});
+	} catch (err) {
+		next(err);
+	}
 });
 
-router.put('/:id', rights.adminOrUserParam, upload.avatar.single('avatar'), function (req, res, next) {
-	var infos = req.body;
-	if ("file" in req && 'filename' in req.file)
-		infos.avatar = req.file.filename;
-	else
-		delete infos.avatar;
-	if ('_id' in infos)
-		delete req.body._id;
-	User.updateUserById(req.params.id, infos, function (err, post) {
-		if (err)
-			res.json({ success: false, message: err });
-		else
-		{
-			var newUser = post.toObject();
-			delete newUser.password;
-			res.json({ success: true, data: newUser });
+router.put('/:id', rights.adminOrUserParam, upload.avatar.single('avatar'), async (req, res, next) => {
+	try {
+		var infos = req.body;
+		if ("file" in req && 'filename' in req.file) {
+			infos.avatar = req.file.filename;
+		} else {
+			delete infos.avatar;
 		}
-	});
+
+		if ('_id' in infos) {
+			delete req.body._id;
+		}
+
+		const post = await User.findByIdAndUpdate(req.params.id, { $set: infos }, { new: true }).exec();
+		var newUser = post.toObject();
+		delete newUser.password;
+		res.json({ data: newUser });
+	} catch (err) {
+		res.status(500).json({ message: err.message });
+	}
 });
 
-router.delete('/:id', rights.adminOrUserParam, function (req, res, next) {
-	User.findByIdAndRemove(req.params.id, req.body, function (err, post) {
-		if (err)
-			return next(err);
-		if (post.avatar != req.app.locals.ttConfig.users["default-avatar"])
-		{
+router.delete('/:id', rights.adminOrUserParam, async (req, res, next) => {
+	try {
+		const post = await User.findByIdAndDelete(req.params.id).exec();
+		if (post.avatar != req.app.locals.ttConfig.users["default-avatar"]) {
 			fs.unlink('public/assets/avatar/' + post.avatar, function (err) {
-				if (err)
-					console.log(err);
+				if (err) {
+					return next(err);
+				}
 			});
 		}
-		User.find({}, { password : 0 }, function (err, users) {
-			if (err)
-				return next(err);
-			res.json({ success: true, message: 'user successfully deleted', data: users });
-		});
-	});
+
+		res.json({ message: 'User successfully deleted' });
+	} catch (err) {
+		next(err);
+	}
 });
 
 export default router;

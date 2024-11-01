@@ -1,8 +1,8 @@
-var inquirer = require('inquirer');
-var chalk = require('chalk');
-var User = require('../../models/User');
+import inquirer from 'inquirer';
+import chalk from 'chalk';
+import User from '../../models/User.js';
 
-module.exports = function (configFileName, args, commandLineArg, done) {
+export default async function (configFileName, args, commandLineArg, done) {
 	var questions = [
 		{
 			type: 'input',
@@ -41,21 +41,19 @@ module.exports = function (configFileName, args, commandLineArg, done) {
 			type: 'list',
 			name: 'role',
 			message: 'Choose the rights of this user:',
-			choices: ['admin', 'user'],
-			filter: function (value) {
-				return ((value === 'admin') ? 0 : 1);
-			}
+			choices: ['admin', 'user']
 		}
 
 	];
-	inquirer.prompt(questions, function (answers) {
+
+	try {
+		const answers = await inquirer.prompt(questions);
 		answers.avatar = args.config.users['default-avatar'];
-		User.createNew(answers, function (err, newUser) {
-			if (err)
-				console.log(chalk.red("An error occured while creating the user : "), err);
-			else
-				console.log(chalk.green("User successfully created"));
-			return done();
-		});
-	});
+		await User.createNew(answers);
+		console.log(chalk.green("User successfully created"));
+	} catch (err) {
+		console.log(chalk.red("An error occurred while creating the user: "), err);
+	} finally {
+		done();
+	}
 };

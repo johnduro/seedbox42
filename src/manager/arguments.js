@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import chalk from 'chalk';
 import TransmissionNode from '../transmission/transmissionNode.js';
 import User from '../models/User.js';
-
+import connectDb from '../database/database.js';
 
 class Arguments {
 	constructor (configFileName, argvOg, argvParsed) {
@@ -32,17 +32,13 @@ class Arguments {
 						process.exit();
 					}
 					return done(null);
-				}
+				} 
 			},
 	
 			mongo: function (done) {
-				var getConnect = function (mongoConf) {
-					mongoose.connection.on('error', function (err) {
-						console.log(chalk.red("Could not connect to database, please check your configuration file or your database"));
-						process.exit();
-					});
-					var ret = mongoose.connect("mongodb://" + mongoConf.address + '/' + mongoConf.name);
-					return (ret);
+				var getConnect = async function (mongoConf) {
+					var mongoConnexion = await connectDb(mongoConf);
+					return (mongoConnexion);
 				};
 				if (self.args['config'] === null)
 				{
@@ -82,7 +78,7 @@ class Arguments {
 					if (argvOg['user'] && argvParsed['user'] != '')
 						query.login = argvParsed['user'];
 					else
-						query.role = 0;
+						query.role = 'admin';
 					User.findOne(query).sort({ createdAt: -1 }).exec( function (err, user) {
 						if (err)
 						{

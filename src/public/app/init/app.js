@@ -21,8 +21,8 @@ var app = angular.module('seedApp', [
 // ---------------------- variable global -------------------------------
 var api = "";
 var roles = {
-    "1" : "user",
-    "0": "admin",
+    "user" : "user",
+    "admin": "admin",
 };
 
 app.run(function ($rootScope, $location, $http, $state, $timeout, Tools, editableOptions, editableThemes, socket) {

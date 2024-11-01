@@ -18,10 +18,14 @@ RUN chown -R node:node /opt/app
 
 USER node
 
-COPY src/ .
+COPY --chown=node:node src/package.json src/package-lock.json ./
+
+#COPY src/ .
 
 #COPY src/package.json  .
 RUN npm install
+COPY --chown=node:node src/ .
+
 #COPY src/ .
 
 

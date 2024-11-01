@@ -107,7 +107,7 @@ FileSchema.statics = {
 				for (var i = 0; i < file.comments.length; i++)
 				{
 					if (file.comments[i].user == null)
-						file.comments[i].user = { login: "unknown user", avatar: "undefined", role: 1 };
+						file.comments[i].user = { login: "unknown user", avatar: "undefined", role: 'user' };
 				}
 				return cb(null, file);
 			});

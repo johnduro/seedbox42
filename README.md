@@ -40,7 +40,7 @@ More screens [here](#screens)
 Plus d'images [ici](#screens)
 
 <br>
-##<a name="english"></a>English Tutorial
+## <a name="english"></a>English Tutorial
 <br>
 
 ### Prerequisite :
@@ -312,7 +312,7 @@ _______________
 # Seedbox Teurpi Torrent.
 
 <br><br>
-##<a name="french"></a>Installation française.
+## <a name="french"></a>Installation française.
 <br>
 
 ### Prérequis :
@@ -332,7 +332,8 @@ Si tout est installé, suivez cette partie :
 - [**INSTALLATION DE LA SEEDBOX TEURPI TORRENT**](#seedbox-fr)
 
 <a name="secure-fr"></a>
-###Installer sudo (et sécuriser votre accès).
+
+### Installer sudo (et sécuriser votre accès).
 
 Quelques trucs basiques pour sécuriser votre serveur. N'hésitez pas à aller plus loin.
 
@@ -393,8 +394,10 @@ Se connecter au serveur avec le nouvel utilisateur.
 	sudo apt-get install -y nodejs
 
 **nodejs -v** should give you a 5.something version.
+
 <a name="mongodb-fr"></a>
-###Installer mongodb.
+
+### Installer mongodb.
 
 **Suivre les instructions ici** : https://docs.mongodb.org/manual/tutorial/install-mongodb-on-debian/
 
@@ -549,7 +552,7 @@ Et enfin
 vous demandera quels fichiers ajouter à partir d'un répertoire donné.
 
 
-###Pour lancer le serveur en daemon.
+### Pour lancer le serveur en daemon.
 
 C'est ce qui permet de quitter la session ssh et de garder le serveur lancé.
 
@@ -574,11 +577,11 @@ Lister les processus lancés
 	forever list
 
 
-#####Maintenant vous pouvez vous connecter à votre serveur dans votre navigateur en rentrant l'adresse de votre serveur suivi du port choisi.
+##### Maintenant vous pouvez vous connecter à votre serveur dans votre navigateur en rentrant l'adresse de votre serveur suivi du port choisi.
 
 
 <br>
-##<a name="screens"></a>Screens shots
+## <a name="screens"></a>Screens shots
 
 ![alt tag](https://cloud.githubusercontent.com/assets/6706015/12647141/021a0170-c5d4-11e5-89a8-716655246f35.png)
 <br>

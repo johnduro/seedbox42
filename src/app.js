@@ -17,9 +17,9 @@ const __dirname = path.dirname(__filename);
 // ====================================
 // EXTRAS
 // ====================================
-import fs from 'fs';
-import jwt from 'jsonwebtoken';
-import multer from 'multer';
+//import fs from 'fs';
+//import jwt from 'jsonwebtoken';
+//import multer from 'multer';
 import auth from './middlewares/auth.js';
 import configInit from './config/init.js'
 import ttCron from './utils/cron.js';

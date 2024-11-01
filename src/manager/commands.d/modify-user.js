@@ -53,10 +53,7 @@ module.exports = function (configFileName, args, commandLineArg, done) {
 					name: 'role',
 					message: 'Choose the rights of this user:',
 					choices: ['admin', 'user'],
-					default: function () { return ((user.role === 0) ? 'admin' : 'user'); },
-					filter: function (value) {
-						return ((value === 'admin') ? 0 : 1);
-					}
+					default: function () { return ((user.role === 'admin') ? 'admin' : 'user'); }
 				}
 			];
 			console.log(chalk.yellow('Enter new values for this user detail or press enter to keep the olds one: '));
