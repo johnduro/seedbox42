@@ -1,6 +1,5 @@
 import express from "express";
 import atob from "atob";
-var router = express.Router();
 import File from "../models/File.js";
 import User from "../models/User.js";
 import fs from "fs";
@@ -11,6 +10,8 @@ import zipstream from "../utils/zipstream/zipstream.js";
 import upload from "../middlewares/upload.js";
 import rights from "../middlewares/rights.js";
 import ft from "../utils/ft.js";
+
+const router = express.Router();
 
 /**
  * Files

@@ -1,11 +1,11 @@
 
 import fs from "fs";
 import express from "express";
-var router = express.Router();
 import File from "../models/File.js";
 import { drives, drivesDetail} from "../utils/diskSpaceNode.js";
-import ft from "../utils/ft.js";
+//import ft from "../utils/ft.js";
 
+const router = express.Router();
 
 var getTotalDiskSpace = function (downloadDir, done) {
 	drives(downloadDir, function (err, drives) {

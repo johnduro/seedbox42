@@ -51,50 +51,54 @@ Transmission.prototype.makeStringJsonQuery = function (args, method) {
 	return (JSON.stringify(query));
 };
 
-Transmission.prototype.sendQuery = function (query, callback) {
-	var self = this;
-	var postOpt = this.postOptions;
+Transmission.prototype.sendQuery = function (query) {
+	return new Promise((resolve, reject) => {
+		var self = this;
+		var postOpt = this.postOptions;
 
-	postOpt.headers = {
-		'Content-Type': 'application/json',
-		'X-Transmission-Session-Id': this.sessionId || '',
-		'Content-Length': Buffer.byteLength(query, 'utf8')
-	};
+		postOpt.headers = {
+			'Content-Type': 'application/json',
+			'X-Transmission-Session-Id': this.sessionId || '',
+			'Content-Length': Buffer.byteLength(query, 'utf8')
+		};
 
-	var req = http.request(postOpt, function (res) {
-		var dataReceive = '';
-		function onData(chunk) {
-			dataReceive += chunk;
-		}
+		var req = http.request(postOpt, function (res) {
+			var dataReceive = '';
 
-		function onEnd() {
-			if (res.statusCode == 409)
-			{
-				self.sessionId = res.headers['x-transmission-session-id'];
-				return self.sendQuery(query, callback);
+			function onData(chunk) {
+				dataReceive += chunk;
 			}
 
-			var jsonData = JSON.parse(dataReceive);
-			if (jsonData.result == 'success')
-			{
-				callback(null, jsonData.arguments);
-			}
-			else
-			{
-				callback(jsonData.result);
-			}
-		}
+			function onEnd() {
+				if (res.statusCode == 409) {
+					self.sessionId = res.headers['x-transmission-session-id'];
+					return self.sendQuery(query).then(resolve).catch(reject);
+				}
 
-		res.on('end', onEnd);
-		res.on('data', onData);
+				try {
+					var jsonData = JSON.parse(dataReceive);
+					if (jsonData.result == 'success') {
+						resolve(jsonData.arguments);
+					} else {
+						reject(new Error(jsonData.result));
+					}
+				} catch (err) {
+					reject(err);
+				}
+			}
+
+			res.on('data', onData);
+			res.on('end', onEnd);
+		});
+
+		req.on('error', (err) => {
+			reject(err);
+		});
+
+		req.write(query);
+		req.end();
 	});
-	req.on('error', function (e) { //MODIFIER ???
-		console.log('error::sendQuery::', e);
-	});
-	req.write(query);
-	req.end();
 };
-
 
 /**
  * torrentActionRequest method possibility (response argument: none) :
@@ -106,13 +110,28 @@ Transmission.prototype.sendQuery = function (query, callback) {
  * "torrent-reannounce" | // ("ask trackers for more peers")
  * ---------------------+
  */
-Transmission.prototype.torrentActionRequest = function (method, ids, callback) {
-	var args = {};
-	if (ids)
-		args["ids"] = ids;
-	var query = this.makeStringJsonQuery(args, method);
-	this.sendQuery(query, callback);
+Transmission.prototype.torrentActionRequest = function (method, ids) {
+	return new Promise((resolve, reject) => {
+		const validMethods = [
+			"torrent-start",
+			"torrent-start-now",
+			"torrent-stop",
+			"torrent-verify",
+			"torrent-reannounce"
+		];
+
+		if (!validMethods.includes(method)) {
+			return reject(new Error("Invalid method"));
+		}
+
+		const args = { ids: ids };
+		const query = this.makeStringJsonQuery(args, method);
+		this.sendQuery(query)
+			.then(resolve)
+			.catch(reject);
+	});
 };
+  
 
 
 /**
@@ -144,6 +163,7 @@ Transmission.prototype.torrentActionRequest = function (method, ids, callback) {
  * using an empty array for "files-wanted", "files-unwanted", "priority-high",
  * "priority-low", or "priority-normal" is shorthand for saying "all files"
  */
+// Not used
 Transmission.prototype.torrentSet = function (args, ids, callback) {
 	//check si args est bien un {}
 	if (ids)
@@ -325,12 +345,15 @@ Transmission.prototype.torrentSet = function (args, ids, callback) {
  *                    | webseed                 | string     |
  * -------------------+-------------------------+------------+
  */
-Transmission.prototype.torrentGet = function (fields, ids, callback) {
-	var args = {"fields" : fields};
-	if (ids)
-		args["ids"] = ids;
-	var query = this.makeStringJsonQuery(args, "torrent-get");
-	this.sendQuery(query, callback);
+Transmission.prototype.torrentGet = function (fields, ids) {
+	return new Promise((resolve, reject) => {
+		var args = { "fields": fields };
+		if (ids) args["ids"] = ids;
+		var query = this.makeStringJsonQuery(args, "torrent-get");
+		this.sendQuery(query)
+			.then(resolve)
+			.catch(reject);
+	});
 };
 
 /**
@@ -351,11 +374,17 @@ Transmission.prototype.torrentGet = function (fields, ids, callback) {
  * ---------------------+-------------------------------------------------
  * Either "filename" OR "metainfo" MUST be included. All other arguments are optional.
  */
-Transmission.prototype.torrentAdd = function (args, callback) {
-	if (args['filename'] === null && args['metainfo'] === null) //check a verifier NE MARCHE PAS !!!
-		callback(new Error("Missing argument for torrentAdd, 'filename' or 'metainfo' is needed"));
-	var query = this.makeStringJsonQuery(args, "torrent-add");
-	this.sendQuery(query, callback);
+Transmission.prototype.torrentAdd = function (args) {
+	return new Promise((resolve, reject) => {
+		if (args['filename'] === null && args['metainfo'] === null) {
+			return reject(new Error("Missing argument for torrentAdd, 'filename' or 'metainfo' is needed"));
+		}
+
+		const query = this.makeStringJsonQuery(args, "torrent-add");
+		this.sendQuery(query)
+			.then(resolve)
+			.catch(reject);
+	});
 };
 
 
@@ -366,13 +395,16 @@ Transmission.prototype.torrentAdd = function (args, callback) {
  * "delete-local-data"        | boolean    delete local data. (default: false)
  * ---------------------------+-------------------------------------------------
  */
-Transmission.prototype.torrentRemove = function (ids, deleteLocalData, callback) {
-	var args = {'delete-local-data': deleteLocalData};
-	if (ids)
-		args['ids'] = ids;
-	var query = this.makeStringJsonQuery(args, "torrent-remove");
-	this.sendQuery(query, callback);
-};
+Transmission.prototype.torrentRemove = function (ids, deleteLocalData) {
+	return new Promise((resolve, reject) => {
+	  const args = { 'delete-local-data': deleteLocalData };
+	  if (ids) args['ids'] = ids;
+	  const query = this.makeStringJsonQuery(args, "torrent-remove");
+	  this.sendQuery(query)
+		.then(resolve)
+		.catch(reject);
+	});
+  };
 
 
 /**
@@ -385,6 +417,7 @@ Transmission.prototype.torrentRemove = function (ids, deleteLocalData, callback)
  *                                  |            (default: false)
  * ---------------------------------+-------------------------------------------------
  */
+// Not used
 Transmission.prototype.torrentSetLocation = function (ids, location, move, callback) {
 	var args = {
 		'location': location,
@@ -410,15 +443,18 @@ Transmission.prototype.torrentSetLocation = function (ids, location, move, callb
  * Response arguments: "path", "name", and "id", holding the torrent ID integer
  * path is the current name of the file and name is the new name
  */
-Transmission.prototype.torrentRenamePath = function (ids, path, name, callback) {
-	//check ids (seulement une !!)
-	var args = {
-		'ids': ids,
-		'path': path,
-		'name': name
-	};
-	var query = this.makeStringJsonQuery(args, "torrent-rename-path");
-	this.sendQuery(query, callback);
+Transmission.prototype.torrentRenamePath = function (id, path, name) {
+	return new Promise((resolve, reject) => {
+		const args = {
+			ids: [id],
+			path: path,
+			name: name
+		};
+		const query = this.makeStringJsonQuery(args, "torrent-rename-path");
+		this.sendQuery(query)
+			.then(resolve)
+			.catch(reject);
+	});
 };
 
 
@@ -499,10 +535,14 @@ Transmission.prototype.sessionSet = function (args, callback) {
  * sessionGet response arguments :
  * all of session arguments
  */
-Transmission.prototype.sessionGet = function (callback) {
-	var query = this.makeStringJsonQuery({}, "session-get");
-	this.sendQuery(query, callback);
-};
+Transmission.prototype.sessionGet = function () {
+	return new Promise((resolve, reject) => {
+	  const query = this.makeStringJsonQuery({}, "session-get");
+	  this.sendQuery(query)
+		.then(resolve)
+		.catch(reject);
+	});
+  };
 
 /**
  * sessionStats response on success :
@@ -530,39 +570,59 @@ Transmission.prototype.sessionGet = function (callback) {
  *                            | secondsActive    | number     |
  * ---------------------------+--------------------------------
  */
-Transmission.prototype.sessionStats = function (callback) {
-	var query = this.makeStringJsonQuery({}, "session-stats");
-	this.sendQuery(query, callback);
-};
+Transmission.prototype.sessionStats = function () {
+	return new Promise((resolve, reject) => {
+	  const query = this.makeStringJsonQuery({}, "session-stats");
+	  this.sendQuery(query)
+		.then(resolve)
+		.catch(reject);
+	});
+  };
 
 
 /**
  * blocklistUpdate response :
  * a number "blocklist-size"
  */
-Transmission.prototype.blocklistUpdate = function (callback) {
-	var query = this.makeStringJsonQuery({}, "blocklist-update");
-	this.sendQuery(query, callback);
-};
+Transmission.prototype.blocklistUpdate = function () {
+	return new Promise((resolve, reject) => {
+	  const query = this.makeStringJsonQuery({}, "blocklist-update");
+	  this.sendQuery(query)
+		.then(resolve)
+		.catch(reject);
+	});
+  };
 
 
 /**
  * portTest response :
  * a bool, "port-is-open"
  */
-Transmission.prototype.portTest = function (callback) {
-	var query = this.makeStringJsonQuery({}, "port-test");
-	this.sendQuery(query, callback);
-};
+Transmission.prototype.portTest = function () {
+	return new Promise((resolve, reject) => {
+	  const query = this.makeStringJsonQuery({}, "port-test");
+	  this.sendQuery(query)
+		.then(resolve)
+		.catch(reject);
+	});
+  };
 
 
 /**
  * sessionClose :
  */
-Transmission.prototype.sessionClose = function (callback) {
+/* Transmission.prototype.sessionClose = function (callback) {
 	var query = this.makeStringJsonQuery({}, "session-close");
 	this.sendQuery(query, callback);
-};
+}; */
+Transmission.prototype.sessionClose = function () {
+	return new Promise((resolve, reject) => {
+	  const query = this.makeStringJsonQuery({}, "session-close");
+	  this.sendQuery(query)
+		.then(resolve)
+		.catch(reject);
+	});
+  };
 
 
 /**
@@ -574,12 +634,25 @@ Transmission.prototype.sessionClose = function (callback) {
  * "queue-move-bottom"  |
  * ---------------------+
  */
-Transmission.prototype.queueMovementRequest = function (method, ids, callback) {
-	var args = {};
-	if (ids)
-		args['ids'] = ids;
-	var query = this.makeStringJsonQuery(args, method);
-	this.sendQuery(query, callback);
+Transmission.prototype.queueMovementRequest = function (method, ids) {
+	return new Promise((resolve, reject) => {
+		const validMethods = [
+			"queue-move-up",
+			"queue-move-down",
+			"queue-move-top",
+			"queue-move-bottom"
+		];
+
+		if (!validMethods.includes(method)) {
+			return reject(new Error("Invalid method"));
+		}
+
+		const args = { ids: ids };
+		const query = this.makeStringJsonQuery(args, method);
+		this.sendQuery(query)
+			.then(resolve)
+			.catch(reject);
+	});
 };
 
 
@@ -590,6 +663,7 @@ Transmission.prototype.queueMovementRequest = function (method, ids, callback) {
  * "size-bytes"| number  the size, in bytes, of the free space in that directory
  * ------------+----------------------------------------------------------
  */
+// Not used
 Transmission.prototype.freeSpace = function (path, callback) {
 	var query = this.makeStringJsonQuery({"path": path}, "free-space");
 	this.sendQuery(query, callback);

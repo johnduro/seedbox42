@@ -1,229 +1,210 @@
 import express from "express";
-var router = express.Router();
-import multer from "multer";
 import File from "../models/File.js";
 import upload from "../middlewares/upload.js";
 import rights from "../middlewares/rights.js";
 import format from "../utils/format.js";
 
-router.post('/add-url', function (req, res, next) {
-	req.app.locals.transmission.torrentAdd({filename: req.body.url}, function (err, resp) {
-		if (err)
-			res.json({ success: false, message: 'torrent not added, wrong url' });
-		else
-		{
-			if ('torrent-duplicate' in resp)
-				res.json({ success: false, message: 'duplicate, torrent already present' });
-			else if ('torrent-added' in resp)
-			{
-				File.createFile(resp['torrent-added'], req.user._id, function (err, file) {
-					if (err)
-						res.json({ success: false, message: 'Torrent was successfully added but there was an issuewhen adding it to the database', error: err, id: resp['torrent-added']['id'], name: resp['torrent-added']['name'] });
-					else
-						res.json({ success: true, message: 'torrent successfully added', id: resp['torrent-added']['id'], name: file.name });
-				});
+const router = express.Router();
+
+router.post('/add-url', async (req, res, next) => {
+	try {
+		const resp = await req.app.locals.transmission.torrentAdd({ filename: req.body.url });
+		if ('torrent-duplicate' in resp) {
+			return res.status(409).json({ message: 'duplicate, torrent already present' });
+		} else if ('torrent-added' in resp) {
+			try {
+				const file = await File.createFile(resp['torrent-added'], req.user._id);
+				return res.json({ message: 'torrent successfully added', id: resp['torrent-added']['id'], name: file.name });
+			} catch (err) {
+				return res.status(500).json({ message: 'Torrent was successfully added but there was an issue when adding it to the database', error: err, id: resp['torrent-added']['id'], name: resp['torrent-added']['name'] });
 			}
-			else
-				res.json({ success: false, message: 'unexpected error' });
+		} else {
+			return res.status(500).json({ message: 'unexpected error' });
 		}
-	});
-});
-
-router.post('/add-torrents', upload.torrent.array('torrent', 10), function (req, res, next) {
-	var resAll = [];
-	var i = 0;
-	(function next() {
-		var file = req.files[i++];
-		if (!file)
-			return res.json(resAll);
-		req.app.locals.transmission.torrentAdd({ filename: process.cwd() + '/' + file.path }, function (err, resp) {
-			if (err)
-			{
-				resAll.push({ torrent: file.filename, success: false });
-				next();
-			}
-			else
-			{
-				if ('torrent-duplicate' in resp)
-				{
-					resAll.push({ success: false, message: 'Duplicate, torrent already present', torrent: file.filename });
-					next();
-				}
-				else if ('torrent-added' in resp)
-				{
-					File.createFile(resp['torrent-added'], req.user._id, function (err, fileAd) {
-						var name = fileAd ? fileAd.name : "";
-						if (err)
-							resAll.push({ success: false, message: 'Torrent was successfully added but there was an issue when adding it to the database', error: err, id: resp['torrent-added']['id'], name: resp['torrent-added']['name'] });
-						else
-							resAll.push({ success: true, message: 'Torrent successfully added', torrent: name });
-						req.app.io.sockets.emit('post:torrent', { success: true, message: 'torrent successfully added', id: resp['torrent-added']['id'], name: name });
-						next();
-					});
-				}
-				else
-				{
-					resAll.push({ success: false, message: 'unexpected error', torrent: file.filename });
-					next();
-				}
-			}
-		});
-	})();
-});
-
-router.get('/refresh/:id', function (req, res, next) {
-	var transmission = req.app.locals.transmission;
-	transmission.torrentGet(transmission.requestFormat.refreshAll, parseInt(req.params.id, 10), function (err, resp) {
-		if (err)
-			throw err;
-		else
-			res.json({ success: true, data: resp });
-	});
-});
-
-router.delete('/', function (req, res, next) {
-	var removeLocalData = (req.body.removeLocalData === "true");
-	var ids = format.torrentIds(req.body.ids);
-	if (removeLocalData)
-	{
-		req.app.locals.transmission.torrentGet(['hashString'], ids, function (err, resp) {
-			if (err)
-				throw err;
-			else
-			{
-				var toFind = [];
-				resp['torrents'].forEach(function (torrent) {
-					toFind.push(torrent.hashString);
-				});
-				File.remove({ 'hashString': { $in: toFind } }, function (err, removed) {
-					if (err)
-						return next(err);
-				});
-			}
-		});
+	} catch (err) {
+		return res.status(404).json({ message: 'torrent not added, wrong url', error: err.message });
 	}
-	req.app.locals.transmission.torrentRemove(ids, removeLocalData, function (err, resp) {
-		if (err)
-			res.json({ success: false, message: "Could not remove torrent(s)" });
-		else
-			res.json({ success: true, message: 'Torrent(s) successfuly removed' });
-	});
 });
 
-router.post('/move/:direction', function (req, res, next) {
-	var ids = format.torrentsIds(req.body.ids);
-	req.app.locals.transmission.queueMovementRequest('queue-move-' + req.params.direction, ids, function (err, resp) {
-		if (err)
-			res.json({ success: false, message: "Could not move torrent(s) " + req.params.direction });
-		else
-			res.json({ success: true, message: 'Torrent(s) successfuly moved ' + req.params.direction });
-	});
-});
+router.post('/add-torrents', upload.torrent.array('torrent', 10), async (req, res, next) => {
+	const resAll = [];
+	var isError = false;
 
-router.post('/action/:action', function (req, res, next) {
-	var ids = format.torrentsIds(req.body.ids);
-	req.app.locals.transmission.torrentActionRequest('torrent-' + req.params.action, ids, function (err, resp) {
-		if (err)
-			res.json({ success: false, message: "Action: " + req.params.action + " failed" });
-		else
-			res.json({ success: true, message: "Action: " + req.params.action + " was a success" });
-	});
-});
-
-router.put('/rename/:id', function (req, res , next) {
-	var newName = req.body.newName;
-	var id = format.torrentsIds(req.params.id);
-	var transmission = req.app.locals.transmission;
-	transmission.torrentGet(['hashString', 'downloadDir'], id, function (err, respGet) {
-		if (respGet.torrents.length > 0)
-		{
-			File.findOne({ hashString: respGet.torrents[0].hashString }, { path: 1, name: 1 }, function (err, file) {
-				if (err)
-					res.json({ success: false, message: 'Database error', error: err });
-				else if (file == null)
-					res.json({ success: false, message: 'Could not find file' });
-				else
-				{
-					console.log('id: ', id);
-					console.log('path: ', file.path);
-					console.log('newName: ', (respGet.torrents[0].downloadDir + '/' +newName));
-					transmission.torrentRenamePath(id, file.name,  newName, function (err, resp) {
-						if (err)
-							res.json({ success: false, message: 'An error occured while renaming the file', error: err });
-						else
-						{
-							file.renamePath(respGet.torrents[0].downloadDir + '/' + resp.name, resp.name, function (err) {
-								if (err)
-									res.json({ success: false, message: 'Transmission succesfully changed torrent name but update in database failed' });
-								else
-								{
-									res.json({ success: true, message: 'Torrent successfully renamed', data: resp });
-									req.app.io.sockets.emit('put:torrent:rename', { success: true, message: 'A torrent was renamed', id: req.params.id, newName: newName });
-								}
-							});
-						}
-					});
+	for (const file of req.files) {
+		try {
+			const resp = await req.app.locals.transmission.torrentAdd({ filename: file.path });
+			console.log('resp: ', resp);
+			if ('torrent-duplicate' in resp) {
+				resAll.push({ success: false, message: 'duplicate, torrent already present', file: file.originalname });
+			} else if ('torrent-added' in resp) {
+				try {
+					const newFile = await File.createFile(resp['torrent-added'], req.user._id);
+					resAll.push({ success: true, message: 'torrent successfully added', id: resp['torrent-added']['id'], name: newFile.name });
+					req.app.io.sockets.emit('post:torrent', { success: true, message: 'torrent successfully added', id: resp['torrent-added']['id'], name: newFile.name });
+				} catch (err) {
+					resAll.push({ success: false, message: 'Torrent was successfully added but there was an issue when adding it to the database', error: err, id: resp['torrent-added']['id'], name: resp['torrent-added']['name'] });
+					isError = true;
 				}
-			});
+			} else {
+				resAll.push({ success: false, message: 'unexpected error', file: file.originalname });
+				isError = true;
+			}
+		} catch (err) {
+			resAll.push({ success: false, message: 'torrent not added, wrong file', file: file.originalname, error: err.message });
+			isError = true;
 		}
-	});
+	}
+	var returnCode = isError ? 400 : 200;
+
+	res.status(returnCode).json(resAll);
 });
 
+router.get('/refresh/:id', async (req, res, next) => {
+	try {
+	  const id = parseInt(req.params.id, 10);
+	  console.log(`Refreshing torrent with ID: ${id}`);
+  
+	  const transmission = req.app.locals.transmission;
+	  const resp = await transmission.torrentGet(transmission.requestFormat.refreshAll, id);
+  
+	  console.log(`Torrent with ID: ${id} refreshed successfully`);
+	  res.json({ data: resp });
+	} catch (err) {
+	  console.error(`Error refreshing torrent with ID: ${req.params.id}`, err);
+	  res.status(500).json({ message: 'Error refreshing torrent', error: err.message });
+	}
+  });
 
-router.get('/session-stats', function (req, res, next) {
-	req.app.locals.transmission.sessionStats(function (err, resp) {
-		if (err)
-			res.json({ success: false, message: "Could not get session stats" });
-		else
-			res.json({ success: true, data: resp });
-	});
+router.delete('/', async (req, res, next) => {
+	try {
+		const removeLocalData = req.body.removeLocalData;
+		const ids = format.torrentsIds(req.body.ids);
+
+		if (removeLocalData) {
+			const resp = await req.app.locals.transmission.torrentGet(['hashString'], ids);
+			const toFind = resp['torrents'].map(torrent => torrent.hashString);
+			await File.deleteMany({ 'hashString': { $in: toFind } });
+		}
+
+		const response = await req.app.locals.transmission.torrentRemove(ids, removeLocalData);
+		res.json({ message: 'Torrent(s) successfully removed', data: response });
+	} catch (err) {
+		console.error('Error removing torrents:', err);
+		res.status(500).json({ message: 'Could not remove torrent(s)', error: err.message });
+	}
 });
 
-router.get('/session-get', function (req, res, next) {
-	req.app.locals.transmission.sessionGet(function (err, resp) {
-		if (err)
-			res.json({ success: false, message: "Could not get session detailled infos" });
-		else
-			res.json({ success: true, data: resp });
-	});
+router.post('/move/:direction', async (req, res, next) => {
+	const direction = req.params.direction;
+	try {
+		const ids = format.torrentsIds(req.body.ids);
+
+		const response = await req.app.locals.transmission.queueMovementRequest(direction, ids);
+
+		res.json({ message: `Torrent(s) successfully moved ${direction}`, data: response });
+	} catch (err) {
+		res.status(500).json({ message: `Could not move torrent(s) ${direction}`, error: err.message });
+	}
 });
 
-//http://john.bitsurge.net/public/biglist.p2p.gz
-router.post('/blocklist-update', function (req, res, next) {
-	req.app.locals.transmission.blocklistUpdate(function (err, resp) {
-		if (err)
-			res.json({ success: false, message: "Could not update blocklist"} );
-		else
-			res.json({ success: true, message: "Blocklist successfully updated", data: resp} );
-	});
+router.post('/action/:action', async function (req, res, next) {
+	try {
+		const action = req.params.action; 
+		const ids = format.torrentsIds(req.body.ids);
+
+		let response = await req.app.locals.transmission.torrentActionRequest(action, ids);
+		res.json({ message: `Action ${action} performed successfully`, data: response });
+	} catch (err) {
+		console.error(`Error performing action ${req.params.action} on torrents:`, err);
+		res.status(500).json({ success: false, message: `Error performing action ${req.params.action}`, error: err.message });
+	}
 });
 
-router.get('/port-test', function (req, res, next) {
-	req.app.locals.transmission.portTest(function (err, resp) {
-		if (err)
-			res.json({ success: false, message: "Could not check port" } );
-		else
-			res.json({ success: true, message: "Port checked", "port-is-open": resp["port-is-open"] });
-	});
+router.put('/rename/:id', async (req, res, next) => {
+	const newName = req.body.newName;
+	const id = format.torrentsIds([req.params.id])[0];
+	const transmission = req.app.locals.transmission;
+
+	try {
+		const respGet = await transmission.torrentGet(['hashString', 'downloadDir'], id);
+		if (respGet.torrents.length > 0) {
+			const torrent = respGet.torrents[0];
+			const file = await File.findOne({ hashString: torrent.hashString }, { path: 1, name: 1 }).exec();
+			if (!file) {
+				return res.status(404).json({ message: 'Could not find file' });
+			}
+
+			const respRename = await transmission.torrentRenamePath(id, file.name, newName);
+			file.name = newName;
+			await file.save();
+
+			res.json({ message: 'Torrent renamed successfully', data: respRename });
+		} else {
+			res.status(404).json({ message: 'Torrent not found' });
+		}
+	} catch (err) {
+		res.status(500).json({ message: 'Error renaming torrent', error: err.message });
+	}
 });
 
-router.post('/session-shutdown', rights.admin, function (req, res, next) {
-	req.app.locals.transmission.sessionClose(function (err, resp) {
-		if (err)
-			res.json({ success: false, message: "Could not close session" });
-		else
-			res.json({ success: true, message: "Session successfully closed" });
-	});
-});
+router.get('/session-stats', async (req, res, next) => {
+	try {
+	  const resp = await req.app.locals.transmission.sessionStats();
+	  res.json({ data: resp });
+	} catch (err) {
+	  console.error('Error getting session stats:', err);
+	  res.status(500).json({ message: 'Could not get session stats', error: err.message });
+	}
+  });
 
-router.get('/get-all-torrents', function (req, res, next) {
-	var fields = req.app.locals.transmission.requestFormat.allTorrents;
-	req.app.locals.transmission.torrentGet(fields, {}, function (err, resp) {
-		if (err)
-			res.json({ success: false, message: "Could not get all torrents infos" });
-		else
-			res.json({ success: true, message: "Torrent infos ok", data: resp });
-	});
-});
+router.get('/session-get', async (req, res, next) => {
+	try {
+	  const resp = await req.app.locals.transmission.sessionGet();
+	  res.json({ data: resp });
+	} catch (err) {
+	  console.error('Error getting session details:', err);
+	  res.status(500).json({ message: 'Could not get session detailed infos', error: err.message });
+	}
+  });
+
+https://github.com/Naunter/BT_BlockLists/raw/master/bt_blocklists.gz
+router.post('/blocklist-update', async (req, res, next) => {
+	try {
+	  const resp = await req.app.locals.transmission.blocklistUpdate();
+	  res.json({ message: "Blocklist successfully updated", data: resp });
+	} catch (err) {
+	  console.error('Error updating blocklist:', err);
+	  res.status(500).json({ message: "Could not update blocklist", error: err.message });
+	}
+  });
+
+router.get('/port-test', async (req, res, next) => {
+	try {
+	  const resp = await req.app.locals.transmission.portTest();
+	  res.json({ message: "Port checked", "port-is-open": resp["port-is-open"] });
+	} catch (err) {
+	  console.error('Error checking port:', err);
+	  res.status(500).json({ message: "Could not check port", error: err.message });
+	}
+  });
+
+router.post('/session-shutdown', rights.admin, async (req, res, next) => {
+	try {
+	  const resp = await req.app.locals.transmission.sessionClose();
+	  res.json({ message: "Session closed successfully", data: resp });
+	} catch (err) {
+	  console.error('Error closing session:', err);
+	  res.status(500).json({ message: "Could not close session", error: err.message });
+	}
+  });
+
+router.get('/get-all-torrents', async (req, res, next) => {
+	try {
+	  const torrents = await req.app.locals.transmission.torrentGet(req.app.locals.transmission.requestFormat.refreshAll);
+	  res.json({ data: torrents });
+	} catch (err) {
+	  res.status(500).json({ message: 'Error fetching torrents', error: err.message });
+	}
+  });
 
 export default router;

@@ -15,8 +15,7 @@ var avatarStorage = multer.diskStorage({
 
 var torrentStorage = multer.diskStorage({
 	destination: function (req, file, cb) {
-		// cb(null, './files/torrents');
-		cb(null, './public/assets/torrents');
+		cb(null, '/shared-torrents'); //todo make it an application constant
 	},
 	filename: function (req, file, cb) {
 		cb(null, file.originalname);

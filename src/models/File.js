@@ -191,13 +191,13 @@ FileSchema.statics = {
 		});
 	},
 
-	createFile: function (torrentAdded, userId, cb) {
-		this.create({ name: torrentAdded['name'], creator: userId, hashString: torrentAdded['hashString']}, function (err, file) {
-			if (err)
-				cb(err);
-			else
-				cb(null, file);
-		});
+	createFile: async function (torrentAdded, userId) {
+		try {
+			const file = await this.create({ name: torrentAdded['name'], creator: userId, hashString: torrentAdded['hashString'] });
+			return file;
+		} catch (err) {
+			throw err;
+		}
 	},
 
 	insertFile: function (file, userId, hashString, cb) {
