@@ -16,15 +16,20 @@ const router = express.Router();
 /**
  * Files
  */
-
-router.get('/all', function (req, res, next) {
-	File.getFileList({}, { createdAt: -1 }, 0, req.user, function (err, files) {
-		if (err)
-			res.json({ success: false, message: err });
-		else
-			res.json({ success: true, data: files });
-	});
-});
+router.get('/all', async function (req, res, next) {
+	try {
+	  const match = {}; // Define your match criteria
+	  const sort = { createdAt: -1 }; // Define your sort criteria
+	  const limit = parseInt(req.query.limit, 10) || 0; // Get limit from query params or default to 0
+	  const user = req.user; // Assuming user is available in req.user
+  
+	  const files = await File.getFileList(match, sort, limit, user);
+	  res.json({ data: files });
+	} catch (err) {
+	  console.error('Error getting file list:', err);
+	  res.status(500).json({ message: 'Could not get file list', error: err.message });
+	}
+  });
 
 router.get('/:id', function (req, res, next) {
 	File.getFileById(req.params.id, function (err, file) {

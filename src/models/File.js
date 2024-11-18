@@ -3,7 +3,6 @@ import pathS from 'path';
 import mongoose from 'mongoose';
 import { rimraf } from 'rimraf';
 import mime from 'mime';
-import User from '../models/User.js'
 import ft from '../utils/ft.js'
 import format from '../utils/format.js';
 
@@ -113,7 +112,7 @@ FileSchema.statics = {
 			});
 	},
 
-	getFileList: function (match, sort, limit, user, cb) {
+/* 	getFileList: function (match, sort, limit, user, cb) {
 		var populateSelect = 'login role avatar';
 		match.isFinished = true;
 		var query = this.find(match);
@@ -128,7 +127,7 @@ FileSchema.statics = {
 			var formatFiles = format.fileList(files, user);
 			return cb(null, formatFiles);
 		});
-	},
+	}, */
 
 	getCommentsById: function (id, cb) {
 		this.findById(id, function (err, file) {
@@ -218,41 +217,50 @@ FileSchema.statics = {
 				cb(null, file);
 		});
 	},
+};
 
-	insertTorrent: function (torrentId, name, transmission, done) {
-		var self = this;
-		transmission.torrentGet(transmission.requestFormat.infosFinished, torrentId, function (err, resp) {
-			if (err)
-				done(err);
-			else
-			{
-				if (resp['torrents'].length > 0)
-				{
-					var torrent = resp['torrents'][0];
-					var path = torrent['downloadDir'] + '/' + name;
-					fs.stat(path, function (err, stat) {
-						if (err)
-							return done(err);
-						var fileType= '';
-						if (stat.isDirectory())
-							fileType = 'folder';
-						else
-							fileType = mime.lookup(path);
-						self.findOneAndUpdate(
-							{ hashString: torrent['hashString'], isFinished: false },
-							{ $set: { name: name, path: path, size: torrent['totalSize'], isFinished: true, fileType: fileType, createdAt: Date.now() } },
-							{ new: true },
-							function (err, newFile) {
-								if (err)
-									done(err);
-								else
-									done(null, newFile);
-							}
-						);
-					});
-				}
+FileSchema.statics.insertTorrent = async function (torrentId, torrentName, transmission) {
+	try {
+		const res = await transmission.torrentGet(transmission.requestFormat.infosFinished, torrentId);
+		if (!res.torrents || !res.torrents[0]) {
+			throw new Error('No torrents found');
+		}
+		const torrent = res.torrents[0];
+		const path = torrent['downloadDir'] + '/' + torrentName;
+		fs.stat(path, async (err, stat) => {
+			if (err) {
+				throw new Error(err);
 			}
+			const fileType = stat.isDirectory() ? 'folder' : mime.lookup(path);
+			const newFile = await this.findOneAndUpdate(
+				{ hashString: torrent.hashString, isFinished: false },
+				{ $set: { name: torrentName, path: path, size: torrent.totalSize, isFinished: true, fileType: fileType, createdAt: Date.now() } },
+				{ new: true },
+			);
 		});
+	} catch (err) {
+	  console.error('Error in insertTorrent:', err);
+	  throw err;
+	}
+  };
+
+FileSchema.statics.getFileList = async function (match, sort, limit, user) {
+	const populateSelect = 'login role avatar';
+	match.isFinished = true;
+
+	try {
+		const query = this.find(match)
+			.select('-path -hashString -isFinished -privacy -torrentAddedAt -grades -comments')
+			.populate([{ path: 'creator', select: populateSelect }])
+			.sort(sort);
+
+		if (limit > 0) query.limit(limit);
+
+		const files = await query.exec();
+		const formatFiles = format.fileList(files, user);
+		return formatFiles;
+	} catch (err) {
+		throw new Error(`Error getting file list: ${err.message}`);
 	}
 };
 
@@ -260,26 +268,23 @@ FileSchema.statics = {
  * Methods
  */
 
-FileSchema.methods = {
-	deleteFile: function (transmission, cb) {
-		var self = this;
-		transmission.torrentRemove(self.hashString, false, function (err, resp) {
-			if (err)
-				console.log("delete:file:torrent-remove:err: ", err);
-			else
-				console.log('delete:file:torrent-remove:success: ', resp);
-			rimraf(self.path, function (err) {
-				if (err)
-					console.log("delete:file:unlink:err: ", err);
-				self.remove();
-				if (err)
-					cb(err, "File removed from database but there was an issue while deleting from the server");
-				else
-					cb(null, "File successfuly removed");
-			});
-		});
-	},
+FileSchema.methods.deleteFile = async function (transmission) {
+	try {
+		if (this.fileType === 'folder') {
+			await rimraf(this.path);
+		} else {
+			await fs.promises.unlink(this.path);
+		}
+		await transmission.torrentRemove(this.hashString, true);
+		await this.remove();
+		return { success: true, message: 'File deleted successfully' };
+	} catch (err) {
+		console.error('Error in deleteFile:', err);
+		throw err;
+	}
+};
 
+FileSchema.methods = {
 	deleteFileFromDb: function (transmission, cb) {
 		var self = this;
 		transmission.torrentRemove(self.hashString, false, function (err, resp) {

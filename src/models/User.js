@@ -25,10 +25,6 @@ var UserSchema = new mongoose.Schema({
 		enum: ['admin', 'user'],
 		default: 'user'
 	},
-/* 	role: {
-		type: Number,
-		default: 1
-	}, */
 	createdAt: {
 		type: Date,
 		default: Date.now
@@ -57,9 +53,13 @@ UserSchema.statics = {
 	createNew: async function (infos) {
 		return new Promise((resolve, reject) => {
 			var self = this;
-			if (infos.password.length < 5)
+			if (infos.password.length < 5) {
 				return reject('The password must 5 characters at least');
+			}
 			ft.getUserPwHash(infos.password, async function (err, hash) {
+				if (err) {
+					return reject(err);
+				}
 				infos.password = hash;
 				try {
 					infos.password = hash;

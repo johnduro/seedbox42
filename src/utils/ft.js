@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
-import bcrypt from 'bcrypt';
-import User from "../models/User.js";
+import bcrypt from 'bcryptjs';
 import fs from 'fs';
 
 
@@ -73,14 +72,18 @@ export default {
 	},
 
 	getUserPwHash: function (password, done) {
-		bcrypt.genSalt(10, function(err, salt) {
-			if (err)
+		const saltRounds = 10;
+
+		bcrypt.genSalt(saltRounds, function(err, salt) {
+			if (err) {
 				return done('An error occured while generating salt');
+			}
 			bcrypt.hash(password, salt, function(err, hash) {
-				if (err)
+				if (err) {
 					return done('An error occured while generating hash');
-				else
+				} else {
 					return done(null, hash);
+				}
 			});
 		});
 	},

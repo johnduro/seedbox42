@@ -1,0 +1,28 @@
+<div *ngIf="torrents.length > 0">
+    <h2>Torrents</h2>
+    <ul>
+      <li *ngFor="let torrent of torrents">
+        <div>
+          <strong>{{ torrent.name }}</strong> (Status: {{ torrent.status }})
+        </div>
+        <div>
+          <span>Finished: {{ torrent.isFinished }}</span>
+        </div>
+        <div>
+          <span>Left Until Done: {{ torrent.leftUntilDone }}</span>
+        </div>
+        <div>
+          <span>Peers Connected: {{ torrent.peersConnected }}</span>
+        </div>
+        <div>
+          <span>Download Rate: {{ torrent.rateDownload }} B/s</span>
+        </div>
+        <div>
+          <span>Upload Rate: {{ torrent.rateUpload }} B/s</span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div *ngIf="torrents.length === 0">
+    <p>No torrents available.</p>
+  </div>

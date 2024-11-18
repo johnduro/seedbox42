@@ -17,21 +17,22 @@ export default function (io, transmission, app) {
 	 * Socket auth
 	 */
 	io.use(function (socket, next) {
-		if ('_query' in socket.request && 'token' in socket.request._query)
-		{
-			var token = socket.request._query['token'];
-			jwt.verify(token, app.locals.ttConfig.secret, function (err, decoded) {
-				if (err)
-					next (new Error('not authorized'));
-				else
-				{
-					socket.appUser = decoded;
-					next();
-				}
-			});
+		const token = socket.handshake.auth.token;
+
+		if (!token) {
+			console.log('Authentication error: No token provided');
+			return next(new Error('Authentication error: No token provided'));
 		}
-		else
-			next(new Error('not authorized'));
+
+		jwt.verify(token, app.locals.ttConfig.secret, (err, decoded) => {
+			if (err) {
+				console.log('Authentication error: Invalid token');
+				return next(new Error('Authentication error: Invalid token'));
+			}
+			socket.appUser = decoded;
+			console.log('Authentication successful:', decoded);
+			next();
+		});
 	});
 
 	/**
@@ -59,17 +60,18 @@ export default function (io, transmission, app) {
 
 		socket.on('disconnect', function () {
 
-			if (io.engine.clientsCount == 0)
+			if (io.engine.clientsCount == 0) {
 				connectedUsersLogin = [];
-			else
-			{
+			} else {
 				var index = connectedUsersLogin.indexOf(socket.appUser.login);
-				if (index > -1)
+				if (index > -1) {
 					connectedUsersLogin.splice(index, 1);
+				}
 			}
 
-			if (io.engine.clientsCount > 0)
+			if (io.engine.clientsCount > 0) {
 				io.sockets.emit('connectedUsers', { connectedUsers: io.engine.clientsCount, logins: connectedUsersLogin });
+			}
 		});
 	});
 

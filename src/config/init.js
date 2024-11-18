@@ -93,11 +93,11 @@ export default async function () {
 	var validityError = validity.checkConfig(infos.config, infos.configDefault, "", infos.configFileName);
 	if (validity.checkConfigErrors(validityError, infos.configFileName))
 		process.exit();
-/* 	infos.connexionDb = await getMongoConnex(infos.config.mongodb); */
 	infos.connexionDb = await connectDb(infos.config.mongodb);
 	infos.transmission = new TransmissionNode(infos.config.transmission);
 	checkTransmissionSettings(infos.transmission, infos.config['transmission-settings']);
 	checkFileSettings(infos.config.files, infos.transmission);
 	await checkDashboardSettings(infos.config.dashboard);
+	
 	return infos;
 };
