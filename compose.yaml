@@ -7,6 +7,7 @@ services:
       - /opt/app/node_modules/
       - shared-torrents:/shared-torrents
       - transmission-downloads:/downloads
+      - temporary-files:/tmp
     ports:
       - 3000:3000
     networks:
@@ -84,6 +85,12 @@ volumes:
     driver_opts:
       type: none
       device: ./transmission/shared-torrents
+      o: bind
+  temporary-files:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./temporary-files
       o: bind
 
 networks:

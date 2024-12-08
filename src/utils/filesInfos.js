@@ -1,5 +1,7 @@
 import fs from "fs";
 import mime from "mime";
+import path from 'path';
+
 
 
 
@@ -87,41 +89,29 @@ export default {
 		});
 	},
 
-	getFileInfosRecurs: function self (path, name, done) {
-		var fileInfos = { name: name, path: path, isDirectory: false, size: 0, fileList: [] };
-		fs.stat(path, function (err, fileStats) {
-			if (err)
-				return done(err);
-			else if (fileStats.isDirectory())
-			{
-				fileInfos.isDirectory = true;
-				fileInfos.fileType = "folder";
-				fs.readdir(path, function (err, files) {
-					if (err)
-						return done(err);
-					var i = 0;
-					(function next () {
-						var file = files[i++];
-						if (!file)
-							return done(null, fileInfos);
-						var filePath = path + '/' + file;
-						self(filePath, file, function (err, data) {
-							if (err)
-								done(err);
-							fileInfos.fileList.push(data);
-							fileInfos.size += data.size;
-							next();
-						});
-					})();
-				});
+	getFileInfosRecurs: async function (filePath, fileName) {
+		try {
+			const stats = await fs.promises.stat(filePath);
+			const fileInfo = {
+				name: fileName,
+				size: stats.size,
+				isDirectory: stats.isDirectory(),
+				createdAt: stats.birthtime,
+				updatedAt: stats.mtime
+			};
+
+			if (stats.isDirectory()) {
+				const files = await fs.promises.readdir(filePath);
+				fileInfo.children = await Promise.all(files.map(async (file) => {
+					const childPath = path.join(filePath, file);
+					return await this.getFileInfosRecurs(childPath, file);
+				}));
 			}
-			else
-			{
-				fileInfos.fileType = mime.lookup(path);
-				fileInfos.size = fileStats.size;
-				return done(null, fileInfos);
-			}
-		});
+
+			return fileInfo;
+		} catch (err) {
+			throw new Error(`Error getting file info: ${err.message}`);
+		}
 	},
 
 	getFilesStreams: function self (fileDetail, pathInDir, done) {

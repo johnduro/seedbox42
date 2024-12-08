@@ -3,423 +3,520 @@ import atob from "atob";
 import File from "../models/File.js";
 import User from "../models/User.js";
 import fs from "fs";
-import mime from "mime";
-import mongoose from "mongoose";
+import path from "path";
+import archiver from "archiver";
+import fileUpload from "express-fileupload";
 import fileInfos from "../utils/filesInfos.js";
-import zipstream from "../utils/zipstream/zipstream.js";
-import upload from "../middlewares/upload.js";
 import rights from "../middlewares/rights.js";
-import ft from "../utils/ft.js";
 
 const router = express.Router();
+
+router.use(fileUpload({
+	limits: { fileSize: 10 * 1024 * 1024 },
+}));
 
 /**
  * Files
  */
 router.get('/all', async function (req, res, next) {
 	try {
-	  const match = {}; // Define your match criteria
-	  const sort = { createdAt: -1 }; // Define your sort criteria
-	  const limit = parseInt(req.query.limit, 10) || 0; // Get limit from query params or default to 0
-	  const user = req.user; // Assuming user is available in req.user
-  
-	  const files = await File.getFileList(match, sort, limit, user);
-	  res.json({ data: files });
+		const match = {}; // Define your match criteria
+		const sort = { createdAt: -1 }; // Define your sort criteria
+		const limit = parseInt(req.query.limit, 10) || 0; // Get limit from query params or default to 0
+		const user = req.user; // Assuming user is available in req.user
+
+		const files = await File.getFinishedFileList(match, sort, limit, user);
+		res.json({ data: files });
 	} catch (err) {
-	  console.error('Error getting file list:', err);
-	  res.status(500).json({ message: 'Could not get file list', error: err.message });
+		console.error('Error getting file list:', err);
+		res.status(500).json({ message: 'Could not get file list', error: err.message });
 	}
-  });
-
-router.get('/:id', function (req, res, next) {
-	File.getFileById(req.params.id, function (err, file) {
-		if (err)
-			res.json({ success: false, message: err });
-		else
-		{
-			var fileRaw = file.toObject();
-			delete fileRaw.path;
-			res.json({ success: true, data: fileRaw });
-		}
-	});
 });
 
+router.get('/finished', async function (req, res, next) {
+	try {
+		const match = {}; // Define your match criteria
+		const sort = { createdAt: -1 }; // Define your sort criteria
+		const limit = parseInt(req.query.limit, 10) || 0; // Get limit from query params or default to 0
+		const user = req.user; // Assuming user is available in req.user
 
-router.post('/add-grade/:id', function (req, res, next) {
-	File.findById(req.params.id, function (err, file) {
-		if (err)
-			res.json({ success: false, message: err });
-		else
-		{
-			file.addGrade(req.user, req.body.grade, function (err) {
-				if (err)
-					res.json({ success: false, message: err });
-				else
-					res.json({ success: true, message: 'grade added' });
-			});
-		}
-	});
-});
-
-router.delete('/remove-grade/:id', function (req, res, next) {
-	File.findById(req.params.id, function (err, file) {
-		if (err)
-			return next(err);
-		file.removeGrade(req.user, function (err) {
-			if (err)
-				return next(err);
-			res.json({ success: true, message: 'grade successfully removed' });
-		});
-	});
-});
-
-router.post('/add-lock/:id', function (req, res, next) {
-	File.findById(req.params.id, function (err, file) {
-		if (err)
-			return next(err);
-		file.addLock(req.user, function (err) {
-			if (err)
-				res.json({ success: false, message: err });
-			else
-				res.json({ success: true, message: 'file successfuly locked' });
-		});
-	});
-});
-
-router.delete('/remove-lock/:id', function (req, res, next) {
-	File.findById(req.params.id, function (err, file) {
-		if (err)
-			res.json({ success: false, message: err });
-		else if (file != null)
-		{
-			file.removeLock(req.user, function (err) {
-				if (err)
-					res.json({ success: false, message: err });
-				else
-					res.json({ success: true, message: 'file successfully unlocked' });
-			});
-		}
-		else
-			res.json({ success: false, message: 'Could not find the file asked for' });
-	});
-});
-
-router.put('/remove-all-user-lock', function (req, res, next) {
-	File.find({ '_id': { $in: req.body.toUnlock } }, function (err, files) {
-		if (err)
-			res.json({ success: false, message: err });
-		var i = 0;
-		var unlocked = [];
-		(function next () {
-			var file = files[i++];
-			if (!file)
-				return res.json({ success: true, message: 'files successfully unlocked', data: unlocked });
-			file.removeLock(req.user, function (err) {
-				if (!err)
-					unlocked.push(file._id);
-				next();
-			});
-		})();
-	});
-});
-
-
-router.put('/hard-remove-all-lock', function (req, res, next) {
-	File.find({ '_id': { $in: req.body.toUnlock } }, function (err, files) {
-		if (err)
-			res.json({ success: false, message: err });
-		var i = 0;
-		var unlocked = [];
-		(function next () {
-			var file = files[i++];
-			if (!file)
-				return res.json({ success: true, message: 'files successfully unlocked', data: unlocked });
-			file.removeAllLock(function (err) {
-				if (!err)
-					unlocked.push(file._id);
-				next();
-			});
-		})();
-	});
-});
-
-router.get("/comments/:id", function (req, res, next) {
-	File.getCommentsById(req.params.id, function (err, comments) {
-		if (err)
-			res.json({ success: false, message: err });
-		else
-			res.json({ success: true, data: comments });
-	});
-});
-
-router.post('/add-comment/:id', function (req, res, next) {
-	if (req.body.text != null && req.body.text != '')
-	{
-		File.findById(req.params.id, function (err, file) {
-			if (err)
-				return next(err);
-			file.addComment(req.user, req.body.text, function (err) {
-				if (err)
-					return next(err);
-				res.json({ success: true, message: 'comment successfully added' });
-			});
-		});
+		const files = await File.getFinishedFileList(match, sort, limit, user);
+		res.json({ data: files });
+	} catch (err) {
+		console.error('Error getting file list:', err);
+		res.status(500).json({ message: 'Could not get file list', error: err.message });
 	}
-	else
-		res.json({ success: false, message: 'could not add empty comment' });
 });
 
-router.delete('/remove-comment/:id', function (req, res, next) {
-	File.findById(req.params.id, function (err, file) {
-		if (err)
-			res.json({ success: false, message: err });
-		else if (file == null)
-			res.json({ success: false, message: "file not found" });
-		else
-		{
-			file.removeComment(req.body.commentId, function (err) {
-				if (err)
-					return next(err);
-				res.json({ success: true, message: 'comment successfully removed' });
-			});
+router.get('/user-locked', async (req, res, next) => {
+	try {
+		const user = await User.findById(req.user._id.toString());
+		if (!user) {
+			return res.status(404).json({ message: 'User not found' });
 		}
-	});
+
+		const files = await File.getFinishedFileList({ "locked.user": user._id }, { "createdAt": -1 }, 0, user);
+
+		res.json({ data: files });
+	} catch (err) {
+		console.error('Error checking if user has locked file:', err);
+		res.status(500).json({ message: 'Error checking if user has locked file', error: err.message });
+	}
 });
 
-router.get('/user-comment/:id', function (req, res, next) {
-	var id = mongoose.mongo.ObjectID(req.params.id);
-	File.aggregate(
-		[
-			{ "$match": { "comments.user": id } },
-		 	{ "$unwind": "$comments" },
-			{ "$match": { "comments.user": id } },
-			{ "$group": { "_id": "$_id", "comments": { "$push": "$comments" } } }
-		],
-		function (err, resp) {
-			if (err)
-			{
-				next(err);
+router.get('/:id', async (req, res) => {
+	try {
+		const fileId = req.params.id;
+		const file = await File.findById(fileId)
+			.select('-path -hashString -isFinished -privacy -torrentAddedAt -grades -comments')
+			.populate('creator', 'login role avatar');
+
+		if (!file) {
+			return res.status(404).json({ message: 'File not found' });
+		}
+
+		res.json(file);
+	} catch (err) {
+		console.error('Error getting file:', err);
+		res.status(500).json({ message: 'Error getting file', error: err.message });
+	}
+});
+
+router.post('/add-grade/:id', async (req, res) => {
+	try {
+		const fileId = req.params.id;
+		const { grade } = req.body;
+
+		const file = await File.findById(fileId);
+		if (!file) {
+			return res.status(404).json({ message: 'File not found' });
+		}
+
+		await file.addGrade(req.user._id.toString(), grade);
+		res.json({ file });
+	} catch (err) {
+		console.error('Error adding grade:', err);
+		res.status(500).json({ message: 'Error adding grade', error: err.message });
+	}
+});
+
+router.delete('/remove-grade/:id', async function (req, res, next) {
+	try {
+		const fileId = req.params.id;
+
+		const file = await File.findById(fileId);
+		if (!file) {
+			return res.status(404).json({ message: 'File not found' });
+		}
+
+		await file.removeGrade(req.user._id.toString());
+		res.json({ file });
+	} catch (err) {
+		console.error('Error removing grade:', err);
+		res.status(500).json({ message: 'Error removing grade', error: err.message });
+	}
+});
+
+router.post('/add-lock/:id', async function (req, res, next) {
+	try {
+		const fileId = req.params.id;
+
+		const file = await File.findById(fileId);
+		if (!file) {
+			return res.status(404).json({ message: 'File not found' });
+		}
+
+		await file.addLock(req.user._id.toString());
+		res.json({ file });
+	} catch (err) {
+		console.error('Error adding lock:', err);
+		res.status(500).json({ message: 'Error adding lock', error: err.message });
+	}
+});
+
+router.delete('/remove-lock/:id', async function (req, res) {
+	try {
+		const fileId = req.params.id;
+
+		const file = await File.findById(fileId);
+		if (!file) {
+			return res.status(404).json({ message: 'File not found' });
+		}
+
+		await file.removeLock(req.user._id.toString());
+		res.json({ file });
+	} catch (err) {
+		console.error('Error removing lock:', err);
+		res.status(500).json({ message: 'Error removing lock', error: err.message });
+	}
+});
+
+router.put('/remove-all-user-lock', async (req, res, next) => {
+	try {
+		const files = await File.find({ '_id': { $in: req.body.toUnlock } });
+		const unlocked = [];
+
+		for (const file of files) {
+			try {
+				await file.removeLock(req.user._id.toString());
+				unlocked.push(file._id);
+			} catch (err) {
+				console.error(`Error removing lock for file ${file._id}:`, err);
 			}
-			res.json({ success: true, data: resp });
-	});
-});
-
-router.get('/user-locked/:id', function (req, res, next) {
-	var id = mongoose.mongo.ObjectID(req.params.id);
-	User.findById(id, { password: 0 }, function (err, user) {
-		if (err)
-			res.json({ success: false, message: err });
-		if (user == null)
-			res.json({ success: false, message: 'Could not find user' });
-		else
-		{
-			File.getFileList({ "locked.user": id }, { "createdAt": -1 }, 0, user, function (err, files) {
-				if (err)
-					res.json({ success: false, message: err });
-				else
-					res.json({ success: true, data: files });
-			});
 		}
-	});
-});
 
-router.put('/delete-all', rights.admin, function (req, res, next) {
-	File.find({ '_id': { $in: req.body.toDelete } }, function (err, files) {
-		if (err)
-			res.json({ success: false, message: err });
-		var i = 0;
-		var deleted = [];
-		(function next () {
-			var file = files[i++];
-			if (!file)
-				return res.json({ success: true, message: 'files successfully removed from database and server', data: deleted });
-			file.deleteFile(req.app.locals.transmission, function (err, msg) {
-				if (!err)
-					deleted.push(file._id);
-				next();
-			});
-		})();
-	});
+		res.json({ message: 'Files successfully unlocked', data: unlocked });
+	} catch (err) {
+		console.error('Error removing all user locks:', err);
+		res.status(500).json({ message: 'Error removing all user locks', error: err.message });
+	}
 });
 
 
-router.put('/delete-all-from-db', rights.admin, function (req, res, next) {
-	File.find({ '_id': { $in: req.body.toDelete } }, function (err, files) {
-		if (err)
-			res.json({ success: false, message: err });
-		var i = 0;
-		var deleted = [];
-		(function next () {
-			var file = files[i++];
-			if (!file)
-				return res.json({ success: true, message: 'files successfully removed from database', data: deleted });
-			file.deleteFileFromDb(req.app.locals.transmission, function (err) {
-				if (!err)
-					deleted.push(file._id);
-				next();
-			});
-		})();
-	});
-});
+router.put('/hard-remove-all-lock', async (req, res, next) => {
+	try {
+		const files = await File.find({ '_id': { $in: req.body.toUnlock } });
+		const unlocked = [];
 
-router.put('/:id', rights.admin, function (req, res, next) {
-	if ('path' in req.body)
-		delete req.body.path;
-	if ('size' in req.body)
-		delete req.body.size;
-	if ('hashString' in req.body)
-		delete req.body.hashString;
-	if ('createdAt' in req.body)
-		delete req.body.createdAt;
-	if ('torrentAddedAt' in req.body)
-		delete req.body.torrentAddedAt;
-	delete req.body._id;
-	File.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true }, function (err, file) {
-		if (err)
-			res.json({ success: false, message: err });
-		else
-			res.json({ success: true, data: file });
-	});
-});
-
-
-
-router.delete('/:id', rights.admin, function (req, res, next) {
-	File.findById(req.params.id, function (err, file) {
-		if (err)
-			return next(err);
-		File.findById(file._id, function (err, file) {
-			if (err)
-				return next(err);
-			file.deleteFile(req.app.locals.transmission, function (err, message) {
-				if (err)
-					res.json({ success: false, err: err, message: message });
-				else
-					res.json({ success: true, message: message });
-			});
-		});
-	});
-});
-
-router.get('/show/:id', function (req, res, next) {
-	File.getFileById(req.params.id, function (err, file) {
-		if (err)
-			res.json({ success: false, error: err, message: 'Could not get infos from database' });
-		else
-		{
-			fileInfos.getFileInfosRecurs(file.path, file.name, function (err, data) {
-				if (err)
-					res.json({ success: false, error: err, file: rawFile });
-				else
-				{
-					var rawFile = file.toObject();
-					rawFile.isLocked = file.getIsLocked();
-					rawFile.isLockedByUser = file.getIsLockedByUser(req.user);
-					rawFile.rateByUser = file.getUserGrade(req.user);
-					delete rawFile.path;
-					res.json({ success: true, data: data, file: rawFile });
-				}
-			});
-		}
-	});
-});
-
-router.post('/upload/:id/:path', upload.file.array('files', 10), function (req, res, next) {
-	var fileList = [];
-	var size = 0;
-	var i = 0;
-	File.findById(req.params.id, function (err, dbFile) {
-		if (err)
-			return res.json({ success: false, err: err });
-		else if (dbFile == null)
-			return res.json({ success: false, err: 'Could not find the file' });
-		(function next () {
-			var file = req.files[i++];
-			if (!file)
-			{
-				dbFile.addSize(size);
-				return res.json({ success: true, data: fileList, size: dbFile.size });
+		for (const file of files) {
+			try {
+				await file.removeAllLock();
+				unlocked.push(file._id);
+			} catch (err) {
+				console.error(`Error removing all locks for file ${file._id}:`, err);
 			}
+		}
+
+		res.json({ message: 'All locks successfully removed', data: unlocked });
+	} catch (err) {
+		console.error('Error removing all locks:', err);
+		res.status(500).json({ message: 'Error removing all locks', error: err.message });
+	}
+});
+
+router.get("/comments/:id", async (req, res, next) => {
+	try {
+		const comments = await File.getCommentsById(req.params.id);
+		res.json({ data: comments });
+	} catch (err) {
+		console.error('Error getting comments:', err);
+		res.status(500).json({ success: false, message: err.message });
+	}
+});
+
+router.post('/add-comment/:id', async (req, res, next) => {
+	try {
+		const fileId = req.params.id;
+		const { comment } = req.body;
+
+		if (!comment || comment.trim() === '') {
+			return res.status(400).json({ message: 'Comment cannot be empty' });
+		}	  
+
+		const file = await File.findById(fileId);
+		if (!file) {
+			return res.status(404).json({ message: 'File not found' });
+		}
+
+		await file.addComment(req.user, comment);
+		res.json({ file });
+	} catch (err) {
+		console.error('Error adding comment:', err);
+		res.status(500).json({ message: 'Error adding comment', error: err.message });
+	}
+});
+
+router.delete('/remove-comment/:id', async (req, res, next) => {
+	try {
+		const fileId = req.params.id;
+		const { commentId } = req.body;
+
+		const file = await File.findById(fileId);
+		if (!file) {
+			return res.status(404).json({ message: 'File not found' });
+		}
+
+		await file.removeComment(commentId);
+		res.json({ message: 'Comment successfully removed' });
+	} catch (err) {
+		console.error('Error removing comment:', err);
+		res.status(500).json({ message: 'Error removing comment', error: err.message });
+	}
+});
+
+router.put('/delete-all', rights.admin, async (req, res, next) => {
+	try {
+		const files = await File.find({ '_id': { $in: req.body.toDelete } });
+		const deleted = [];
+		const errors = [];
+
+		for (const file of files) {
+			try {
+				await file.deleteFile(req.app.locals.transmission);
+				deleted.push(file._id);
+			} catch (err) {
+				console.error(`Error deleting file ${file._id}:`, err);
+				errors.push({ file: file._id, error: err.message });
+			}
+		}
+
+		if (errors.length > 0) {
+			return res.status(500).json({ message: 'Error deleting files', errors });
+		}
+
+		res.json({ message: 'Files successfully removed from database and server', data: deleted });
+	} catch (err) {
+		console.error('Error deleting files:', err);
+		res.status(500).json({ message: 'Error deleting files', error: err.message });
+	}
+});
+
+
+router.put('/delete-all-from-db', rights.admin, async (req, res, next) => {
+	try {
+		const files = await File.find({ '_id': { $in: req.body.toDelete } });
+		const deleted = [];
+		const errors = [];
+
+		for (const file of files) {
+			try {
+				await file.deleteFileFromDb(req.app.locals.transmission);
+				deleted.push(file._id);
+			} catch (err) {
+				console.error(`Error deleting file ${file._id}:`, err);
+				errors.push({ file: file._id, error: err.message });
+			}
+		}
+
+		if (errors.length > 0) {
+			return res.status(500).json({ message: 'Error deleting files', errors });
+		}
+
+		res.json({ message: 'Files successfully removed from database', data: deleted });
+	} catch (err) {
+		console.error('Error deleting files:', err);
+		res.status(500).json({ message: 'Error deleting files', error: err.message });
+	}
+});
+
+router.put('/:id', rights.admin, async (req, res, next) => {
+	try {
+		const fileId = req.params.id;
+		if (req.body.name === undefined) {
+			return res.status(500).json({ message: 'Name is required' });
+		}
+	
+		const updateName = {
+			"name": req.body.name
+		};
+
+		const file = await File.findByIdAndUpdate(fileId, { $set: updateName }, { new: true }).exec();
+		if (!file) {
+			return res.status(404).json({ message: 'File not found' });
+		}
+
+		res.json({ message: 'File updated successfully', data: file });
+	} catch (err) {
+		console.error('Error updating file:', err);
+		res.status(500).json({ message: 'Error updating file', error: err.message });
+	}
+});
+
+
+
+router.delete('/:id', rights.admin, async (req, res, next) => {
+	try {
+		const fileId = req.params.id;
+
+		const file = await File.findById(fileId);
+		if (!file) {
+			return res.status(404).json({ message: 'File not found' });
+		}
+
+		await file.deleteFile(req.app.locals.transmission);
+		res.json({ message: 'File deleted successfully' });
+	} catch (err) {
+		console.error('Error deleting file:', err);
+		res.status(500).json({ message: 'Error deleting file', error: err.message });
+	}
+});
+
+router.get('/show/:id', async (req, res) => {
+	try {
+		const fileId = req.params.id;
+		const file = await File.getFileById(fileId);
+
+		if (!file) {
+			return res.status(404).json({ message: 'File not found' });
+		}
+
+		try {
+			const data = await fileInfos.getFileInfosRecurs(file.path, file.name);
+			const rawFile = file.toObject();
+			rawFile.isLocked = file.getIsLocked();
+			rawFile.isLockedByUser = file.getIsLockedByUser(req.user);
+			rawFile.rateByUser = file.getUserGrade(req.user);
+			delete rawFile.path;
+			res.json({ data: data, file: rawFile });
+		} catch (err) {
+			res.status(500).json({ error: err.message, file: file.toObject() });
+		}
+
+	} catch (err) {
+		console.error('Error getting file:', err);
+		res.status(500).json({ message: 'Error getting file', error: err.message });
+	}
+});
+
+router.get('/detail/:id', async (req, res) => {
+	try {
+		const fileId = req.params.id;
+		const file = await File.getFileById(fileId);
+
+		if (!file) {
+			return res.status(404).json({ message: 'File not found' });
+		}
+
+		try {
+			const data = await fileInfos.getFileInfosRecurs(file.path, file.name);
+			const rawFile = file.toObject();
+			rawFile.isLocked = file.getIsLocked();
+			rawFile.isLockedByUser = file.getIsLockedByUser(req.user);
+			rawFile.rateByUser = file.getUserGrade(req.user);
+			delete rawFile.path;
+			res.json({ data: data, file: rawFile });
+		} catch (err) {
+			res.status(500).json({ error: err.message, file: file.toObject() });
+		}
+
+	} catch (err) {
+		console.error('Error getting file:', err);
+		res.status(500).json({ message: 'Error getting file', error: err.message });
+	}
+});
+
+router.post('/upload/:id/:pathInDirectory', async (req, res, next) => {
+	try {
+		const fileId = req.params.id;
+		const uploadPath = atob(req.params.pathInDirectory);
+		let files = req.files.files;
+
+		const dbFile = await File.findById(fileId);
+		if (!dbFile) {
+			return res.status(404).json({ message: 'File not found' });
+		}
+
+		if (dbFile.isDownloadFinished() === false) {
+			return res.status(400).json({ message: 'File is not finished' });
+		}
+
+		if (dbFile.isDirectory() === false) {
+			return res.status(400).json({ message: 'File is not a folder' });
+		}
+
+		const targetPath = path.join(dbFile.getPath(), uploadPath);
+		console.log('targetPath:', targetPath);
+		if (dbFile.isPathInDirectory(targetPath) === false) {
+			return res.status(400).json({ message: 'Invalid path' });
+		}
+
+		let totalSize = 0;
+		const fileList = [];
+
+		if (!Array.isArray(files)) {
+			files = [files];
+		}
+
+		for (const file of files) {
+			const filePath = path.join(targetPath, file.name);
+			if (dbFile.isPathInDirectory(filePath) === false) {
+				return res.status(400).json({ message: 'Invalid path for file' });
+			}
+			await file.mv(filePath);
+
 			fileList.push({
-				fileList: [],
 				fileType: file.mimetype,
 				isDirectory: false,
-				name: file.filename,
-				path: file.path,
+				name: file.originalname,
+				path: filePath,
 				size: file.size
 			});
-			size += file.size;
-			next();
-		})();
-	});
+
+			totalSize += file.size;
+		}
+
+		await dbFile.addSize(totalSize);
+
+		res.json({ data: fileList, size: dbFile.size });
+	} catch (err) {
+		console.error('Error uploading files:', err);
+		res.status(500).json({ message: 'Error uploading files', error: err.message });
+	}
 });
 
-router.get('/download/:id/:path/:name', function (req, res, next) {
-	var query = File.findById(req.params.id);
-	query.select('path downloads');
-	query.exec(function (err, file) {
-		if (err)
-			return next(err);
-		else if (file == null)
-			return next('Could not find file');
-		var pathDecode = atob(req.params.path);
-		var fileName = atob(req.params.name);
-		var filePath = file.path + pathDecode;
-		if (filePath.slice(-1) === '/')
-			filePath = filePath.slice(0, -1);
-		fileInfos.isDirectory(filePath, function (err, isDirectory, fileSize) {
-			if (err)
-				return next(err);
-			if (isDirectory)
-			{
-				res.setHeader('Content-disposition', 'attachment; filename=' + fileName + '.zip');
-				res.setHeader('Content-type', 'application/zip');
-				fileInfos.getFileInfosRecurs(filePath, fileName, function (err, data) {
-					if (err)
+router.get('/download/:id/:pathInDirectory/:name', async (req, res, next) => {
+	try {
+		const fileId = req.params.id;
+		const pathInDirectory = atob(req.params.pathInDirectory);
+		const decodedName = atob(req.params.name);
+
+		const file = await File.findById(fileId).select('path downloads');
+		if (!file) {
+			return res.status(404).json({ message: 'File not found' });
+		}
+
+		const filePath = path.join(file.getPath(), pathInDirectory);
+		if (!file.isPathInDirectory(filePath)) {
+			return res.status(400).json({ message: 'Invalid path' });
+		}
+
+		const stats = await fs.promises.stat(filePath);
+
+		if (stats.isDirectory()) {
+			const zipPath = path.join('/tmp', decodedName + '.zip');
+			var output = fs.createWriteStream(zipPath);
+			var archive = archiver('zip', {
+				zlib: { level: 9 } // Sets the compression level.
+			});
+
+			output.on('close', function () {
+				res.download(zipPath, decodedName + '.zip', (err) => {
+					if (err) {
+						console.error('Error downloading file:', err);
 						return next(err);
-					// console.log('FILE INFOS RECURS :: ', data);
-					fileInfos.getFilesStreams(data, '', function (err, infosZip) {
-						// console.log('*****************************************************************');
-						// console.log('FILE STREAMS :: ', infosZip);
-						res.setHeader('Content-Length', infosZip.size + 22);
-						var zip = new zipstream();
-						zip.pipe(res);
-						infosZip.streams.forEach(function (s) {
-							zip.addFile(s.stream, { name : s.name }, function () {
-							});
-						});
-						zip.finalize(function (size) {
-						});
-					});
+					}
 				});
-				file.incDownloads();
-			}
-			else
-			{
-				var fileStream;
-				if (typeof req.header("range") !== 'undefined')
-				{
-					var range = ft.getRange(fileSize, req.header("range"));
-					res.setHeader('Content-Length', (range[0].end - range[0].start) + 1);
-					res.setHeader("Content-Range", "bytes " + range[0].start + "-" + range[0].end + "/" + fileSize);
-					res.setHeader('Accept-Ranges', "bytes");
-					fileStream = fs.createReadStream(filePath, { start: range[0].start, end: range[0].end });
-					res.openedFile = fileStream;
-					res.status(206);
+			});
+
+			archive.on('warning', function (err) {
+				if (err.code === 'ENOENT') {
+					console.warn(err);
+				} else {
+					throw err;
 				}
-				else
-				{
-					res.setHeader('Content-disposition', 'attachment; filename=' + fileName);
-					res.setHeader('Content-Length', fileSize);
-					fileStream = fs.createReadStream(filePath);
-					file.incDownloads();
+			});
+
+			archive.on('error', function (err) {
+				throw err;
+			});
+
+			archive.pipe(output);
+			archive.directory(filePath, false);
+
+			archive.finalize();
+		} else {
+			res.download(filePath, decodedName, (err) => {
+				if (err) {
+					console.error('Error downloading file:', err);
+					return next(err);
 				}
-				var mimeType = mime.lookup(filePath);
-				res.setHeader('Content-type', mimeType);
-				fileStream.pipe(res);
-			}
-		});
-	});
+			});
+		}
+
+	} catch (err) {
+		console.error('Error getting file:', err);
+		res.status(500).json({ message: 'Error getting file', error: err.message });
+	}
 });
 
 export default router;

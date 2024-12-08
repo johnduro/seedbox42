@@ -15,22 +15,20 @@ export default {
 		return result;
 	},
 
-	commentList: function (comments, done) {
-		var formattedComments = [];
-		var i = 0;
-		(function loop () {
-			var comment = comments[i++];
-			if (!comment)
-				return done(null, formattedComments);
-			User.getByIdFormatShow(comment.user, function (err, user) {
-				if (err)
-					return done(err);
-				var formatComment = comment.toObject();
-				formatComment.user = user;
-				formattedComments.push(formatComment);
-				loop();
-			});
-		})();
+
+	commentList: async function (comments) {
+		try {
+			const formattedComments = await Promise.all(comments.map(async (comment) => {
+				const formattedComment = comment.toObject();
+
+				const user = await User.getByIdFormatShow(comment.user);
+				formattedComment.user = user;
+				return formattedComment;
+			}));
+			return formattedComments;
+		} catch (err) {
+			throw new Error(`Error formatting comment list: ${err.message}`);
+		}
 	},
 
 	wallMessageList: function (messages, done) {

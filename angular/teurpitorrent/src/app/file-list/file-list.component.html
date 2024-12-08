@@ -1,0 +1,32 @@
+<p>file-list works!</p>
+<div *ngIf="files.length > 0">
+    <h2>Files</h2>
+    <ul>
+      <li *ngFor="let file of files">
+        <div>
+          <strong>{{ file.name }}</strong> (Type: {{ file.fileType }})
+        </div>
+        <div>
+          <span>Size: {{ file.size }} bytes</span>
+        </div>
+        <div>
+          <span>Created By: {{ file.creator.login }}</span>
+        </div>
+        <div>
+          <span>Downloads: {{ file.downloads }}</span>
+        </div>
+        <div>
+          <span>Average Grade: {{ file.averageGrade }}</span>
+        </div>
+        <div>
+          <span>Created At: {{ file.createdAt }}</span>
+        </div>
+        <div>
+          <span>Locked: {{ file.isLocked }}</span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div *ngIf="files.length === 0">
+    <p>No files available.</p>
+  </div>

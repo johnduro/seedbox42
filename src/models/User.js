@@ -37,17 +37,21 @@ var UserSchema = new mongoose.Schema({
  */
 
 UserSchema.statics = {
-	getByIdFormatShow: function (id, cb) {
-		this.findOne({ _id: id })
-			.select('-password -mail')
-			.exec(function (err, user) {
-				if (err)
-					return cb(err);
-				else if (user == null)
-					return cb(null, { login: "unknown user", avatar: "undefined", role: 'user' });
-				else
-					return cb(null, user.toObject());
-			});
+
+	getByIdFormatShow: async function (id) {
+		try {
+			const user = await this.findOne({ _id: id })
+				.select('-password -mail')
+				.exec();
+
+			if (!user) {
+				return { login: "unknown user", avatar: "undefined", role: 'user' };
+			}
+
+			return user.toObject();
+		} catch (err) {
+			throw new Error(`Error getting user by ID: ${err.message}`);
+		}
 	},
 
 	createNew: async function (infos) {
