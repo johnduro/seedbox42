@@ -1,18 +1,15 @@
 import express from "express";
-var router = express.Router();
-//import fs from "fs";
-import atob from "atob";
+/* import atob from "atob";
 import btoa from "btoa";
-//import { rimraf } from 'rimraf';
-//import pathS from "path";
-//import mongoose from "mongoose"
 import TransmissionNode from "../transmission/transmissionNode.js"
 import ft from "../utils/ft.js";
 import filesInfos from "../utils/filesInfos.js";
 import File from "../models/File.js";
 import rightsMW from "../middlewares/rights.js";
-import tSettings from "../config/transmission.js";
+import tSettings from "../config/transmission.js"; */
 import pjson from "../package.json" with { type: 'json' };
+
+const router = express.Router();
 
 router.get('/settings', function (req, res, next) {
 	var config = req.app.locals.ttConfig;
@@ -24,53 +21,47 @@ router.get('/settings', function (req, res, next) {
 		"dashboard": config.dashboard,
 		"users": config.users
 	};
-	res.json({ success: true, data: ret, version: pjson.version });
+	res.json({ data: ret, version: pjson.version });
 });
 
 router.get('/settings-default', function (req, res, next) {
-	res.json({ success: true, data: req.app.locals.ttConfigDefault });
+	res.json({ data: req.app.locals.ttConfigDefault });
 });
 
-router.put('/settings/transmission', rightsMW.admin, function (req, res, next) {
-	if (Object.keys(req.body).length)
-	{
-		var transmissionConfig = req.app.locals.ttConfig.transmission;
-		var mod = false;
-		for (var key in req.body)
-		{
-			if (transmissionConfig.hasOwnProperty(key) && transmissionConfig[key] != req.body[key])
-			{
-				transmissionConfig[key] = req.body[key];
-				mod = true;
+/* router.put('/settings/transmission', rightsMW.admin, async (req, res, next) => {
+	try {
+		if (Object.keys(req.body).length) {
+			const transmissionConfig = req.app.locals.ttConfig.transmission;
+			let isModified = false;
+			for (const key in req.body) {
+				if (transmissionConfig.hasOwnProperty(key) && transmissionConfig[key] !== req.body[key]) {
+					transmissionConfig[key] = req.body[key];
+					isModified = true;
+				}
 			}
-		}
-		if (mod)
-		{
-			var newTransmission = new TransmissionNode(transmission);
-			newTransmission.sessionGet(function (err, resp) {
-				if (err)
-					res.json({ success: false, message: "could not change transmission settings" });
-				else
-				{
+			if (isModified) {
+				const newTransmission = new TransmissionNode(transmissionConfig);
+				try {
+					await newTransmission.sessionGet();
 					req.app.locals.ttConfig.transmission = transmissionConfig;
 					req.app.locals.transmission = newTransmission;
-					ft.jsonToFile(req.app.locals.ttConfigFileName, req.app.locals.ttConfig, function (err) {
-						if (err)
-							res.json({ success: false, message: "Could not update config file", err: err });
-						else
-						{
-							req.app.emit('config:reload');
-							res.json({ success: true, message: "transmission infos were successfuly updated" });
-						}
-					});
+
+					await ft.jsonToFile(req.app.locals.ttConfigFileName, req.app.locals.ttConfig)
+					req.app.emit('config:reload');
+					res.json({ message: 'Transmission settings updated' });
+				} catch (err) {
+					res.json({ message: 'Could not change transmission settings', error: err.message });
 				}
-			});
+			} else {
+				res.json({ message: 'No changes made to transmission settings' });
+			}
+		} else {
+			res.json({ message: 'No settings provided' });
 		}
-		else
-			res.json({ success: false, message: "no changes were made" });
+	} catch (err) {
+		console.error('Error updating transmission settings:', err);
+		res.status(500).json({ message: 'Error updating transmission settings', error: err.message });
 	}
-	else
-		res.json({ success: false, message: "no changes were made" });
 });
 
 router.put('/settings/transmission-settings', rightsMW.admin, function (req, res, next) {
@@ -98,8 +89,8 @@ router.put('/settings/transmission-settings', rightsMW.admin, function (req, res
 		}
 	});
 });
-
-router.put('/settings/:part', rightsMW.admin, function (req, res, next) {
+ */
+/* router.put('/settings/:part', rightsMW.admin, function (req, res, next) {
 	req.app.locals.ttConfig[req.params.part] = ft.updateSettings(req.body, req.app.locals.ttConfig[req.params.part]);
 	ft.jsonToFile(req.app.locals.ttConfigFileName, req.app.locals.ttConfig, function (err) {
 		if (err)
@@ -154,6 +145,6 @@ router.put('/new-directory', rightsMW.admin, function (req, res, next) {
 			loop();
 		});
 	})();
-});
+}); */
 
 export default router;

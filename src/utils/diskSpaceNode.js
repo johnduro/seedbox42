@@ -1,54 +1,59 @@
 import { exec } from 'child_process';
 import os from "os";
 import fs from "fs";
-
-import async from "async";
+import { promisify } from 'util';
 import numeral from 'numeral';
+
+const execPromise = promisify(exec);
+const accessPromise = promisify(fs.access);
 
 /**
  * Retrieve disks list.
  *
- * @param callback
+ * @param {string} directory - The directory to check
+ * @returns {Promise<string[]>} - A promise that resolves with the list of drives
  */
-export function drives(directory, callback) {
-        fs.access(directory, fs.F_OK, function (err) {
-		if (err)
-			return callback('Could not access directory, error: ' + err.code);
-	    switch (os.platform().toLowerCase()) {
-	        case'darwin':
-	            getDrives('df -kl ' + directory + ' | awk \'{print $1}\'', callback);
-	            break;
-	        case'linux':
-	        default:
-	            getDrives('df ' + directory + ' | awk \'{print $1}\'', callback);
-	    }
-	});
-};
+export async function drives(directory) {
+    try {
+        //await accessPromise(directory, fs.F_OK);
+        await accessPromise(directory, fs.constants.R_OK)
+        let command;
+        switch (os.platform().toLowerCase()) {
+            case 'darwin':
+                command = `df -kl ${directory} | awk '{print $1}'`;
+                break;
+            case 'linux':
+            default:
+                command = `df ${directory} | awk '{print $1}'`;
+                break;
+        }
+        const drives = await getDrives(command);
+        return drives;
+    } catch (err) {
+        throw new Error(`Could not access directory, error: ${err.code}`);
+    }
+}
 
 /**
  * Execute a command to retrieve disks list.
  *
- * @param command
- * @param callback
+ * @param {string} command - The command to execute
+ * @returns {Promise<string[]>} - A promise that resolves with the list of drives
  */
-function getDrives(command, callback) {
-    var child = exec(
-        command,
-        function (err, stdout, stderr) {
-            if (err)
-				return callback(err);
-            var drives = stdout.split('\n');
+async function getDrives(command) {
+    try {
+        const { stdout } = await execPromise(command);
+        let drives = stdout.split('\n');
 
-            drives.splice(0, 1);
-            drives.splice(-1, 1);
+        drives.splice(0, 1);
+        drives.splice(-1, 1);
 
-            // Removes ram drives
-            drives = drives.filter(function(item) {
-				return item != "none";
-			});
-            callback(null, drives);
-        }
-    );
+        // Removes ram drives
+        drives = drives.filter((item) => item !== 'none');
+        return drives;
+    } catch (err) {
+        throw new Error(`Error executing command: ${err.message}`);
+    }
 }
 
 /**
@@ -62,126 +67,84 @@ export function driveDetail(drive, callback) {
 };
 
 /**
- * Retrieve space information about each drives.
+ * Retrieve space information about each drive.
  *
- * @param drives
- * @param callback
+ * @param {string[]} drives - The list of drives to check
+ * @returns {Promise<object[]>} - A promise that resolves with the details of each drive
  */
-export function drivesDetail(drives, callback) {
-        var drivesDetail = [];
-
-    async.eachSeries(
-        drives,
-        function (drive, cb) {
-            detail(
-                drive,
-                function (err, detail) {
-                    if (err)
-						return cb(err);
-                    drivesDetail.push(detail);
-                    cb();
-                }
-            );
-        },
-        function (err) {
-            if (err)
-				return callback(err);
-            callback(null, drivesDetail);
+export async function drivesDetail(drives) {
+    try {
+        const drivesDetail = [];
+        for (const drive of drives) {
+            const detailResult = await detail(drive);
+            drivesDetail.push(detailResult);
         }
-    );
-};
+        return drivesDetail;
+    } catch (err) {
+        throw new Error(`Error retrieving drives detail: ${err.message}`);
+    }
+}
 
 /**
  * Retrieve space information about one drive.
  *
- * @param drive
- * @param callback
+ * @param {string} drive - The drive to check
+ * @returns {Promise<object>} - A promise that resolves with the drive details
  */
-function detail(drive, callback) {
-    async.series(
-        {
-            used: function (callback) {
-                switch (os.platform().toLowerCase()) {
-                    case'darwin':
-                        getDetail('df -kl | grep ' + drive + ' | awk \'{print $3}\'', callback);
-                        break;
-                    case'linux':
-                    default:
-                        getDetail('df | grep ' + drive + ' | awk \'{print $3}\'', callback);
-                }
-            },
-            available: function (callback) {
-                switch (os.platform().toLowerCase()) {
-                    case'darwin':
-                        getDetail('df -kl | grep ' + drive + ' | awk \'{print $4}\'', callback);
-                        break;
-                    case'linux':
-                    default:
-                        getDetail('df | grep ' + drive + ' | awk \'{print $4}\'', callback);
-                }
-            },
-            mountpoint: function (callback) {
-                switch (os.platform().toLowerCase()) {
-                    case'darwin':
-                        getDetailNaN('df -kl | grep ' + drive + ' | awk \'{print $9}\'', function(e, d){
-                            if (d) d = d.trim();
-                            callback(e, d);
-                        });
-                        break;
-                    case'linux':
-                    default:
-                        getDetailNaN('df | grep ' + drive + ' | awk \'{print $6}\'', function(e, d){
-                            if (d) d = d.trim();
-                            callback(e, d);
-                        });
-                }
+async function detail(drive) {
+    try {
+        const used = await getDetail(`df | grep ${drive} | awk '{print $3}'`);
+        const available = await getDetail(`df | grep ${drive} | awk '{print $4}'`);
+        const mountpoint = await getDetailNaN(`df | grep ${drive} | awk '{print $6}'`);
+
+        let results = {
+            used: numeral(used).value(),
+            available: numeral(available).value(),
+            mountpoint: mountpoint.trim(),
+            freePer: numeral((available / (used + available)) * 100).format('0'),
+            usedPer: numeral((used / (used + available)) * 100).format('0'),
+            drive: drive,
+        };
+        results.total = numeral(results.used + results.available).format('0.00 b');
+
+        return results;
+    } catch (err) {
+        throw new Error(`Error retrieving drive details: ${err.message}`);
+    }
+}
+
+/**
+ * Execute a command to retrieve drive details.
+ *
+ * @param {string} command - The command to execute
+ * @returns {Promise<number>} - A promise that resolves with the command output
+ */
+function getDetail(command) {
+    return new Promise((resolve, reject) => {
+        exec(command, (err, stdout, stderr) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(parseInt(stdout.trim()) * 1024);
             }
-        },
-        function (err, results) {
-            if (err)
-				return callback(err);
-            results.freePer = numeral(results.available / (results.used + results.available) * 100).format('0');
-            results.usedPer = numeral(results.used / (results.used + results.available) * 100).format('0');
-            results.total = numeral(results.used + results.available).format('0.00 b');
-            results.used = numeral(results.used).format('0.00 b');
-            results.available = numeral(results.available).format('0.00 b');
-            results.drive = drive;
-
-            callback(null, results);
-        }
-    );
+        });
+    });
 }
 
 /**
- * Execute a command.
+ * Execute a command to retrieve drive details that may not be a number.
  *
- * @param command
- * @param callback
+ * @param {string} command - The command to execute
+ * @returns {Promise<string>} - A promise that resolves with the command output
  */
-function getDetail(command, callback) {
-    var child = exec(
-        command,
-        function (err, stdout, stderr) {
-            if (err)
-				return callback(err);
-            callback(null, parseInt(stdout) * 1024);
-        }
-    );
-}
-
-/**
- * Execute a command.
- *
- * @param command
- * @param callback
- */
-function getDetailNaN(command, callback) {
-    var child = exec(
-        command,
-        function (err, stdout, stderr) {
-            if (err)
-				return callback(err);
-            callback(null, stdout);
-        }
-    );
+function getDetailNaN(command) {
+    return new Promise((resolve, reject) => {
+        exec(command, (err, stdout, stderr) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(stdout.trim());
+            }
+        });
+    });
 }

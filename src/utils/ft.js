@@ -32,13 +32,16 @@ export default {
 		return oldSettings;
 	},
 
-	jsonToFile: function (file, json, done) {
-		var jsonFormat = JSON.stringify(json, null, 4);
-		fs.writeFile(file, jsonFormat, function (err) {
-			if (err)
-				done(err);
-			else
-				done(null);
+	jsonToFile: function (file, json) {
+		return new Promise((resolve, reject) => {
+			const jsonFormat = JSON.stringify(json, null, 4);
+			fs.writeFile(file, jsonFormat, (err) => {
+				if (err) {
+					reject(err);
+				} else {
+					resolve();
+				}
+			});
 		});
 	},
 
