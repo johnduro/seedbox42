@@ -1,0 +1,27 @@
+<p>file-detail works!</p>
+<p>FILE DETAIL ==> works!</p>
+<a routerLink="/files">BACK</a>
+
+<app-file-directory [fileDirectory]="fileDetail.fileDirectory"></app-file-directory>
+
+<div>
+    <strong>{{ fileDetail.file.name }}</strong> (Type: {{ fileDetail.file.fileType }})
+  </div>
+  <div>
+    <span>Size: {{ fileDetail.file.size }} bytes</span>
+  </div>
+  <div>
+    <span>Created By: {{ fileDetail.file.creator.login }}</span>
+  </div>
+  <div>
+    <span>Downloads: {{ fileDetail.file.downloads }}</span>
+  </div>
+  <div>
+    <span>Average Grade: {{ fileDetail.file.averageGrade }}</span>
+  </div>
+  <div>
+    <span>Created At: {{ fileDetail.file.createdAt }}</span>
+  </div>
+  <div>
+    <span>Locked: {{ fileDetail.file.isLocked }}</span>
+  </div>

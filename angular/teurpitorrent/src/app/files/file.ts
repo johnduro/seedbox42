@@ -22,3 +22,18 @@ export interface Creator {
     isLocked: boolean;
     isLockedByUser: boolean;
   }
+
+  export interface FileDirectory {
+    name: string;
+    size: number;
+    isDirectory: boolean;
+    createdAt: string;
+    updatedAt: string;
+    children?: FileDirectory[];
+  }
+
+  export interface FileDetail {
+    fileDirectory: FileDirectory;
+    file: File;
+  }
+  

@@ -1,0 +1,22 @@
+<p>FILE ==> works!</p>
+<div>
+    <strong><a [routerLink]="['/files', file._id]">{{ file.name }}</a></strong> (Type: {{ file.fileType }})
+  </div>
+  <div>
+    <span>Size: {{ file.size }} bytes</span>
+  </div>
+  <div>
+    <span>Created By: {{ file.creator.login }}</span>
+  </div>
+  <div>
+    <span>Downloads: {{ file.downloads }}</span>
+  </div>
+  <div>
+    <span>Average Grade: {{ file.averageGrade }}</span>
+  </div>
+  <div>
+    <span>Created At: {{ file.createdAt }}</span>
+  </div>
+  <div>
+    <span>Locked: {{ file.isLocked }}</span>
+  </div>

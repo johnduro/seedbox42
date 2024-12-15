@@ -5,6 +5,7 @@ import { FilesPageComponent } from './files-page/files-page.component';
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
 import { authGuard } from './auth/auth.guard';
+import { FileDetailComponent } from './file-detail/file-detail.component';
 
 export const routes: Routes = [
     {
@@ -32,6 +33,11 @@ export const routes: Routes = [
                 path: 'files',
                 component: FilesPageComponent,
                 title: 'Files'
+            },
+            {
+                path: 'files/:id',
+                component: FileDetailComponent,
+                title: 'File'
             },
             { 
                 path: '', 

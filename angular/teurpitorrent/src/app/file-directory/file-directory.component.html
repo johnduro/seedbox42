@@ -1,0 +1,33 @@
+<p>file-directory works!</p>
+
+<!-- Display the path -->
+<div>
+    <span *ngFor="let segment of path; let i = index">
+      <a href="#" (click)="navigateToPath($event, i, segment)">{{ segment }}</a>
+      <span *ngIf="i < path.length - 1"> / </span>
+    </span>
+  </div>
+
+<div *ngIf="currentDirectory">
+    <h2>{{ currentDirectory.name }}</h2>
+    <p>Size: {{ currentDirectory.size | number }} bytes</p>
+    <p>Type: {{ currentDirectory.isDirectory ? 'Directory' : 'File' }}</p>
+    <p>Created At: {{ currentDirectory.createdAt | date: 'short' }}</p>
+    <p>Updated At: {{ currentDirectory.updatedAt | date: 'short' }}</p>
+  
+    <div *ngIf="currentDirectory.children && currentDirectory.children.length > 0">
+      <h3>Children</h3>
+      <ul>
+        <li *ngFor="let child of currentDirectory.children">
+          <strong *ngIf="child.isDirectory; else fileName">
+            <a href="#" (click)="navigateToDirectory($event, child)">{{ child.name }}</a>
+          </strong>
+          <ng-template #fileName>{{ child.name }}</ng-template>
+          <p>Size: {{ child.size | number }} bytes</p>
+          <p>Type: {{ child.isDirectory ? 'Directory' : 'File' }}</p>
+          <p>Created At: {{ child.createdAt | date: 'short' }}</p>
+          <p>Updated At: {{ child.updatedAt | date: 'short' }}</p>
+        </li>
+      </ul>
+    </div>
+  </div>

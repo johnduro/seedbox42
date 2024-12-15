@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { FilesService } from '../files/files.service';
 import { File } from '../files/file';
 import { CommonModule } from '@angular/common';
+import { FileListFileComponent } from '../file-list-file/file-list-file.component';
 
 @Component({
   selector: 'app-file-list',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FileListFileComponent],
   templateUrl: './file-list.component.html',
   styleUrl: './file-list.component.scss'
 })
