@@ -1,11 +1,12 @@
 import { Component, Input, SimpleChanges } from '@angular/core';
 import { FileDirectory } from '../files/file';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-file-directory',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './file-directory.component.html',
   styleUrl: './file-directory.component.scss'
 })

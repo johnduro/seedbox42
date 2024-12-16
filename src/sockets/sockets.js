@@ -44,8 +44,8 @@ export default function (io, transmission, app) {
 		 */
 		connectedUsersLogin.push(socket.appUser.login);
 		io.sockets.emit('connectedUsers', { connectedUsers: io.engine.clientsCount, logins: connectedUsersLogin });
-		socket.on('connectedUsers', function (data, callback) {
-			callback({ connectedUsers: io.engine.clientsCount, logins: connectedUsersLogin });
+		socket.on('connectedUsers', function (data) {
+			io.sockets.emit('connectedUsers', { connectedUsers: io.engine.clientsCount, logins: connectedUsersLogin });
 		});
 
 		/**

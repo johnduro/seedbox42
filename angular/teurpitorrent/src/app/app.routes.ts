@@ -6,6 +6,10 @@ import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
 import { authGuard } from './auth/auth.guard';
 import { FileDetailComponent } from './file-detail/file-detail.component';
+import { MyProfilePageComponent } from './my-profile-page/my-profile-page.component';
+import { UsersPageComponent } from './users-page/users-page.component';
+import { FilesManagerPageComponent } from './files-manager-page/files-manager-page.component';
+import { ConfigurationPageComponent } from './configuration-page/configuration-page.component';
 
 export const routes: Routes = [
     {
@@ -38,6 +42,26 @@ export const routes: Routes = [
                 path: 'files/:id',
                 component: FileDetailComponent,
                 title: 'File'
+            },
+            {
+                path: 'my-profile',
+                component: MyProfilePageComponent,
+                title: 'My profile'
+            },
+            {
+                path: 'users',
+                component: UsersPageComponent,
+                title: 'Users'
+            },
+            {
+                path: 'files-manager',
+                component: FilesManagerPageComponent,
+                title: 'Files manager'
+            },
+            {
+                path: 'configuration',
+                component: ConfigurationPageComponent,
+                title: 'Configuration'
             },
             { 
                 path: '', 

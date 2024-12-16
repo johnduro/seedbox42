@@ -2,6 +2,7 @@
 
 <!-- Display the path -->
 <div>
+    <a routerLink="/files">back to files /</a>
     <span *ngFor="let segment of path; let i = index">
       <a href="#" (click)="navigateToPath($event, i, segment)">{{ segment }}</a>
       <span *ngIf="i < path.length - 1"> / </span>

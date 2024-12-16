@@ -24,18 +24,19 @@ export class TorrentListComponent implements OnInit {
       this.torrents = torrents;
     });
 
-    this.socketService.sendEvent('torrentRefresh', {});
-
+    
     this.socketService.onEvent('torrentRefreshRes', (msg) => {
       console.log('TorrentListComponent.torrentRefreshRes', msg);
       if (msg && msg.torrents) {
         this.updateTorrents(msg.torrents);
       }
     });
-
+    
     this.socketService.onEvent('torrentErrorRefresh', (msg) => {
       console.log('TorrentListComponent.torrentErrorRefresh', msg);
     });
+    
+    this.socketService.sendEvent('torrentRefresh', {});
   }
 
   ngOnDestroy(): void {

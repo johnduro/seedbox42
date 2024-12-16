@@ -2,19 +2,11 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs/operators';
 import { SocketService } from '../socket/socket.service';
+import { User } from '../users/user';
 
 interface AuthResponse {
   token: string;
-  data: {
-    _id: string;
-    login: string;
-    password: string;
-    mail: string;
-    avatar: string;
-    role: string;
-    createdAt: string;
-    __v: number;
-  };
+  data: User;
 }
 
 @Injectable({
@@ -48,9 +40,9 @@ export class AuthService {
     return localStorage.getItem('authUser') !== null;
   }
 
-  getUserData(): any {
+  getConnectedUser(): User | null {
     const userData = localStorage.getItem('authUser');
-    return userData ? JSON.parse(userData) : null;
+    return userData ? JSON.parse(userData) as User : null;
   }
 
   getToken(): string | null {
