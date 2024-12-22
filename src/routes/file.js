@@ -66,8 +66,9 @@ router.get('/user-locked', async (req, res, next) => {
 
 router.get('/:id', async (req, res) => {
 	try {
+		const user = req.user;
 		const fileId = req.params.id;
-		const file = await File.findById(fileId)
+		let file = await File.findById(fileId)
 			.select('-path -hashString -isFinished -privacy -torrentAddedAt -grades -comments')
 			.populate('creator', 'login role avatar');
 
@@ -75,7 +76,13 @@ router.get('/:id', async (req, res) => {
 			return res.status(404).json({ message: 'File not found' });
 		}
 
-		res.json(file);
+		const updatedFile = {
+			...file.toObject(),
+			isLocked: file.getIsLocked(),
+			isLockedByUser: file.getIsLockedByUser(user),
+		};
+
+		res.json(updatedFile);
 	} catch (err) {
 		console.error('Error getting file:', err);
 		res.status(500).json({ message: 'Error getting file', error: err.message });
@@ -211,7 +218,7 @@ router.post('/add-comment/:id', async (req, res, next) => {
 
 		if (!comment || comment.trim() === '') {
 			return res.status(400).json({ message: 'Comment cannot be empty' });
-		}	  
+		}
 
 		const file = await File.findById(fileId);
 		if (!file) {
@@ -305,7 +312,7 @@ router.put('/:id', rights.admin, async (req, res, next) => {
 		if (req.body.name === undefined) {
 			return res.status(500).json({ message: 'Name is required' });
 		}
-	
+
 		const updateName = {
 			"name": req.body.name
 		};
@@ -488,6 +495,18 @@ router.get('/download/:id/:pathInDirectory/:name', async (req, res, next) => {
 				});
 			});
 
+			res.on('finish', () => {
+				fs.unlink(zipPath, (err) => {
+					if (err) {
+						console.error('Error deleting the zip file:', err);
+					} else {
+						console.log('Zip file deleted successfully');
+					}
+				});
+
+				file.incDownloads();
+			});
+
 			archive.on('warning', function (err) {
 				if (err.code === 'ENOENT') {
 					console.warn(err);
@@ -510,6 +529,8 @@ router.get('/download/:id/:pathInDirectory/:name', async (req, res, next) => {
 					console.error('Error downloading file:', err);
 					return next(err);
 				}
+
+				file.incDownloads();
 			});
 		}
 

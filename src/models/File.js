@@ -350,19 +350,16 @@ FileSchema.methods = {
 			return (this.grades[index].grade);
 	},
 
-	incDownloads: function () {
-		this.downloads += 1;
-		this.save(function (err) {
-			if (err)
-				console.log("Download increment error: ", err);
-		});
-	},
-
 	renamePath: function (path, name, cb) {
 		this.path = path;
 		this.name = name;
 		this.save(cb);
 	},
+};
+
+FileSchema.methods.incDownloads = async function () {
+	this.downloads += 1;
+	await this.save();
 };
 
 FileSchema.methods.deleteFileFromDb = async function (transmission) {

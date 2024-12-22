@@ -3,3 +3,329 @@
 /* Import Bootstrap CSS */
 @import 'bootstrap/dist/css/bootstrap.min.css';
 // @import '~bootstrap/dist/css/bootstrap.min.css';
+
+
+
+.content {
+	height: 100%;
+	padding-left: 100px;
+	padding-right: 100px;
+}
+
+.file-list-padding {
+	padding-top: 20px; /* Adjust the value as needed */
+}
+
+/* FONTS */
+
+@font-face {
+	font-family: 'MuseoSans-100';
+	src: url('./assets/font/MuseoSans-100.eot?') format('eot'),
+	url('./assets/font/MuseoSans-100.otf')  format('opentype'),
+	url('./assets/font/MuseoSans-100.woff') format('woff'),
+	url('./assets/font/MuseoSans-100.ttf')  format('truetype'),
+	url('./assets/font/MuseoSans-100.svg#MuseoSans-100') format('svg');
+}
+
+@font-face {
+	font-family: 'MuseoSans-300';
+	src: url('./assets/font/MuseoSans-300.eot?') format('eot'),
+	url('./assets/font/MuseoSans-300.otf')  format('opentype'),
+	url('./assets/font/MuseoSans-300.woff') format('woff'),
+	url('./assets/font/MuseoSans-300.ttf')  format('truetype'),
+	url('./assets/font/MuseoSans-300.svg#MuseoSans-300') format('svg');
+}
+
+@font-face {
+	font-family: 'MuseoSans-500';
+	src: url('./assets/font/MuseoSans-500.eot?') format('eot'),
+	url('./assets/font/MuseoSans-500.otf')  format('opentype'),
+	url('./assets/font/MuseoSans-500.woff') format('woff'),
+	url('./assets/font/MuseoSans-500.ttf')  format('truetype'),
+	url('./assets/font/MuseoSans-500.svg#MuseoSans-500') format('svg');
+}
+
+@font-face {
+	font-family: 'MuseoSans-700';
+	src: url('./assets/font/MuseoSans-700.eot?') format('eot'),
+	url('./assets/font/MuseoSans-700.otf')  format('opentype'),
+	url('./assets/font/MuseoSans-700.woff') format('woff'),
+	url('./assets/font/MuseoSans-700.ttf')  format('truetype'),
+	url('./assets/font/MuseoSans-700.svg#MuseoSans-700') format('svg');
+}
+
+.tt-font-museo500 {
+	font-family: 'MuseoSans-500';
+}
+
+.tt-font-museo300 {
+	font-family: 'MuseoSans-300';
+}
+
+textarea {
+	font-family: 'MuseoSans-100';
+	font-style: italic;
+}
+::-webkit-input-placeholder {
+	font-family: 'MuseoSans-100';
+	font-style: italic;
+}
+:-moz-placeholder {
+	font-family: 'MuseoSans-100';
+	font-style: italic;
+}
+::-moz-placeholder {
+	font-family: 'MuseoSans-100';
+	font-style: italic;
+}
+:-ms-input-placeholder {
+	font-family: 'MuseoSans-100';
+	font-style: italic;
+}
+
+
+.tt-title {
+	color: #325064;
+	font-family: 'MuseoSans-700';
+}
+
+.tt-darkblue {
+	color: #325064;
+}
+
+.tt-text {
+	font-family: 'MuseoSans-300';
+}
+
+.tt-table-odd {
+	background-color: #fff;
+}
+
+.tt-table-even {
+	background-color: #E9EDF0;
+}
+
+//.tt-table {
+	/* border-color: red; */
+	/* border-color: #315078; */
+	/* border-color: #E9EDF0; */
+	/* background-color: #E9EDF0; */
+//}
+
+.tt-table > thead > tr > th {
+	/* border-color: #315078; */
+	border-bottom: 1px solid #325064;
+}
+
+/* .tt-table tr th, .tt-table tr td, .tt-table tr { */
+.tt-table tr, .tt-table tr td, .tt-table tr {
+ 	border-style: none !important;
+}
+/* * { */
+/* 	font-family:MuseoSans-700; */
+/* } */
+
+
+.tt-dottedbottom {
+	background-image:
+	linear-gradient(to right, #333 10%, rgba(255, 255, 255, 0) 0%);
+	background-position:
+	bottom;
+	background-size:
+	6px 1px;
+	background-repeat:
+	repeat-x;
+	padding: 2px;
+}
+
+.tt-dottedborder {
+	background-image:
+	linear-gradient(to right, #333 10%, rgba(255, 255, 255, 0) 0%),
+	linear-gradient(to right, #333 10%, rgba(255, 255, 255, 0) 0%),
+	linear-gradient(to bottom, #333 10%, rgba(255, 255, 255, 0) 0%),
+	linear-gradient(to bottom, #333 10%, rgba(255, 255, 255, 0) 0%);
+	background-position:
+	top,
+	bottom,
+	left,
+	right;
+	background-size:
+	6px 1px,
+	6px 1px,
+	1px 6px,
+	1px 6px;
+	background-repeat:
+	repeat-x,
+	repeat-x,
+	repeat-y,
+	repeat-y;
+	padding: 2px;
+}
+
+.tt-dragndrop {
+	height: 80px;
+	line-height: 80px;
+	vertical-align: middle;
+	text-align: center;
+	font-family: 'MuseoSans-100';
+	font-style: italic;
+}
+
+/* .tt-dottedplaceholder {
+}
+ */
+.tt-inputcheck {
+	padding-left: 8px;
+}
+
+
+
+.stars {
+	height: 17px;
+	width: 75px;
+	color: #325064;
+	overflow: hidden;
+}
+
+.one-star {
+	display: inline !important;
+}
+
+/* SEARCH INPUT */
+
+.tt-search-div {
+	position: relative; //todo check this
+	border-radius: 0px;
+	border-color: #9ba8b1;
+	border-style: solid;
+	border-width: 1px;
+	/* height: 38px; */
+	height: 40px;
+}
+
+/* .tt-search-div input {
+	width: 80%;
+} */
+
+.tt-search-input {
+	height: 100%;
+	width: calc(100% - 40px); //todo : check this
+	border: none;
+	padding-right: 40px; //todo : check this
+}
+
+::-webkit-input-placeholder { text-align:right; }
+::-moz-placeholder { text-align:right; }
+
+.tt-search-input:hover, .tt-search-input:active, .tt-search-input:focus  {
+	outline:0px !important;
+	-webkit-appearance: none;
+}
+.tt-search-button {
+	border: none;
+	background-color: #fff;
+	/* display: inline-block; */
+	line-height: 31px;
+	/* float: right; */
+	vertical-align: middle;
+	position: absolute;
+	right: 17px;
+}
+
+.tt-search-icon {
+	margin-left: 5px;
+}
+
+/* SELECT */
+
+.tt-select-div {
+	border-radius: 0px;
+	border-color: #9ba8b1;
+	border-style: solid;
+	border-width: 1px;
+	height: 40px;
+}
+
+.tt-select {
+	border: none;
+	background-color: white;
+}
+
+.tt-select:hover, .tt-select:active, .tt-select:focus  {
+	outline:0px !important;
+}
+
+.tt-locked-user {
+	color: #FA000A;
+}
+
+.tt-locked-other {
+	color: #253E51;
+}
+
+.tt-locked-no {
+	color: #B4BEC6;
+}
+
+.tt-list-avatar {
+	height:32px;
+	width:32px;
+    border-radius: 16px;
+	-webkit-border-radius: 16px;
+	-moz-border-radius: 16px;
+}
+
+.tt-button {
+	color: #fff	!important;
+	font-family: 'MuseoSans-300'	!important;
+	background-color: #325064	!important;
+	margin-top: 4px	!important;
+	/* float: left; */
+}
+
+.tt-button:hover {
+	color: #fff;
+	background-color: #99A8B2
+}
+
+/* CONNEXION */
+
+.tt-signin {
+	font-family: 'MuseoSans-300';
+	margin-top: 10px;
+}
+
+.tt-signin-input {
+	text-align: center;
+}
+::-webkit-input-placeholder {
+	text-align: center;
+}
+
+:-moz-placeholder { /* Firefox 18- */
+	text-align: center;
+}
+
+::-moz-placeholder {  /* Firefox 19+ */
+	text-align: center;
+}
+
+:-ms-input-placeholder {
+	text-align: center;
+}
+
+.tt-sign-title {
+	font-family: 'MuseoSans-700';
+	text-align: center;
+	color: #325064;
+}
+
+.tt-sign-div {
+	margin-top: 20px;
+}
+
+
+.tt-sign-button {
+	margin-top: 20px;
+	margin-bottom: 40px;
+}

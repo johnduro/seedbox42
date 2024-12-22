@@ -39,7 +39,7 @@ var getFileRightsRecurs = function self (path, done) {
 		getFileRights(path, function (pRights) {
 			infos.rights.read = pRights.read;
 			infos.rights.write = pRights.write;
-			infos.fileType = mime.lookup(path);
+			infos.fileType = mime.getType(path);
 			infos.size += fStat.size;
 			if (fStat.isDirectory() && infos.rights.read)
 			{
@@ -97,7 +97,8 @@ export default {
 				size: stats.size,
 				isDirectory: stats.isDirectory(),
 				createdAt: stats.birthtime,
-				updatedAt: stats.mtime
+				updatedAt: stats.mtime,
+				type: stats.isDirectory() ? 'folder' : mime.getType(filePath)
 			};
 
 			if (stats.isDirectory()) {

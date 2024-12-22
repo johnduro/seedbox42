@@ -1,22 +1,26 @@
-<p>FILE ==> works!</p>
-<div>
-    <strong><a [routerLink]="['/files', file._id]">{{ file.name }}</a></strong> (Type: {{ file.fileType }})
-  </div>
-  <div>
-    <span>Size: {{ file.size }} bytes</span>
-  </div>
-  <div>
-    <span>Created By: {{ file.creator.login }}</span>
-  </div>
-  <div>
-    <span>Downloads: {{ file.downloads }}</span>
-  </div>
-  <div>
-    <span>Average Grade: {{ file.averageGrade }}</span>
-  </div>
-  <div>
-    <span>Created At: {{ file.createdAt }}</span>
-  </div>
-  <div>
-    <span>Locked: {{ file.isLocked }}</span>
-  </div>
+<td class="tt-darkblue">
+  <app-file-type [type]="file.fileType"></app-file-type>
+</td>
+<td (click)="openFile(file)">{{file.name}}</td>
+<td>{{file.convertSize()}}</td>
+<td class="tt-darkblue">
+  <fa-icon [icon]="faCircleArrowDown" (click)="downloadFile(file)" class="icon-down-circled fls-download"></fa-icon>
+</td>
+<td>
+  <fa-icon [icon]="faHeart" *ngIf="file.isLockedByUser === true" class="tt-locked-user"
+    (click)="unlockFile(file)"></fa-icon>
+  <fa-icon [icon]="faHeart" *ngIf="file.isLocked === true && file.isLockedByUser === false" class="tt-locked-other"
+    (click)="lockFile(file)"></fa-icon>
+  <fa-icon [icon]="faHeart" *ngIf="file.isLocked === false && file.isLockedByUser === false" class="tt-locked-no"
+    (click)="lockFile(file)"></fa-icon>
+</td>
+<td>{{file.createdAt | date:'MM/dd/yy'}}</td>
+<td>{{file.downloads}}</td>
+<td>
+  <img [src]="'/avatar/' + file.creator.avatar" (error)="onUserAvatarImageError($event)" [title]="file.creator.login"
+    [alt]="file.creator.login" class="tt-list-avatar">
+</td>
+<td>
+  <app-file-display-rating [grade]="file.averageGrade"></app-file-display-rating>
+</td>
+<td>{{file.commentsNbr}}</td>

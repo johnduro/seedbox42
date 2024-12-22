@@ -1,30 +1,41 @@
-import { Component, Input, SimpleChanges } from '@angular/core';
-import { FileDirectory } from '../files/file';
+import { Component, inject, Input, SimpleChanges } from '@angular/core';
+import { FileDetail, FileDirectory } from '../files/file';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { FileTypeComponent } from '../file-type/file-type.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faCircleArrowDown } from '@fortawesome/free-solid-svg-icons';
+import { FilesService } from '../files/files.service';
 
 @Component({
   selector: 'app-file-directory',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, FileTypeComponent, FontAwesomeModule],
   templateUrl: './file-directory.component.html',
   styleUrl: './file-directory.component.scss'
 })
 export class FileDirectoryComponent {
   @Input({ required: true }) fileDirectory!: FileDirectory;
-
+  @Input({ required: true }) fileDetail!: FileDetail;
+  
   currentDirectory: FileDirectory = {} as FileDirectory;
   path: string[] = [];
+  
+  filesService = inject(FilesService);
+  
+  faCircleArrowDown = faCircleArrowDown;
+
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['fileDirectory']) {
       this.currentDirectory = this.fileDirectory;
-      this.path.push(this.currentDirectory.name);
+      if (this.currentDirectory.name) {
+        this.path.push(this.currentDirectory.name);
+      }
     }
   }
 
-  navigateToDirectory(event: Event, child: FileDirectory): void {
-    event.preventDefault(); //check if needed when not using <a>
+  navigateToDirectory(child: FileDirectory): void {
     this.path.push(child.name);
     this.currentDirectory = child;
   }
@@ -33,6 +44,33 @@ export class FileDirectoryComponent {
     event.preventDefault();
     this.path = this.path.slice(0, index + 1);
     this.currentDirectory = this.findDirectoryByPath(this.fileDirectory, this.path.slice(1));
+  }
+
+  download(name: string): void {
+    let fileName = name;
+    if (!fileName) {
+      fileName = this.currentDirectory.name;
+    }
+    this.filesService.downloadFile(this.fileDetail._id, this.getDownloadPath(name), fileName).subscribe((data: Blob) => {
+      const url = window.URL.createObjectURL(data);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    });
+  }
+
+  convertSize(size: number): string {
+    return this.filesService.convertSize(size);
+  }
+
+  private getDownloadPath(fileName: string): string {
+    const baseNameTrimmed = this.path.slice(1);
+    const basePath = baseNameTrimmed.join('/');
+    return baseNameTrimmed.length > 0 ? `/${basePath}/${fileName}` : `/${fileName}`;
   }
 
   private findDirectoryByPath(directory: FileDirectory, path: string[]): FileDirectory {

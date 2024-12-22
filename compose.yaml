@@ -48,6 +48,7 @@ services:
       ME_CONFIG_MONGODB_SERVER: mongodb
     networks:
       - mongodb-network
+
   transmission:
     image: lscr.io/linuxserver/transmission:latest
     container_name: transmission

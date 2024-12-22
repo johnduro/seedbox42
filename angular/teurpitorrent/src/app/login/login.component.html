@@ -1,12 +1,21 @@
-<div class="login-card">
-
-    <div class="card-title">
-        <h1>Login</h1>
+<div class="row justify-content-center">
+    <div class="col-md-4">
+        <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+            <h2 class="tt-sign-title">TeurpiTorrent</h2>
+            <div class="mb-3 tt-search-div tt-text tt-sign-div">
+                <input id="login" name="login" type="text" formControlName="login"
+                    class="form-control tt-search-input tt-signin-input" placeholder="Login" required autofocus>
+            </div>
+            <div class="mb-3 tt-search-div tt-text tt-sign-div">
+                <input id="password" name="password" type="password" formControlName="password"
+                    class="form-control tt-search-input tt-signin-input" placeholder="Password" required>
+            </div>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-lg btn-primary tt-signin"
+                    style="background-color: #325064; color: #fff;">Sign in</button>
+            </div>
+        </form>
     </div>
-    <form class="form-group" [formGroup]="loginForm" (ngSubmit)="onLogin()">
-        <input name="login" type="text" formControlName="login" placeholder="Login">
-        <input type="password" formControlName="password" placeholder="Password">
-        <button>Submit</button>
-    </form>
-
 </div>
+
+<app-footer></app-footer>

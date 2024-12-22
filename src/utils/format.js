@@ -15,7 +15,6 @@ export default {
 		return result;
 	},
 
-
 	commentList: async function (comments) {
 		try {
 			const formattedComments = await Promise.all(comments.map(async (comment) => {

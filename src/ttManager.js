@@ -1,4 +1,3 @@
-//import fs from 'fs';
 import util from 'util';
 import mini from 'minimist';
 import chalk from 'chalk';

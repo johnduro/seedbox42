@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { FileListComponent } from '../file-list/file-list.component';
+import { FilesService } from '../files/files.service';
+import { File } from '../files/file';
 
 @Component({
   selector: 'app-files-page',
@@ -9,5 +11,13 @@ import { FileListComponent } from '../file-list/file-list.component';
   styleUrl: './files-page.component.scss'
 })
 export class FilesPageComponent {
+  files: File[] = [];
 
+  constructor(private fileService: FilesService) { }
+
+  ngOnInit(): void {
+    this.fileService.getAllFinishedFiles().subscribe(files => {
+      this.files = files;
+    });
+  }
 }
