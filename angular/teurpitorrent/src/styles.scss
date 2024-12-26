@@ -121,12 +121,14 @@ textarea {
 .tt-table tr, .tt-table tr td, .tt-table tr {
  	border-style: none !important;
 }
+
+
 /* * { */
 /* 	font-family:MuseoSans-700; */
 /* } */
 
 
-.tt-dottedbottom {
+/* .tt-dottedbottom {
 	background-image:
 	linear-gradient(to right, #333 10%, rgba(255, 255, 255, 0) 0%);
 	background-position:
@@ -136,7 +138,22 @@ textarea {
 	background-repeat:
 	repeat-x;
 	padding: 2px;
-}
+} */
+
+.tt-dottedbottom {
+	background-image: linear-gradient(to right, #333 10%, rgba(255, 255, 255, 0) 0%);
+	background-position: bottom;
+	background-size: 6px 1px;
+	background-repeat: repeat-x;
+	padding-bottom: 2px;
+	position: relative;
+	margin-bottom: 2px;
+  }
+
+/*   .tt-dottedbottom {
+	border: none;
+	border-bottom: 1px dotted #333; 
+  } */
 
 .tt-dottedborder {
 	background-image:

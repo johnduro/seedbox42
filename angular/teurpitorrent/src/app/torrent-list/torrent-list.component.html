@@ -1,28 +1,120 @@
-<div *ngIf="torrents.length > 0">
-    <h2>Torrents</h2>
+<div id="main-wrapper" (click)="hideContextMenu()">
+  <div class="row ts-search align-items-center">
+    <div class="col-md-6 col-6">
+      <div class="tt-search-div">
+        <input class="tt-search-input" placeholder="Search torrents" [(ngModel)]="search" (input)="filterTorrents()">
+        <button type="button" class="tt-search-button">
+          |<fa-icon [icon]="faSearch" class="tt-search-icon"></fa-icon>
+        </button>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="tt-select-div ts-left-select">
+        <select [(ngModel)]="selectedStatus" (ngModelChange)="filterTorrentsByStatus()" class="tt-select form-select">
+          <option [value]="STATUS_ALL">All</option>
+          <option [value]="STATUS_ACTIVE">Active</option>
+          <option [value]="STATUS_DOWNLOADING">Downloading</option>
+          <option [value]="STATUS_SEEDING">Seeding</option>
+          <option [value]="STATUS_PAUSED">Paused</option>
+          <option [value]="STATUS_FINISHED">Finished</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="row ts-body">
+    <div class="ts-torrents col-md-12 tt-text">
+      <div class="ts-torrents-head col-md-12 d-flex align-items-center">
+        <div class="col-md-1 ts-checkbox">
+          <input type="checkbox" [(ngModel)]="isCheckboxAllSelected" (ngModelChange)="selectAllTorrents()">
+        </div>
+        <div class="col-md-11 ts-all-actions">
+          <a href="" class="ts-action" (click)="removeSelectedTorrents($event)">
+            <fa-icon [icon]="faTrash"></fa-icon> remove torrent(s)
+          </a>
+          <a href="" class="ts-action" (click)="resumeSelectedTorrents($event)">
+            <fa-icon [icon]="faPlay"></fa-icon> resume torrent(s)
+          </a>
+          <a href="" class="ts-action" (click)="pauseSelectedTorrents($event)">
+            <fa-icon [icon]="faPause"></fa-icon> pause torrent(s)
+          </a>
+          <span class="ts-nb-select"> - {{ selectedTorrents.length }} selected </span>
+        </div>
+      </div>
+      <div class="col-md-12 ts-torrents-body">
+        <table class="table tt-table">
+          <tbody>
+            <tr *ngFor="let torrent of filteredTorrents" class="ts-torrent-row"
+              (contextmenu)="onRightClick($event, torrent)">
+              <td class="d-flex align-items-start tt-dottedbottom">
+                <div class="col-md-1 ts-checkbox-tr">
+                  <input type="checkbox" [(ngModel)]="torrent.isSelected" (ngModelChange)="checkboxSwitch(torrent.id)">
+                </div>
+                <div class="col-md-11">
+                  <div class="col-md-12">
+                    <span>{{ torrent.name | slice:0:150 }}{{ torrent.name.length > 150 ? '...' : '' }}</span>
+                  </div>
+                  <div class="col-md-12">
+                    <span class="ts-infos" *ngIf="torrent.isFinished"> Seeding Complete </span>
+                    <span class="ts-infos" *ngIf="torrent.status === PAUSED && !torrent.isFinished"> Paused </span>
+                    <span class="ts-infos" *ngIf="torrent.status === DOWNLOADING"> Downloading from
+                      {{torrent.peersSendingToUs}}
+                      of {{torrent.peersConnected}} peers - <fa-icon [icon]="faArrowDown" class="tt-darkblue"></fa-icon>
+                      {{convertSize(torrent.rateDownload)}}/s <fa-icon [icon]="faArrowUp" class="tt-darkblue"></fa-icon>
+                      {{convertSize(torrent.rateUpload)}}/s </span>
+                    <span class="ts-infos" *ngIf="torrent.status === SEEDING"> Seeding to {{torrent.peersSendingToUs}}
+                      of
+                      {{torrent.peersConnected}} peers - <fa-icon [icon]="faArrowUp" class="tt-darkblue"></fa-icon>
+                      {{convertSize(torrent.rateUpload)}}/s </span>
+                  </div>
+                  <div class="col-md-12">
+                    <div class="progress progress-md ts-progress">
+                      <div class="progress-bar" [ngClass]="renderProgressBar(torrent)" role="progressbar"
+                        [attr.aria-valuenow]="torrent.percentDone * 100" aria-valuemin="0" aria-valuemax="100"
+                        [style.width.%]="torrent.percentDone * 100">
+                        {{torrent.percentDone * 100 | number:'1.2-2'}} %
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-12 ts-infos">
+                    <span class="ts-infos" *ngIf="torrent.status === PAUSED && torrent.isFinished">
+                      {{convertSize(torrent.totalSize)}}, uploaded {{convertSize(torrent.uploadedEver)}} (Ratio
+                      {{torrent.uploadRatio | number:'1.2-2'}})</span>
+                    <span class="ts-infos" *ngIf="torrent.status === PAUSED && !torrent.isFinished">
+                      {{convertSize(torrent.totalSize * torrent.percentDone)}} of
+                      {{convertSize(torrent.totalSize)}}</span>
+                    <span class="ts-infos" *ngIf="torrent.status === DOWNLOADING"> {{convertSize(torrent.totalSize *
+                      torrent.percentDone)}} of {{convertSize(torrent.totalSize)}} ({{torrent.percentDone * 100 |
+                      number:'1.2-2'}}%) - {{convertTorrentETA(torrent.eta)}} remaining</span>
+                    <span class="ts-infos" *ngIf="torrent.status === SEEDING"> {{convertSize(torrent.totalSize)}},
+                      uploaded {{convertSize(torrent.uploadedEver)}} (Ratio {{torrent.uploadRatio | number:'1.2-2'}})
+                    </span>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="contextMenuVisible" [ngStyle]="contextMenuStyle" class="context-menu">
     <ul>
-      <li *ngFor="let torrent of torrents">
-        <div>
-          <strong>{{ torrent.name }}</strong> (Status: {{ torrent.status }})
-        </div>
-        <div>
-          <span>Finished: {{ torrent.isFinished }}</span>
-        </div>
-        <div>
-          <span>Left Until Done: {{ torrent.leftUntilDone }}</span>
-        </div>
-        <div>
-          <span>Peers Connected: {{ torrent.peersConnected }}</span>
-        </div>
-        <div>
-          <span>Download Rate: {{ torrent.rateDownload }} B/s</span>
-        </div>
-        <div>
-          <span>Upload Rate: {{ torrent.rateUpload }} B/s</span>
-        </div>
+      <li *ngIf="selectedTorrent" (click)="pauseTorrent(selectedTorrent)">Pause</li>
+      <li *ngIf="selectedTorrent" (click)="resumeTorrent(selectedTorrent)">Resume</li>
+      <hr *ngIf="selectedTorrent">
+      <li *ngIf="selectedTorrent" (click)="moveToTop(selectedTorrent)">Move to Top</li>
+      <li *ngIf="selectedTorrent" (click)="moveUp(selectedTorrent)">Move Up</li>
+      <li *ngIf="selectedTorrent" (click)="moveDown(selectedTorrent)">Move Down</li>
+      <li *ngIf="selectedTorrent" (click)="moveToBottom(selectedTorrent)">Move to Bottom</li>
+      <hr *ngIf="selectedTorrent">
+      <li *ngIf="selectedTorrent" (click)="removeFromList(selectedTorrent)">Remove from List</li>
+      <li *ngIf="selectedTorrent" (click)="trashDataAndRemoveFromList(selectedTorrent)">Trash Data and Remove from List
       </li>
+      <hr *ngIf="selectedTorrent">
+      <li *ngIf="selectedTorrent" (click)="verifyLocalData(selectedTorrent)">Verify Local Data</li>
+      <li *ngIf="selectedTorrent" (click)="askTrackersForMorePeers(selectedTorrent)">Ask Trackers for More Peers</li>
     </ul>
   </div>
-  <div *ngIf="torrents.length === 0">
-    <p>No torrents available.</p>
-  </div>
+</div>

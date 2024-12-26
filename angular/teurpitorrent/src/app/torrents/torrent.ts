@@ -7,6 +7,7 @@ export interface Tracker {
   }
   
   export interface Torrent {
+    activityDate: number;
     addedDate: number;
     downloadDir: string;
     error: number;
@@ -34,4 +35,5 @@ export interface Tracker {
     trackers: Tracker[];
     uploadRatio: number;
     uploadedEver: number;
+    isSelected: boolean;
   }

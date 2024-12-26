@@ -22,6 +22,7 @@
     "@fortawesome/free-regular-svg-icons": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.1",
     "bootstrap": "^5.3.3",
+    "ng2-file-upload": "^7.0.1",
     "rxjs": "~7.8.0",
     "socket.io-client": "^4.8.1",
     "tslib": "^2.3.0",

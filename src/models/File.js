@@ -47,7 +47,7 @@ var FileSchema = new mongoose.Schema({
 		type: Number,
 		default: 0
 	},
-	privacy : {
+	privacy: {
 		type: Number,
 		default: 1
 	},
@@ -55,7 +55,7 @@ var FileSchema = new mongoose.Schema({
 		type: Number,
 		default: 0
 	},
-	lastupdatedComment : {
+	lastupdatedComment: {
 		type: Date,
 		default: null
 	},
@@ -64,11 +64,11 @@ var FileSchema = new mongoose.Schema({
 		user: { type: mongoose.Schema.ObjectId, ref: 'User' },
 		createdAt: { type: Date, default: Date.now }
 	}],
-	lastupdatedLocked : {
+	lastupdatedLocked: {
 		type: Date,
 		default: null
 	},
-	oldestLocked : {
+	oldestLocked: {
 		type: Date,
 		default: null
 	},
@@ -84,8 +84,8 @@ var FileSchema = new mongoose.Schema({
 		user: { type: mongoose.Schema.ObjectId, ref: 'User' },
 		grade: Number
 	}],
-	createdAt : Date,
-	torrentAddedAt : {
+	createdAt: Date,
+	torrentAddedAt: {
 		type: Date,
 		default: Date.now
 	}
@@ -99,8 +99,8 @@ FileSchema.statics = {
 
 	getUserLockedFiles: function (user, sortOrder, limit, cb) {
 		var query = this.find({ "locked.user": user._id })
-				.select('-path -creator -hashString -isFinished -privacy -torrentAddedAt')
-				.sort({ "locked.createdAt": sortOrder });
+			.select('-path -creator -hashString -isFinished -privacy -torrentAddedAt')
+			.sort({ "locked.createdAt": sortOrder });
 		if (limit > 0)
 			query.limit(limit);
 		query.exec(function (err, files) {
@@ -117,8 +117,7 @@ FileSchema.statics = {
 		this.find({ "locked.createdAt": { $lt: dateDelete } }, function (err, files) {
 			if (err)
 				cb(err);
-			else
-			{
+			else {
 				files.map(function (file) {
 					file.removeDayLockInFile(dateDelete);
 				});
@@ -133,8 +132,7 @@ FileSchema.statics = {
 		this.find({ "createdAt": { $lt: dateDelete }, "locked": { $size: 0 } }).exec(function (err, files) {
 			if (err)
 				cb(err);
-			else
-			{
+			else {
 				files.map(function (file) {
 					file.deleteFile(transmission, function (err, message) {
 						if (err)
@@ -160,7 +158,7 @@ FileSchema.statics = {
 			name: pathS.basename(file.path),
 			path: file.path,
 			size: file.size,
-			creator:  mongoose.mongo.ObjectID(userId),
+			creator: mongoose.mongo.ObjectID(userId),
 			hashString: hashString,
 			isFinished: true,
 			fileType: file.fileType,
@@ -175,7 +173,10 @@ FileSchema.statics = {
 	},
 };
 
-FileSchema.statics.insertTorrent = async function (torrentId, torrentName, transmission) {
+FileSchema.statics.insertTorrent = async function (torrentId, torrentName, transmission, retries = 0) {
+	const maxRetries = 5;
+	const retryDelays = [2000, 5000, 10000, 20000, 30000]; // Delays in milliseconds: 2s, 5s, 10s, 20s, 30s
+
 	try {
 		const res = await transmission.torrentGet(transmission.requestFormat.infosFinished, torrentId);
 		if (!res.torrents || !res.torrents[0]) {
@@ -185,7 +186,14 @@ FileSchema.statics.insertTorrent = async function (torrentId, torrentName, trans
 		const path = torrent['downloadDir'] + '/' + torrentName;
 		fs.stat(path, async (err, stat) => {
 			if (err) {
-				throw new Error(err);
+				if (retries < maxRetries) {
+					const delay = retryDelays[retries];
+					console.log(`Error occurred. Retrying in ${delay / 1000} seconds...`);
+					setTimeout(() => this.insertTorrent(torrentId, torrentName, transmission, retries + 1), delay);
+				} else {
+					console.error('Failed to insert torrent after multiple attempts:', err);
+				}
+				return;
 			}
 			const fileType = stat.isDirectory() ? 'folder' : mime.getType(path);
 			const newFile = await this.findOneAndUpdate(
@@ -195,10 +203,9 @@ FileSchema.statics.insertTorrent = async function (torrentId, torrentName, trans
 			);
 		});
 	} catch (err) {
-	  console.error('Error in insertTorrent:', err);
-	  throw err;
+		console.error('Error in insertTorrent:', err);
 	}
-  };
+};
 
 FileSchema.statics.getFileList = async function (match, sort, limit, user) {
 	const populateSelect = 'login role avatar';
@@ -310,7 +317,7 @@ FileSchema.methods = {
 		return this.comments.length;
 	},
 
-	getAverageGrade: function getAverageGrade () {
+	getAverageGrade: function getAverageGrade() {
 		var total = 0;
 		if (this.grades.length === 0)
 			return (0);
@@ -321,8 +328,7 @@ FileSchema.methods = {
 	},
 
 	removeDayLockInFile: function (dateDelete) {
-		for (var i = (this.locked.length - 1); i >= 0; i--)
-		{
+		for (var i = (this.locked.length - 1); i >= 0; i--) {
 			if (this.locked[i].createdAt.getTime() < dateDelete.getTime())
 				this.locked.splice(i, 1);
 		}
