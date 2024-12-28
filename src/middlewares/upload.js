@@ -5,7 +5,7 @@ import File from "../models/File.js";
 
 var avatarStorage = multer.diskStorage({
 	destination: function (req, file, cb) {
-		cb(null, './public/assets/avatar');
+		cb(null, '/avatar');
 	},
 	filename: function (req, file, cb) {
 		var filename = btoa(file.originalname);

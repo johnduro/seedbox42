@@ -55,52 +55,33 @@ UserSchema.statics = {
 	},
 
 	createNew: async function (infos) {
-		return new Promise((resolve, reject) => {
-			var self = this;
-			if (infos.password.length < 5) {
-				return reject('The password must 5 characters at least');
-			}
-			ft.getUserPwHash(infos.password, async function (err, hash) {
-				if (err) {
-					return reject(err);
-				}
-				infos.password = hash;
-				try {
-					infos.password = hash;
-					const post = await self.create(infos);
-					return resolve(post);
-				  } catch (err) {
-					return reject(err);
-				  }
-			});
-		});
+		if (infos.password.length < 5) {
+			throw new Error('The password must be at least 5 characters long');
+		}
+
+		try {
+			const hash = await ft.getUserPwHash(infos.password);
+			infos.password = hash;
+			const post = await this.create(infos);
+			return post;
+		} catch (err) {
+			throw new Error(`Error creating new user: ${err.message}`);
+		}
 	},
 
-	updateUserById: function (id, infos, cb) {
-		var self = this;
-		if (!('password' in infos) || infos.password === "" || infos.password == 'undefined')
-		{
-			delete infos.password;
-			self.findByIdAndUpdate(id, { $set: infos }, { new: true }, function (err, post) {
-				if (err)
-					return cb(err);
-				else
-					return cb(null, post);
-			});
-		}
-		else
-		{
-			ft.getUserPwHash(infos.password, function (err, hash) {
-				if (err)
-					return cb(err);
+	updateUserById: async function (id, infos) {
+		try {
+			if (!('password' in infos) || infos.password === "" || infos.password == 'undefined') {
+				delete infos.password;
+			} else {
+				const hash = await ft.getUserPwHash(infos.password);
 				infos.password = hash;
-				self.findByIdAndUpdate(id, { $set: infos }, { new: true }, function (err, post) {
-					if (err)
-						return cb(err);
-					else
-						return cb(null, post);
-				});
-			});
+			}
+
+			const updatedUser = await this.findByIdAndUpdate(id, { $set: infos }, { new: true }).exec();
+			return updatedUser;
+		} catch (err) {
+			throw new Error(`Error updating user: ${err.message}`);
 		}
 	}
 };

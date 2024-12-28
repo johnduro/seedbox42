@@ -74,19 +74,21 @@ export default {
 		}
 	},
 
-	getUserPwHash: function (password, done) {
+	getUserPwHash: function (password) {
 		const saltRounds = 10;
 
-		bcrypt.genSalt(saltRounds, function(err, salt) {
-			if (err) {
-				return done('An error occured while generating salt');
-			}
-			bcrypt.hash(password, salt, function(err, hash) {
+		return new Promise((resolve, reject) => {
+			bcrypt.genSalt(saltRounds, function (err, salt) {
 				if (err) {
-					return done('An error occured while generating hash');
-				} else {
-					return done(null, hash);
+					return reject('An error occurred while generating salt');
 				}
+				bcrypt.hash(password, salt, function (err, hash) {
+					if (err) {
+						return reject('An error occurred while generating hash');
+					} else {
+						return resolve(hash);
+					}
+				});
 			});
 		});
 	},

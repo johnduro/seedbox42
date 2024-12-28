@@ -73,10 +73,15 @@ router.put('/:id', rights.adminOrUserParam, upload.avatar.single('avatar'), asyn
 			delete req.body._id;
 		}
 
-		const post = await User.findByIdAndUpdate(req.params.id, { $set: infos }, { new: true }).exec();
-		var newUser = post.toObject();
-		delete newUser.password;
-		res.json({ data: newUser });
+		const connectedUser = req.user;
+		if (connectedUser.role === 'user' || connectedUser._id === req.params.id) {
+			delete infos.role;
+		}
+
+		const updatedUser = await User.updateUserById(req.params.id, infos);
+		const rawUser = updatedUser.toObject();
+		rawUser.password = "";
+		res.json({ data: rawUser });
 	} catch (err) {
 		res.status(500).json({ message: err.message });
 	}

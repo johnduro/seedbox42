@@ -8,6 +8,7 @@ services:
       - shared-torrents:/shared-torrents
       - transmission-downloads:/downloads
       - temporary-files:/tmp
+      - avatar-storage:/avatar
     ports:
       - 3000:3000
     networks:
@@ -92,6 +93,12 @@ volumes:
     driver_opts:
       type: none
       device: ./temporary-files
+      o: bind
+  avatar-storage:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./angular/teurpitorrent/public/avatar
       o: bind
 
 networks:

@@ -11,4 +11,8 @@ export interface User {
 export interface ConnectedUsers {
     connectedUsers: number;
     logins: string[];
-  }
+}
+
+export interface UserUpdate extends User {
+    password?: string;
+}

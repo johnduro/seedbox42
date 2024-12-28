@@ -10,6 +10,8 @@ import { MyProfilePageComponent } from './my-profile-page/my-profile-page.compon
 import { UsersPageComponent } from './users-page/users-page.component';
 import { FilesManagerPageComponent } from './files-manager-page/files-manager-page.component';
 import { ConfigurationPageComponent } from './configuration-page/configuration-page.component';
+import { UserEditPageComponent } from './user-edit-page/user-edit-page.component';
+import { UserCreatePageComponent } from './user-create-page/user-create-page.component';
 
 export const routes: Routes = [
     {
@@ -51,6 +53,16 @@ export const routes: Routes = [
             {
                 path: 'users',
                 component: UsersPageComponent,
+                title: 'Users'
+            },
+            {
+                path: 'users/create',
+                component: UserCreatePageComponent,
+                title: 'Users'
+            },
+            {
+                path: 'users/:id',
+                component: UserEditPageComponent,
                 title: 'Users'
             },
             {
