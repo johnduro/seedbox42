@@ -83,4 +83,20 @@ export class HeaderComponent {
   isActive(url: string): boolean {
     return this.router.url === url;
   }
+
+  onUserAvatarImageError(event: any): void {
+    const imgElement = event.target as HTMLImageElement;
+    imgElement.src = '/avatar/default.png';
+  }
+
+  closeDropdown(): void {
+    const dropdown = document.querySelector('.dropdown.show');
+    if (dropdown) {
+      dropdown.classList.remove('show');
+      const menu = dropdown.querySelector('.dropdown-menu');
+      if (menu) {
+        menu.classList.remove('show');
+      }
+    }
+  }
 }
