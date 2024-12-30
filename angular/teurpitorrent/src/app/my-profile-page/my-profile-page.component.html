@@ -1,1 +1,8 @@
-<app-user-edit [userId]="myUserId"></app-user-edit>
+<div class="profile-section">
+    <app-user-edit [userId]="myUserId"></app-user-edit>
+</div>
+
+<div class="file-list-section">
+    <app-file-list-manager [files]="files" [isProfileMode]="true"
+        [updateFiles]="updateFiles.bind(this)"></app-file-list-manager>
+</div>

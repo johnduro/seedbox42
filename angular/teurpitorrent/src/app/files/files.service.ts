@@ -18,6 +18,12 @@ export class FilesService {
       .pipe(map(response => response.data));
   }
 
+  getUserLockedFiles(): Observable<File[]> {
+    const url = `${this.baseUrl}/user-locked`;
+    return this.httpClient.get<{ data: File[] }>(url)
+      .pipe(map(response => response.data));
+  }
+
   getFile(id: string): Observable<File> {
     return this.httpClient.get<File>(`${this.baseUrl}/${id}`)
       .pipe(map(response => response));
@@ -43,6 +49,13 @@ export class FilesService {
   unlockFile(fileId: string): Observable<File> {
     return this.httpClient.delete<{ data: File }>(`${this.baseUrl}/remove-lock/${fileId}`, {})
       .pipe(map(response => response.data));
+  }
+
+  unlockFiles(filesId: string[]): Observable<{ message: string }> {
+    const url = `${this.baseUrl}/remove-all-user-lock`;
+    const body = { toUnlock: filesId };
+    return this.httpClient.put<{ message: string }>(url, body)
+      .pipe(map(response => response));
   }
 
   lockFile(fileId: string): Observable<File> {
@@ -100,5 +113,26 @@ export class FilesService {
 
     // try to have at least 3 digits and at least 1 decimal
     return convertedSize <= 9.995 ? `${convertedSize.toFixed(2)} ${unit}` : `${convertedSize.toFixed(1)} ${unit}`;
+  }
+
+  hardRemoveAllLocks(toUnlock: string[]): Observable<{ message: string }> {
+    const url = `${this.baseUrl}/hard-remove-all-lock`;
+    const body = { toUnlock };
+    return this.httpClient.put<{ message: string }>(url, body)
+      .pipe(map(response => response));
+  }
+
+  deleteFromDatabaseAndServer(filesId: string[]): Observable<{ message: string }> {
+    const url = `${this.baseUrl}/delete-all`;
+    const body = { toDelete: filesId };
+    return this.httpClient.put<{ message: string }>(url, body)
+      .pipe(map(response => response));
+  }
+
+  deleteFromDatabase(filesId: string[]): Observable<{ message: string }> {
+    const url = `${this.baseUrl}/delete-all-from-db`;
+    const body = { toDelete: filesId };
+    return this.httpClient.put<{ message: string }>(url, body)
+      .pipe(map(response => response));
   }
 }

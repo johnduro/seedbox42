@@ -1,1 +1,6 @@
-<p>files-manager-page works!</p>
+<div class="col-md-12 afm-actions">
+    <button (click)="deleteUnlocked()" class="btn btn-primary tt-button afm-button">Delete all unlocked from
+        database and server <fa-icon [icon]="faCheck" class="pr-submitcheck"></fa-icon></button>
+</div>
+<app-file-list-manager [files]="files" [updateFiles]="updateFiles.bind(this)"
+    [isProfileMode]="false"></app-file-list-manager>

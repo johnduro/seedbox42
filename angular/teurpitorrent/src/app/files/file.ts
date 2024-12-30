@@ -21,6 +21,7 @@ export interface File {
   createdAt: string;
   isLocked: boolean;
   isLockedByUser: boolean;
+  isSelected: boolean;
 }
 
 export class FileClass implements File {
@@ -39,6 +40,7 @@ export class FileClass implements File {
   createdAt: string;
   isLocked: boolean;
   isLockedByUser: boolean;
+  isSelected: boolean;
 
   constructor(file: File) {
     this._id = file._id;
@@ -56,6 +58,7 @@ export class FileClass implements File {
     this.createdAt = file.createdAt;
     this.isLocked = file.isLocked;
     this.isLockedByUser = file.isLockedByUser;
+    this.isSelected = file.isSelected;
   }
 
   convertSize(): string {
