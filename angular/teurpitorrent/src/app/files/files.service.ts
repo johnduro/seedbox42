@@ -8,7 +8,9 @@ import { File, FileDetail, FileDetailAndDirectory, FileDirectory } from './file'
 })
 export class FilesService {
 
-  private baseUrl = 'http://localhost:3000/file';
+  private host = 'http://localhost:3000';
+  //private baseUrl = 'http://localhost:3000/file';
+  private baseUrl = `${this.host}/file`;
   private httpClient = inject(HttpClient);
 
   constructor() { }
@@ -21,6 +23,41 @@ export class FilesService {
   getUserLockedFiles(): Observable<File[]> {
     const url = `${this.baseUrl}/user-locked`;
     return this.httpClient.get<{ data: File[] }>(url)
+      .pipe(map(response => response.data));
+  }
+
+  getRecentFiles(): Observable<File[]> {
+    return this.httpClient.get<{ data: File[] }>(`${this.host}/dashboard/recent-file`)
+      .pipe(map(response => response.data));
+  }
+
+  getRecentUserFiles(): Observable<File[]> {
+    return this.httpClient.get<{ data: File[] }>(`${this.host}/dashboard/recent-user-file`)
+      .pipe(map(response => response.data));
+  }
+
+  getOldestUserLockedFiles(): Observable<File[]> {
+    return this.httpClient.get<{ data: File[] }>(`${this.host}/dashboard/oldest-user-locked-file`)
+      .pipe(map(response => response.data));
+  }
+
+  getOldestLockedFiles(): Observable<File[]> {
+    return this.httpClient.get<{ data: File[] }>(`${this.host}/dashboard/oldest-locked-file`)
+      .pipe(map(response => response.data));
+  }
+
+  getBestRaterFiles(): Observable<File[]> {
+    return this.httpClient.get<{ data: File[] }>(`${this.host}/dashboard/best-rated-file`)
+      .pipe(map(response => response.data));
+  }
+
+  getMostCommentedFiles(): Observable<File[]> {
+    return this.httpClient.get<{ data: File[] }>(`${this.host}/dashboard/most-commented-file`)
+      .pipe(map(response => response.data));
+  }
+
+  getMostDownloadedFiles(): Observable<File[]> {
+    return this.httpClient.get<{ data: File[] }>(`${this.host}/dashboard/most-downloaded-file`)
       .pipe(map(response => response.data));
   }
 

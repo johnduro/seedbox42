@@ -35,50 +35,44 @@ var WallMessageSchema = new Schema({
  */
 
 WallMessageSchema.statics = {
-	deleteXOldMessages: function (nb) {
-		this.find({}).sort({"createdAt": 1 }).limit(nb).exec(function (err, messages) {
-			if (err || messages == null)
-				console.log("error in delete messages", err);
-			else
-				messages.map(function (message) {
-					message.remove();
-				});
-		});
+	async deleteXOldMessages(nb) {
+		try {
+			const messages = await this.find({}).sort({ createdAt: 1 }).limit(nb).exec();
+			if (!messages) {
+				console.log('No messages found to delete');
+				return;
+			}
+			for (const message of messages) {
+				await message.remove();
+			}
+		} catch (err) {
+			console.log('Error in delete messages', err);
+		}
 	},
 
-	addMessage: function (user, message, limit, cb) {
-		this.create({ message: message, user: user }, function (err, file) {
-			if (err)
-				return cb(err);
-			this.count({}, function (err, count) {
-				if (count > limit)
-				{
-					this.findOneAndRemove({}).sort({ createdAt: 1 }).exec(function (err, message) {
-						if (err)
-							return cb(err);
-					});
-				}
-			});
-			format.wallMessageList([file], function (err, formatFile) {
-				if (err)
-					return cb(err);
-				return cb(null, formatFile[0]);
-			});
-		});
+	async addMessage(user, message, limit) {
+		try {
+			const newMessage = await this.create({ message: message, user: user });
+			const count = await this.countDocuments({});
+			if (count > limit) {
+				await this.deleteXOldMessages(count - limit);
+			}
+			const formattedMessage = await format.wallMessageList([newMessage]);
+			return formattedMessage[0];
+		} catch (err) {
+			throw err;
+		}
 	},
 
-	getMessages: function (cb) {
-		this.find({}, null, { sort: { createdAt: 1 } }, function (err, messages) {
-			if (err)
-				return cb(err);
-			else
-				format.wallMessageList(messages, function (err, formatFiles) {
-					if (err)
-						return cb(err);
-					return cb(null, formatFiles);
-				});
-		});
-	}
+	async getMessages() {
+		try {
+			const messages = await this.find({}).sort({ createdAt: -1 }).populate('user').exec();
+			const formattedMessages = await format.wallMessageList(messages);
+			return formattedMessages;
+		} catch (err) {
+			throw err;
+		}
+	},
 };
 
 export default mongoose.model('WallMessage', WallMessageSchema);

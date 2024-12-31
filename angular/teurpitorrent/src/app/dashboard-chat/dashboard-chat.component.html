@@ -1,0 +1,26 @@
+<div class="card d-panel">
+    <div class="card-header custom-header">
+        <h3 class="card-title d-title">MINICHAT <fa-icon [icon]="faPaw"></fa-icon></h3>
+    </div>
+    <div class="card-body d-chatpanel">
+        <div class="tt-dottedborder">
+            <div class="content-messages" scroll-glue #messageContainer>
+                <div class="content-message" *ngFor="let message of messages">
+                    <div class="name">
+                        <img [src]="'/avatar/' + message.user.avatar" (error)="onUserAvatarImageError($event)"
+                            alt="Smiley face" class="message-avatar">
+                    </div>
+                    <div class="name">{{ message.user.login }} - </div>
+                    <div class="message">{{ message.message }}</div>
+                    <div class="date">{{ message.createdAt | date: 'dd-MM-yy HH:mm' }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="form-message">
+            <textarea placeholder="Write here" (keypress)="onKeyPress($event)" [(ngModel)]="newMessage"
+                maxlength="100"></textarea>
+            <button (click)="sendMessage()" class="btn btn-primary">Submit <fa-icon [icon]="faCheck"
+                    class="d-chatcheck"></fa-icon></button>
+        </div>
+    </div>
+</div>

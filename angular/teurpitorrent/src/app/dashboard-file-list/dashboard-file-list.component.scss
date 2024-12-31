@@ -1,0 +1,169 @@
+/** MINI CHAT */
+
+.d-chatpanel {
+	margin-top: 6px;
+}
+
+.d-chatborder {
+	background-image:
+	linear-gradient(to right, #333 10%, rgba(255, 255, 255, 0) 0%),
+	linear-gradient(to right, #333 10%, rgba(255, 255, 255, 0) 0%),
+	linear-gradient(to bottom, #333 10%, rgba(255, 255, 255, 0) 0%),
+	linear-gradient(to bottom, #333 10%, rgba(255, 255, 255, 0) 0%);
+	background-position:
+	top,
+	bottom,
+	left,
+	right;
+	background-size:
+	6px 1px,
+	6px 1px,
+	1px 6px,
+	1px 6px;
+	background-repeat:
+	repeat-x,
+	repeat-x,
+	repeat-y,
+	repeat-y;
+	padding: 2px;
+}
+
+.content-messages {
+    height: 300px;
+    padding: 5px;
+    overflow-y: auto;
+}
+
+.content-messages .content-message {
+    margin-bottom: 10px;
+}
+
+.content-messages .content-message .name {
+	font-size: 13px;
+	color: #99A8B2;
+    display: inline-block;
+	font-family: MuseoSans-500;
+}
+
+.content-messages .content-message .date {
+	font-size: 11px;
+	color: #99A8B2;
+    display: inline-block;
+	font-family:MuseoSans-500;
+}
+
+.message-avatar {
+	height:42;
+	width:42;
+    border-radius: 21px;
+	-webkit-border-radius: 21px;
+	-moz-border-radius: 21px;
+	box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
+}
+
+.content-messages .content-message .message {
+    display: inline-block;
+	font-size: 16px;
+	font-family:MuseoSans-300;
+}
+
+.form-message {
+    margin-top: 10px;
+}
+
+.form-message p {
+    display: inline-block;
+}
+
+.form-message textarea {
+    width: 100%;
+    display: inline-block;
+}
+
+.form-message .btn-default {
+	color: #fff;
+	font-family: 'MuseoSans-300';
+	background-color: #325064;
+	margin-top: 10px;
+	float: right;
+}
+
+.form-message .btn-default:hover {
+	color: #fff;
+	background-color: #99A8B2
+}
+
+.d-chatcheck {
+	padding-left: 8px;
+}
+
+.d-icon {
+	font-size: 11pt;
+	margin-left: 3px;
+}
+
+.d-tt-icon {
+	font-size: 15pt;
+	margin-left: 7px;
+}
+
+.d-header {
+	margin-bottom: 20px;
+}
+
+.custom-header {
+    background-color: #fff;
+}
+
+.d-nbusers {
+	font-family: 'MuseoSans-100';
+	font-style: italic;
+	color: #325064;
+}
+
+.d-plus-icon {
+	height: 10px;
+	width: 10px;
+}
+
+.d-body {
+	//margin-top: -30px;
+}
+
+.d-panel {
+	margin-bottom: 20px;
+}
+
+.d-hr {
+	color: #315078;
+	background-color: #E9EDF0;
+	height: 2px;
+}
+
+.d-file-icon {
+	color: #325064;
+}
+
+.d-title {
+	float: left;
+	color: #325064;
+	font-family: 'MuseoSans-700';
+    font-size: 16px;
+}
+
+.d-view-all {
+	float: right;
+	color: #325064;
+	font-family: 'MuseoSans-300';
+}
+
+.d-table {
+}
+
+.d-table tr th, .d-table tr td, .d-table tr {
+ 	border-style: none !important;
+}
+
+.d-td-fontsize {
+	font-size: 0.9em;
+}

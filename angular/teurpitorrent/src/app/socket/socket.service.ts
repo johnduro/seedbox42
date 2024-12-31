@@ -16,11 +16,8 @@ export class SocketService {
 
   connect(token: string) {
     if (this.socket?.connected) {
-      console.log('Already connected to server');
       return;
     }
-
-    console.log('Connecting to server with token:', token);
 
     this.socket = io(this.baseUrl, {
       reconnectionDelayMax: 10000,
@@ -44,9 +41,9 @@ export class SocketService {
     return this.socket ? this.socket.connected : false;
   }
 
-  sendEvent(event: string, data: any) {
+  sendEvent(event: string, data: any, callback?: (response: any) => void) {
     if (this.socket) {
-      this.socket.emit(event, data);
+      this.socket.emit(event, data, callback);
     }
   }
 

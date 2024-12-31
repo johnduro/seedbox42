@@ -1,0 +1,20 @@
+<div class="d-panel card border-0">
+    <div class="card-header custom-header">
+        <h3 class="card-title d-title">{{ panel.title | uppercase }}</h3>
+        <div class="clearfix"></div>
+    </div>
+    <div class="card-body d-body border-0">
+        <table class="table d-table tt-text">
+            <tbody>
+                <tr *ngFor="let file of files; let i = index" (click)="openFile(file)"
+                    [ngClass]="{ 'tt-table-odd': i % 2 === 0, 'tt-table-even': i % 2 !== 0 }">
+                    <td class="d-file-icon">
+                        <app-file-type [type]="file.fileType"></app-file-type>
+                    </td>
+                    <td><span class="d-td-fontsize">{{ file.name }}</span></td>
+                    <td><span class="d-td-fontsize">{{ convertSize(file.size) }}</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
