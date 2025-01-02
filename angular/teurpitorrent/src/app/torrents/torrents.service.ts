@@ -1,18 +1,18 @@
-import { inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Torrent } from './torrent';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TorrentsService {
 
-  private baseUrl = 'http://localhost:3000/torrent';
-  private httpClient = inject(HttpClient);
-
-  constructor() { }
+  private baseUrl: string = `${environment.backendHost}/torrent`;
+  
+  constructor(private httpClient: HttpClient) { }
 
   getAllTorrents(): Observable<Torrent[]> {
     return this.httpClient.get<{ data: { torrents: Torrent[] } }>(`${this.baseUrl}/get-all-torrents`)

@@ -2,13 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { DiskSpace } from './disk-space';
-
-/* interface DiskSpaceData {
-  used: number;
-  freePer: number;
-  usedPer: number;
-  total: string;
-} */
+import { environment } from '../../environments/environment';
 
 interface DiskSpaceResponse {
   data: DiskSpace;
@@ -20,7 +14,7 @@ interface DiskSpaceResponse {
 })
 export class DiskSpaceService {
 
-  private baseUrl = 'http://localhost:3000/dashboard/disk-space';
+  private baseUrl: string = `${environment.backendHost}/dashboard/disk-space`;
 
   constructor(private http: HttpClient) { }
 

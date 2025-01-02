@@ -1,19 +1,18 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { File, FileDetail, FileDetailAndDirectory, FileDirectory } from './file';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FilesService {
 
-  private host = 'http://localhost:3000';
-  //private baseUrl = 'http://localhost:3000/file';
-  private baseUrl = `${this.host}/file`;
-  private httpClient = inject(HttpClient);
+  private host: string = environment.backendHost;
+  private baseUrl: string = `${this.host}/file`;
 
-  constructor() { }
+  constructor(private httpClient: HttpClient) { }
 
   getAllFinishedFiles(): Observable<File[]> {
     return this.httpClient.get<{ data: File[] }>(`${this.baseUrl}/finished`)

@@ -30,7 +30,6 @@ export default function (io, transmission, app) {
 				return next(new Error('Authentication error: Invalid token'));
 			}
 			socket.appUser = decoded;
-			console.log('Authentication successful:', decoded);
 			next();
 		});
 	});

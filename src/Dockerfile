@@ -31,7 +31,11 @@ COPY --chown=node:node . .
 
 
 EXPOSE 3000
-# CMD [ "npm", "start"]
+
+RUN ls
+
+CMD ["node", "./bin/www.js"]
+#CMD [ "npm", "start"]
 
 
 

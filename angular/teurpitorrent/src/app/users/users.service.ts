@@ -1,16 +1,16 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { User, UserUpdate } from './user';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UsersService {
-  private baseUrl = 'http://localhost:3000/users';
-  private httpClient = inject(HttpClient);
+  private baseUrl: string = `${environment.backendHost}/users`;
 
-  constructor() { }
+  constructor(private httpClient: HttpClient) { }
 
   getUser(userId: string): Observable<User> {
     const url = `${this.baseUrl}/${userId}`;

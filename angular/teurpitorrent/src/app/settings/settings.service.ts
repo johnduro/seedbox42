@@ -1,16 +1,16 @@
-import { inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Settings } from './settings';
 import { map, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SettingsService {
-  private baseUrl = 'http://localhost:3000/admin';
-  private httpClient = inject(HttpClient);
+  private baseUrl: string = `${environment.backendHost}/admin`;
 
-  constructor() { }
+  constructor(private httpClient: HttpClient) { }
 
   getSettings(): Observable<{ data: Settings, version: string }> {
     const url = `${this.baseUrl}/settings`;

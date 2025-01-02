@@ -4,7 +4,7 @@ services:
     user: "1000:1000"
     volumes:
       - ./src:/opt/app
-      - /opt/app/node_modules/
+      - node-modules:/opt/app/node_modules/
       - shared-torrents:/shared-torrents
       - transmission-downloads:/downloads
       - temporary-files:/tmp
@@ -14,6 +14,11 @@ services:
     networks:
       - mongodb-network
       - transmission-network
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      transmission:
+        condition: service_healthy
 
   teurpitorrent:
     build: ./angular/teurpitorrent
@@ -24,6 +29,10 @@ services:
       - ./angular/teurpitorrent:/teurpitorrent
     environment:
       - STYLE=css
+    depends_on:
+      - seedbox
+      - mongodb
+      - transmission
 
   mongodb:
     image: mongo:8.0.0
@@ -38,6 +47,11 @@ services:
       - ./docker/mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     networks:
       - mongodb-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   mongo-express:
     image: mongo-express
@@ -57,15 +71,10 @@ services:
       PUID: 1000
       PGID: 1000
       TZ: Europe/Paris
-#    - WHITELIST= #optional
-#    - PEERPORT= #optional
-#    - HOST_WHITELIST= #optional
-#    - TRANSMISSION_WEB_HOME= #optional
     volumes:
       - ./transmission/data:/config
       - transmission-downloads:/downloads
       - shared-torrents:/shared-torrents
-#    - /path/to/watch/folder:/watch
     ports:
       - 9091:9091
       - 51413:51413
@@ -73,9 +82,15 @@ services:
     restart: unless-stopped
     networks:
       - transmission-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/transmission/web/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   mongodb-storage:
+  node-modules:
   transmission-downloads:
     driver: local
     driver_opts:

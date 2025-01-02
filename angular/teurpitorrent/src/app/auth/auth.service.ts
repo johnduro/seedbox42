@@ -1,8 +1,9 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs/operators';
 import { SocketService } from '../socket/socket.service';
 import { User } from '../users/user';
+import { environment } from '../../environments/environment';
 
 interface AuthResponse {
   token: string;
@@ -14,11 +15,9 @@ interface AuthResponse {
 })
 export class AuthService {
 
-  baseUrl = 'http://localhost:3000/authenticate'; //todo change this
-  httpClient = inject(HttpClient);
-  socket = inject(SocketService);
+  baseUrl: string = `${environment.backendHost}/authenticate`;
 
-  constructor() { }
+  constructor(private httpClient: HttpClient, private socket: SocketService) { }
 
   login(data: { login: string, password: string }) {
     return this.httpClient.post<AuthResponse>(this.baseUrl, data)
