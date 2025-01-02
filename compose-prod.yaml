@@ -1,0 +1,111 @@
+services:
+  seedbox:
+    build: ./src
+    user: "${UID}:${GID}"
+    volumes:
+      - ./src:/opt/app
+      - node-modules:/opt/app/node_modules/
+      - shared-torrents:/shared-torrents
+      - transmission-downloads:/downloads
+      - temporary-files:/tmp
+      - avatar-storage:/avatar
+    ports:
+      - 3000:3000
+    networks:
+      - mongodb-network
+      - transmission-network
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      transmission:
+        condition: service_healthy
+
+  teurpitorrent:
+    build: ./angular/teurpitorrent
+    container_name: teurpitorrent
+    ports:
+      - '4200:4200'
+    volumes:
+      - ./angular/teurpitorrent:/teurpitorrent
+    environment:
+      - STYLE=css
+    depends_on:
+      - seedbox
+      - mongodb
+      - transmission
+
+  mongodb:
+    image: mongo:8.0.0
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_DATABASE: seedapp
+    volumes:
+      - mongodb-storage:/data/db
+      - ./docker/mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - mongodb-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  transmission:
+    image: lscr.io/linuxserver/transmission:latest
+    container_name: transmission
+    environment:
+      PUID: ${UID}
+      PGID: ${GID}
+      TZ: Europe/Paris
+    volumes:
+      - ./transmission/data:/config
+      - transmission-downloads:/downloads
+      - shared-torrents:/shared-torrents
+    ports:
+      - 51413:51413
+      - 51413:51413/udp
+    restart: unless-stopped
+    networks:
+      - transmission-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/transmission/web/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mongodb-storage:
+  node-modules:
+  transmission-downloads:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./transmission/downloads
+      o: bind
+  shared-torrents:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./transmission/shared-torrents
+      o: bind
+  temporary-files:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./temporary-files
+      o: bind
+  avatar-storage:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./angular/teurpitorrent/public/avatar
+      o: bind
+
+networks:
+  mongodb-network:
+    driver: bridge
+  transmission-network:
+    driver: bridge
