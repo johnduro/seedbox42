@@ -393,6 +393,7 @@ router.get('/detail/:id', async (req, res) => {
 			delete rawFile.path;
 			res.json({ data: data, file: rawFile });
 		} catch (err) {
+			console.log(err);
 			res.status(500).json({ error: err.message, file: file.toObject() });
 		}
 
@@ -461,6 +462,10 @@ router.post('/upload/:id/:pathInDirectory', async (req, res, next) => {
 	}
 });
 
+function removeTrailingSlash(filePath) {
+	return filePath.endsWith('/') ? filePath.slice(0, -1) : filePath;
+}
+
 router.get('/download/:id/:pathInDirectory/:name', async (req, res, next) => {
 	try {
 		const fileId = req.params.id;
@@ -472,7 +477,10 @@ router.get('/download/:id/:pathInDirectory/:name', async (req, res, next) => {
 			return res.status(404).json({ message: 'File not found' });
 		}
 
-		const filePath = path.join(file.getPath(), pathInDirectory);
+		let filePath = path.join(file.getPath(), pathInDirectory);
+		filePath = path.normalize(filePath);
+		filePath = removeTrailingSlash(filePath);
+
 		if (!file.isPathInDirectory(filePath)) {
 			return res.status(400).json({ message: 'Invalid path' });
 		}

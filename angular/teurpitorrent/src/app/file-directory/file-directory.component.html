@@ -25,7 +25,7 @@
         <td class="col-md-7" colspan="2">{{currentDirectory.name}}</td>
         <td class="col-md-2">{{convertSize(currentDirectory.size)}}</td>
         <td class="col-md-1 tt-darkblue">
-          <fa-icon [icon]="faCircleArrowDown" (click)="download('')" class="fl-downloadico"></fa-icon>
+          <fa-icon [icon]="faCircleArrowDown" (click)="downloadFile('')" class="fl-downloadico fl-pointer"></fa-icon>
         </td>
         <td class="col-md-1 tt-darkblue">
         </td>
@@ -35,14 +35,14 @@
         <td class="col-md-1 tt-darkblue">
           <app-file-type [type]="child.type"></app-file-type>
         </td>
-        <td class="col-md-6" *ngIf="child.isDirectory; else noClick" (click)="navigateToDirectory(child)">{{child.name}}
+        <td class="col-md-6 fl-pointer" *ngIf="child.isDirectory; else noClick" (click)="navigateToDirectory(child)">{{child.name}}
         </td>
         <ng-template #noClick>
           <td class="col-md-6">{{child.name}}</td>
         </ng-template>
         <td class="col-md-2">{{convertSize(child.size)}}</td>
         <td class="col-md-1 tt-darkblue">
-          <fa-icon [icon]="faCircleArrowDown" (click)="download(child.name)" class="fl-downloadico"></fa-icon>
+          <fa-icon [icon]="faCircleArrowDown" (click)="downloadFile(child.name)" class="fl-downloadico fl-pointer"></fa-icon>
         </td>
         <td class="col-md-1 tt-darkblue">
         </td>

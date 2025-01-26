@@ -22,7 +22,8 @@ const getTokenFromRequest = (req) => {
 	if (authHeader && authHeader.startsWith('Bearer ')) {
 		return authHeader.split(' ')[1];
 	}
-	return null;
+
+	return req.cookies.token;
 };
 
 var auth = async (req, res, next) => {

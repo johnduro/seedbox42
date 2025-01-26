@@ -3,11 +3,9 @@
     overflow-y: scroll;
 }
 
-
 .ts-search {
 	margin-top: 15px;
 }
-
 
 .ts-select {
 	margin-top: 10px;
@@ -20,9 +18,6 @@
 
 .ts-body {
 	margin-top: 30px;
-}
-
-.ts-torrents {
 }
 
 .ts-nb-select {
@@ -52,11 +47,6 @@
 .ts-all-actions {
 	padding-left: 22px;
 }
-
-
-
-
-
 
 .ts-action {
 	text-decoration: underline;
@@ -96,15 +86,8 @@
 	color: black;
 }
 
-.ts-torrent-row {
-	/* height: 122px; */
-}
-
 .ts-add-torrents {
 	margin-top: -10px;
-}
-
-.ts-add-url {
 }
 
 .ts-addcheck {
@@ -119,4 +102,8 @@
 
 .ts-title {
 	font-size: 15px;
+}
+
+.ts-pointer {
+	cursor: pointer;
 }

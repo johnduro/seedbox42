@@ -126,10 +126,6 @@
 	width: 10px;
 }
 
-.d-body {
-	//margin-top: -30px;
-}
-
 .d-panel {
 	margin-bottom: 20px;
 }
@@ -157,13 +153,14 @@
 	font-family: 'MuseoSans-300';
 }
 
-.d-table {
-}
-
 .d-table tr th, .d-table tr td, .d-table tr {
  	border-style: none !important;
 }
 
 .d-td-fontsize {
 	font-size: 0.9em;
+}
+
+.d-pointer {
+	cursor: pointer;
 }

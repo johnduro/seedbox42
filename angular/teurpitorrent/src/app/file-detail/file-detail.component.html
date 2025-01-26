@@ -11,12 +11,12 @@
         <div> Download : {{fileDetail.createdAt | date:'MM/dd/yy'}}</div>
         <div>
           Wishlist :
-          <fa-icon [icon]="faHeart" *ngIf="fileDetail.isLockedByUser === true" class="tt-locked-user"
+          <fa-icon [icon]="faHeart" *ngIf="fileDetail.isLockedByUser === true" class="tt-locked-user fl-pointer"
             (click)="unlockFile(fileDetail)"></fa-icon>
           <fa-icon [icon]="faHeart" *ngIf="fileDetail.isLocked === true && fileDetail.isLockedByUser === false"
-            class="tt-locked-other" (click)="lockFile(fileDetail)"></fa-icon>
+            class="tt-locked-other fl-pointer" (click)="lockFile(fileDetail)"></fa-icon>
           <fa-icon [icon]="faHeart" *ngIf="fileDetail.isLocked === false && fileDetail.isLockedByUser === false"
-            class="tt-locked-no" (click)="lockFile(fileDetail)"></fa-icon>
+            class="tt-locked-no fl-pointer" (click)="lockFile(fileDetail)"></fa-icon>
         </div>
         <div> Downloaded : {{fileDetail.downloads}} times</div>
         <!--         <div class="col-md-12 fl-add-file" *ngIf="fileDetail.fileDirectory.isDirectory === true">
@@ -64,7 +64,7 @@
         <div>Number of comments : {{fileDetail.commentsNbr}}</div>
         <div *ngIf="userGrade === 0">Rate it :
           <fa-icon *ngFor="let star of hoverStars; let i = index" [icon]="star" (mouseenter)="onStarHover(i + 1)"
-            (mouseleave)="onStarHover(0)" (click)="onStarClick(i + 1)">
+            (mouseleave)="onStarHover(0)" (click)="onStarClick(i + 1)" class="fl-pointer">
           </fa-icon>
         </div>
         <div *ngIf="userGrade > 0">Your rating :
@@ -75,8 +75,8 @@
         <h4 class="fl-title tt-title">LEAVE A COMMENT:</h4>
         <div class="form-message">
           <textarea [(ngModel)]="newComment"></textarea>
-          <button (click)="addComment()" class="btn btn-default">Submit <i
-              class="fa fa-check tt-inputcheck"></i></button>
+          <button (click)="addComment()" class="btn btn-primary">Submit <fa-icon [icon]="faCheck"
+            class="tt-inputcheck"></fa-icon></button>
         </div>
       </div>
     </div>

@@ -10,7 +10,7 @@
     </div>
     <div class="col-md-3 col-6">
       <div class="tt-select-div ts-left-select">
-        <select [(ngModel)]="selectedStatus" (ngModelChange)="filterTorrentsByStatus()" class="tt-select form-select">
+        <select [(ngModel)]="selectedStatus" (ngModelChange)="filterTorrentsByStatus()" class="tt-select form-select ts-pointer">
           <option [value]="STATUS_ALL">All</option>
           <option [value]="STATUS_ACTIVE">Active</option>
           <option [value]="STATUS_DOWNLOADING">Downloading</option>
@@ -26,7 +26,7 @@
     <div class="ts-torrents col-md-12 tt-text">
       <div class="ts-torrents-head col-md-12 d-flex align-items-center">
         <div class="col-md-1 ts-checkbox">
-          <input type="checkbox" [(ngModel)]="isCheckboxAllSelected" (ngModelChange)="selectAllTorrents()">
+          <input type="checkbox" [(ngModel)]="isCheckboxAllSelected" (ngModelChange)="selectAllTorrents()" class="ts-pointer">
         </div>
         <div class="col-md-11 ts-all-actions">
           <a href="" class="ts-action" (click)="removeSelectedTorrents($event)">
@@ -48,7 +48,7 @@
               (contextmenu)="onRightClick($event, torrent)">
               <td class="d-flex align-items-start tt-dottedbottom">
                 <div class="col-md-1 ts-checkbox-tr">
-                  <input type="checkbox" [(ngModel)]="torrent.isSelected" (ngModelChange)="checkboxSwitch(torrent.id)">
+                  <input type="checkbox" [(ngModel)]="torrent.isSelected" (ngModelChange)="checkboxSwitch(torrent.id)" class="ts-pointer">
                 </div>
                 <div class="col-md-11">
                   <div class="col-md-12">

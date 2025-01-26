@@ -1,76 +1,76 @@
-import fs from "fs";
+import fsBase from 'fs';
+const fs = fsBase.promises;
+
 import mime from "mime";
 import path from 'path';
 
-
-
-
-var getFileRights = function (path, done) {
-	var rights = {
+var getFileRights = async (path, done) => {
+	const rights = {
 		read: true,
-		write: true
+		write: true,
 	};
-	fs.access(path, fs.R_OK, function (err) {
-		if (err)
-			rights.read = false;
-		fs.access(path, fs.W_OK, function (err) {
-			if (err)
-				rights.write = false;
-			done(rights);
-		});
-	});
+
+	try {
+		await fs.access(path, fs.constants.R_OK);
+	} catch (err) {
+		rights.read = false;
+	}
+
+	try {
+		await fs.access(path, fs.constants.W_OK);
+	} catch (err) {
+		rights.write = false;
+	}
+
+	return rights;
 };
 
-var getFileRightsRecurs = function self (path, done) {
-	var infos = {
+var getFileRightsRecurs = async function self(path) {
+	const infos = {
 		fileType: '',
-		rights : {
+		rights: {
 			read: true,
-			write: true
+			write: true,
 		},
 		size: 0,
-		path: path
+		path: path,
 	};
-	fs.stat(path, function (err, fStat) {
-		if (err)
-			return done(err);
-		if (fStat == null)
-			return done('File does not exist');
-		getFileRights(path, function (pRights) {
-			infos.rights.read = pRights.read;
-			infos.rights.write = pRights.write;
-			infos.fileType = mime.getType(path);
-			infos.size += fStat.size;
-			if (fStat.isDirectory() && infos.rights.read)
-			{
-				infos.fileType = 'folder';
-				fs.readdir(path, function (err, files) {
-					if (err)
-						return done(err);
-					var i = 0;
-					(function next () {
-						var file = files[i++];
-						if (!file)
-							return done(null, infos);
-						var filePath = path + '/' + file;
-						self(filePath, function (err, fInfos) {
-							if (err)
-								infos.rights.read = false;
-							else
-							{
-								infos.rights.read = fInfos.rights.read ? infos.rights.read : fInfos.rights.read;
-								infos.rights.write = fInfos.rights.write ? infos.rights.write : fInfos.rights.write;
-								infos.size += fInfos.size;
-							}
-							next();
-						});
-					})();
-				});
+
+	try {
+		const fStat = await fs.stat(path);
+		if (fStat == null) {
+			throw new Error('File does not exist');
+		}
+
+		const pRights = await getFileRights(path);
+		infos.rights.read = pRights.read;
+		infos.rights.write = pRights.write;
+		infos.fileType = mime.getType(path);
+		infos.size += fStat.size;
+
+		if (fStat.isDirectory() && infos.rights.read) {
+			infos.fileType = 'folder';
+			const files = await fs.readdir(path);
+			for (const file of files) {
+				if (file.length > 0 && file[0] === '.') {
+					continue;
+				}
+				const filePath = `${path}/${file}`;
+				try {
+					const fInfos = await getFileRightsRecurs(filePath);
+					infos.rights.read = fInfos.rights.read ? infos.rights.read : fInfos.rights.read;
+					infos.rights.write = fInfos.rights.write ? infos.rights.write : fInfos.rights.write;
+					infos.size += fInfos.size;
+				} catch (err) {
+					infos.rights.read = false;
+				}
 			}
-			else
-				return done(null, infos);
-		});
-	});
+		}
+
+		return infos;
+	} catch (err) {
+		throw new Error(`Error getting file rights: ${err.message}`);
+	}
 };
 
 
@@ -91,7 +91,7 @@ export default {
 
 	getFileInfosRecurs: async function (filePath, fileName) {
 		try {
-			const stats = await fs.promises.stat(filePath);
+			const stats = await fs.stat(filePath);
 			const fileInfo = {
 				name: fileName,
 				size: stats.size,
@@ -102,7 +102,7 @@ export default {
 			};
 
 			if (stats.isDirectory()) {
-				const files = await fs.promises.readdir(filePath);
+				const files = await fs.readdir(filePath);
 				fileInfo.children = await Promise.all(files.map(async (file) => {
 					const childPath = path.join(filePath, file);
 					return await this.getFileInfosRecurs(childPath, file);
@@ -115,17 +115,15 @@ export default {
 		}
 	},
 
-	getFilesStreams: function self (fileDetail, pathInDir, done) {
+	getFilesStreams: function self(fileDetail, pathInDir, done) {
 		var fileStream = [];
 		var zipSize = 0;
-		if (fileDetail.isDirectory)
-		{
+		if (fileDetail.isDirectory) {
 			var i = 0;
-			(function next () {
+			(function next() {
 				var file = fileDetail.fileList[i++];
 				if (!file)
 					return done(null, { streams: fileStream, size: zipSize });
-				// var filePathInDir = pathInDir + '/' + file.name;
 				var filePathInDir = pathInDir;
 				if (filePathInDir != '')
 					filePathInDir += '/';
@@ -139,52 +137,37 @@ export default {
 				});
 			})();
 		}
-		else
-		{
+		else {
 			var pathInDirByteLength = Buffer.byteLength(pathInDir, 'utf8');
 			fileStream.push({ stream: fs.createReadStream(fileDetail.path), name: pathInDir });
-			// return done(null, { streams: fileStream, size: (fileDetail.size + 30 + (pathInDir.length * 2) + 16 + 46) });
 			return done(null, { streams: fileStream, size: (fileDetail.size + 30 + (pathInDirByteLength * 2) + 16 + 46) });
 		}
 	},
 
-	getDirInfos: function (path, done) {
-		var result = [];
-		fs.stat(path, function (err, fStat) {
-			if (err)
-				return done(err);
-			if (fStat == null)
-				return done("File does not exist");
-			if (fStat.isDirectory())
-			{
-				fs.readdir(path, function (err, files) {
-					if (err)
-						return done(err);
-					var i = 0;
-					(function next () {
-						var file = files[i++];
-						if (!file)
-							return done(null, result);
-						if (file.length > 0 && file[0] == '.')
-							return next();
-						getFileRightsRecurs(path + '/' + file, function (err, infos) {
-							if (err)
-								return done(err);
-							result.push(infos);
-							next();
-						});
-					})();
-				});
+	getDirInfos: async (path) => {
+		const result = [];
+		try {
+			const fStat = await fs.stat(path);
+			if (fStat == null) {
+				throw new Error("File does not exist");
 			}
-			else
-			{
-				getFileRightsRecurs(path, function (err, infos) {
-					if (err)
-						return done(err);
-					return done(null, [infos]);
-				});
+			if (fStat.isDirectory()) {
+				const files = await fs.readdir(path);
+				for (const file of files) {
+					if (file.length > 0 && file[0] === '.') {
+						continue;
+					}
+					const infos = await getFileRightsRecurs(`${path}/${file}`);
+					result.push(infos);
+				}
+			} else {
+				const infos = await getFileRightsRecurs(path);
+				result.push(infos);
 			}
-		});
+			return result;
+		} catch (err) {
+			throw new Error(`Error getting directory info: ${err.message}`);
+		}
 	},
 
 	fileTypeSync: function (path) {

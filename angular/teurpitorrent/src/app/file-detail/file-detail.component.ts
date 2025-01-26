@@ -1,9 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { FilesService } from '../files/files.service';
 import { FileDetail, FileDetailAndDirectory, FileDirectory } from '../files/file';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FileDirectoryComponent } from '../file-directory/file-directory.component';
-import { faHeart, faStar } from '@fortawesome/free-solid-svg-icons';
+import { faHeart, faStar, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../auth/auth.service';
@@ -22,8 +22,6 @@ import { FileDisplayRatingComponent } from '../file-display-rating/file-display-
 export class FileDetailComponent {
   readonly ADMIN_ROLE = 'admin';
 
-  private route = inject(ActivatedRoute);
-
   id: string = "";
   fileDetailAndDirectory: FileDetailAndDirectory = {} as FileDetailAndDirectory;
   fileDetail: FileDetail = {} as FileDetail;
@@ -36,8 +34,13 @@ export class FileDetailComponent {
   faStar = faStar;
   faStarRegular = faStarRegular;
   faHeart = faHeart;
+  faCheck = faCheck;
 
-  constructor(private filesService: FilesService, private authService: AuthService) { }
+  constructor(
+    private route: ActivatedRoute,
+    private filesService: FilesService, 
+    private authService: AuthService
+  ) { }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {

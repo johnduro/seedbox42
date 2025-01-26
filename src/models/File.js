@@ -153,23 +153,25 @@ FileSchema.statics = {
 		}
 	},
 
-	insertFile: function (file, userId, hashString, cb) {
-		var fileToInsert = {
+	insertFile: async function (file, userId, hashString) {
+		const fileToInsert = {
 			name: pathS.basename(file.path),
 			path: file.path,
 			size: file.size,
-			creator: mongoose.mongo.ObjectID(userId),
+			creator: userId,
 			hashString: hashString,
 			isFinished: true,
 			fileType: file.fileType,
-			createdAt: Date.now()
+			createdAt: Date.now(),
 		};
-		this.create(fileToInsert, function (err, file) {
-			if (err)
-				cb(err);
-			else
-				cb(null, file);
-		});
+
+		try {
+			const createdFile = await this.create(fileToInsert);
+
+			return createdFile;
+		} catch (err) {
+			throw new Error(`Error inserting file: ${err.message}`);
+		}
 	},
 };
 

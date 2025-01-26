@@ -1,4 +1,4 @@
-import { Component, inject, Input, SimpleChanges } from '@angular/core';
+import { Component, Input, SimpleChanges } from '@angular/core';
 import { FileDetail, FileDirectory } from '../files/file';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -17,13 +17,13 @@ import { FilesService } from '../files/files.service';
 export class FileDirectoryComponent {
   @Input({ required: true }) fileDirectory!: FileDirectory;
   @Input({ required: true }) fileDetail!: FileDetail;
-  
+
   currentDirectory: FileDirectory = {} as FileDirectory;
   path: string[] = [];
-  
-  filesService = inject(FilesService);
-  
+
   faCircleArrowDown = faCircleArrowDown;
+
+  constructor(private filesService: FilesService) { }
 
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -46,21 +46,13 @@ export class FileDirectoryComponent {
     this.currentDirectory = this.findDirectoryByPath(this.fileDirectory, this.path.slice(1));
   }
 
-  download(name: string): void {
+  downloadFile(name: string) {
     let fileName = name;
     if (!fileName) {
       fileName = this.currentDirectory.name;
     }
-    this.filesService.downloadFile(this.fileDetail._id, this.getDownloadPath(name), fileName).subscribe((data: Blob) => {
-      const url = window.URL.createObjectURL(data);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = fileName;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
-    });
+    const path = this.filesService.getDownloadUrl(this.fileDetail._id, this.getDownloadPath(name), fileName);
+    window.location.href = path;
   }
 
   convertSize(size: number): string {

@@ -73,13 +73,10 @@ export class FilesService {
       })));
   }
 
-  downloadFile(fileId: string, path: string, name: string): Observable<Blob> {
+  getDownloadUrl(fileId: string, path: string, name: string): string {
     const encodedPath = btoa(path);
     const encodedName = btoa(name);
-    const url = `${this.baseUrl}/download/${fileId}/${encodedPath}/${encodedName}`;
-
-    const headers = { 'Content-Type': 'application/json' };
-    return this.httpClient.get(url, { headers, responseType: 'blob' });
+    return `${this.baseUrl}/download/${fileId}/${encodedPath}/${encodedName}`;
   }
 
   unlockFile(fileId: string): Observable<File> {

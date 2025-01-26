@@ -68,6 +68,7 @@ export class TorrentListComponent implements OnInit {
     this.torrentsService.getAllTorrents().subscribe(torrents => {
       this.torrents = torrents;
       this.filteredTorrents = this.torrents;
+      this.updateFilteredTorrents();
     });
 
 
@@ -116,7 +117,7 @@ export class TorrentListComponent implements OnInit {
   updateFilteredTorrents(): void {
     this.filteredTorrents = this.torrents
       .filter(torrent => this.doesTorrentMatchStatus(torrent) && this.doesTorrentMatchSearch(torrent))
-      .sort((a, b) => b.activityDate - a.activityDate);
+      .sort((a, b) => b.addedDate - a.addedDate);
   }
 
   private doesTorrentMatchStatus(torrent: Torrent): boolean {

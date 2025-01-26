@@ -1,21 +1,21 @@
 .message-avatar {
-	height:42px;
-	width:42px;
-    border-radius: 21px;
+	height: 42px;
+	width: 42px;
+	border-radius: 21px;
 	-webkit-border-radius: 21px;
 	-moz-border-radius: 21px;
 	box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
 }
 
 .videogular-container {
-    width: 100%;
-    height: 320px;
-    margin: auto;
-    overflow: hidden;
+	width: 100%;
+	height: 320px;
+	margin: auto;
+	overflow: hidden;
 }
 
 .videogular-container.audio {
-    height: 50px;
+	height: 50px;
 }
 
 /* FILES */
@@ -57,9 +57,6 @@
 	margin-top: 14px;
 }
 
-/* .fl-arbo {
-} */
-
 .fl-icon {
 	font-size: 13pt;
 	margin-left: 3px;
@@ -73,9 +70,6 @@
 .fl-downloadico {
 	font-size: 17pt;
 }
-
-/* .fl-comments {
-} */
 
 .fl-table-comment {
 	border-top: 1px solid #325064;
@@ -97,9 +91,6 @@
 	margin-top: 12px;
 }
 
-/* .fl-infos {
-} */
-
 .fl-add-file {
 	margin-top: 25px;
 }
@@ -112,11 +103,10 @@
 	margin-top: 25px;
 }
 
-/* .fl-table {
-} */
-
-.fl-table th, .fl-table tr td, .fl-table tr {
- 	border-style: none !important;
+.fl-table th,
+.fl-table tr td,
+.fl-table tr {
+	border-style: none !important;
 }
 
 .first-tr {
@@ -131,4 +121,35 @@
 	display: inline-block;
 	font-size: 12pt;
 	vertical-align: middle;
+}
+
+.fl-pointer {
+	cursor: pointer;
+}
+
+.btn-primary {
+	color: #fff;
+	font-family: 'MuseoSans-300';
+	background-color: #325064;
+}
+
+.btn-default:hover {
+	color: #fff;
+	background-color: #99A8B2
+}
+
+.form-message {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+
+	textarea {
+		width: 100%;
+		min-height: 100px;
+		resize: vertical;
+	}
+
+	button {
+		align-self: flex-start;
+	}
 }

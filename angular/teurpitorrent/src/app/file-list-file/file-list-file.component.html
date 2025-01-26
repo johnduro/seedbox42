@@ -1,17 +1,17 @@
 <td class="tt-darkblue">
   <app-file-type [type]="file.fileType"></app-file-type>
 </td>
-<td (click)="openFile(file)">{{file.name}}</td>
+<td (click)="openFile(file)" class="fls-pointer">{{file.name}}</td>
 <td>{{file.convertSize()}}</td>
 <td class="tt-darkblue">
-  <fa-icon [icon]="faCircleArrowDown" (click)="downloadFile(file)" class="icon-down-circled fls-download"></fa-icon>
+  <fa-icon [icon]="faCircleArrowDown" (click)="downloadFile(file)" class="icon-down-circled fls-download fls-pointer"></fa-icon>
 </td>
 <td>
-  <fa-icon [icon]="faHeart" *ngIf="file.isLockedByUser === true" class="tt-locked-user"
+  <fa-icon [icon]="faHeart" *ngIf="file.isLockedByUser === true" class="tt-locked-user fls-pointer"
     (click)="unlockFile(file)"></fa-icon>
-  <fa-icon [icon]="faHeart" *ngIf="file.isLocked === true && file.isLockedByUser === false" class="tt-locked-other"
+  <fa-icon [icon]="faHeart" *ngIf="file.isLocked === true && file.isLockedByUser === false" class="tt-locked-other fls-pointer"
     (click)="lockFile(file)"></fa-icon>
-  <fa-icon [icon]="faHeart" *ngIf="file.isLocked === false && file.isLockedByUser === false" class="tt-locked-no"
+  <fa-icon [icon]="faHeart" *ngIf="file.isLocked === false && file.isLockedByUser === false" class="tt-locked-no fls-pointer"
     (click)="lockFile(file)"></fa-icon>
 </td>
 <td>{{file.createdAt | date:'MM/dd/yy'}}</td>

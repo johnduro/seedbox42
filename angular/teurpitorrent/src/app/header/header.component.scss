@@ -1,9 +1,9 @@
-.l-header{
-    background-color: black;
-    color: white;
-    line-height: 50px;
-    height: 50px;
-    display: block;
+.l-header {
+	background-color: black;
+	color: white;
+	line-height: 50px;
+	height: 50px;
+	display: block;
 }
 
 .l-header-color {
@@ -11,9 +11,9 @@
 }
 
 .l-block {
-    height: 100%;
-    display: inline-block;
-    vertical-align: middle;
+	height: 100%;
+	display: inline-block;
+	vertical-align: middle;
 }
 
 .l-menu {
@@ -21,41 +21,28 @@
 	float: left;
 }
 
-/* .l-logo {
-
-}
-
-.l-account {
-} */
-
 .profile-img {
-    margin-top: -12px;
-    margin-right: 5px;
-    width: 46px;
-    height: 46px;
-    border-radius: 23px;
+	margin-top: -12px;
+	margin-right: 5px;
+	width: 46px;
+	height: 46px;
+	border-radius: 23px;
 	-webkit-border-radius: 23px;
 	-moz-border-radius: 23px;
 }
-/* .profile-img{ */
-/*     margin-top: -12px; */
-/*     margin-right: 5px; */
-/*     float: left; */
-/*     background: url(http://jeanbaptiste.bayle.free.fr/AVATAR/grey_81618-default-avatar-200x200.jpg) 50% 50% no-repeat; /\* 50% 50% centers image in div *\/ */
-/*     /\*background-size: auto 100%; /\* Interchange this value depending on prefering width vs. height *\/ */
-/*     width: 45px; */
-/*     height: 45px; */
-/*     border-radius: 50%; */
-/* } */
-
 
 .custom-navcolor {
 	color: #ffffff;
 }
 
 .custom-navCat {
-	font-size:1.1em;
-	font-family:MuseoSans-500;
+	font-size: 1.1em;
+	font-family: MuseoSans-500;
+}
+
+.nav-item {
+	display: inline-flex;
+	align-items: center;
 }
 
 .navbar-center {
@@ -67,9 +54,9 @@
 }
 
 .navbar-nav {
-	margin-top:10px;
-	height:70px;
-	vertical-align:middle;
+	margin-top: 10px;
+	height: 70px;
+	vertical-align: middle;
 }
 
 .ft-active {
@@ -77,55 +64,53 @@
 	padding-bottom: 5px;
 }
 
-/* @font-face {
-	font-family: XtreemMedium;
-	src: url('../../font/XtreemThin_Demo.ttf');
-	//src: url('../../font/XtreemMedium_Demo.ttf');
-}*/
+@font-face {
+	font-family: Silkscreen;
+	src: url('../../assets/font/Silkscreen-Regular.ttf');
+}
 
-#ttTitle, #ttTitleToggle {
-	font-family: XtreemMedium;
+#ttTitle,
+#ttTitleToggle {
+	font-family: Silkscreen;
 	color: white;
 }
 
 #ttTitleToggle {
-	display:none;
-	font-size:1.8em;
-	margin-top:12px;
+	display: none;
+	font-size: 1.8em;
+	margin-top: 12px;
 	text-decoration: none;
 }
 
 @media screen and (min-width:1060px) {
 	#ttTitle {
 		font-size: 3.5em;
-		margin-top:23px;
 	}
 }
 
 @media screen and (min-width:768px) and (max-width:1060px) {
 	#ttTitle {
-		font-size:2em;
-		margin-top:19px;
+		font-size: 2em;
 	}
 }
 
 @media screen and (max-width:768px) {
 	#ttTitle {
-		display:none;
+		display: none;
 	}
 }
 
 @media screen and (min-width:245px) and (max-width:768px) {
 	#ttTitleToggle {
-		display:inline-block;
+		display: inline-block;
 	}
 }
 
 .tt-icon-navbar {
-	vertical-align:middle;
+	vertical-align: middle;
 	height: 27px;
 	width: auto;
-	margin:-5px -15px;
+	margin: -5px -15px;
 }
 
 .nb-connected-login {
@@ -137,4 +122,22 @@
 	margin-top: 5px;
 	font-size: 22px;
 	color: white;
+}
+
+.nav-item.dropdown {
+	position: relative;
+
+	.dropdown-menu {
+		position: absolute;
+		top: 100%;
+		left: 50%;
+		transform: translateX(-50%);
+		margin-top: 0;
+	}
+}
+
+.dropdown-toggle::after {
+	display: inline-block;
+	margin-left: 0.255em;
+	vertical-align: middle;
 }

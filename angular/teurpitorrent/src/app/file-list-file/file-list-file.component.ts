@@ -1,4 +1,4 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { File, FileClass } from '../files/file';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -22,8 +22,10 @@ export class FileListFileComponent {
 
   file: FileClass = {} as FileClass;
 
-  router = inject(Router);
-  filesService = inject(FilesService);
+  constructor(
+    private router: Router, 
+    private filesService: FilesService
+  ) { }
 
   faFolderOpen = faFolderOpen;
   faMusic = faMusic;
@@ -46,16 +48,8 @@ export class FileListFileComponent {
   }
 
   downloadFile(file: File) {
-    this.filesService.downloadFile(file._id, "/", file.name).subscribe((data: Blob) => {
-      const url = window.URL.createObjectURL(data);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = file.name;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
-    });
+    const path = this.filesService.getDownloadUrl(file._id, "/", file.name);
+    window.location.href = path;
   }
 
   unlockFile(file: File) {

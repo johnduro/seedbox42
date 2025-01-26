@@ -15,8 +15,7 @@ export default {
 
 	indexOfByUserId: function (arr, userId) {
 		var arrayLength = arr.length;
-		for (var i = 0; i < arrayLength; i++)
-		{
+		for (var i = 0; i < arrayLength; i++) {
 			if (arr[i].user != null && arr[i].user._id.toString() == userId)
 				return (i);
 		}
@@ -24,8 +23,7 @@ export default {
 	},
 
 	updateSettings: function (newSettings, oldSettings) {
-		for (var key in newSettings)
-		{
+		for (var key in newSettings) {
 			if (oldSettings.hasOwnProperty(key) && oldSettings[key] != newSettings[key])
 				oldSettings[key] = newSettings[key];
 		}
@@ -45,21 +43,19 @@ export default {
 		});
 	},
 
-	checkExistentFiles: function (files, done) {
-		var i = 0;
-		var result = [];
-		(function next () {
-			var addFile = files[i++];
-			if (!addFile)
-				return done(null, result);
-			mongoose.model('File').findOne({ path: addFile.path }, function (err, file) {
-				if (err)
-					return done(err);
-				if (file == null)
+	checkExistentFiles: async (files) => {
+		const result = [];
+		for (const addFile of files) {
+			try {
+				const file = await mongoose.model('File').findOne({ path: addFile.path }).exec();
+				if (file == null) {
 					result.push(addFile);
-				next();
-			});
-		})();
+				}
+			} catch (err) {
+				throw new Error(`Error checking file: ${err.message}`);
+			}
+		}
+		return result;
 	},
 
 	convertSize: function (aSize) {
@@ -67,8 +63,7 @@ export default {
 			return "0 octets";
 		aSize = Math.abs(parseInt(aSize, 10));
 		var def = [[1, 'octets'], [1024, 'ko'], [1024 * 1024, 'Mo'], [1024 * 1024 * 1024, 'Go'], [1024 * 1024 * 1024 * 1024, 'To']];
-		for (var i = 0; i < def.length; i++)
-		{
+		for (var i = 0; i < def.length; i++) {
 			if (aSize < def[i][0])
 				return (aSize / def[i - 1][0]).toFixed(2) + ' ' + def[i - 1][1];
 		}
@@ -99,10 +94,10 @@ export default {
 
 		if (-1 == i) return -2;
 
-		var arr = str.slice(i + 1).split(',').map(function(range){
+		var arr = str.slice(i + 1).split(',').map(function (range) {
 			var range = range.split('-')
-			, start = parseInt(range[0], 10)
-			, end = parseInt(range[1], 10);
+				, start = parseInt(range[0], 10)
+				, end = parseInt(range[1], 10);
 
 			// -nnn
 			if (isNaN(start)) {
@@ -118,9 +113,9 @@ export default {
 
 			// invalid
 			if (isNaN(start)
-			|| isNaN(end)
-			|| start > end
-			|| start < 0) valid = false;
+				|| isNaN(end)
+				|| start > end
+				|| start < 0) valid = false;
 
 			return {
 				start: start,
