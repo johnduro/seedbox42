@@ -54,6 +54,11 @@
 	url('./assets/font/MuseoSans-700.svg#MuseoSans-700') format('svg');
 }
 
+@font-face {
+	font-family: Silkscreen;
+	src: url('./assets/font/Silkscreen-Regular.ttf');
+}
+
 .tt-font-museo500 {
 	font-family: 'MuseoSans-500';
 }
@@ -337,9 +342,6 @@ tr.tt-table-even td {
 	margin-top: 10px;
 }
 
-.tt-signin-input {
-	text-align: center;
-}
 ::-webkit-input-placeholder {
 	text-align: center;
 }
@@ -355,17 +357,6 @@ tr.tt-table-even td {
 :-ms-input-placeholder {
 	text-align: center;
 }
-
-.tt-sign-title {
-	font-family: 'MuseoSans-700';
-	text-align: center;
-	color: #325064;
-}
-
-.tt-sign-div {
-	margin-top: 20px;
-}
-
 
 .tt-sign-button {
 	margin-top: 20px;

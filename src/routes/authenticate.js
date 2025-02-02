@@ -1,7 +1,7 @@
 import express from "express";
-import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import User from "../models/User.js";
+import authentication from "../utils/authentication.js";
 
 const router = express.Router();
 
@@ -18,9 +18,7 @@ router.post('/', async (req, res, next) => {
 	  }
   
 	  user.password = "";
-	  const token = jwt.sign(user.toObject(), req.app.locals.ttConfig.secret, {
-		expiresIn: 86400 // 1 day
-	  });
+	  const token = authentication.signToken(user.toObject(), req.app.locals.ttConfig.secret, 86400); // 1 day
   
 	  res.status(200).json({
 		data: user,

@@ -26,7 +26,6 @@ export class AuthService {
         localStorage.setItem('authToken', token);
         localStorage.setItem('authUser', JSON.stringify(userData));
         this.socket.connect(token);
-        document.cookie = `token=${token}`;
       }));
   }
 
@@ -34,7 +33,6 @@ export class AuthService {
     localStorage.removeItem('authToken');
     localStorage.removeItem('authUser');
     this.socket.disconnect();
-    document.cookie = 'token=';
   }
 
   isLoggedIn() {

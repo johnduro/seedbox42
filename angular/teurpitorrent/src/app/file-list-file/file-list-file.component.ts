@@ -23,7 +23,7 @@ export class FileListFileComponent {
   file: FileClass = {} as FileClass;
 
   constructor(
-    private router: Router, 
+    private router: Router,
     private filesService: FilesService
   ) { }
 
@@ -48,8 +48,9 @@ export class FileListFileComponent {
   }
 
   downloadFile(file: File) {
-    const path = this.filesService.getDownloadUrl(file._id, "/", file.name);
-    window.location.href = path;
+    this.filesService.getDownloadUrl(file._id, "/", file.name).subscribe((path: string) => {
+      window.location.href = path;
+    });
   }
 
   unlockFile(file: File) {

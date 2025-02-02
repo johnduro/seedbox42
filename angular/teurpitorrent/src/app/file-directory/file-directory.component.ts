@@ -51,8 +51,9 @@ export class FileDirectoryComponent {
     if (!fileName) {
       fileName = this.currentDirectory.name;
     }
-    const path = this.filesService.getDownloadUrl(this.fileDetail._id, this.getDownloadPath(name), fileName);
-    window.location.href = path;
+    this.filesService.getDownloadUrl(this.fileDetail._id, this.getDownloadPath(name), fileName).subscribe(path => {
+      window.location.href = path;
+    });
   }
 
   convertSize(size: number): string {

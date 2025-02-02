@@ -1,21 +1,4 @@
-import jwt from 'jsonwebtoken';
-import User from "../models/User.js";
-
-
-/**
- * Authentification middleware
- * Check token validity and if user decoded from it exist
- */
-const verifyToken = (token, secret) => {
-	return new Promise((resolve, reject) => {
-		jwt.verify(token, secret, (err, decoded) => {
-			if (err) {
-				return reject(err);
-			}
-			resolve(decoded);
-		});
-	});
-};
+import authentication from '../utils/authentication.js';
 
 const getTokenFromRequest = (req) => {
 	const authHeader = req.headers['authorization'];
@@ -23,7 +6,7 @@ const getTokenFromRequest = (req) => {
 		return authHeader.split(' ')[1];
 	}
 
-	return req.cookies.token;
+	return null;
 };
 
 var auth = async (req, res, next) => {
@@ -33,15 +16,7 @@ var auth = async (req, res, next) => {
 			return res.status(403).json({ message: 'Unauthorized: No token' });
 		}
 
-		const decoded = await verifyToken(token, req.app.locals.ttConfig.secret);
-		if (!decoded) {
-			return res.status(403).json({ message: 'Unauthorized' });
-		}
-
-		const user = await User.findById(decoded._id).exec();
-		if (!user) {
-			return res.status(403).json({ message: 'Unauthorized' });
-		}
+		const user = await authentication.getUserFromToken(token, req.app.locals.ttConfig.secret);
 
 		req.user = user.toObject();
 		next();

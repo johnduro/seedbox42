@@ -50,6 +50,7 @@ import torrent from "./routes/torrent.js";
 import file from "./routes/file.js";
 import dashboard from "./routes/dashboard.js";
 import admin from "./routes/admin.js";
+import download from "./routes/download.js";
 // ************************************
 
 // ====================================
@@ -178,6 +179,7 @@ app.use('/users', auth, users);
 app.use('/torrent', auth, torrent);
 app.use('/file', auth, file);
 app.use('/admin', auth, admin);
+app.use('/download', download);
 // ************************************
 
 // catch 404 and forward to error handler
