@@ -1,0 +1,52 @@
+<div>
+  <a routerLink="/files">back to files /</a>
+  <span *ngFor="let segment of path; let i = index">
+    <a href="#" (click)="navigateToPath($event, i, segment)">{{ segment }}</a>
+    <span *ngIf="i < path.length - 1"> / </span>
+  </span>
+</div>
+<div class="col-md-8 fl-arbo">
+  <table class="table fl-table tt-text">
+    <thead>
+      <tr>
+        <th class="col-md-1"></th>
+        <th class="col-md-1"></th>
+        <th class="col-md-6"></th>
+        <th class="col-md-3"></th>
+        <th class="col-md-1"></th>
+        <th class="col-md-1"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="first-tr">
+        <td class="col-md-1 tt-darkblue">
+          <app-file-type [type]="currentDirectory.type"></app-file-type>
+        </td>
+        <td class="col-md-7" colspan="2">{{currentDirectory.name}}</td>
+        <td class="col-md-2">{{convertSize(currentDirectory.size)}}</td>
+        <td class="col-md-1 tt-darkblue">
+          <fa-icon [icon]="faCircleArrowDown" (click)="downloadFile('')" class="fl-downloadico fl-pointer"></fa-icon>
+        </td>
+        <td class="col-md-1 tt-darkblue">
+        </td>
+      </tr>
+      <tr *ngFor="let child of currentDirectory.children">
+        <td class="col-md-1"></td>
+        <td class="col-md-1 tt-darkblue">
+          <app-file-type [type]="child.type"></app-file-type>
+        </td>
+        <td class="col-md-6 fl-pointer" *ngIf="child.isDirectory; else noClick" (click)="navigateToDirectory(child)">{{child.name}}
+        </td>
+        <ng-template #noClick>
+          <td class="col-md-6">{{child.name}}</td>
+        </ng-template>
+        <td class="col-md-2">{{convertSize(child.size)}}</td>
+        <td class="col-md-1 tt-darkblue">
+          <fa-icon [icon]="faCircleArrowDown" (click)="downloadFile(child.name)" class="fl-downloadico fl-pointer"></fa-icon>
+        </td>
+        <td class="col-md-1 tt-darkblue">
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,84 @@
+<div id="main-wrapper">
+  <div class="row">
+    <!-- Top Left: File Directory -->
+    <div class="col-md-8">
+      <app-file-directory [fileDirectory]="fileDirectory" [fileDetail]="fileDetail"></app-file-directory>
+    </div>
+
+    <!-- Top Right: Download, Wishlist, Downloaded -->
+    <div class="col-md-4 fl-right-col">
+      <div class="col-md-12 fl-infos tt-text">
+        <div> Download : {{fileDetail.createdAt | date:'MM/dd/yy'}}</div>
+        <div>
+          Wishlist :
+          <fa-icon [icon]="faHeart" *ngIf="fileDetail.isLockedByUser === true" class="tt-locked-user fl-pointer"
+            (click)="unlockFile(fileDetail)"></fa-icon>
+          <fa-icon [icon]="faHeart" *ngIf="fileDetail.isLocked === true && fileDetail.isLockedByUser === false"
+            class="tt-locked-other fl-pointer" (click)="lockFile(fileDetail)"></fa-icon>
+          <fa-icon [icon]="faHeart" *ngIf="fileDetail.isLocked === false && fileDetail.isLockedByUser === false"
+            class="tt-locked-no fl-pointer" (click)="lockFile(fileDetail)"></fa-icon>
+        </div>
+        <div> Downloaded : {{fileDetail.downloads}} times</div>
+        <!--         <div class="col-md-12 fl-add-file" *ngIf="fileDetail.fileDirectory.isDirectory === true">
+          <h4 class="fl-title tt-title">ADD LOCAL FILE:</h4>
+          <form>
+            <div ngfDrop ngfSelect [(ngModel)]="files.upload" class="drop-box tt-dottedborder tt-dragndrop" ngfDragOverClass="dragover" ngfMultiple="true" ngfAllowDir="true" accept="*" ngfPattern="'*'">Drop files here or click to upload</div>
+            <div ngfNoFileDrop>File Drag/Drop is not supported for this browser</div>
+          </form>
+        </div> -->
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Bottom Left: RATES & COMMENTS -->
+    <div class="col-md-8 fl-comments">
+      <h3 class="fl-title tt-title">RATES & COMMENTS</h3>
+      <table class="tt-table fl-table-comment tt-text">
+        <tbody>
+          <tr *ngFor="let comment of fileDetail.comments; let index = index"
+            [ngClass]="{'tt-table-odd': index % 2 === 0, 'tt-table-even': index % 2 !== 0}">
+            <td class="col-md-1">
+              <img [src]="'/assets/avatar/' + comment.user.avatar" (error)="onUserAvatarImageError($event)"
+                alt="Smiley face" class="message-avatar">
+            </td>
+            <td class="col-md-2">
+              <app-file-display-rating [grade]="getGradeByUser(comment.user._id)"></app-file-display-rating>
+            </td>
+            <td class="col-md-9" style="word-break: break-all;">
+              <span class="fl-comment-name">{{comment.user.login}} -</span> {{comment.text}}
+            </td>
+            <td class="col-md-2" *ngIf="user.role === ADMIN_ROLE || comment.user._id === user._id">
+              <i class="fa fa-times" (click)="deleteComment(comment._id)"></i>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Bottom Right: Average rating, Number of comments, Rate it, LEAVE A COMMENT -->
+    <div class="col-md-4">
+      <div class="col-md-12 fl-rate-info tt-text">
+        <div>Average rating : <app-file-display-rating [grade]="fileDetail.averageGrade"></app-file-display-rating>
+        </div>
+        <div>Number of comments : {{fileDetail.commentsNbr}}</div>
+        <div *ngIf="userGrade === 0">Rate it :
+          <fa-icon *ngFor="let star of hoverStars; let i = index" [icon]="star" (mouseenter)="onStarHover(i + 1)"
+            (mouseleave)="onStarHover(0)" (click)="onStarClick(i + 1)" class="fl-pointer">
+          </fa-icon>
+        </div>
+        <div *ngIf="userGrade > 0">Your rating :
+          <app-file-display-rating [grade]="userGrade"></app-file-display-rating>
+        </div>
+      </div>
+      <div class="col-md-12 fl-add-comment">
+        <h4 class="fl-title tt-title">LEAVE A COMMENT:</h4>
+        <div class="form-message">
+          <textarea [(ngModel)]="newComment"></textarea>
+          <button (click)="addComment()" class="btn btn-primary">Submit <fa-icon [icon]="faCheck"
+            class="tt-inputcheck"></fa-icon></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

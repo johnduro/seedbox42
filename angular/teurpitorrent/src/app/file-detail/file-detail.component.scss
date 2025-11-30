@@ -1,0 +1,155 @@
+.message-avatar {
+	height: 42px;
+	width: 42px;
+	border-radius: 21px;
+	-webkit-border-radius: 21px;
+	-moz-border-radius: 21px;
+	box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
+}
+
+.videogular-container {
+	width: 100%;
+	height: 320px;
+	margin: auto;
+	overflow: hidden;
+}
+
+.videogular-container.audio {
+	height: 50px;
+}
+
+/* FILES */
+
+
+.fls-icon {
+	font-size: 13pt;
+	margin-left: 3px;
+}
+
+.fls-tt-icon {
+	font-size: 17pt;
+	margin-left: 7px;
+}
+
+.fls-download {
+	font-size: 17pt;
+}
+
+.fls-search {
+	margin-top: 10px;
+	margin-bottom: 25px;
+}
+
+.fl-path {
+	margin-top: 5px;
+	color: #337ab7;
+}
+
+.fl-path span:hover {
+	text-decoration: underline;
+}
+
+.fl-body {
+	margin-top: 25px;
+}
+
+.fl-right-col {
+	margin-top: 14px;
+}
+
+.fl-icon {
+	font-size: 13pt;
+	margin-left: 3px;
+}
+
+.fl-tt-icon {
+	font-size: 17pt;
+	margin-left: 7px;
+}
+
+.fl-downloadico {
+	font-size: 17pt;
+}
+
+.fl-table-comment {
+	border-top: 1px solid #325064;
+}
+
+.fl-table-comment tr td {
+	padding-top: 5px;
+	padding-bottom: 5px;
+	vertical-align: top;
+}
+
+.fl-comment-name {
+	font-size: 13px;
+	color: #99A8B2;
+	font-family: MuseoSans-500;
+}
+
+.fl-comment-stars {
+	margin-top: 12px;
+}
+
+.fl-add-file {
+	margin-top: 25px;
+}
+
+.fl-rate-info {
+	margin-top: 45px;
+}
+
+.fl-add-comment {
+	margin-top: 25px;
+}
+
+.fl-table th,
+.fl-table tr td,
+.fl-table tr {
+	border-style: none !important;
+}
+
+.first-tr {
+	background-color: #E5FFFE;
+}
+
+.fl-title {
+	font-size: 15px;
+}
+
+.fl-average {
+	display: inline-block;
+	font-size: 12pt;
+	vertical-align: middle;
+}
+
+.fl-pointer {
+	cursor: pointer;
+}
+
+.btn-primary {
+	color: #fff;
+	font-family: 'MuseoSans-300';
+	background-color: #325064;
+}
+
+.btn-default:hover {
+	color: #fff;
+	background-color: #99A8B2
+}
+
+.form-message {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+
+	textarea {
+		width: 100%;
+		min-height: 100px;
+		resize: vertical;
+	}
+
+	button {
+		align-self: flex-start;
+	}
+}

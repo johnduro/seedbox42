@@ -1,0 +1,77 @@
+<div class="row">
+    <div class="col-md-12 afm-search">
+        <div class="tt-search-div col-md-3 col-6">
+            <input class="tt-search-input col-md-10 col-10" placeholder="Search files" [(ngModel)]="search"
+                (input)="filterFiles()">
+            <button type="button" class="tt-search-button">|<fa-icon [icon]="faSearch"
+                    class="tt-search-icon"></fa-icon></button>
+        </div>
+    </div>
+    <div class="col-md-12 afm-actions">
+        <span class="ts-nb-select"> {{ selectedFiles.length }} files selected </span>
+        <button *ngIf="isProfileMode" (click)="unlockForUser()" class="btn btn-primary tt-button afm-left-button">Unlock
+            selected for user <fa-icon [icon]="faCheck" class="pr-submitcheck"></fa-icon></button>
+        <button *ngIf="isUserAdmin" (click)="hardUnlockSelected()"
+            class="btn btn-primary tt-button afm-left-button">Unlock selected for everyone <fa-icon [icon]="faCheck"
+                class="pr-submitcheck"></fa-icon></button>
+        <button *ngIf="isUserAdmin" (click)="deleteSelected()" class="btn btn-primary tt-button afm-button">Delete
+            selected from database and server <fa-icon [icon]="faCheck" class="pr-submitcheck"></fa-icon></button>
+        <button *ngIf="isUserAdmin" (click)="deleteSelectedOnlyDb()" class="btn btn-primary tt-button afm-button">Delete
+            selected from database <fa-icon [icon]="faCheck" class="pr-submitcheck"></fa-icon></button>
+    </div>
+    <div class="col-md-12 afm-files">
+        <table class="display table tt-table" style="width: 100%; cellspacing: 0;">
+            <thead class="tt-title pr-table-title">
+                <tr>
+                    <th>
+                        <input type="checkbox" [(ngModel)]="isCheckboxAllSelected" (change)="selectAllFiles()">
+                    </th>
+                    <th (click)="order('type')">
+                        TYPE <i *ngIf="sortColumn === 'type'" [ngClass]="classSort"></i>
+                    </th>
+                    <th class="col-md-5" (click)="order('name')">
+                        NAME <i *ngIf="sortColumn === 'name'" [ngClass]="classSort"></i>
+                    </th>
+                    <th (click)="order('size')">
+                        SIZE <i *ngIf="sortColumn === 'size'" [ngClass]="classSort"></i>
+                    </th>
+                    <th (click)="order('isLocked')">
+                        <fa-icon [icon]="faHeart"></fa-icon>
+                        <i *ngIf="sortColumn === 'isLocked'" [ngClass]="classSort"></i>
+                    </th>
+                    <th (click)="order('createdAt')">
+                        DATE <i *ngIf="sortColumn === 'createdAt'" [ngClass]="classSort"></i>
+                    </th>
+                    <th (click)="order('creator.login')">
+                        <fa-icon [icon]="faUser"></fa-icon>
+                        <i *ngIf="sortColumn === 'creator.login'" [ngClass]="classSort"></i>
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="tt-text">
+                <tr *ngFor="let file of filteredFiles; let i = index"
+                    [ngClass]="{'tt-table-odd': i % 2 === 0, 'tt-table-even': i % 2 !== 0}">
+                    <td>
+                        <input type="checkbox" [(ngModel)]="file.isSelected" (change)="checkboxSwitch()">
+                    </td>
+                    <td class="tt-darkblue">
+                        <app-file-type [type]="file.fileType"></app-file-type>
+                    </td>
+                    <td (click)="openFile(file)">{{file.name}}</td>
+                    <td>{{convertSize(file.size)}}</td>
+                    <td>
+                        <fa-icon [icon]="faHeart" *ngIf="file.isLockedByUser === true" class="tt-locked-user"
+                            (click)="unlockFile(file)"></fa-icon>
+                        <fa-icon [icon]="faHeart" *ngIf="file.isLocked === true && file.isLockedByUser === false"
+                            class="tt-locked-other" (click)="lockFile(file)"></fa-icon>
+                        <fa-icon [icon]="faHeart" *ngIf="file.isLocked === false && file.isLockedByUser === false"
+                            class="tt-locked-no" (click)="lockFile(file)"></fa-icon>
+                    </td>
+                    <td>{{file.createdAt | date:'MM/dd/yy'}}</td>
+                    <td><img [src]="'/avatar/' + file.creator.avatar" (error)="onUserAvatarImageError($event)"
+                            title="{{file.creator.login}}" alt="{{file.creator.login}}" class="tt-list-avatar"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

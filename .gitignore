@@ -11,6 +11,7 @@ save*
 
 config.json
 
+.env
 
 # Logs
 logs

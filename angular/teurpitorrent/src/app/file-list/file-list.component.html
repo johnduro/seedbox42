@@ -1,0 +1,67 @@
+<div id="main-wrapper">
+  <div class="row fls-search">
+    <div class="col-md-12">
+      <div class="tt-search-div col-md-3 col-xs-6">
+        <input class="tt-search-input col-md-10 col-xs-10" placeholder="Search files" [(ngModel)]="research"
+          (input)="filterFiles()">
+        <button type="button" class="tt-search-button">|
+          <fa-icon [icon]="faSearch" class="tt-search-icon"></fa-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <table class="table table-striped tt-table" style="width: 100%;">
+        <thead class="tt-title">
+          <tr>
+            <th (click)="orderBy('type')">
+              TYPE <i *ngIf="sortColumn === 'type'" [ngClass]="classSort"></i>
+            </th>
+            <th class="col-md-5" (click)="orderBy('name')">
+              NAME <i *ngIf="sortColumn === 'name'" [ngClass]="classSort"></i>
+            </th>
+            <th (click)="orderBy('size')">
+              SIZE <i *ngIf="sortColumn === 'size'" [ngClass]="classSort"></i>
+            </th>
+            <th></th>
+            <th (click)="orderBy('isLocked')">
+              <fa-icon [icon]="faHeart"></fa-icon>
+              <i *ngIf="sortColumn === 'isLocked'" [ngClass]="classSort"></i>
+            </th>
+            <th (click)="orderBy('createdAt')">
+              DATE <i *ngIf="sortColumn === 'createdAt'" [ngClass]="classSort"></i>
+            </th>
+            <th (click)="orderBy('downloads')">
+              DL <i *ngIf="sortColumn === 'downloads'" [ngClass]="classSort"></i>
+            </th>
+            <th (click)="orderBy('creator.login')">
+              <fa-icon [icon]="faUser"></fa-icon> <i *ngIf="sortColumn === 'creator.login'" [ngClass]="classSort"></i>
+            </th>
+            <th (click)="orderBy('averageGrade')">
+              RATE <i *ngIf="sortColumn === 'averageGrade'" [ngClass]="classSort"></i>
+            </th>
+            <th (click)="orderBy('commentsNbr')">
+              <fa-icon [icon]="faComments"></fa-icon> <i *ngIf="sortColumn === 'commentsNbr'" [ngClass]="classSort"></i>
+            </th>
+          </tr>
+        </thead>
+        <tbody class="tt-text">
+
+
+          <!--           <tr *ngFor="let item of elementsActual | orderBy:getOrderBy() | limitTo:listLimit" (scroll)="loadMore()"
+            [ngClass]="{'tt-table-odd': odd, 'tt-table-even': even}"> -->
+          <!--             <tr *ngFor="let file of files" [ngClass]="{'tt-table-odd': odd, 'tt-table-even': even}"> -->
+
+
+          <tr *ngFor="let file of filteredFiles; let i = index" app-file-list-file [fileData]=file
+            [updateFile]="updateFile.bind(this)"
+            [ngClass]="{'tt-table-odd': i % 2 === 1, 'tt-table-even': i % 2 === 0}">
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

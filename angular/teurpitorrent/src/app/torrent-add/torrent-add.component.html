@@ -1,0 +1,24 @@
+<div class="ts-add-torrents col-md-12">
+  <div class="ts-add-url col-md-12">
+    <h4 class="tt-title ts-title">ADD URL</h4>
+    <div class="tt-search-div col-md-12">
+      <input class="tt-search-input col-md-10 col-10" placeholder="Add torrent url" [(ngModel)]="torrentUrl">
+      <button type="button" class="tt-search-button" (click)="sendTorrentUrl()">
+        | <fa-icon [icon]="faCheck" class="ts-addcheck"></fa-icon>
+      </button>
+    </div>
+  </div>
+  <div class="ts-add-file col-md-12">
+    <h4 class="tt-title ts-title">ADD TORRENT FILE</h4>
+    <form>
+      <div ng2FileDrop (click)="fileInput.click()" (onFileDrop)="onTorrentFilesdropped($event)"
+        class="drop-box tt-dottedborder tt-dragndrop ts-pointer">
+        <div class="tt-dottedplaceholder">Drop files here or click to upload</div>
+        <span
+          style="visibility: hidden; position: absolute; overflow: hidden; width: 0px; height:0px;border:none;margin:0; padding:0">
+          <input type="file" #fileInput ng2FileSelect (onFileSelected)="onTorrentFilesSelected($event)" />
+        </span>
+      </div>
+    </form>
+  </div>
+</div>

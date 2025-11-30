@@ -1,0 +1,17 @@
+<div id="main-wrapper">
+    <div class="row col-md-12">
+        <ng-container *ngFor="let panel of panels; let i = index">
+            <div *ngIf="i % 2 === 0" class="row">
+                <div class="col-md-6">
+                    <ng-container *ngComponentOutlet="getComponent(panel.template); injector: getInjector(panel)">
+                    </ng-container>
+                </div>
+                <div class="col-md-6" *ngIf="panels[i + 1]">
+                    <ng-container
+                        *ngComponentOutlet="getComponent(panels[i + 1].template); injector: getInjector(panels[i + 1])">
+                    </ng-container>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+</div>

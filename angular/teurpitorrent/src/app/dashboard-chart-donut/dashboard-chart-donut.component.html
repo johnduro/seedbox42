@@ -1,0 +1,10 @@
+<div class="card d-panel border-0">
+    <div class="card-header custom-header">
+        <h3 class="card-title d-title">{{ panel.title | uppercase }}</h3>
+    </div>
+    <div id="chart" class="card-body d-body">
+        <apx-chart [series]="chartOptions.series!" [chart]="chartOptions.chart!" [labels]="chartOptions.labels!"
+            [colors]="chartOptions.colors!" [grid]="chartOptions.grid!" [plotOptions]="chartOptions.plotOptions!"
+            [responsive]="chartOptions.responsive!"></apx-chart>
+    </div>
+</div>

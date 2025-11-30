@@ -1,0 +1,26 @@
+<td class="tt-darkblue">
+  <app-file-type [type]="file.fileType"></app-file-type>
+</td>
+<td (click)="openFile(file)" class="fls-pointer">{{file.name}}</td>
+<td>{{file.convertSize()}}</td>
+<td class="tt-darkblue">
+  <fa-icon [icon]="faCircleArrowDown" (click)="downloadFile(file)" class="icon-down-circled fls-download fls-pointer"></fa-icon>
+</td>
+<td>
+  <fa-icon [icon]="faHeart" *ngIf="file.isLockedByUser === true" class="tt-locked-user fls-pointer"
+    (click)="unlockFile(file)"></fa-icon>
+  <fa-icon [icon]="faHeart" *ngIf="file.isLocked === true && file.isLockedByUser === false" class="tt-locked-other fls-pointer"
+    (click)="lockFile(file)"></fa-icon>
+  <fa-icon [icon]="faHeart" *ngIf="file.isLocked === false && file.isLockedByUser === false" class="tt-locked-no fls-pointer"
+    (click)="lockFile(file)"></fa-icon>
+</td>
+<td>{{file.createdAt | date:'MM/dd/yy'}}</td>
+<td>{{file.downloads}}</td>
+<td>
+  <img [src]="'/avatar/' + file.creator.avatar" (error)="onUserAvatarImageError($event)" [title]="file.creator.login"
+    [alt]="file.creator.login" class="tt-list-avatar">
+</td>
+<td>
+  <app-file-display-rating [grade]="file.averageGrade"></app-file-display-rating>
+</td>
+<td>{{file.commentsNbr}}</td>

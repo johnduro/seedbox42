@@ -1,0 +1,97 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark l-header-color" role="navigation">
+    <div class="container col-sm-12 col-md-10 col-centered">
+        <div class="d-flex justify-content-between align-items-center w-100">
+            <div class="navbar-header d-flex align-items-center">
+                <a href="#" id="ttTitleToggle" class="navbar-brand">Teurpi Torrent</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-1"
+                    aria-controls="navbar-1" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-1">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a routerLink="/dashboard" class="nav-link waves-effect waves-button">
+                            <span class="custom-navcolor custom-navCat"
+                                [ngClass]="{'ft-active': isActive('/dashboard')}">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a routerLink="/torrents" class="nav-link waves-effect waves-button">
+                            <span class="custom-navcolor custom-navCat"
+                                [ngClass]="{'ft-active': isActive('/torrents')}">Torrents</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a routerLink="/files" class="nav-link waves-effect waves-button">
+                            <span class="custom-navcolor custom-navCat"
+                                [ngClass]="{'ft-active': isActive('/files')}">Files</span>
+                        </a>
+                    </li>
+                </ul>
+                <a routerLink="/dashboard" class="navbar-brand mx-auto" id="ttTitle">Teurpi Torrent</a>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false" (click)="toggleDropdown($event)">
+                            <fa-icon [icon]="faUserSecret" class="nb-connected-logo"></fa-icon>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li class="dropdown-header">
+                                <fa-icon [icon]="faCircleDot" style="color: #35AC19;"></fa-icon>
+                                Connected users
+                            </li>
+                            <li *ngFor="let login of connectedUsers.logins" class="nb-connected-login">
+                                <span class="tt-text">{{ login }}</span>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false" (click)="toggleDropdown($event)">
+                            <img [src]="'/avatar/' + user.avatar" (error)="onUserAvatarImageError($event)"
+                                [title]="user.login" [alt]="user.login" class="profile-img">
+                            <span class="custom-navcolor tt-font-museo500">{{user.login}} <span
+                                    class="caret"></span></span>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                            <li>
+                                <a routerLink="/my-profile" class="dropdown-item waves-effect waves-button"
+                                    [ngClass]="{active: isActive('/my-profile')}" (click)="closeDropdown()">
+                                    <fa-icon [icon]="faUser"></fa-icon> My profile
+                                </a>
+                            </li>
+                            <li *ngIf="user.role === ADMIN_ROLE" role="separator" class="dropdown-divider"></li>
+                            <li *ngIf="user.role === ADMIN_ROLE">
+                                <a routerLink="/users" class="dropdown-item waves-effect waves-button"
+                                    [ngClass]="{active: isActive('/users')}" (click)="closeDropdown()">
+                                    <fa-icon [icon]="faUsers"></fa-icon> Users accounts
+
+                                </a>
+                            </li>
+                            <li *ngIf="user.role === ADMIN_ROLE">
+                                <a routerLink="/files-manager" class="dropdown-item waves-effect waves-button"
+                                    [ngClass]="{active: isActive('/files-manager')}" (click)="closeDropdown()">
+                                    <fa-icon [icon]="faFile"></fa-icon> Files manager
+                                </a>
+                            </li>
+                            <li *ngIf="user.role === ADMIN_ROLE">
+                                <a routerLink="/configuration" class="dropdown-item waves-effect waves-button"
+                                    [ngClass]="{active: isActive('/configuration')}" (click)="closeDropdown()">
+                                    <fa-icon [icon]="faScrewdriverWrench"></fa-icon> Configuration
+                                </a>
+                            </li>
+                            <li role="separator" class="dropdown-divider"></li>
+                            <li>
+                                <a href="#" (click)="onLogout()" routerLink="/login"
+                                    class="dropdown-item log-out waves-effect waves-button waves-classic">
+                                    <span><fa-icon [icon]="faRightFromBracket"></fa-icon>Log out</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>

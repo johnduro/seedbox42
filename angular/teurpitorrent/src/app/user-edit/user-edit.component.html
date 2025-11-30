@@ -1,0 +1,45 @@
+<div class="row tt-text pr-myprofile">
+    <div class="col-md-12">
+        <h4 class="tt-title">{{ isEditMode ? 'USER INFORMATION:' : 'CREATE USER:' }}</h4>
+    </div>
+    <form (ngSubmit)="saveUser()" enctype="multipart/form-data" class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="exampleInputLogin" class="form-label">Login</label>
+                <input [(ngModel)]="editedUser.login" name="login" type="text" class="form-control"
+                    id="exampleInputLogin" placeholder="Enter a login">
+            </div>
+            <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Email address</label>
+                <input [(ngModel)]="editedUser.mail" name="email" type="email" class="form-control"
+                    id="exampleInputEmail1" placeholder="Enter an email address">
+            </div>
+            <div class="mb-3">
+                <label for="exampleInputPassword1" class="form-label">Password</label>
+                <input [(ngModel)]="editedUser.password" name="password" type="password" class="form-control"
+                    id="exampleInputPassword1" placeholder="Password">
+                <div *ngIf="passwordError" class="text-danger">{{ passwordError }}</div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                <select *ngIf="displayAdminCheckbox" [(ngModel)]="editedUser.role" name="role" class="form-select"
+                    id="roleSelect">
+                    <option value="admin">Admin</option>
+                    <option value="user">User</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <img [src]="'/avatar/' + editedUser.avatar" (error)="onUserAvatarImageError($event)" alt="Avatar"
+                    class="pr-img">
+                <input type="file" (change)="onFileSelected($event)" class="form-control" id="fileInput"
+                    name="avatar" />
+            </div>
+            <div class="mb-3 pr-update">
+                <div class="tt-title">{{ isEditMode ? 'UPDATE USER:' : 'CREATE USER:' }}</div>
+                <button type="submit" class="btn btn-primary tt-button">Submit <i
+                        class="fa fa-check pr-submitcheck"></i></button>
+            </div>
+        </div>
+    </form>
+</div>

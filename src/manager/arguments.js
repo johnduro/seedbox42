@@ -1,0 +1,106 @@
+import fs from 'fs';
+import chalk from 'chalk';
+import TransmissionNode from '../transmission/transmissionNode.js';
+import User from '../models/User.js';
+import connectDb from '../database/database.js';
+
+class Arguments {
+	constructor(configFileName, argvOg, argvParsed) {
+		this.args = {
+			config: null,
+			mongo: null,
+			transmission: null,
+			user: null
+		};
+		var self = this;
+		this.initArguments = {
+			config: function (done) {
+				try {
+					var data = fs.readFileSync(configFileName, 'utf8');
+					var config = JSON.parse(data);
+					return done(config);
+				} catch (e) {
+					if (e.code == 'ENOENT') {
+						console.log(chalk.yellow('The file ' + configFileName + ' does not exist\n') + chalk.green('Use --generate-conf to create a new configuration file'));
+						process.exit();
+					}
+					else if (e.code == 'EACCES') {
+						console.log(chalk.yellow('You does not have right to access "' + configFileName + '"\n') + chalk.green('Please change rights to grant access to the file'));
+						process.exit();
+					}
+					return done(null);
+				}
+			},
+
+			mongo: function (done) {
+				var getConnect = async function (mongoConf) {
+					var mongoConnexion = await connectDb(mongoConf);
+					return (mongoConnexion);
+				};
+				if (self.args['config'] === null) {
+					self.initArguments.config(function (config) {
+						self.args.config = config;
+						var ret = getConnect(self.args['config'].mongodb);
+						return done(ret);
+					});
+				}
+				else {
+					var ret = getConnect(self.args['config'].mongodb);
+					return done(ret);
+				}
+			},
+
+			transmission: function (done) {
+				var transmission = null;
+				if (self.args['config'] === null) {
+					Arguments.initArguments.config(function (config) {
+						self.args.config = config;
+						transmission = new TransmissionNode(config.transmission);
+						return done(transmission);
+					});
+				}
+				else {
+					transmission = new TransmissionNode(self.args.config.transmission);
+					return done(transmission);
+				}
+			},
+
+			user: async (done) => {
+				if (this.args.mongo === null) {
+					this.args.mongo = await this.mongo();
+				}
+
+				var query = {};
+				if (argvOg['user'] && argvParsed['user'] != '') {
+					query.login = argvParsed['user'];
+				}
+				else {
+					query.role = 'admin';
+				}
+
+				const userQuery = User.findOne(query).exec();
+				const user = await userQuery;
+				if (!user) {
+					console.log(chalk.red(`User ${this.argvParsed.user} not found`));
+					process.exit();
+				}
+				done(user);
+			}
+		};
+	}
+}
+
+Arguments.prototype.getArgument = function (arg, done) {
+	var self = this;
+	if (self.args[arg] === null) {
+		self.initArguments[arg](function (ret) {
+			self.args[arg] = ret;
+			return done(self.args[arg]);
+		});
+	}
+	else {
+		return done(self.args[arg]);
+	}
+};
+
+export default Arguments;
