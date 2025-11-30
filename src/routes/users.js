@@ -91,11 +91,11 @@ router.delete('/:id', rights.adminOrUserParam, async (req, res, next) => {
 	try {
 		const post = await User.findByIdAndDelete(req.params.id).exec();
 		if (post.avatar != req.app.locals.ttConfig.users["default-avatar"]) {
-			fs.unlink('public/assets/avatar/' + post.avatar, function (err) {
+/* 			fs.unlink('public/assets/avatar/' + post.avatar, function (err) {
 				if (err) {
 					return next(err);
 				}
-			});
+			}); */
 		}
 
 		res.json({ message: 'User successfully deleted' });
