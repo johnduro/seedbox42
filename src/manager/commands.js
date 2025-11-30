@@ -1,13 +1,13 @@
 export default {
 		'add-directory': {
 			type: 'string',
-			mandatoryStr: true,
+			mandatoryStr: false,
 			functionArg: {
 				config: null,
 				mongo: null,
 				user: null
 			},
-			usage: ' --add-directory /path/to/directory',
+			usage: ' --add-directory [/path/to/directory]',
 			help: 'Let you select files from a directory and add them to the database'
 		},
 		'check-database': {

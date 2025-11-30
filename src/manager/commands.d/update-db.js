@@ -1,8 +1,8 @@
-var File = require('../../models/File');
-var User = require('../../models/User');
-var ft = require('../../utils/ft');
-var chalk = require('chalk');
+import File from '../../models/File.js';
+import User from '../../models/User.js';
+import ft from '../../utils/ft.js';
+import chalk from 'chalk';
 
-module.exports = function (configFileName, args, commandLineArg, done) {
+export default function (configFileName, args, commandLineArg, done) {
 	console.log('Currently no updates are available for database');
 };

@@ -80,8 +80,8 @@ export default {
 				name += (' - ' + chalk.yellow(writeWarning));
 			if (file.rights.read == false)
 				name += (' - ' + chalk.red(readWarning));
-			choices.push({ name: name });
-			filesObj[name] = file;
+			choices.push({ name: name, value: file.path });
+			filesObj[file.path] = file;
 		});
 		return ({ choices: choices, filesObj: filesObj });
 	}

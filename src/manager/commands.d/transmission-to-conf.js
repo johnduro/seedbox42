@@ -1,8 +1,8 @@
-var chalk = require('chalk');
-var ft = require('../../utils/ft');
-var tSettings = require('../../config/transmission');
+import chalk from 'chalk';
+import ft from '../../utils/ft.js';
+import tSettings from '../../config/transmission.js';
 
-module.exports = function (configFileName, args, commandLineArg, done) {
+export default function (configFileName, args, commandLineArg, done) {
 	tSettings.transmissionSettingsToConfig(args.transmission, args.config['transmission-settings'], function (err, tConf) {
 		if (err)
 		{

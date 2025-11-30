@@ -1,9 +1,9 @@
-var chalk = require('chalk');
-var util = require('util');
-var File = require('../../models/File');
-var filesInfos = require('../../utils/filesInfos');
+import chalk from 'chalk';
+import util from 'util';
+import File from '../../models/File.js';
+import filesInfos from '../../utils/filesInfos.js';
 
-module.exports = function (configFileName, args, commandLineArg, done) {
+export default function (configFileName, args, commandLineArg, done) {
 	args.transmission.torrentGet(['hashString', 'name', 'downloadDir', 'totalSize', "status", "leftUntilDone", "percentDone"], {}, function (err, resp) {
 		if (err)
 		{

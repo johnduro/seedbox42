@@ -22,7 +22,7 @@ var argvParsed = mini(process.argv.slice(2), scriptArguments);
 var isCommand = false;
 
 for (var i = 0; i < commandNames.length; i++) {
-	if (argvParsed[commandNames[i]])
+	if (argvParsed[commandNames[i]] !== undefined)
 		isCommand = true;
 }
 
@@ -64,7 +64,7 @@ var callCommand = function (name, command, commandLineArg, done) {
 };
 
 var checkCommand = function (name, done) {
-	if (commands[name].type == 'string' && argvOg[name] && (argvParsed[name] != '' || commands[command].mandatoryStr == false))
+	if (commands[name].type == 'string' && argvOg[name] && (argvParsed[name] != '' || commands[name].mandatoryStr == false))
 		callCommand(name, commands[name], argvParsed[name], done);
 	else if (commands[name].type == 'string' && argvOg[name] && argvParsed[name] == '') {
 		console.log('Usage: ' + commands[name].usage);
