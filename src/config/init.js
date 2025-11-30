@@ -1,5 +1,4 @@
 import fs from 'fs';
-// import mongoose from 'mongoose';
 import TransmissionNode from '../transmission/transmissionNode.js';
 import File from '../models/File.js';
 import Wall from '../models/Wall.js';
@@ -7,17 +6,6 @@ import validity from './validity.js';
 import defaultConfig from './default-config.js';
 import connectDb from '../database/database.js';
 
-/* var getMongoConnex = async function (mongoConfig) {
-    try {
-//        await mongoose.connect("mongodb://" + mongoConfig.address + '/' + mongoConfig.name);
-        await mongoose.connect("mongodb://mongouser:mongopass@mongodb:27017/seedapp"); // todo variabilize
-        console.log('Connected to the database!');
-        return mongoose.connection; // You can return the connection or any other value
-    } catch (err) {
-        console.log('Connection to the database failed!', err);
-        process.exit();
-    }
-}; */
 
 var checkTransmissionSettings = function (t, tSettings) {
 	t.sessionGet(function (err, res) {

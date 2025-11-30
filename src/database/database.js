@@ -8,8 +8,8 @@ const connectDB = async (mongoConf) => {
         return;
     }
 
-//    uri = "mongodb://" + mongoConf.address + '/' + mongoConf.name
-    var uri = "mongodb://mongouser:mongopass@mongodb:27017/seedapp"
+    const { DB_USER, DB_PASS, DB_HOST, DB_PORT, DB_NAME } = process.env;
+    const uri = `mongodb://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?authSource=${DB_NAME}`;
 
     try {
         await mongoose.connect(uri);

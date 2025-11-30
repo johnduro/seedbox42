@@ -2,6 +2,12 @@ services:
   seedbox:
     build: ./src
     user: "${UID}:${GID}"
+    environment:
+      - DB_USER=${MONGO_APP_USER}
+      - DB_PASS=${MONGO_APP_PASSWORD}
+      - DB_HOST=mongodb
+      - DB_PORT=27017
+      - DB_NAME=${MONGO_DB_NAME}
     volumes:
       - ./src:/opt/app
       - node-modules:/opt/app/node_modules/
@@ -36,12 +42,12 @@ services:
 
   mongodb:
     image: mongo:8.0.0
-    ports:
-      - '27017:27017'
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: root
-      MONGO_INITDB_DATABASE: seedapp
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DB_NAME}
+      MONGO_APP_USER: ${MONGO_APP_USER}
+      MONGO_APP_PASSWORD: ${MONGO_APP_PASSWORD}
     volumes:
       - mongodb-storage:/data/db
       - ./docker/mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
