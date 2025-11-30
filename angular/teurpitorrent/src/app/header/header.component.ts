@@ -6,6 +6,7 @@ import { faUserSecret, faCircleDot, faUser, faUsers, faFile, faScrewdriverWrench
 import { ConnectedUsers, User } from '../users/user';
 import { CommonModule } from '@angular/common';
 import { SocketService } from '../socket/socket.service';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-header',
@@ -18,6 +19,7 @@ export class HeaderComponent {
   authService = inject(AuthService);
   router = inject(Router);
   socketService = inject(SocketService);
+  cdr = inject(ChangeDetectorRef);
 
   readonly ADMIN_ROLE = 'admin';
   user: User = {} as User;
@@ -32,13 +34,19 @@ export class HeaderComponent {
   faRightFromBracket = faRightFromBracket;
 
   ngOnInit() {
+    this.authService.currentUser.subscribe(user => {
+      if (user) {
+        this.user = user;
+        this.cdr.detectChanges(); // Force change detection
+      } else {
+        // Optionally handle logout or redirect if needed, 
+        // though usually guarded by route guards or handled in logout()
+      }
+    });
+
     const user = this.authService.getConnectedUser();
     if (!user) {
       this.router.navigate(['/login']);
-    }
-
-    if (user) {
-      this.user = user;
     }
 
     this.socketService.onEvent('connectedUsers', (msg) => {

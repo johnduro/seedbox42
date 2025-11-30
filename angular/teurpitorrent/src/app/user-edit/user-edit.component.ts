@@ -5,6 +5,7 @@ import { UsersService } from '../users/users.service';
 import { AuthService } from '../auth/auth.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-user-edit',
@@ -25,7 +26,12 @@ export class UserEditComponent {
   isEditMode: boolean = true;
   passwordError: string | null = null;
 
-  constructor(private usersService: UsersService, private authService: AuthService, private router: Router) { }
+  constructor(
+    private usersService: UsersService,
+    private authService: AuthService,
+    private router: Router,
+    private cdr: ChangeDetectorRef
+  ) { }
 
   ngOnInit(): void {
     if (this.userId) {
@@ -62,14 +68,23 @@ export class UserEditComponent {
     // Handle form submission logic here
     if (this.userId) {
       this.usersService.updateUser(this.userId, this.editedUser, this.myFile || undefined).subscribe({
-      next: (response) => {
-      },
-      error: (error) => {
-        console.error('Error updating user:', error);
-      }
-    });
+        next: (response) => {
+          this.editedUser = response;
+          this.myFile = null; // Reset the file input
+
+          const currentUser = this.authService.getConnectedUser();
+          // Check if the updated user is the connected user
+          if (currentUser && (currentUser._id === response._id || currentUser._id === this.userId)) {
+            this.authService.updateConnectedUser(response);
+          }
+          this.cdr.detectChanges(); // Force change detection
+        },
+        error: (error) => {
+          console.error('Error updating user:', error);
+        }
+      });
+    }
   }
-}
 
   createUser(): void {
     // Handle form submission logic here

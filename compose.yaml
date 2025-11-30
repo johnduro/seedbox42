@@ -27,6 +27,7 @@ services:
       - '4200:4200'
     volumes:
       - ./angular/teurpitorrent:/teurpitorrent
+      - avatar-storage:/usr/share/nginx/html/browser/avatar
     environment:
       - STYLE=css
     depends_on:

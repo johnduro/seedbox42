@@ -44,8 +44,8 @@ export class UsersService {
       formData.append('avatar', file, file.name);
     }
 
-    return this.httpClient.put<User>(url, formData)
-      .pipe(map(response => response));
+    return this.httpClient.put<any>(url, formData)
+      .pipe(map(response => response.data));
   }
 
   createUser(userUpdate: UserUpdate, file?: File): Observable<any> {
