@@ -3,20 +3,14 @@ import fs from "fs";
 import fsPromise from "fs/promises"
 import express from "express";
 import File from "../models/File.js";
-import { drives, drivesDetail} from "../utils/diskSpaceNode.js";
+import { getDiskUsage } from "../utils/diskSpaceNode.js";
 
 const router = express.Router();
 
 var getTotalDiskSpace = async function(downloadDir) {
-	const drivesList = await drives(downloadDir);
+	const data = await getDiskUsage(downloadDir);
 
-	const data = await drivesDetail(drivesList);
-
-	if (data.length < 1) {
-		throw new Error("could not find any data");
-	}
-
-	return { used: data[1].used, freePer: parseInt(data[1].freePer, 10), usedPer: parseInt(data[1].usedPer, 10), total: data[1].total};
+	return { used: data.used, freePer: data.freePer, usedPer: data.usedPer, total: data.total};
 }
 
 router.get('/recent-file', async (req, res) => {
@@ -119,7 +113,6 @@ router.get('/most-downloaded-file', async (req, res) => {
 
 router.get('/disk-space', async (req, res) => {
 	try {
-		//const downloadDir = req.app.locals.ttConfig["transmission-settings"]["download-dir"];
 		const downloadDir = "/downloads";
 		await fsPromise.access(downloadDir, fs.constants.R_OK);
 		let data = await getTotalDiskSpace(downloadDir);
